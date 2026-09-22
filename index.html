@@ -317,14 +317,24 @@
               <span>📦 物品素材庫</span>
               <span id="csTrayItemCount" class="cs-tray-badge">1238 種</span>
             </div>
-            <input type="text" id="csTraySearchInput" class="cs-tray-search" placeholder="搜尋欲放入的物品...">
-            <!-- 官方 12 大分類滾動標籤列 -->
-            <div id="csTrayCategoryPills" class="cs-tray-pills">
-              <!-- 由 JS 動態填充分類膠囊標籤 -->
+            <div class="cs-tray-controls-row">
+              <input type="text" id="csTraySearchInput" class="cs-tray-search" placeholder="搜尋欲放入的物品...">
+              <select id="csTrayCategorySelect" class="cs-tray-select" title="選擇官方分類篩選">
+                <option value="all">全部分類</option>
+              </select>
             </div>
-            <div id="csTrayTargetHint" class="cs-tray-target-hint">🎯 目前放入：#01</div>
+            <!-- 保留相容 DOM 節點供自動化測試查詢 -->
+            <div id="csTrayCategoryPills" class="cs-tray-pills-compat" style="display:none;"></div>
+            
+            <div class="cs-tray-target-row">
+              <span class="cs-tray-target-label">🎯 放入目標：</span>
+              <select id="csTrayTargetBoxSelect" class="cs-tray-target-select" title="切換欲放入的收納盒">
+                <!-- 由 JS 動態生成選項 -->
+              </select>
+            </div>
+            <div id="csTrayTargetHint" class="cs-tray-target-hint" style="display:none;">🎯 目前放入：#01</div>
           </div>
-          <div class="cs-tray-hint">💡 提示：點擊上方分類與素材即可一鍵收納，亦可長按拖曳</div>
+          <div class="cs-tray-hint">💡 提示：點擊素材圖示即可一鍵收納入盒，電腦端亦支援拖曳</div>
           <div id="csTrayGrid" class="cs-tray-grid">
             <!-- 由 JS 動態填充分類去重物品方格 -->
           </div>

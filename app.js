@@ -146,6 +146,8 @@
     btnCsCloseTray: document.getElementById('btnCsCloseTray'),
     csTrayGrid: document.getElementById('csTrayGrid'),
     csTraySearchInput: document.getElementById('csTraySearchInput'),
+    csTrayCategorySelect: document.getElementById('csTrayCategorySelect'),
+    csTrayTargetBoxSelect: document.getElementById('csTrayTargetBoxSelect'),
     csTrayCategoryPills: document.getElementById('csTrayCategoryPills'),
     csTrayItemCount: document.getElementById('csTrayItemCount'),
     csTrayTargetHint: document.getElementById('csTrayTargetHint'),
@@ -2386,6 +2388,24 @@
       });
     }
 
+    // 3.1 素材庫官方分類下拉選單切換
+    if (DOM.csTrayCategorySelect) {
+      DOM.csTrayCategorySelect.addEventListener('change', (e) => {
+        state.activeTrayCategory = e.target.value;
+        renderCustomTrayItems(state.activeTraySearch || '');
+      });
+    }
+
+    // 3.2 素材庫目標收納盒下拉選單切換
+    if (DOM.csTrayTargetBoxSelect) {
+      DOM.csTrayTargetBoxSelect.addEventListener('change', (e) => {
+        const bId = e.target.value;
+        if (bId) {
+          setActiveTargetBox(bId, false);
+        }
+      });
+    }
+
     // 4. 反查搜尋框
     if (DOM.csReverseSearchInput) {
       let searchTimer = null;
@@ -2406,6 +2426,22 @@
     }
   }
 
+  // 渲染素材庫目標收納盒下拉選單
+  function renderCustomTrayTargetBoxSelect() {
+    if (!DOM.csTrayTargetBoxSelect) return;
+    const boxes = Array.isArray(state.customBoxes) ? state.customBoxes : [];
+    if (boxes.length === 0) {
+      DOM.csTrayTargetBoxSelect.innerHTML = '<option value="">(尚未建立收納盒)</option>';
+      return;
+    }
+    let html = '';
+    boxes.forEach(box => {
+      const isSel = box.id === activeDropTargetBoxId ? 'selected' : '';
+      html += `<option value="${box.id}" ${isSel}>#${box.no} ${escapeHTML(box.name)} (${(box.items || []).length}件)</option>`;
+    });
+    DOM.csTrayTargetBoxSelect.innerHTML = html;
+  }
+
   // 渲染所有收納盒網格
   function renderCustomBoxesGrid(matchedBoxIds = null, query = '') {
     if (!DOM.csBoxesContainer) return;
@@ -2419,6 +2455,7 @@
           <p>點擊上方「➕ 新增收納盒」按鈕即可開始規劃您的第一個儲存盒！</p>
         </div>
       `;
+      renderCustomTrayTargetBoxSelect();
       return;
     }
 
@@ -2427,11 +2464,12 @@
       activeDropTargetBoxId = boxes[0].id;
     }
 
-    // 更新素材庫頂部目前放入箱號標籤
+    // 更新素材庫頂部目前放入箱號標籤與目標選單
     const currentTargetBox = boxes.find(b => b.id === activeDropTargetBoxId) || boxes[0];
     if (DOM.csTrayTargetHint) {
       DOM.csTrayTargetHint.textContent = `🎯 目前放入：#${currentTargetBox.no} ${currentTargetBox.name}`;
     }
+    renderCustomTrayTargetBoxSelect();
 
     let html = '';
     boxes.forEach((box, index) => {
@@ -2660,10 +2698,8 @@
     });
   }
 
-  // 渲染素材庫官方分類膠囊標籤列
+  // 渲染素材庫官方分類下拉選單與相容標籤列 (100% 完整收錄 14 大官方選項)
   function renderCustomTrayCategoryPills() {
-    if (!DOM.csTrayCategoryPills) return;
-
     const db = window.POKOPIA_PREFERENCES_DB;
     const categories = (db && db.items) ? Object.keys(db.items) : [];
 
@@ -2678,36 +2714,50 @@
 
     const activeCat = state.activeTrayCategory || 'all';
 
-    let pillsHtml = `
-      <button class="cs-tray-pill ${activeCat === 'all' ? 'active' : ''}" data-cat="all">
-        <span>全部</span>
-        <span class="cs-tray-pill-count">(${allUniqueSet.size})</span>
-      </button>
-    `;
+    // 1. 渲染下拉選單 (主功能)
+    if (DOM.csTrayCategorySelect) {
+      let optionsHtml = `<option value="all" ${activeCat === 'all' ? 'selected' : ''}>全部分類 (${allUniqueSet.size})</option>`;
+      categories.forEach(cat => {
+        const count = catCounts[cat] || 0;
+        const isSel = activeCat === cat ? 'selected' : '';
+        optionsHtml += `<option value="${escapeHTML(cat)}" ${isSel}>${escapeHTML(cat)} (${count})</option>`;
+      });
+      DOM.csTrayCategorySelect.innerHTML = optionsHtml;
+    }
 
-    categories.forEach(cat => {
-      const count = catCounts[cat] || 0;
-      const isActive = activeCat === cat;
-      pillsHtml += `
-        <button class="cs-tray-pill ${isActive ? 'active' : ''}" data-cat="${escapeHTML(cat)}">
-          <span>${escapeHTML(cat)}</span>
-          <span class="cs-tray-pill-count">(${count})</span>
+    // 2. 渲染相容標籤列 (供自動化檢驗模組與相容操作)
+    if (DOM.csTrayCategoryPills) {
+      let pillsHtml = `
+        <button class="cs-tray-pill ${activeCat === 'all' ? 'active' : ''}" data-cat="all">
+          <span>全部</span>
+          <span class="cs-tray-pill-count">(${allUniqueSet.size})</span>
         </button>
       `;
-    });
 
-    DOM.csTrayCategoryPills.innerHTML = pillsHtml;
-
-    // 綁定標籤點擊切換事件
-    const pillBtns = DOM.csTrayCategoryPills.querySelectorAll('.cs-tray-pill');
-    pillBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const cat = btn.getAttribute('data-cat');
-        state.activeTrayCategory = cat;
-        renderCustomTrayCategoryPills();
-        renderCustomTrayItems(state.activeTraySearch || '');
+      categories.forEach(cat => {
+        const count = catCounts[cat] || 0;
+        const isActive = activeCat === cat;
+        pillsHtml += `
+          <button class="cs-tray-pill ${isActive ? 'active' : ''}" data-cat="${escapeHTML(cat)}">
+            <span>${escapeHTML(cat)}</span>
+            <span class="cs-tray-pill-count">(${count})</span>
+          </button>
+        `;
       });
-    });
+
+      DOM.csTrayCategoryPills.innerHTML = pillsHtml;
+
+      // 綁定相容標籤點擊切換事件
+      const pillBtns = DOM.csTrayCategoryPills.querySelectorAll('.cs-tray-pill');
+      pillBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const cat = btn.getAttribute('data-cat');
+          state.activeTrayCategory = cat;
+          renderCustomTrayCategoryPills();
+          renderCustomTrayItems(state.activeTraySearch || '');
+        });
+      });
+    }
   }
 
   // 渲染右側/底部物品素材庫托盤 (嚴格依據官方分類去重展示)
@@ -2838,6 +2888,10 @@
           card.classList.remove('is-active-target');
         }
       });
+    }
+
+    if (DOM.csTrayTargetBoxSelect) {
+      DOM.csTrayTargetBoxSelect.value = boxId;
     }
 
     if (DOM.csTrayTargetHint) {
@@ -3899,7 +3953,11 @@
     openCsDrawer,
     closeCsDrawer,
     toggleCsDrawer,
-    getState: () => state
+    getActiveTargetBoxId: () => activeDropTargetBoxId,
+    getState: () => {
+      state.activeDropTargetBoxId = activeDropTargetBoxId;
+      return state;
+    }
   };
 
   // Kickoff App on DOM Ready
