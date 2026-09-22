@@ -1846,10 +1846,13 @@
         ? detailItems.map(item => `<span class="hab-furniture-item">${escapeHTML(item)}</span>`).join('<span class="hab-sep">•</span>')
         : '—';
       const cardDetailsPlainText = detailItems.join('  •  ');
+      const thumbBadgeHTML = isAllPkmUnlocked
+        ? `<div class="habitat-thumb-badge is-unlocked" title="此棲息地寶可夢已全數吸引（點擊查看實機全景）">✔</div>`
+        : `<div class="habitat-thumb-badge" title="點擊查看高清實機全景">🔍</div>`;
       const imgThumbHTML = hab.image ? `
         <div class="hab-catalog-thumb-box" data-img="${escapeHTML(hab.image)}" data-caption="<strong>${escapeHTML(hab.official_id)} ${escapeHTML(hab.name)}</strong> - ${escapeHTML(cardDetailsPlainText)}" title="點擊查看高清實機全景">
           <img src="${hab.image}" alt="${escapeHTML(hab.name)}" loading="lazy">
-          <div class="habitat-thumb-badge">🔍</div>
+          ${thumbBadgeHTML}
         </div>
       ` : `
         <div class="hab-catalog-thumb-box hab-thumb-placeholder" title="暫無實機截圖">
@@ -1920,10 +1923,13 @@
       const tableDetailsHTML = detailItems.length > 0
         ? detailItems.map(item => `<div class="hab-detail-line">${escapeHTML(item)}</div>`).join('')
         : '—';
+      const thumbBadgeHTML = isAllPkmUnlocked
+        ? `<div class="habitat-thumb-badge is-unlocked" title="此棲息地寶可夢已全數吸引（點擊放大全景）">✔</div>`
+        : `<div class="habitat-thumb-badge" title="點擊放大全景">🔍</div>`;
       const imgPreview = hab.image ? `
         <div class="table-hab-thumb-wrap" data-img="${escapeHTML(hab.image)}" data-caption="<strong>${escapeHTML(hab.official_id)} ${escapeHTML(hab.name)}</strong> - ${escapeHTML(detailItems.join('   '))}" title="點擊放大全景">
           <img src="${hab.image}" alt="${escapeHTML(hab.name)}" class="table-hab-img" loading="lazy">
-          <div class="habitat-thumb-badge">🔍</div>
+          ${thumbBadgeHTML}
         </div>
       ` : `
         <div class="table-hab-thumb-wrap table-hab-thumb-empty">
