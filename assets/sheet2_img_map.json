@@ -1,0 +1,210 @@
+{
+  "Shellder": {
+    "hab1_img": "assets/habitats/s2_shellder_hab1.png",
+    "hab2_img": "assets/habitats/s2_shellder_hab2.png"
+  },
+  "Cloyster": {
+    "hab1_img": "assets/habitats/s2_cloyster_hab1.png",
+    "hab2_img": ""
+  },
+  "Horsea": {
+    "hab1_img": "assets/habitats/s2_horsea_hab1.png",
+    "hab2_img": ""
+  },
+  "Seadra": {
+    "hab1_img": "assets/habitats/s2_seadra_hab1.png",
+    "hab2_img": ""
+  },
+  "Kingdra": {
+    "hab1_img": "assets/habitats/s2_kingdra_hab1.png",
+    "hab2_img": "assets/habitats/s2_kingdra_hab2.png"
+  },
+  "Staryu": {
+    "hab1_img": "assets/habitats/s2_staryu_hab1.png",
+    "hab2_img": ""
+  },
+  "Starmie": {
+    "hab1_img": "assets/habitats/s2_starmie_hab1.png",
+    "hab2_img": ""
+  },
+  "Totodile": {
+    "hab1_img": "assets/habitats/s2_totodile_hab1.png",
+    "hab2_img": "assets/habitats/s2_totodile_hab2.png"
+  },
+  "Croconaw": {
+    "hab1_img": "assets/habitats/s2_croconaw_hab1.png",
+    "hab2_img": "assets/habitats/s2_croconaw_hab2.png"
+  },
+  "Feraligatr": {
+    "hab1_img": "assets/habitats/s2_feraligatr_hab1.png",
+    "hab2_img": "assets/habitats/s2_feraligatr_hab2.png"
+  },
+  "Chinchou": {
+    "hab1_img": "assets/habitats/s2_chinchou_hab1.png",
+    "hab2_img": ""
+  },
+  "Lanturn": {
+    "hab1_img": "assets/habitats/s2_lanturn_hab1.png",
+    "hab2_img": ""
+  },
+  "Corsola": {
+    "hab1_img": "assets/habitats/s2_corsola_hab1.png",
+    "hab2_img": "assets/habitats/s2_corsola_hab2.png"
+  },
+  "Mudkip": {
+    "hab1_img": "assets/habitats/s2_mudkip_hab1.png",
+    "hab2_img": "assets/habitats/s2_mudkip_hab2.png"
+  },
+  "Marshtomp": {
+    "hab1_img": "assets/habitats/s2_marshtomp_hab1.png",
+    "hab2_img": "assets/habitats/s2_marshtomp_hab2.png"
+  },
+  "Swampert": {
+    "hab1_img": "assets/habitats/s2_swampert_hab1.png",
+    "hab2_img": "assets/habitats/s2_swampert_hab2.png"
+  },
+  "Carvanha": {
+    "hab1_img": "assets/habitats/s2_carvanha_hab1.png",
+    "hab2_img": ""
+  },
+  "Sharpedo": {
+    "hab1_img": "assets/habitats/s2_sharpedo_hab1.png",
+    "hab2_img": ""
+  },
+  "Barboach": {
+    "hab1_img": "assets/habitats/s2_barboach_hab1.png",
+    "hab2_img": "assets/habitats/s2_barboach_hab2.png"
+  },
+  "Whiscash": {
+    "hab1_img": "assets/habitats/s2_whiscash_hab1.png",
+    "hab2_img": ""
+  },
+  "Corphish": {
+    "hab1_img": "assets/habitats/s2_corphish_hab1.png",
+    "hab2_img": "assets/habitats/s2_corphish_hab2.png"
+  },
+  "Crawdaunt": {
+    "hab1_img": "assets/habitats/s2_crawdaunt_hab1.png",
+    "hab2_img": ""
+  },
+  "Luvdisc": {
+    "hab1_img": "assets/habitats/s2_luvdisc_hab1.png",
+    "hab2_img": "assets/habitats/s2_luvdisc_hab2.png"
+  },
+  "Buizel": {
+    "hab1_img": "assets/habitats/s2_buizel_hab1.png",
+    "hab2_img": "assets/habitats/s2_buizel_hab2.png"
+  },
+  "Floatzel": {
+    "hab1_img": "assets/habitats/s2_floatzel_hab1.png",
+    "hab2_img": ""
+  },
+  "Finneon": {
+    "hab1_img": "assets/habitats/s2_finneon_hab1.png",
+    "hab2_img": "assets/habitats/s2_finneon_hab2.png"
+  },
+  "Lumineon": {
+    "hab1_img": "assets/habitats/s2_lumineon_hab1.png",
+    "hab2_img": "assets/habitats/s2_lumineon_hab2.png"
+  },
+  "Frillish Male Form": {
+    "hab1_img": "assets/habitats/s2_frillish_male_form_hab1.png",
+    "hab2_img": "assets/habitats/s2_frillish_male_form_hab2.png"
+  },
+  "Frillish Female Form": {
+    "hab1_img": "assets/habitats/s2_frillish_female_form_hab1.png",
+    "hab2_img": "assets/habitats/s2_frillish_female_form_hab2.png"
+  },
+  "Jellicent Male Form": {
+    "hab1_img": "assets/habitats/s2_jellicent_male_form_hab1.png",
+    "hab2_img": ""
+  },
+  "Jellicent Female Form": {
+    "hab1_img": "assets/habitats/s2_jellicent_female_form_hab1.png",
+    "hab2_img": ""
+  },
+  "Alomomola": {
+    "hab1_img": "assets/habitats/s2_alomomola_hab1.png",
+    "hab2_img": ""
+  },
+  "Stunfisk": {
+    "hab1_img": "assets/habitats/s2_stunfisk_hab1.png",
+    "hab2_img": "assets/habitats/s2_stunfisk_hab2.png"
+  },
+  "Inkay": {
+    "hab1_img": "assets/habitats/s2_inkay_hab1.png",
+    "hab2_img": ""
+  },
+  "Malamar": {
+    "hab1_img": "assets/habitats/s2_malamar_hab1.png",
+    "hab2_img": ""
+  },
+  "Popplio": {
+    "hab1_img": "assets/habitats/s2_popplio_hab1.png",
+    "hab2_img": "assets/habitats/s2_popplio_hab2.png"
+  },
+  "Brionne": {
+    "hab1_img": "assets/habitats/s2_brionne_hab1.png",
+    "hab2_img": ""
+  },
+  "Primarina": {
+    "hab1_img": "assets/habitats/s2_primarina_hab1.png",
+    "hab2_img": ""
+  },
+  "Mareanie": {
+    "hab1_img": "assets/habitats/s2_mareanie_hab1.png",
+    "hab2_img": ""
+  },
+  "Toxapex": {
+    "hab1_img": "assets/habitats/s2_toxapex_hab1.png",
+    "hab2_img": ""
+  },
+  "Wimpod": {
+    "hab1_img": "assets/habitats/s2_wimpod_hab1.png",
+    "hab2_img": ""
+  },
+  "Golisopod": {
+    "hab1_img": "assets/habitats/s2_golisopod_hab1.png",
+    "hab2_img": "assets/habitats/s2_golisopod_hab2.png"
+  },
+  "Bruxish": {
+    "hab1_img": "assets/habitats/s2_bruxish_hab1.png",
+    "hab2_img": ""
+  },
+  "Dhelmise": {
+    "hab1_img": "assets/habitats/s2_dhelmise_hab1.png",
+    "hab2_img": ""
+  },
+  "Chewtle": {
+    "hab1_img": "assets/habitats/s2_chewtle_hab1.png",
+    "hab2_img": ""
+  },
+  "Drednaw": {
+    "hab1_img": "assets/habitats/s2_drednaw_hab1.png",
+    "hab2_img": ""
+  },
+  "Pincurchin": {
+    "hab1_img": "assets/habitats/s2_pincurchin_hab1.png",
+    "hab2_img": ""
+  },
+  "Wiglett": {
+    "hab1_img": "assets/habitats/s2_wiglett_hab1.png",
+    "hab2_img": ""
+  },
+  "Wugtrio": {
+    "hab1_img": "assets/habitats/s2_wugtrio_hab1.png",
+    "hab2_img": ""
+  },
+  "Veluza": {
+    "hab1_img": "assets/habitats/s2_veluza_hab1.png",
+    "hab2_img": ""
+  },
+  "Phione": {
+    "hab1_img": "",
+    "hab2_img": ""
+  },
+  "Manaphy": {
+    "hab1_img": "",
+    "hab2_img": ""
+  }
+}

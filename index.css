@@ -1,0 +1,7163 @@
+/* 
+ * Pokopia Storage & Habitat Manager Design System
+ * 52poke-inspired Harmony Light Theme & Modern Dark Theme Switcher
+ */
+
+:root, :root[data-theme="light"] {
+  --font-primary: 'Noto Sans TC', 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(0.85rem, 2.5vw, 1.2rem) !important;
+  
+  /* Harmony Light Theme Palette (52poke Sky Blue + Modern Soft White) */
+  --bg-dark: #f8fafc;
+  --bg-body-radial-1: rgba(56, 189, 248, 0.09);
+  --bg-body-radial-2: rgba(16, 185, 129, 0.07);
+  --bg-body-radial-3: rgba(99, 102, 241, 0.06);
+
+  --bg-header: rgba(255, 255, 255, 0.94);
+  --bg-card: #ffffff;
+  --bg-card-hover: #f8fafc;
+  --glass-border: #e2e8f0;
+  --glass-border-focus: #38bdf8;
+  
+  --primary-indigo: #0284c7;
+  --primary-indigo-glow: rgba(2, 132, 199, 0.18);
+  --accent-emerald: #059669;
+  --accent-amber: #d97706;
+  --accent-pink: #db2777;
+  --accent-sky: #0284c7;
+
+  --text-main: #0f172a;
+  --text-sub: #334155;
+  --text-muted: #64748b;
+
+  --stat-bg: #f1f5f9;
+  --stat-border: #e2e8f0;
+  --stat-text: #0f172a;
+
+  --input-bg: #ffffff;
+  --input-border: #cbd5e1;
+  --input-text: #0f172a;
+
+  --tab-btn-bg: #f1f5f9;
+  --tab-btn-text: #475569;
+  --tab-btn-active-bg: #0284c7;
+  --tab-btn-active-text: #ffffff;
+
+  --table-bg: #ffffff;
+  --table-th-bg: #f1f5f9;
+  --table-th-text: #1e293b;
+  --table-td-border: #f1f5f9;
+  --table-tr-hover: #f8fafc;
+  --table-tr-completed: transparent;
+
+  --storage-th-bg: #ede9fe;
+  --storage-th-text: #5b21b6;
+  --storage-th-border: #c4b5fd;
+
+  --pokemon-th-bg: #d1fae5;
+  --pokemon-th-text: #065f46;
+  --pokemon-th-border: #6ee7b7;
+
+  --hab-th-bg: #bae6fd;
+  --hab-th-text: #0369a1;
+  --hab-th-border: #7dd3fc;
+
+  --pill-bg: #f0f9ff;
+  --pill-text: #0369a1;
+  --pill-border: #7dd3fc;
+
+  --card-completed-bg: #f0fdf4;
+  --card-completed-border: #86efac;
+
+  --radius-lg: 1rem;
+  --radius-md: 0.75rem;
+  --radius-sm: 0.5rem;
+
+  --shadow-main: 0 0.2500rem 1.2500rem -0.2500rem rgba(15, 23, 42, 0.08);
+  --shadow-glow: 0 0 1.0000rem rgba(2, 132, 199, 0.2);
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+:root[data-theme="dark"] {
+  --bg-dark: #0b0f19;
+  --bg-body-radial-1: rgba(99, 102, 241, 0.12);
+  --bg-body-radial-2: rgba(16, 185, 129, 0.1);
+  --bg-body-radial-3: rgba(236, 72, 153, 0.08);
+
+  --bg-header: rgba(11, 15, 25, 0.85);
+  --bg-card: rgba(26, 34, 52, 0.75);
+  --bg-card-hover: rgba(36, 48, 74, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-border-focus: rgba(99, 102, 241, 0.5);
+  
+  --primary-indigo: #6366f1;
+  --primary-indigo-glow: rgba(99, 102, 241, 0.35);
+  --accent-emerald: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-pink: #ec4899;
+  --accent-sky: #06b6d4;
+
+  --text-main: #f8fafc;
+  --text-sub: #94a3b8;
+  --text-muted: #64748b;
+
+  --stat-bg: rgba(30, 41, 59, 0.8);
+  --stat-border: var(--glass-border);
+  --stat-text: #f8fafc;
+
+  --input-bg: rgba(15, 23, 42, 0.8);
+  --input-border: var(--glass-border);
+  --input-text: #f8fafc;
+
+  --tab-btn-bg: rgba(15, 23, 42, 0.8);
+  --tab-btn-text: var(--text-sub);
+  --tab-btn-active-bg: var(--primary-indigo);
+  --tab-btn-active-text: #ffffff;
+
+  --table-bg: rgba(15, 23, 42, 0.4);
+  --table-th-bg: rgba(15, 23, 42, 0.9);
+  --table-th-text: var(--text-sub);
+  --table-td-border: rgba(255, 255, 255, 0.05);
+  --table-tr-hover: rgba(255, 255, 255, 0.04);
+  --table-tr-completed: transparent;
+
+  --storage-th-bg: rgba(76, 29, 149, 0.5);
+  --storage-th-text: #c4b5fd;
+  --storage-th-border: rgba(196, 181, 253, 0.3);
+
+  --pokemon-th-bg: rgba(6, 78, 59, 0.5);
+  --pokemon-th-text: #6ee7b7;
+  --pokemon-th-border: rgba(110, 231, 183, 0.3);
+
+  --hab-th-bg: rgba(30, 41, 59, 0.95);
+  --hab-th-text: #38bdf8;
+  --hab-th-border: rgba(56, 189, 248, 0.3);
+
+  --pill-bg: rgba(255, 255, 255, 0.06);
+  --pill-text: var(--text-main);
+  --pill-border: var(--glass-border);
+
+  --card-completed-bg: transparent;
+  --card-completed-border: rgba(16, 185, 129, 0.4);
+
+  --shadow-main: 0 0.6250rem 1.8750rem -0.6250rem rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 1.2500rem rgba(99, 102, 241, 0.25);
+}
+
+/* Reset & Basic Styles */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-primary);
+  background-color: var(--bg-dark);
+  background-image: 
+    radial-gradient(at 10% 10%, var(--bg-body-radial-1) 0.0000rem, transparent 50%),
+    radial-gradient(at 90% 90%, var(--bg-body-radial-2) 0.0000rem, transparent 50%),
+    radial-gradient(at 50% 50%, var(--bg-body-radial-3) 0.0000rem, transparent 50%);
+  background-attachment: fixed;
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.6;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+/* Header & Sticky Toolbar */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg-header);
+  backdrop-filter: blur(1.0000rem);
+  -webkit-backdrop-filter: blur(1.0000rem);
+  border-bottom: 0.0625rem solid var(--glass-border);
+  padding: 1.0000rem 1.5000rem;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.header-container {
+  max-width: 87.5000rem;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2500rem;
+  margin-bottom: 1.0000rem;
+  padding-right: 170px; /* 10.6250rem 預留右上角固定釘選按鈕空間，防止重疊與擠壓 */
+}
+
+/* TOC 目次導航清單 (52poke 風格，置於標題左側) */
+.toc-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.toc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6250rem;
+  height: 2.6250rem;
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  border: 0.0625rem solid var(--glass-border);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 0.1250rem 0.3750rem rgba(0, 0, 0, 0.03);
+  flex-shrink: 0;
+}
+
+.toc-btn:hover {
+  border-color: var(--primary-indigo);
+  color: var(--primary-indigo);
+  background: var(--tab-btn-active-bg);
+  box-shadow: 0 0.2500rem 0.6250rem rgba(2, 132, 199, 0.15);
+  transform: translateY(-0.0625rem);
+}
+
+.toc-btn:active {
+  transform: translateY(0) scale(0.96);
+}
+
+.toc-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.toc-dropdown {
+  position: absolute;
+  top: calc(100% + 0.5000rem);
+  left: 0;
+  width: 14.3750rem;
+  background: var(--bg-card);
+  border: 0.0625rem solid var(--glass-border);
+  border-radius: 0.7500rem;
+  box-shadow: 0 0.7500rem 2.0000rem rgba(0, 0, 0, 0.2), 0 0.1250rem 0.3750rem rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(1.0000rem);
+  -webkit-backdrop-filter: blur(1.0000rem);
+  z-index: 1600;
+  overflow: hidden;
+  animation: tocFadeIn 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes tocFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-0.3750rem) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.toc-dropdown.hidden {
+  display: none !important;
+}
+
+.toc-dropdown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6250rem 0.8750rem;
+  background: rgba(2, 132, 199, 0.05);
+  border-bottom: 0.0625rem solid var(--glass-border);
+}
+
+.toc-header-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-sub);
+  letter-spacing: 0.0312rem;
+  text-transform: uppercase;
+}
+
+.toc-header-hint {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.toc-menu-list {
+  display: flex;
+  flex-direction: column;
+  padding: 0.3750rem;
+  gap: 0.1875rem;
+}
+
+.toc-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7500rem;
+  width: 100%;
+  padding: 0.5625rem 0.7500rem;
+  background: transparent;
+  border: none;
+  border-radius: 0.5000rem;
+  color: var(--text-main);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+  box-sizing: border-box;
+}
+
+.toc-menu-item:hover {
+  background: rgba(2, 132, 199, 0.08);
+  color: var(--primary-indigo);
+}
+
+.toc-menu-item.active {
+  background: var(--primary-indigo-glow, rgba(2, 132, 199, 0.14));
+  color: var(--primary-indigo);
+  font-weight: 700;
+  border-left: 0.1875rem solid var(--primary-indigo);
+  padding-left: 0.5625rem;
+}
+
+.toc-item-text {
+  flex: 1;
+  white-space: nowrap;
+}
+
+.toc-item-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-sub);
+  background: var(--pill-bg);
+  padding: 0.1250rem 0.3750rem;
+  border-radius: 0.2500rem;
+  border: 0.0625rem solid var(--glass-border);
+  flex-shrink: 0;
+}
+
+.toc-menu-item.active .toc-item-badge {
+  color: var(--primary-indigo);
+  border-color: rgba(2, 132, 199, 0.3);
+  background: rgba(2, 132, 199, 0.1);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6500rem;
+}
+
+/* Brand Logo (風速狗 圓形徽章) */
+.brand-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  flex-shrink: 0;
+  border-radius: 50%;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s ease;
+}
+.brand-logo-img {
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 50%;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 0.15rem 0.4rem rgba(245, 158, 11, 0.35));
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s ease;
+}
+.brand-logo:hover .brand-logo-img {
+  transform: scale(1.12) rotate(4deg);
+  filter: drop-shadow(0 0.25rem 0.75rem rgba(245, 158, 11, 0.65));
+}
+.brand-logo:active .brand-logo-img {
+  transform: scale(0.94);
+}
+
+.brand-icon {
+  font-size: 2.2rem;
+  filter: drop-shadow(0 0.1250rem 0.5000rem rgba(2, 132, 199, 0.3));
+}
+
+.brand-text h1 {
+  font-size: clamp(1.05rem, 1.8vw, 1.45rem);
+  font-weight: 800;
+  letter-spacing: -0.0312rem;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+.subtitle {
+  font-size: clamp(0.72rem, 1vw, 0.85rem);
+  color: var(--text-sub);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Catalog Dynamic Progress Badge (Right side of subchapter bar) */
+.catalog-progress-badge {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3750rem;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(16, 185, 129, 0.12));
+  border: 0.0625rem solid rgba(99, 102, 241, 0.3);
+  border-radius: 1.2500rem;
+  padding: 0.2500rem 0.8750rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 0.1250rem 0.5000rem rgba(0, 0, 0, 0.04);
+  transition: all var(--transition-fast);
+}
+
+:root[data-theme="dark"] .catalog-progress-badge {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.22), rgba(16, 185, 129, 0.2));
+  border-color: rgba(99, 102, 241, 0.45);
+  box-shadow: 0 0.1250rem 0.6250rem rgba(0, 0, 0, 0.3);
+}
+
+.catalog-progress-badge .progress-pill-icon {
+  font-size: 0.85rem;
+  color: #f59e0b;
+}
+
+.catalog-progress-badge strong {
+  color: var(--accent-emerald);
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+/* Theme Switcher & Encyclopedia Actions (Fixed permanently to top-right viewport) */
+.header-actions {
+  position: fixed;
+  top: 0.8750rem;
+  right: 20px; /* 1.2500rem */
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 0.6250rem;
+}
+
+.theme-toggle-btn {
+  width: clamp(2.0000rem, 3.5vw, 2.3750rem);
+  height: clamp(2.0000rem, 3.5vw, 2.3750rem);
+  padding: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(0.6250rem);
+  -webkit-backdrop-filter: blur(0.6250rem);
+  border: 0.0938rem solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0.2500rem 0.7500rem rgba(0, 0, 0, 0.06);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-sizing: border-box;
+  flex-shrink: 0;
+  font-family: inherit;
+  outline: none;
+}
+
+.theme-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: #0284c7;
+  transform: translateY(-0.1250rem) scale(1.06);
+  box-shadow: 0 0.3750rem 1.0000rem rgba(2, 132, 199, 0.3);
+}
+
+.theme-toggle-btn:active {
+  transform: translateY(0) scale(0.96);
+}
+
+:root[data-theme="dark"] .theme-toggle-btn {
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(0.6250rem);
+  -webkit-backdrop-filter: blur(0.6250rem);
+  border: 0.0938rem solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0.2500rem 0.8750rem rgba(0, 0, 0, 0.3);
+  color: #f8fafc;
+}
+
+:root[data-theme="dark"] .theme-toggle-btn:hover {
+  background: rgba(30, 41, 59, 0.9);
+  border-color: #38bdf8;
+  box-shadow: 0 0.3750rem 1.1250rem rgba(56, 189, 248, 0.35);
+}
+
+.theme-toggle-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+/* Toolbar & Search Bar */
+.toolbar-container {
+  max-width: 87.5000rem;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.0000rem;
+  flex-wrap: wrap;
+}
+
+/* Search Row & Controls */
+.search-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6250rem;
+  flex: 1;
+  min-width: 18.7500rem;
+}
+
+.search-box {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Filter Trigger Button (經典 SVG 漏斗篩選按鈕) */
+.filter-trigger-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3750rem;
+  height: 2.3750rem;
+  padding: 0 0.7500rem;
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  border: 0.0625rem solid var(--glass-border);
+  color: var(--text-main);
+  font-size: 0.86rem;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  position: relative;
+  transition: all var(--transition-fast);
+  font-family: inherit;
+  box-shadow: 0 0.1250rem 0.3125rem rgba(0, 0, 0, 0.04);
+}
+
+.filter-trigger-btn:hover {
+  border-color: var(--primary-indigo);
+  color: var(--primary-indigo);
+  background: var(--tab-btn-active-bg);
+  box-shadow: 0 0.2500rem 0.6250rem rgba(2, 132, 199, 0.15);
+  transform: translateY(-0.0625rem);
+}
+
+.filter-trigger-btn:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.filter-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  color: var(--primary-indigo);
+}
+
+.filter-badge {
+  min-width: 1.0625rem;
+  height: 1.0625rem;
+  padding: 0 0.2500rem;
+  border-radius: 62.4375rem;
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow: 0 0.1250rem 0.2500rem rgba(239, 68, 68, 0.4);
+}
+
+.filter-badge.hidden {
+  display: none !important;
+}
+
+/* 桌面端若已有平鋪篩選則隱藏篩選抽屜按鈕，手機端透過媒體查詢顯現 */
+.filter-trigger-btn.desktop-hidden {
+  display: none;
+}
+
+/* Filter Drawer (桌面端穿透為常規排版) */
+.filter-drawer-wrapper,
+.filter-drawer-panel {
+  display: contents;
+}
+
+.filter-drawer-backdrop,
+.filter-drawer-header,
+.filter-drawer-footer {
+  display: none !important;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1.0000rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  opacity: 0.6;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 0.7500rem 2.6250rem 0.7500rem 3.0000rem;
+  background: var(--input-bg);
+  border: 0.0625rem solid var(--input-border);
+  border-radius: var(--radius-md);
+  color: var(--input-text);
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: all var(--transition-fast);
+  box-shadow: 0 0.1250rem 0.3750rem rgba(0, 0, 0, 0.03);
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: var(--primary-indigo);
+  box-shadow: var(--shadow-glow);
+}
+
+.clear-btn {
+  position: absolute;
+  right: 0.7500rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-sub);
+  cursor: pointer;
+  font-size: 0.9rem;
+  width: 1.5000rem;
+  height: 1.5000rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.clear-btn:hover {
+  background: var(--pill-bg);
+  color: var(--text-main);
+}
+
+/* View Controls & Tabs */
+.view-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.7500rem;
+}
+
+.tab-buttons {
+  display: flex;
+  background: var(--tab-btn-bg);
+  padding: 0.2500rem;
+  border-radius: var(--radius-md);
+  border: 0.0625rem solid var(--glass-border);
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  color: var(--tab-btn-text);
+  padding: 0.5000rem 1.0000rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3750rem;
+  transition: all var(--transition-fast);
+  font-family: inherit;
+}
+
+.tab-text-short {
+  display: none;
+}
+
+.tab-text-full {
+  display: inline;
+}
+
+.tab-btn:hover {
+  color: var(--text-main);
+}
+
+.tab-btn.active {
+  background: var(--tab-btn-active-bg);
+  color: var(--tab-btn-active-text);
+  box-shadow: 0 0.2500rem 0.7500rem rgba(2, 132, 199, 0.25);
+}
+
+.view-toggle-group {
+  display: flex;
+  background: var(--tab-btn-bg);
+  padding: 0.2500rem;
+  border-radius: var(--radius-md);
+  border: 0.0625rem solid var(--glass-border);
+}
+
+.view-btn {
+  background: none;
+  border: none;
+  color: var(--tab-btn-text);
+  padding: 0.5000rem 0.7500rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.2500rem;
+  transition: all var(--transition-fast);
+  font-family: inherit;
+}
+
+.view-btn:hover {
+  color: var(--text-main);
+}
+
+.view-btn.active {
+  background: var(--bg-card);
+  color: var(--primary-indigo);
+  box-shadow: 0 0.1250rem 0.3750rem rgba(0, 0, 0, 0.06);
+}
+
+.chips-container {
+  max-width: 87.5000rem;
+  margin: 0.7500rem auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.7500rem;
+  padding-bottom: 0.2500rem;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5000rem;
+  flex-wrap: wrap;
+}
+
+.filter-specialty-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5000rem;
+}
+/* Unified Single-Row Filter Toolbar (全平台常駐單行並排，無左右捲動，窄螢幕等比例縮放) */
+.filter-toolbar-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: clamp(0.2500rem, 1.1vw, 0.6250rem);
+  width: 100%;
+  max-width: 87.5000rem;
+  margin: 0.3750rem auto 0;
+  padding: 0.1250rem 0.1250rem;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+.filter-toolbar-row.hidden {
+  display: none !important;
+}
+
+.filter-select-item {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(0.1250rem, 0.5vw, 0.3125rem);
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.filter-select-item.hidden {
+  display: none !important;
+}
+
+.filter-select-item .chip-label {
+  font-size: clamp(0.7rem, 1.3vw, 0.82rem);
+  color: var(--text-sub);
+  white-space: nowrap;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.capsule-select,
+.specialty-select {
+  background: var(--input-bg);
+  border: 0.0625rem solid var(--input-border);
+  color: var(--primary-indigo);
+  padding: clamp(0.1875rem, 0.6vw, 0.3750rem) clamp(0.3125rem, 1vw, 0.8750rem);
+  border-radius: 1.2500rem;
+  font-size: clamp(0.72rem, 1.4vw, 0.84rem);
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  font-family: inherit;
+  transition: all var(--transition-fast);
+  box-shadow: 0 0.0625rem 0.2500rem rgba(0, 0, 0, 0.04);
+  white-space: nowrap;
+  flex-shrink: 1;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.capsule-select:hover,
+.capsule-select:focus,
+.specialty-select:hover,
+.specialty-select:focus {
+  border-color: var(--primary-indigo);
+  box-shadow: 0 0 0 0.1875rem var(--primary-indigo-glow);
+}
+
+.capsule-select option,
+.specialty-select option {
+  background: var(--bg-card);
+  color: var(--text-main);
+  font-size: 0.84rem;
+}
+
+/* Filter Toolbar Progress Badge */
+.filter-toolbar-row .catalog-progress-badge {
+  margin-left: auto;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(0.1250rem, 0.5vw, 0.3750rem);
+  padding: clamp(0.1875rem, 0.6vw, 0.3125rem) clamp(0.3750rem, 1.2vw, 0.7500rem);
+  font-size: clamp(0.7rem, 1.2vw, 0.82rem);
+  white-space: nowrap;
+}
+
+
+.subchapter-btn {
+  background: var(--pill-bg);
+  border: 0.0625rem solid var(--pill-border);
+  color: var(--text-sub);
+  padding: 0.3125rem 0.8750rem;
+  border-radius: 1.2500rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: inherit;
+}
+
+.subchapter-btn:hover {
+  border-color: var(--primary-indigo);
+  color: var(--text-main);
+}
+
+.subchapter-btn.active {
+  background: var(--primary-indigo);
+  border-color: var(--primary-indigo);
+  color: #ffffff;
+  box-shadow: 0 0.1250rem 0.5000rem var(--primary-indigo-glow);
+}
+
+.tag-cat-main {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+  border: 0.0625rem solid rgba(16, 185, 129, 0.25);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.1250rem 0.4375rem;
+  border-radius: 0.3750rem;
+  display: inline-block;
+}
+
+.tag-cat-event {
+  background: rgba(168, 85, 247, 0.12);
+  color: #7e22ce;
+  border: 0.0625rem solid rgba(168, 85, 247, 0.25);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.1250rem 0.4375rem;
+  border-radius: 0.3750rem;
+  display: inline-block;
+}
+
+.tag-cat-underwater {
+  background: rgba(14, 165, 233, 0.12);
+  color: #0284c7;
+  border: 0.0625rem solid rgba(14, 165, 233, 0.25);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.1250rem 0.4375rem;
+  border-radius: 0.3750rem;
+  display: inline-block;
+}
+
+[data-theme="dark"] .tag-cat-main {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border-color: rgba(52, 211, 153, 0.3);
+}
+
+[data-theme="dark"] .tag-cat-event {
+  background: rgba(168, 85, 247, 0.2);
+  color: #c084fc;
+  border-color: rgba(192, 132, 252, 0.3);
+}
+
+[data-theme="dark"] .tag-cat-underwater {
+  background: rgba(14, 165, 233, 0.2);
+  color: #38bdf8;
+  border-color: rgba(56, 189, 248, 0.3);
+}
+
+.card-number-group {
+  display: flex;
+  align-items: center;
+  gap: 0.3750rem;
+}
+
+/* Main Content Area */
+.main-content {
+  max-width: 87.5000rem;
+  margin: 1.5000rem auto;
+  padding: 0 1.5000rem;
+  flex: 1;
+  width: 100%;
+}
+
+.view-section {
+  display: block;
+}
+
+.hidden-section {
+  display: none !important;
+}
+
+/* Card Grid Styling */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(23.7500rem, 1fr));
+  gap: 1.5000rem;
+}
+
+.item-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(0.7500rem);
+  -webkit-backdrop-filter: blur(0.7500rem);
+  border: 0.0625rem solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 1.3750rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.0000rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.item-card:hover {
+  transform: translateY(-0.2500rem);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: var(--shadow-main);
+  background: var(--bg-card-hover);
+}
+
+.item-card.completed {
+  border-color: rgba(16, 185, 129, 0.4);
+  background: transparent;
+}
+
+/* Card Header */
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.7500rem;
+}
+
+.card-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.8750rem;
+}
+
+.card-icon {
+  font-size: 1.8rem;
+  width: 3.2500rem;
+  height: 3.2500rem;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 0.0625rem solid var(--glass-border);
+}
+
+/* Pokemon Sprite Avatar Styling (比照棲息地總覽辦理：3.5000rem 純淨無框、高清晰、懸浮微動態) */
+.pkm-avatar-box {
+  width: 3.5000rem;
+  height: 3.5000rem;
+  border-radius: 0.5000rem;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  flex-shrink: 0;
+  box-shadow: none;
+}
+
+.pkm-avatar-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform var(--transition-fast), filter var(--transition-fast);
+}
+
+.item-card:hover .pkm-avatar-box img {
+  transform: scale(1.15) translateY(-0.1250rem);
+  filter: drop-shadow(0 0.3750rem 0.8750rem rgba(2, 132, 199, 0.45));
+}
+
+.pkm-avatar-table {
+  width: 3.5000rem;
+  height: 3.5000rem;
+  border-radius: 0.5000rem;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  object-fit: contain;
+  transition: transform var(--transition-fast), filter var(--transition-fast);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.pkm-avatar-table:hover {
+  transform: scale(1.15) translateY(-0.1250rem);
+  filter: drop-shadow(0 0.3750rem 0.8750rem rgba(2, 132, 199, 0.45));
+}
+
+.card-number {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent-sky);
+  text-transform: uppercase;
+  letter-spacing: 0.0312rem;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+}
+
+.card-title {
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* Custom Checkbox */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5000rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.custom-checkbox {
+  width: 1.5000rem;
+  height: 1.5000rem;
+  border: 0.1250rem solid var(--input-border);
+  border-radius: 0.3750rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  background: var(--input-bg);
+}
+
+.checkbox-container input[type="checkbox"] {
+  display: none;
+}
+
+.checkbox-container input[type="checkbox"]:checked + .custom-checkbox {
+  background: var(--accent-emerald);
+  border-color: var(--accent-emerald);
+  box-shadow: 0 0 0.6250rem rgba(16, 185, 129, 0.4);
+}
+
+.custom-checkbox::after {
+  content: "✓";
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 900;
+  display: none;
+}
+
+.checkbox-container input[type="checkbox"]:checked + .custom-checkbox::after {
+  display: block;
+}
+
+/* Sub-categories & Pills */
+.sub-cat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7500rem;
+}
+
+.sub-cat-item {
+  background: #f8fafc;
+  border: 0.0625rem solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 0.7500rem 0.8750rem;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+:root[data-theme="dark"] .sub-cat-item {
+  background: rgba(15, 23, 42, 0.6);
+  border: 0.0625rem solid rgba(255, 255, 255, 0.06);
+}
+
+.sub-cat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5000rem;
+  margin-bottom: 0.5000rem;
+}
+
+.sub-cat-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #92400e;
+  display: flex;
+  align-items: center;
+  gap: 0.3750rem;
+}
+
+:root[data-theme="dark"] .sub-cat-name {
+  color: var(--accent-amber);
+}
+
+.crafting-bench-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3125rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 0.1875rem 0.5625rem;
+  border-radius: 0.3750rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: inherit;
+  border: 0.0625rem solid transparent;
+  user-select: none;
+}
+
+.crafting-bench-badge.has-bench {
+  background: #fef3c7;
+  border-color: #fde68a;
+  color: #92400e;
+}
+
+.crafting-bench-badge.has-bench:hover {
+  background: #fde68a;
+  transform: translateY(-0.0625rem);
+  box-shadow: 0 0.1250rem 0.5000rem rgba(245, 158, 11, 0.2);
+}
+
+.crafting-bench-badge.empty-bench {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #475569;
+}
+
+.crafting-bench-badge.empty-bench:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+:root[data-theme="dark"] .crafting-bench-badge.has-bench {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.35);
+  color: #fbbf24;
+}
+
+:root[data-theme="dark"] .crafting-bench-badge.has-bench:hover {
+  background: rgba(245, 158, 11, 0.28);
+  border-color: #f59e0b;
+  transform: translateY(-0.0625rem);
+  box-shadow: 0 0.1250rem 0.5000rem rgba(245, 158, 11, 0.25);
+}
+
+:root[data-theme="dark"] .crafting-bench-badge.empty-bench {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-sub);
+  opacity: 0.85;
+}
+
+:root[data-theme="dark"] .crafting-bench-badge.empty-bench:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: var(--text-main);
+  opacity: 1;
+}
+
+.items-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3750rem;
+  margin-bottom: 0.3750rem;
+}
+
+.item-pill {
+  background: var(--pill-bg);
+  border: 0.0938rem solid var(--pill-border);
+  color: var(--pill-text);
+  padding: 0.1875rem 0.6250rem;
+  border-radius: 0.7500rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.04);
+  transition: all var(--transition-fast);
+  display: inline-block;
+}
+
+.item-pill:hover {
+  transform: translateY(-0.0625rem);
+  box-shadow: 0 0.1875rem 0.5000rem rgba(2, 132, 199, 0.16);
+}
+
+/* ==========================================================================
+   Pokemon Favorites Styling (52poke 圖二官方標準：垂直單行排列 + 分類彩框)
+   ========================================================================== */
+.col-favorites {
+  vertical-align: middle;
+  text-align: center;
+  padding: 0.6250rem 0.3750rem;
+  width: clamp(10.6250rem, 16vw, 13.7500rem);
+  max-width: 13.7500rem;
+}
+
+.fav-column-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3125rem;
+  max-width: 13.1250rem;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* 工作專長如同喜好垂直堆疊排列容器（多專長向下換行，欄寬 5.3125rem） */
+.spec-column-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2500rem;
+  width: 100%;
+}
+
+.fav-pill {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.1250rem 0.6250rem;
+  border-radius: 0.3750rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+  line-height: 1.35;
+  box-sizing: border-box;
+  user-select: none;
+  transition: transform var(--transition-fast), filter var(--transition-fast);
+  border: 0.0938rem solid var(--pill-border, #cbd5e1);
+  background: var(--pill-bg, #f8fafc);
+  color: var(--pill-text, #334155);
+}
+
+.fav-pill:hover {
+  transform: scale(1.05);
+  filter: brightness(1.05);
+}
+
+/* 亮色模式喜好分類彩框與文字 (1:1 復刻 52poke 圖二官方色彩) */
+:root:not([data-theme="dark"]) .fav-pill[data-fav="能感受大自然的"],
+:root[data-theme="light"] .fav-pill[data-fav="能感受大自然的"] {
+  border-color: #22c55e;
+  color: #15803d;
+  background: #f0fdf4;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="柔軟的"],
+:root[data-theme="light"] .fav-pill[data-fav="柔軟的"] {
+  border-color: #f59e0b;
+  color: #b45309;
+  background: #fffbeb;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="可愛的"],
+:root[data-theme="light"] .fav-pill[data-fav="可愛的"] {
+  border-color: #ec4899;
+  color: #be185d;
+  background: #fdf2f8;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="能感受水的"],
+:root:not([data-theme="dark"]) .fav-pill[data-fav="能感受海的"],
+:root[data-theme="light"] .fav-pill[data-fav="能感受水的"],
+:root[data-theme="light"] .fav-pill[data-fav="能感受海的"] {
+  border-color: #0284c7;
+  color: #0369a1;
+  background: #f0f9ff;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="大家一起用的"],
+:root[data-theme="light"] .fav-pill[data-fav="大家一起用的"] {
+  border-color: #84cc16;
+  color: #4d7c0f;
+  background: #f7fee7;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="甜甜的"],
+:root[data-theme="light"] .fav-pill[data-fav="甜甜的"] {
+  border-color: #f43f5e;
+  color: #be123c;
+  background: #fff1f2;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="能感受火的"],
+:root:not([data-theme="dark"]) .fav-pill[data-fav="辣辣的"],
+:root[data-theme="light"] .fav-pill[data-fav="能感受火的"],
+:root[data-theme="light"] .fav-pill[data-fav="辣辣的"] {
+  border-color: #ef4444;
+  color: #b91c1c;
+  background: #fef2f2;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="能感受風的"],
+:root[data-theme="light"] .fav-pill[data-fav="能感受風的"] {
+  border-color: #14b8a6;
+  color: #0f766e;
+  background: #f0fdfa;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="木製的"],
+:root[data-theme="light"] .fav-pill[data-fav="木製的"] {
+  border-color: #d97706;
+  color: #92400e;
+  background: #fffbeb;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="堅硬的"],
+:root:not([data-theme="dark"]) .fav-pill[data-fav="石製的"],
+:root:not([data-theme="dark"]) .fav-pill[data-fav="金屬的"],
+:root[data-theme="light"] .fav-pill[data-fav="堅硬的"],
+:root[data-theme="light"] .fav-pill[data-fav="石製的"],
+:root[data-theme="light"] .fav-pill[data-fav="金屬的"] {
+  border-color: #78716c;
+  color: #44403c;
+  background: #fafaf9;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="訓練用的"],
+:root[data-theme="light"] .fav-pill[data-fav="訓練用的"] {
+  border-color: #64748b;
+  color: #334155;
+  background: #f1f5f9;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="豪華的"],
+:root:not([data-theme="dark"]) .fav-pill[data-fav="閃亮亮的"],
+:root[data-theme="light"] .fav-pill[data-fav="豪華的"],
+:root[data-theme="light"] .fav-pill[data-fav="閃亮亮的"] {
+  border-color: #eab308;
+  color: #a16207;
+  background: #fefce8;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="百花盛開的"],
+:root:not([data-theme="dark"]) .fav-pill[data-fav="用於觀賞的"],
+:root[data-theme="light"] .fav-pill[data-fav="百花盛開的"],
+:root[data-theme="light"] .fav-pill[data-fav="用於觀賞的"] {
+  border-color: #a855f7;
+  color: #7e22ce;
+  background: #faf5ff;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="酸酸的"],
+:root[data-theme="light"] .fav-pill[data-fav="酸酸的"] {
+  border-color: #84cc16;
+  color: #4d7c0f;
+  background: #f7fee7;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="苦苦的"],
+:root[data-theme="light"] .fav-pill[data-fav="苦苦的"] {
+  border-color: #10b981;
+  color: #047857;
+  background: #ecfdf5;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="澀澀的"],
+:root[data-theme="light"] .fav-pill[data-fav="澀澀的"] {
+  border-color: #06b6d4;
+  color: #0e7490;
+  background: #ecfeff;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="交通工具"],
+:root[data-theme="light"] .fav-pill[data-fav="交通工具"] {
+  border-color: #3b82f6;
+  color: #1d4ed8;
+  background: #eff6ff;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="電力驅動的"],
+:root[data-theme="light"] .fav-pill[data-fav="電力驅動的"] {
+  border-color: #eab308;
+  color: #854d0e;
+  background: #fef9c3;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="布製的"],
+:root[data-theme="light"] .fav-pill[data-fav="布製的"] {
+  border-color: #f472b6;
+  color: #9d174d;
+  background: #fdf2f8;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="有玻璃的"],
+:root[data-theme="light"] .fav-pill[data-fav="有玻璃的"] {
+  border-color: #38bdf8;
+  color: #0369a1;
+  background: #f0f9ff;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="圓圓的"],
+:root[data-theme="light"] .fav-pill[data-fav="圓圓的"] {
+  border-color: #fb923c;
+  color: #c2410c;
+  background: #fff7ed;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="能出聲的"],
+:root[data-theme="light"] .fav-pill[data-fav="能出聲的"] {
+  border-color: #a855f7;
+  color: #6b21a8;
+  background: #faf5ff;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="多彩的"],
+:root[data-theme="light"] .fav-pill[data-fav="多彩的"] {
+  border-color: #ec4899;
+  color: #9d174d;
+  background: #fdf2f8;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="整潔的"],
+:root:not([data-theme="dark"]) .fav-pill[data-fav="能治癒傷口的"],
+:root[data-theme="light"] .fav-pill[data-fav="整潔的"],
+:root[data-theme="light"] .fav-pill[data-fav="能治癒傷口的"] {
+  border-color: #10b981;
+  color: #047857;
+  background: #ecfdf5;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="詭異的"],
+:root:not([data-theme="dark"]) .fav-pill[data-fav="奇妙的"],
+:root[data-theme="light"] .fav-pill[data-fav="詭異的"],
+:root[data-theme="light"] .fav-pill[data-fav="奇妙的"] {
+  border-color: #8b5cf6;
+  color: #6d28d9;
+  background: #f5f3ff;
+}
+
+/* 暗色模式喜好分類彩框與亮色文字 */
+:root[data-theme="dark"] .fav-pill {
+  background: rgba(15, 23, 42, 0.75);
+  color: #f8fafc;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+:root[data-theme="dark"] .fav-pill[data-fav="能感受大自然的"] {
+  border-color: rgba(34, 197, 94, 0.8);
+  color: #86efac;
+}
+:root[data-theme="dark"] .fav-pill[data-fav="柔軟的"] {
+  border-color: rgba(245, 158, 11, 0.8);
+  color: #fde68a;
+}
+:root[data-theme="dark"] .fav-pill[data-fav="可愛的"] {
+  border-color: rgba(236, 72, 153, 0.8);
+  color: #fbcfe8;
+}
+:root[data-theme="dark"] .fav-pill[data-fav="能感受水的"],
+:root[data-theme="dark"] .fav-pill[data-fav="能感受海的"] {
+  border-color: rgba(2, 132, 199, 0.8);
+  color: #7dd3fc;
+}
+:root[data-theme="dark"] .fav-pill[data-fav="大家一起用的"] {
+  border-color: rgba(132, 204, 22, 0.8);
+  color: #bef264;
+}
+:root[data-theme="dark"] .fav-pill[data-fav="甜甜的"] {
+  border-color: rgba(244, 63, 94, 0.8);
+  color: #fda4af;
+}
+:root[data-theme="dark"] .fav-pill[data-fav="能感受火的"],
+:root[data-theme="dark"] .fav-pill[data-fav="辣辣的"] {
+  border-color: rgba(239, 68, 68, 0.8);
+  color: #fca5a5;
+}
+:root[data-theme="dark"] .fav-pill[data-fav="能感受風的"] {
+  border-color: rgba(20, 184, 166, 0.8);
+  color: #5eead4;
+}
+:root[data-theme="dark"] .fav-pill[data-fav="木製的"] {
+  border-color: rgba(217, 119, 6, 0.8);
+  color: #fcd34d;
+}
+
+.item-note {
+  font-size: 0.78rem;
+  color: #475569;
+  line-height: 1.4;
+  margin-top: 0.2500rem;
+}
+
+:root[data-theme="dark"] .item-note {
+  color: var(--text-sub);
+}
+
+/* Habitat Specific Styling */
+.pokemon-meta {
+  display: flex;
+  gap: 0.5000rem;
+  flex-wrap: wrap;
+  margin-top: 0.2500rem;
+}
+
+.tag-badge {
+  font-size: 0.75rem;
+  padding: 0.1250rem 0.6250rem;
+  border-radius: 0.7500rem;
+  font-weight: 600;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  display: inline-flex;
+  align-items: center;
+}
+
+.tag-env {
+  background: rgba(6, 182, 212, 0.2);
+  color: #38bdf8;
+  border: 0.0625rem solid rgba(6, 182, 212, 0.3);
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.tag-env:hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+  box-shadow: 0 0.1250rem 0.3750rem rgba(6, 182, 212, 0.25);
+}
+
+.tag-ability {
+  background: rgba(168, 85, 247, 0.2);
+  color: #c084fc;
+  border: 0.0625rem solid rgba(168, 85, 247, 0.3);
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+}
+
+/* 52poke 官方專長標籤系列樣式 (Rich Specialty Badges) */
+.tag-specialty {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2500rem;
+  font-weight: 600;
+  font-size: 0.78rem;
+  padding: 0.1875rem 0.5000rem;
+  border-radius: 0.3750rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  background: rgba(99, 102, 241, 0.18);
+  color: #c7d2fe;
+  border: 0.0625rem solid rgba(165, 180, 252, 0.3);
+  user-select: none;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+}
+
+.tag-specialty:hover {
+  transform: translateY(-0.0625rem);
+  filter: brightness(1.2);
+  box-shadow: 0 0.1250rem 0.5000rem rgba(0, 0, 0, 0.35);
+}
+
+.tag-specialty[data-spec="栽培"] {
+  background: rgba(16, 185, 129, 0.22);
+  color: #6ee7b7;
+  border-color: rgba(52, 211, 153, 0.45);
+}
+.tag-specialty[data-spec="點火"] {
+  background: rgba(239, 68, 68, 0.22);
+  color: #fca5a5;
+  border-color: rgba(248, 113, 113, 0.45);
+}
+.tag-specialty[data-spec="滋潤"] {
+  background: rgba(14, 165, 233, 0.22);
+  color: #7dd3fc;
+  border-color: rgba(56, 189, 248, 0.45);
+}
+.tag-specialty[data-spec="飛翔"] {
+  background: rgba(20, 184, 166, 0.22);
+  color: #5eead4;
+  border-color: rgba(45, 212, 191, 0.45);
+}
+.tag-specialty[data-spec="伐木"] {
+  background: rgba(217, 119, 6, 0.22);
+  color: #fcd34d;
+  border-color: rgba(251, 191, 36, 0.45);
+}
+.tag-specialty[data-spec="找東西"] {
+  background: rgba(234, 179, 8, 0.22);
+  color: #fde047;
+  border-color: rgba(250, 204, 21, 0.45);
+}
+.tag-specialty[data-spec="亂撒"] {
+  background: rgba(236, 72, 153, 0.22);
+  color: #f472b6;
+  border-color: rgba(244, 114, 182, 0.45);
+}
+.tag-specialty[data-spec="交易"] {
+  background: rgba(168, 85, 247, 0.22);
+  color: #d8b4fe;
+  border-color: rgba(192, 132, 252, 0.45);
+}
+.tag-specialty[data-spec="發電"] {
+  background: rgba(250, 204, 21, 0.24);
+  color: #fef08a;
+  border-color: rgba(253, 224, 71, 0.45);
+}
+.tag-specialty[data-spec="帶動氣氛"] {
+  background: rgba(244, 63, 94, 0.22);
+  color: #fda4af;
+  border-color: rgba(251, 113, 133, 0.45);
+}
+.tag-specialty[data-spec="建造"] {
+  background: rgba(100, 116, 139, 0.28);
+  color: #cbd5e1;
+  border-color: rgba(148, 163, 184, 0.45);
+}
+.tag-specialty[data-spec="瞬間移動"] {
+  background: rgba(139, 92, 246, 0.24);
+  color: #c4b5fd;
+  border-color: rgba(167, 139, 250, 0.45);
+}
+.tag-specialty[data-spec="分類"] {
+  background: rgba(132, 204, 22, 0.22);
+  color: #bef264;
+  border-color: rgba(163, 230, 53, 0.45);
+}
+.tag-specialty[data-spec="碾壓"] {
+  background: rgba(120, 113, 108, 0.28);
+  color: #d6d3d1;
+  border-color: rgba(168, 162, 158, 0.45);
+}
+.tag-specialty[data-spec="重踏"] {
+  background: rgba(180, 83, 9, 0.24);
+  color: #fde68a;
+  border-color: rgba(245, 158, 11, 0.45);
+}
+.tag-specialty[data-spec="回收利用"] {
+  background: rgba(5, 150, 105, 0.22);
+  color: #6ee7b7;
+  border-color: rgba(16, 185, 129, 0.45);
+}
+.tag-specialty[data-spec="擦亮"] {
+  background: rgba(245, 158, 11, 0.22);
+  color: #fef3c7;
+  border-color: rgba(252, 211, 77, 0.45);
+}
+
+/* ==========================================================================
+   Light Theme High-Contrast Tags (選項 A: 柔和淡彩底 + 高對比深色文字)
+   嚴格限定於亮色模式，暗色模式 (:root[data-theme="dark"]) 100% 保持原樣
+   ========================================================================== */
+:root:not([data-theme="dark"]) .tag-env,
+:root[data-theme="light"] .tag-env {
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 0.0625rem solid #bae6fd;
+}
+
+:root:not([data-theme="dark"]) .tag-ability,
+:root[data-theme="light"] .tag-ability {
+  background: #f3e8ff;
+  color: #6b21a8;
+  border: 0.0625rem solid #d8b4fe;
+}
+
+:root:not([data-theme="dark"]) .item-pill,
+:root[data-theme="light"] .item-pill {
+  background: #f0f9ff;
+  color: #0369a1;
+  border: 0.0938rem solid #7dd3fc;
+  box-shadow: 0 0.0625rem 0.1875rem rgba(2, 132, 199, 0.08);
+}
+
+:root:not([data-theme="dark"]) .item-pill:hover,
+:root[data-theme="light"] .item-pill:hover {
+  background: #e0f2fe;
+  border-color: #38bdf8;
+  color: #0284c7;
+}
+
+:root:not([data-theme="dark"]) .tag-specialty,
+:root[data-theme="light"] .tag-specialty {
+  background: #e0e7ff;
+  color: #4338ca;
+  border: 0.0625rem solid #c7d2fe;
+}
+
+/* 官方專長 (Specialties) 亮色高對比配置 (32 種專長完整覆蓋) */
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="栽培"],
+:root[data-theme="light"] .tag-specialty[data-spec="栽培"] {
+  background: #d1fae5;
+  color: #065f46;
+  border-color: #a7f3d0;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="點火"],
+:root[data-theme="light"] .tag-specialty[data-spec="點火"] {
+  background: #fee2e2;
+  color: #991b1b;
+  border-color: #fecaca;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="滋潤"],
+:root[data-theme="light"] .tag-specialty[data-spec="滋潤"] {
+  background: #e0f2fe;
+  color: #075985;
+  border-color: #bae6fd;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="飛翔"],
+:root[data-theme="light"] .tag-specialty[data-spec="飛翔"] {
+  background: #ccfbf1;
+  color: #115e59;
+  border-color: #99f6e4;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="伐木"],
+:root[data-theme="light"] .tag-specialty[data-spec="伐木"] {
+  background: #fef3c7;
+  color: #78350f;
+  border-color: #fde68a;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="找東西"],
+:root[data-theme="light"] .tag-specialty[data-spec="找東西"] {
+  background: #fef9c3;
+  color: #854d0e;
+  border-color: #fef08a;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="亂撒"],
+:root[data-theme="light"] .tag-specialty[data-spec="亂撒"] {
+  background: #fce7f3;
+  color: #9d174d;
+  border-color: #fbcfe8;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="交易"],
+:root[data-theme="light"] .tag-specialty[data-spec="交易"] {
+  background: #f3e8ff;
+  color: #6b21a8;
+  border-color: #e9d5ff;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="發電"],
+:root[data-theme="light"] .tag-specialty[data-spec="發電"] {
+  background: #fef08a;
+  color: #713f12;
+  border-color: #fde047;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="帶動氣氛"],
+:root[data-theme="light"] .tag-specialty[data-spec="帶動氣氛"] {
+  background: #ffe4e6;
+  color: #9f1239;
+  border-color: #fecdd3;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="建造"],
+:root[data-theme="light"] .tag-specialty[data-spec="建造"] {
+  background: #e2e8f0;
+  color: #334155;
+  border-color: #cbd5e1;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="瞬間移動"],
+:root[data-theme="light"] .tag-specialty[data-spec="瞬間移動"] {
+  background: #ede9fe;
+  color: #5b21b6;
+  border-color: #ddd6fe;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="分類"],
+:root[data-theme="light"] .tag-specialty[data-spec="分類"] {
+  background: #ecfccb;
+  color: #3f6212;
+  border-color: #d9f99d;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="碾壓"],
+:root[data-theme="light"] .tag-specialty[data-spec="碾壓"] {
+  background: #e7e5e4;
+  color: #44403c;
+  border-color: #d6d3d1;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="重踏"],
+:root[data-theme="light"] .tag-specialty[data-spec="重踏"] {
+  background: #ffedd5;
+  color: #9a3412;
+  border-color: #fed7aa;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="回收利用"],
+:root[data-theme="light"] .tag-specialty[data-spec="回收利用"] {
+  background: #dcfce7;
+  color: #166534;
+  border-color: #bbf7d0;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="擦亮"],
+:root[data-theme="light"] .tag-specialty[data-spec="擦亮"] {
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #fde68a;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="DJ"],
+:root[data-theme="light"] .tag-specialty[data-spec="DJ"] {
+  background: #f5d0fe;
+  color: #86198f;
+  border-color: #f0abfc;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="開派對"],
+:root[data-theme="light"] .tag-specialty[data-spec="開派對"] {
+  background: #ffe4e6;
+  color: #9f1239;
+  border-color: #fecdd3;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="變身"],
+:root[data-theme="light"] .tag-specialty[data-spec="變身"] {
+  background: #fae8ff;
+  color: #701a75;
+  border-color: #f5d0fe;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="發光"],
+:root[data-theme="light"] .tag-specialty[data-spec="發光"] {
+  background: #fef9c3;
+  color: #713f12;
+  border-color: #fef08a;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="採蜜"],
+:root[data-theme="light"] .tag-specialty[data-spec="採蜜"] {
+  background: #fef3c7;
+  color: #854d0e;
+  border-color: #fde68a;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="收納"],
+:root[data-theme="light"] .tag-specialty[data-spec="收納"] {
+  background: #e0e7ff;
+  color: #3730a3;
+  border-color: #c7d2fe;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="收藏家"],
+:root[data-theme="light"] .tag-specialty[data-spec="收藏家"] {
+  background: #ede9fe;
+  color: #5b21b6;
+  border-color: #ddd6fe;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="工匠"],
+:root[data-theme="light"] .tag-specialty[data-spec="工匠"] {
+  background: #ffedd5;
+  color: #9a3412;
+  border-color: #fed7aa;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="彩繪"],
+:root[data-theme="light"] .tag-specialty[data-spec="彩繪"] {
+  background: #e0f2fe;
+  color: #0369a1;
+  border-color: #bae6fd;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="貪吃鬼"],
+:root[data-theme="light"] .tag-specialty[data-spec="貪吃鬼"] {
+  background: #ffedd5;
+  color: #c2410c;
+  border-color: #fed7aa;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="哈欠"],
+:root[data-theme="light"] .tag-specialty[data-spec="哈欠"] {
+  background: #f1f5f9;
+  color: #475569;
+  border-color: #e2e8f0;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="爆炸"],
+:root[data-theme="light"] .tag-specialty[data-spec="爆炸"] {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-color: #fecaca;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="夢島"],
+:root[data-theme="light"] .tag-specialty[data-spec="夢島"] {
+  background: #e0e7ff;
+  color: #4338ca;
+  border-color: #c7d2fe;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="稀有物"],
+:root[data-theme="light"] .tag-specialty[data-spec="稀有物"] {
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #fde68a;
+}
+:root:not([data-theme="dark"]) .tag-specialty[data-spec="不明"],
+:root[data-theme="light"] .tag-specialty[data-spec="不明"] {
+  background: #f1f5f9;
+  color: #64748b;
+  border-color: #cbd5e1;
+}
+
+/* Pokemon Card View Habitat Modern Styling (52poke 柔和淡彩縮圖) */
+.pkm-card-hab-container {
+  background: #f8fafc;
+  border: 0.0625rem solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 0.6250rem 0.7500rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5000rem;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+:root[data-theme="dark"] .pkm-card-hab-container {
+  background: rgba(15, 23, 42, 0.5);
+  border: 0.0625rem solid rgba(255, 255, 255, 0.08);
+}
+
+.pkm-card-hab-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #065f46;
+  letter-spacing: 0.0125rem;
+  display: flex;
+  align-items: center;
+  gap: 0.2500rem;
+}
+
+:root[data-theme="dark"] .pkm-card-hab-label {
+  color: var(--accent-emerald);
+}
+
+.pkm-card-hab-group {
+  display: flex;
+  gap: 0.6250rem;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.pkm-card-hab-thumb {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  border-radius: 0.5000rem;
+  overflow: hidden;
+  cursor: pointer;
+  background: #ffffff;
+  border: 0.1250rem solid #ffffff;
+  box-shadow: 0 0.1250rem 0.5000rem rgba(15, 23, 42, 0.08);
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.dual-hab .pkm-card-hab-thumb {
+  flex: 1 1 0;
+  max-width: 10.6250rem;
+  min-width: 6.2500rem;
+}
+
+.single-hab .pkm-card-hab-thumb {
+  width: 65%;
+  max-width: 13.7500rem;
+}
+
+.pkm-card-hab-thumb:hover {
+  transform: scale(1.04);
+  border-color: #38bdf8;
+  box-shadow: 0 0.2500rem 0.8750rem rgba(2, 132, 199, 0.22);
+}
+
+.pkm-card-hab-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.pkm-card-hab-thumb:hover img {
+  transform: scale(1.08);
+}
+
+:root[data-theme="dark"] .pkm-card-hab-thumb {
+  background: rgba(15, 23, 42, 0.85);
+  border: 0.0938rem solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0.1875rem 0.6250rem rgba(0, 0, 0, 0.4);
+}
+
+:root[data-theme="dark"] .pkm-card-hab-thumb:hover {
+  border-color: var(--accent-indigo);
+  box-shadow: 0 0.2500rem 1.0000rem rgba(99, 102, 241, 0.45);
+}
+
+/* 棲息地縮圖優雅文字按鈕 (無截圖時) */
+.pkm-card-hab-thumb.hab-thumb-placeholder,
+.pkm-table-hab-thumb.hab-thumb-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  color: var(--primary-indigo);
+  font-weight: 600;
+  font-size: 0.8rem;
+  padding: 0.3750rem 0.5000rem;
+  text-align: center;
+  line-height: 1.25;
+  border: 0.0938rem dashed var(--glass-border);
+}
+
+.pkm-card-hab-thumb.hab-thumb-placeholder:hover,
+.pkm-table-hab-thumb.hab-thumb-placeholder:hover {
+  background: #f1f5f9;
+  border-color: var(--primary-indigo);
+  color: #0284c7;
+}
+
+:root[data-theme="dark"] .pkm-card-hab-thumb.hab-thumb-placeholder,
+:root[data-theme="dark"] .pkm-table-hab-thumb.hab-thumb-placeholder {
+  background: rgba(30, 41, 59, 0.7);
+  border: 0.0938rem dashed rgba(255, 255, 255, 0.15);
+  color: #38bdf8;
+}
+
+:root[data-theme="dark"] .pkm-card-hab-thumb.hab-thumb-placeholder:hover,
+:root[data-theme="dark"] .pkm-table-hab-thumb.hab-thumb-placeholder:hover {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: #38bdf8;
+  color: #7dd3fc;
+}
+
+/* 兼容性舊版 habitat-box 亮色柔和適配 */
+.habitat-box {
+  background: #f8fafc;
+  border: 0.0625rem solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 0.6250rem 0.7500rem;
+}
+
+:root[data-theme="dark"] .habitat-box {
+  background: rgba(15, 23, 42, 0.6);
+  border: 0.0625rem solid rgba(255, 255, 255, 0.06);
+}
+
+.habitat-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #065f46;
+  text-transform: uppercase;
+  margin-bottom: 0.2500rem;
+}
+
+:root[data-theme="dark"] .habitat-label {
+  color: var(--accent-emerald);
+}
+
+.habitat-desc {
+  font-size: 0.85rem;
+  color: #334155;
+  line-height: 1.4;
+}
+
+:root[data-theme="dark"] .habitat-desc {
+  color: var(--text-main);
+}
+
+/* Table View Styling */
+.table-container {
+  background: var(--bg-card);
+  backdrop-filter: blur(0.7500rem);
+  border: 0.0625rem solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.data-table th {
+  background: rgba(15, 23, 42, 0.9);
+  color: var(--text-sub);
+  font-weight: 700;
+  padding: 0.8750rem 1.0000rem;
+  border-bottom: 0.0625rem solid var(--glass-border);
+  white-space: nowrap;
+  text-align: center;
+}
+
+.data-table td {
+  padding: 0.8750rem 1.0000rem;
+  border-bottom: 0.0625rem solid rgba(255, 255, 255, 0.05);
+  vertical-align: top;
+}
+
+.data-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.data-table tbody tr.completed {
+  background: transparent;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 3.7500rem 1.2500rem;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 0.0625rem dashed var(--glass-border);
+  margin-top: 1.2500rem;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 0.7500rem;
+}
+
+.empty-state h3 {
+  font-size: 1.2rem;
+  color: var(--text-main);
+  margin-bottom: 0.3750rem;
+}
+
+.empty-state p {
+  font-size: 0.9rem;
+  color: var(--text-sub);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Footer */
+/* ==========================================================================
+   Auth Section (Google 登入 / 使用者頭像)
+   ========================================================================== */
+
+.auth-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* 登入按鈕 */
+.auth-signin-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 0.375rem 0.5rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 0.0625rem solid rgba(255, 255, 255, 0.14);
+  border-radius: 50%;
+  color: var(--text-primary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  white-space: nowrap;
+}
+.auth-signin-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+.auth-signin-btn:active {
+  transform: translateY(0);
+}
+.auth-google-icon {
+  flex-shrink: 0;
+}
+.auth-signin-text {
+  display: none;
+}
+
+/* 已登入狀態 */
+.auth-user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.auth-user-avatar {
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: 50%;
+  border: 0.125rem solid rgba(99, 102, 241, 0.6);
+  object-fit: cover;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s, border-color 0.2s;
+}
+.auth-user-avatar:hover {
+  transform: scale(1.08);
+  border-color: rgba(129, 140, 248, 0.9);
+  box-shadow: 0 0 0.625rem rgba(99, 102, 241, 0.5);
+}
+.auth-user-name,
+.auth-signout-btn {
+  display: none !important;
+}
+
+/* 同步中狀態 */
+.auth-sync-status {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+.auth-sync-spinner {
+  display: inline-block;
+  animation: spinCCW 1s linear infinite;
+  font-size: 1rem;
+}
+@keyframes spinCCW {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.auth-sync-text {
+  font-size: 0.76rem;
+}
+
+/* 手機端：縮短文字 */
+@media (max-width: 640px) {
+  .auth-user-name {
+    display: none;
+  }
+  .auth-sync-text {
+    display: none;
+  }
+}
+
+.app-footer {
+  border-top: 0.0625rem solid var(--glass-border);
+  padding: 1.2500rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  margin-top: 2.5000rem;
+  background: rgba(11, 15, 25, 0.8);
+}
+
+/* ==========================================================================
+   Responsive Design (全設備 RWD 響應式：平板與手機適配)
+   ========================================================================== */
+
+/* Tablet & Medium Screen Responsive Adjustments (641px ~ 1300px / 40.0625rem ~ 81.2500rem) */
+@media (min-width: 641px) and (max-width: 1300px), (min-width: 40.0625rem) and (max-width: 81.2500rem) {
+  .header-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8750rem;
+  }
+  .brand {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+  .header-actions {
+    position: fixed;
+    top: 0.8750rem;
+    right: 1.0000rem;
+    z-index: 1000;
+    display: flex;
+    gap: 0.6250rem;
+    align-items: center;
+  }
+  .toolbar-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.7500rem;
+  }
+  .search-box {
+    width: 100%;
+  }
+  .view-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 0.7500rem;
+  }
+  .card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(20.0000rem, 1fr));
+    gap: 1.1250rem;
+  }
+}
+
+/* Mobile Responsive Adjustments (<= 640px / <= 40.0000rem) */
+@media (max-width: 640px), (max-width: 40.0000rem) {
+  /* Header & Top Bar: 解除 Sticky 固定，隨頁面滑動自然滾出視窗 (依循 52poke 模式) */
+  .app-header {
+    position: relative !important;
+    top: unset !important;
+    padding: 0.6250rem 0.7500rem;
+  }
+
+  .header-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5000rem;
+    padding-right: 0 !important;
+  }
+
+  /* Row 1: Brand (left) 預留右上角按鈕空間 */
+  .brand {
+    order: 1;
+    flex: 1 1 auto;
+    min-width: 0;
+    gap: 0.3750rem;
+    padding-right: 7.5000rem; /* 僅品牌標題避免與右上角按鈕重疊 */
+  }
+
+  .brand h1 {
+    font-size: 1.05rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  .brand-logo-img {
+    width: 2.05rem;
+    height: 2.05rem;
+  }
+
+  .brand-icon {
+    font-size: 1.35rem;
+  }
+
+  .subtitle {
+    display: none !important;
+  }
+
+  /* Fixed Top-Right Actions in Mobile */
+  .header-actions {
+    position: fixed;
+    top: 0.6250rem;
+    right: 0.7500rem;
+    z-index: 1000;
+    display: flex;
+    gap: 0.3750rem;
+    align-items: center;
+  }
+
+  .pref-drawer-btn {
+    padding: 0.3125rem 0.6250rem;
+    font-size: 0.78rem;
+    border-radius: 0.8750rem;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .theme-toggle-btn {
+    width: 2.0000rem;
+    height: 2.0000rem;
+    padding: 0;
+    font-size: 0.78rem;
+    border-radius: 50%;
+  }
+
+  .theme-toggle-text {
+    display: none;
+  }
+
+  /* Toolbar & Search Bar with Single-row Integrated Controls */
+  .toolbar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.3750rem;
+    margin-top: 0.2500rem;
+    width: 100%;
+  }
+
+  .search-row {
+    display: flex;
+    align-items: center;
+    gap: 0.3750rem;
+    width: 100%;
+    flex-wrap: nowrap;
+  }
+
+  .toc-btn {
+    width: 2.2500rem;
+    height: 2.2500rem;
+  }
+
+  .search-box {
+    flex: 1 1 auto;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .search-box input {
+    font-size: 0.82rem;
+    padding: 0.4375rem 1.6250rem 0.4375rem 1.7500rem;
+    height: 2.2500rem;
+  }
+
+  .search-icon {
+    left: 0.6250rem;
+    font-size: 0.95rem;
+  }
+
+  /* Single-row View Toggle Group on Mobile */
+  .view-toggle-group {
+    display: inline-flex !important;
+    width: auto !important;
+    flex-shrink: 0;
+    padding: 0.1250rem;
+    gap: 0.1250rem;
+    background: var(--tab-btn-bg);
+    border-radius: 0.5000rem;
+  }
+
+
+  /* Mobile Single-Row Fluid Scaling (同步電腦與手機版，常態單行，絕不換行，絕無左右滑動) */
+  .filter-toolbar-row {
+    display: flex !important;
+    align-items: center;
+    flex-wrap: nowrap !important;
+    gap: clamp(0.1250rem, 1vw, 0.3750rem);
+    width: 100%;
+    margin-top: 0.2500rem;
+    padding: 0.1250rem 0;
+    overflow: visible !important;
+  }
+
+  .filter-select-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.1250rem;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
+  .filter-select-item .chip-label {
+    font-size: clamp(0.66rem, 2.3vw, 0.76rem);
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .capsule-select,
+  .specialty-select {
+    padding: 0.1875rem clamp(0.1875rem, 1vw, 0.5000rem);
+    font-size: clamp(0.66rem, 2.3vw, 0.78rem);
+    height: 1.7500rem;
+    line-height: 1.2;
+    border-radius: 0.8750rem;
+    min-width: 0;
+    flex-shrink: 1;
+  }
+
+  .filter-toolbar-row .catalog-progress-badge {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-size: clamp(0.65rem, 2.2vw, 0.75rem);
+    padding: 0.1250rem clamp(0.2500rem, 1vw, 0.5000rem);
+    border-radius: 0.7500rem;
+    white-space: nowrap;
+  }
+
+  /* Main Card Grid - Mobile Single Column */
+  .main-content {
+    padding: 0.6250rem 0.5000rem;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr;
+    gap: 0.7500rem;
+  }
+
+  .item-card {
+    padding: 0.8750rem;
+    border-radius: var(--radius-md);
+  }
+
+  /* Table View: Smooth horizontal scroll + Sticky Frozen First Column */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--radius-md);
+    position: relative;
+  }
+
+  .data-table th,
+  .data-table td,
+  .pokemon-table th,
+  .pokemon-table td,
+  .pokemon-table td * {
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 0.5000rem 0.3750rem;
+    font-size: 0.82rem;
+  }
+
+  /* Pokemon Table Habitat Carousel in Mobile */
+  .pkm-table-hab-single-wrap,
+  .pkm-table-hab-carousel {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    gap: 0.2500rem;
+  }
+
+  .pkm-table-hab-thumb {
+    width: 100%;
+    height: 0;
+    padding-bottom: 66.67%; /* 3:2 比例等比縮放 */
+    position: relative;
+    border-radius: 0.3750rem;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .pkm-table-hab-thumb img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center bottom !important; /* 強制鎖定地貌長椅焦點，徹底告別藍天！ */
+  }
+
+  .pkm-hab-bottom-bar {
+    width: 100%;
+    padding: 0;
+  }
+
+  .pkm-hab-name-text {
+    font-size: 0.76rem;
+  }
+
+  /* Unlocked First Two Columns on Mobile (左邊兩格不鎖定) */
+  .data-table th:first-child,
+  .data-table td:first-child,
+  .pokemon-table th:first-child,
+  .pokemon-table td:first-child,
+  .pokemon-table th:nth-child(2),
+  .pokemon-table td:nth-child(2),
+  :root[data-theme="dark"] .data-table th:first-child,
+  :root[data-theme="dark"] .data-table td:first-child,
+  :root[data-theme="dark"] .pokemon-table th:nth-child(2),
+  :root[data-theme="dark"] .pokemon-table td:nth-child(2) {
+    position: static !important;
+    left: unset !important;
+    z-index: auto !important;
+    box-shadow: none !important;
+  }
+  .data-table td:first-child,
+  .pokemon-table td:first-child,
+  .pokemon-table td:nth-child(2) {
+    background: transparent !important;
+  }
+
+  /* Full-width Encyclopedia Drawer */
+  .pref-drawer {
+    width: 100vw !important;
+    max-width: 100vw !important;
+  }
+
+  .pref-drawer-header {
+    padding: 0.7500rem 0.8750rem;
+  }
+
+  .pref-drawer-title {
+    font-size: 1.05rem;
+  }
+
+  .pref-drawer-subtitle {
+    font-size: 0.72rem;
+  }
+
+  .pref-drawer-tabs {
+    display: flex;
+    gap: 0.2500rem;
+    padding: 0.5000rem 0.6250rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .pref-drawer-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pref-tab-btn {
+    flex: 1 1 0;
+    min-width: 4.2500rem;
+    padding: 0.3750rem 0.2500rem;
+    font-size: 0.76rem;
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  .pref-drawer-body {
+    padding: 0.7500rem 0.6250rem;
+  }
+
+  .pref-card {
+    padding: 0.7500rem;
+    margin-bottom: 0.7500rem;
+  }
+
+  /* Floating Back Button touch positioning (bottom: 16px; right: 14px;) */
+  .floating-back-btn {
+    bottom: 16px; /* 1.0000rem */
+    right: 14px; /* 0.8750rem */
+    padding: 0.5000rem 0.8750rem;
+    font-size: 0.82rem;
+  }
+}
+
+/* ==========================================================================
+   Habitat Catalog & Lightbox Styling (棲息地總覽與全景高清燈箱)
+   ========================================================================== */
+
+/* Habitat Row & Thumbnail in Pokemon Cards */
+.habitat-body-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6250rem;
+  margin-top: 0.3750rem;
+}
+
+.habitat-body-row .habitat-desc {
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.habitat-thumb-box {
+  position: relative;
+  width: 6.5625rem; /* clamp(180px, 18vw, 260px) desktop fluid reference */
+  height: 4.3750rem;
+  aspect-ratio: 3 / 2;
+  flex-shrink: 0;
+  border-radius: 0.5000rem;
+  overflow: hidden;
+  background: #ffffff;
+  border: 0.1250rem solid #ffffff;
+  cursor: pointer;
+  box-shadow: 0 0.1250rem 0.5000rem rgba(15, 23, 42, 0.08);
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.habitat-thumb-box:hover {
+  transform: scale(1.05);
+  border-color: #38bdf8;
+  box-shadow: 0 0.2500rem 0.8750rem rgba(2, 132, 199, 0.22);
+}
+
+.habitat-thumb-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.habitat-thumb-box:hover img {
+  transform: scale(1.1);
+}
+
+.habitat-thumb-badge {
+  position: absolute;
+  bottom: 0.1250rem;
+  right: 0.1250rem;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(0.2500rem);
+  color: #0284c7;
+  font-size: 0.65rem;
+  padding: 0.0625rem 0.2500rem;
+  border-radius: 0.2500rem;
+  border: 0.0625rem solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  line-height: 1;
+  pointer-events: none;
+}
+
+:root[data-theme="dark"] .habitat-thumb-box {
+  background: rgba(15, 23, 42, 0.85);
+  border: 0.0938rem solid var(--glass-border);
+  box-shadow: 0 0.1875rem 0.6250rem rgba(0, 0, 0, 0.35);
+}
+
+:root[data-theme="dark"] .habitat-thumb-box:hover {
+  border-color: var(--accent-indigo);
+  box-shadow: 0 0.2500rem 1.0000rem rgba(99, 102, 241, 0.45);
+}
+
+:root[data-theme="dark"] .habitat-thumb-badge {
+  background: rgba(15, 23, 42, 0.85);
+  color: var(--accent-amber);
+  border: 0.0625rem solid rgba(255, 255, 255, 0.2);
+}
+
+.habitat-jump-btn {
+  background: none;
+  border: none;
+  color: var(--accent-sky);
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0.1250rem 0.3750rem;
+  border-radius: 0.2500rem;
+  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2500rem;
+}
+
+.habitat-jump-btn:hover {
+  background: rgba(56, 189, 248, 0.15);
+  text-decoration: underline;
+}
+
+/* Habitat Catalog Main Card */
+.habitat-catalog-card {
+  background: var(--bg-card);
+  border: 0.0625rem solid var(--glass-border);
+  border-radius: 0.8750rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.habitat-catalog-card:hover {
+  transform: translateY(-0.1875rem);
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: var(--shadow-main);
+}
+
+:root[data-theme="dark"] .habitat-catalog-card:hover {
+  border-color: rgba(99, 102, 241, 0.5);
+  box-shadow: 0 0.5000rem 1.5000rem rgba(0, 0, 0, 0.4);
+}
+
+.habitat-catalog-card.completed {
+  border-color: rgba(16, 185, 129, 0.4);
+  background: transparent;
+  opacity: 0.85;
+}
+
+.habitat-catalog-card.completed:hover {
+  opacity: 1;
+}
+
+.hab-card-right-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5000rem;
+  flex-shrink: 0;
+}
+
+.hab-card-checkbox {
+  cursor: pointer;
+}
+
+.habitat-52poke-table td.col-status {
+  text-align: center;
+  vertical-align: middle;
+  padding: 0.5000rem 0.2500rem;
+}
+
+.habitat-52poke-table td.col-status .checkbox-container {
+  justify-content: center;
+}
+
+.hab-card-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.7500rem;
+}
+
+.hab-card-info-col {
+  flex: 1;
+  min-width: 0;
+}
+
+.hab-header-title-row {
+  margin-bottom: 0.5000rem;
+}
+
+.hab-badge-row {
+  display: flex;
+  gap: 0.3750rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 0.2500rem;
+}
+
+.hab-count-badge {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 0.0625rem solid #a7f3d0;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 0.1250rem 0.5000rem;
+  border-radius: 0.6250rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+:root[data-theme="dark"] .hab-count-badge {
+  background: rgba(15, 23, 42, 0.85);
+  color: var(--accent-emerald);
+  border: 0.0625rem solid rgba(16, 185, 129, 0.3);
+  backdrop-filter: blur(0.3750rem);
+}
+
+.hab-catalog-thumb-box {
+  position: relative;
+  width: 5.6250rem;
+  height: 3.7500rem;
+  flex-shrink: 0;
+  border-radius: 0.5000rem;
+  overflow: hidden;
+  background: #ffffff;
+  border: 0.1250rem solid #ffffff;
+  cursor: pointer;
+  box-shadow: 0 0.1250rem 0.5000rem rgba(15, 23, 42, 0.08);
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.hab-catalog-thumb-box:hover {
+  transform: scale(1.06);
+  border-color: #38bdf8;
+  box-shadow: 0 0.2500rem 0.8750rem rgba(2, 132, 199, 0.22);
+}
+
+.hab-catalog-thumb-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.hab-catalog-thumb-box:hover img {
+  transform: scale(1.1);
+}
+
+.hab-catalog-thumb-box.hab-thumb-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  font-size: 1.5rem;
+  cursor: default;
+}
+
+:root[data-theme="dark"] .hab-catalog-thumb-box {
+  background: rgba(15, 23, 42, 0.8);
+  border: 0.0625rem solid var(--glass-border);
+  box-shadow: 0 0.1250rem 0.5000rem rgba(0, 0, 0, 0.3);
+}
+
+:root[data-theme="dark"] .hab-catalog-thumb-box:hover {
+  border-color: var(--accent-indigo);
+  box-shadow: 0 0.2500rem 1.0000rem rgba(99, 102, 241, 0.45);
+}
+
+:root[data-theme="dark"] .hab-catalog-thumb-box.hab-thumb-placeholder {
+  background: rgba(30, 41, 59, 0.6);
+}
+
+.hab-content-body {
+  padding: 1.0000rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7500rem;
+  flex: 1;
+}
+
+.hab-header-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.3;
+}
+
+.hab-furniture-box {
+  background: #f8fafc;
+  border: 0.0625rem solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 0.6250rem 0.7500rem;
+  margin-top: 0.5000rem;
+  transition: all var(--transition-fast);
+}
+
+:root[data-theme="dark"] .hab-furniture-box {
+  background: rgba(15, 23, 42, 0.5);
+  border: 0.0625rem solid rgba(255, 255, 255, 0.08);
+}
+
+.hab-furniture-label {
+  font-size: 0.76rem;
+  color: #b45309;
+  font-weight: 700;
+  margin-bottom: 0.2500rem;
+}
+
+:root[data-theme="dark"] .hab-furniture-label {
+  color: var(--accent-amber);
+}
+
+.hab-furniture-text {
+  font-size: 0.85rem;
+  color: var(--text-main);
+  font-weight: 400;
+  line-height: 1.6;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.hab-furniture-item {
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.hab-sep {
+  display: inline-block;
+  margin: 0 0.6250rem;
+  color: #94a3b8;
+  font-weight: 700;
+  user-select: none;
+}
+
+:root[data-theme="dark"] .hab-furniture-text {
+  color: var(--text-sub);
+  font-weight: 400;
+}
+
+:root[data-theme="dark"] .hab-sep {
+  color: #64748b;
+}
+
+/* Attracted Pokemon Grid */
+.hab-pokemon-section {
+  margin-top: auto;
+  padding-top: 0.6250rem;
+  border-top: 0.0625rem solid #e2e8f0;
+}
+
+:root[data-theme="dark"] .hab-pokemon-section {
+  border-top: 0.0625rem solid rgba(255, 255, 255, 0.08);
+}
+
+.hab-pokemon-label {
+  font-size: 0.78rem;
+  color: #0369a1;
+  font-weight: 700;
+  margin-bottom: 0.5000rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+:root[data-theme="dark"] .hab-pokemon-label {
+  color: var(--accent-purple);
+}
+
+.hab-pokemon-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5000rem;
+}
+
+.hab-pkm-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3750rem;
+  background: #ffffff;
+  border: 0.0938rem solid #cbd5e1;
+  border-radius: 1.2500rem;
+  padding: 0.1875rem 0.6250rem 0.1875rem 0.2500rem;
+  cursor: pointer;
+  box-shadow: 0 0.0625rem 0.2500rem rgba(15, 23, 42, 0.06);
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.hab-pkm-chip:hover {
+  background: #f0f9ff;
+  border-color: #38bdf8;
+  transform: translateY(-0.1250rem);
+  box-shadow: 0 0.2500rem 0.7500rem rgba(2, 132, 199, 0.18);
+}
+
+.hab-pkm-chip img {
+  width: 1.6250rem;
+  height: 1.6250rem;
+  object-fit: contain;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.hab-pkm-chip span {
+  font-size: 0.82rem;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+:root[data-theme="dark"] .hab-pkm-chip {
+  background: rgba(15, 23, 42, 0.7);
+  border: 0.0625rem solid rgba(255, 255, 255, 0.12);
+  box-shadow: none;
+}
+
+:root[data-theme="dark"] .hab-pkm-chip:hover {
+  background: rgba(99, 102, 241, 0.25);
+  border-color: var(--accent-indigo);
+}
+
+:root[data-theme="dark"] .hab-pkm-chip img {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+:root[data-theme="dark"] .hab-pkm-chip span {
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+/* Lightbox Modal */
+.lightbox-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+.lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 7, 18, 0.88);
+  backdrop-filter: blur(0.6250rem);
+}
+
+.lightbox-dialog {
+  position: relative;
+  z-index: 10000;
+  width: min(47.5000rem, 92vw);
+  max-height: 90vh;
+  background: #0f172a;
+  border: 0.0625rem solid rgba(255, 255, 255, 0.18);
+  border-radius: 1.0000rem;
+  overflow: hidden;
+  box-shadow: 0 1.5625rem 3.7500rem rgba(0, 0, 0, 0.85);
+  display: flex;
+  flex-direction: column;
+  animation: lightbox-zoom 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes lightbox-zoom {
+  from {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 0.8750rem;
+  right: 0.8750rem;
+  width: 2.2500rem;
+  height: 2.2500rem;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.85);
+  border: 0.0625rem solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  z-index: 10001;
+}
+
+.lightbox-close:hover {
+  background: #ef4444;
+  transform: rotate(90deg);
+}
+
+.lightbox-image-wrap {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  background: #020617;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.lightbox-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ==========================================================================
+   52poke Encyclopedia Table View Styling (52poke 百科規格表格)
+   ========================================================================== */
+.habitat-52poke-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.habitat-52poke-table th {
+  padding: 0.8750rem 1.0000rem;
+  background: rgba(15, 23, 42, 0.9);
+  border-bottom: 0.1250rem solid rgba(99, 102, 241, 0.35);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.habitat-52poke-table td {
+  padding: 0.8750rem 1.0000rem;
+  border-bottom: 0.0625rem solid rgba(255, 255, 255, 0.06);
+  vertical-align: middle;
+}
+
+.habitat-52poke-table tbody tr:hover {
+  background: rgba(99, 102, 241, 0.08);
+}
+
+/* Number pill */
+.hab-num-pill {
+  display: inline-block;
+  font-family: monospace;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--accent-amber);
+  background: rgba(245, 158, 11, 0.12);
+  border: 0.0625rem solid rgba(245, 158, 11, 0.3);
+  padding: 0.1250rem 0.3125rem;
+  border-radius: 0.2500rem;
+  pointer-events: none;
+}
+
+/* Pokemon Table Merged Habitat Thumbs (大縮圖自適應視窗縮放：3:2 高清比例 + 下方精緻切換列) */
+.col-th-habitat {
+  min-width: 13.7500rem;
+  width: clamp(13.7500rem, 22vw, 20.0000rem);
+}
+
+/* Table Habitat Cell: Single Large Thumbnail (clamp 11.2500rem~16.2500rem) + Bottom Bar Controls */
+.pkm-table-hab-single-wrap,
+.pkm-table-hab-carousel {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  width: clamp(11.2500rem, 18vw, 16.2500rem);
+  max-width: 100%;
+  gap: 0.3750rem;
+  user-select: none;
+  margin: 0 auto;
+}
+
+.pkm-table-hab-thumb {
+  position: relative;
+  width: clamp(11.2500rem, 18vw, 16.2500rem);
+  height: auto;
+  aspect-ratio: 3 / 2;
+  border-radius: 0.5000rem;
+  overflow: hidden;
+  background: var(--bg-card);
+  border: 0.0938rem solid var(--glass-border);
+  cursor: pointer;
+  box-shadow: 0 0.2500rem 0.7500rem rgba(0, 0, 0, 0.12);
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.pkm-table-hab-thumb:hover {
+  transform: scale(1.04) translateY(-0.0625rem);
+  border-color: var(--primary-indigo);
+  box-shadow: 0 0.3750rem 1.0000rem rgba(2, 132, 199, 0.35);
+  z-index: 5;
+}
+
+.pkm-table-hab-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center bottom; /* 關鍵：強制鎖定下半部地貌與家具，徹底杜絕純藍天 */
+  display: block;
+}
+
+/* Bottom Navigation Bar Below Thumbnail (100% 絕不遮擋圖片) */
+.pkm-hab-bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 0.2500rem;
+  padding: 0 0.1250rem;
+}
+
+.pkm-table-hab-single-wrap .pkm-hab-bottom-bar {
+  justify-content: center;
+}
+
+.pkm-hab-arrow-btn {
+  width: 1.2500rem;
+  height: 1.2500rem;
+  border-radius: 50%;
+  background: rgba(2, 132, 199, 0.12);
+  border: 0.0625rem solid rgba(2, 132, 199, 0.3);
+  color: var(--accent-sky);
+  font-size: 0.8125rem;
+  line-height: 1;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.pkm-hab-arrow-btn:hover {
+  background: var(--accent-sky);
+  color: #ffffff;
+  transform: scale(1.15);
+  box-shadow: 0 0.1250rem 0.3750rem rgba(2, 132, 199, 0.4);
+}
+
+.pkm-hab-arrow-btn:active {
+  transform: scale(0.95);
+}
+
+:root[data-theme="dark"] .pkm-hab-arrow-btn {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
+}
+
+:root[data-theme="dark"] .pkm-hab-arrow-btn:hover {
+  background: #38bdf8;
+  color: #0f172a;
+}
+
+.pkm-hab-name-text {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  cursor: default;
+}
+
+/* Table Media Cell (150x100 3:2 Thumbnail + Names) */
+.table-hab-media-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.8750rem;
+}
+
+.table-hab-thumb-wrap {
+  position: relative;
+  width: 9.3750rem;
+  height: 6.2500rem;
+  aspect-ratio: 3 / 2;
+  flex-shrink: 0;
+  border-radius: 0.5000rem;
+  overflow: hidden;
+  border: 0.0625rem solid var(--glass-border);
+  background: #0f172a;
+  cursor: pointer;
+  box-shadow: 0 0.2500rem 0.7500rem rgba(0, 0, 0, 0.4);
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.table-hab-thumb-wrap:hover {
+  transform: scale(1.05);
+  border-color: var(--accent-indigo);
+  box-shadow: 0 0.3750rem 1.1250rem rgba(99, 102, 241, 0.5);
+}
+
+.table-hab-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.table-hab-thumb-wrap:hover .table-hab-img {
+  transform: scale(1.08);
+}
+
+.table-hab-thumb-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  background: rgba(30, 41, 59, 0.5);
+  cursor: default;
+}
+
+.table-hab-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.table-hab-name-zh {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--text-main);
+  line-height: 1.3;
+}
+
+.table-hab-name-en {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.1250rem;
+}
+
+.table-hab-desc-text {
+  font-size: 0.86rem;
+  color: var(--text-sub);
+  line-height: 1.5;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 0.5000rem 0.7500rem;
+  border-radius: 0.3750rem;
+  border-left: 0.1250rem solid rgba(99, 102, 241, 0.4);
+}
+
+.table-hab-detail-box {
+  font-size: 0.88rem;
+  color: var(--text-main);
+  font-weight: 400;
+  line-height: 1.5;
+  padding-right: 0.7500rem;
+}
+
+.hab-detail-line {
+  display: block;
+  line-height: 1.55;
+  margin-bottom: 0.1875rem;
+  white-space: normal;
+}
+
+.hab-detail-line:last-child {
+  margin-bottom: 0;
+}
+
+/* Storage Guide Table (子分類獨立橫列重構排版 - 溫和柔細格線與清晰欄位分界) */
+.storage-table {
+  background: var(--table-bg);
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  border: 0.0625rem solid rgba(148, 163, 184, 0.35);
+  border-radius: 0.5000rem;
+  overflow: hidden;
+}
+
+.storage-table th {
+  background: var(--storage-th-bg, #ede9fe) !important;
+  color: var(--storage-th-text, #5b21b6) !important;
+  font-weight: 700;
+  border-bottom: 0.1250rem solid var(--storage-th-border, #c4b5fd);
+  border-right: 0.0625rem solid rgba(196, 181, 253, 0.5);
+  letter-spacing: 0.0125rem;
+  text-align: center;
+  padding: 0.6875rem 0.7500rem;
+  white-space: nowrap;
+}
+
+.storage-table th:last-child {
+  border-right: none;
+}
+
+.storage-table td {
+  background: var(--table-bg);
+  border-bottom: 0.0625rem solid rgba(148, 163, 184, 0.22);
+  border-right: 0.0625rem solid rgba(148, 163, 184, 0.26);
+  vertical-align: top !important;
+  padding: 0.6250rem 0.8750rem;
+  font-size: 0.9rem;
+  transition: background-color 0.15s ease;
+}
+
+.storage-table td:last-child {
+  border-right: none;
+}
+
+/* 大分類跨列單元格 (第一欄垂直靠頂齊頭，微淡柔雅底色與微強化右界線) */
+.storage-table td.col-storage-name {
+  background: rgba(99, 102, 241, 0.035);
+  border-right: 0.0938rem solid rgba(148, 163, 184, 0.38);
+  border-bottom: 0.1250rem solid rgba(148, 163, 184, 0.45);
+  vertical-align: top !important;
+  padding-top: 0.8750rem;
+  width: 10.6250rem;
+}
+
+.storage-cat-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5000rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+.storage-cat-title {
+  color: var(--text-main);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+/* 子分類欄位 (溫和右側垂直界線) */
+.storage-table td.col-storage-sub {
+  white-space: nowrap;
+  color: var(--accent-amber);
+  font-weight: 700;
+  border-right: 0.0625rem solid rgba(148, 163, 184, 0.26);
+  vertical-align: top !important;
+  width: 9.3750rem;
+}
+
+.sub-cat-title {
+  color: var(--accent-amber);
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* 收納物品細項藥丸容器 */
+.storage-table td.col-storage-items {
+  border-right: 0.0625rem solid rgba(148, 163, 184, 0.26);
+  vertical-align: top !important;
+}
+
+.storage-items-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3750rem;
+  align-items: center;
+}
+
+.storage-items-wrap .item-pill {
+  margin: 0;
+  padding: 0.1250rem 0.5000rem;
+  font-size: 0.82rem;
+  border-radius: 62.4375rem;
+  background: rgba(59, 130, 246, 0.08);
+  color: var(--accent-blue);
+  border: 0.0625rem solid rgba(59, 130, 246, 0.2);
+  white-space: nowrap;
+}
+
+/* 備註說明文字 (最末欄) */
+.storage-table td.col-storage-note {
+  font-size: 0.82rem;
+  color: var(--text-sub);
+  line-height: 1.45;
+  vertical-align: top !important;
+  border-right: none;
+}
+
+.storage-note-text {
+  color: var(--text-sub);
+}
+
+.empty-note {
+  color: var(--text-muted, #9ca3af);
+}
+
+/* 每個大分類最後一列：強化柔和分界實線 */
+.storage-table tr.cat-row-last td {
+  border-bottom: 0.1250rem solid rgba(148, 163, 184, 0.45) !important;
+}
+
+/* 滑鼠懸浮微光引導 (溫和不刺眼) */
+.storage-table tbody tr:hover td:not([rowspan]) {
+  background-color: rgba(59, 130, 246, 0.025);
+}
+
+/* Pokemon Catalog Table Header (薄荷淡綠) */
+.pokemon-table {
+  background: var(--table-bg);
+}
+
+.pokemon-table th {
+  background: var(--pokemon-th-bg, #d1fae5) !important;
+  color: var(--pokemon-th-text, #065f46) !important;
+  font-weight: 700;
+  border-bottom: 0.1250rem solid var(--pokemon-th-border, #6ee7b7);
+  letter-spacing: 0.0125rem;
+  text-align: center;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+}
+
+.pokemon-table td {
+  background: var(--table-bg);
+  border-bottom: 0.0625rem solid var(--table-td-border);
+  vertical-align: middle !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+}
+
+.pokemon-table td .checkbox-container {
+  margin: 0 auto !important;
+  display: inline-flex !important;
+  justify-content: center !important;
+}
+
+.pokemon-table td .spec-column-group {
+  margin: 0 auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.pokemon-table td .tag-badge {
+  margin: 0 auto !important;
+  display: inline-block !important;
+  text-align: center !important;
+}
+
+/* 第 2 欄「寶可夢」極限緊湊 4.6875rem、內邊距縮緊至 0.2500rem、全元素水平置中 */
+.pokemon-table th:nth-child(2),
+.pokemon-table td:nth-child(2) {
+  width: 4.6875rem;
+  min-width: 4.6875rem;
+  max-width: 4.6875rem;
+  padding: 0.5000rem 0.2500rem !important;
+  text-align: center !important;
+}
+
+/* 第 2 欄寶可夢身份單元格（編號 -> 名稱 -> 分類標籤 三行垂直工整排列、全水平置中、clamp 流體自適應縮放） */
+.pkm-cell-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1250rem;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  width: 100%;
+}
+
+.pkm-cell-identity .card-number {
+  font-size: clamp(0.58rem, 0.8vw, 0.68rem);
+  line-height: 1.15;
+  text-align: center;
+}
+
+.pkm-cell-identity .pkm-table-name {
+  font-size: clamp(0.72rem, 1.1vw, 0.88rem);
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--text-main);
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  text-align: center;
+}
+
+.pkm-cell-identity .tag-badge {
+  font-size: clamp(0.56rem, 0.75vw, 0.65rem);
+  padding: 0.0625rem 0.2500rem;
+  line-height: 1.15;
+  margin-top: 0.0625rem;
+  text-align: center;
+}
+
+.pkm-cell-identity .pkm-form-badge {
+  font-size: clamp(0.52rem, 0.7vw, 0.62rem);
+  padding: 0.0625rem 0.2500rem;
+  border-radius: 0.2500rem;
+  background: rgba(14, 165, 233, 0.12);
+  color: #0284c7;
+  border: 0.0625rem solid rgba(14, 165, 233, 0.25);
+  font-weight: 600;
+  line-height: 1.15;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  text-align: center;
+  max-width: 4.1250rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 0.0625rem;
+}
+
+:root[data-theme="dark"] .pkm-cell-identity .pkm-form-badge {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  border-color: rgba(56, 189, 248, 0.3);
+}
+
+/* 第 3 欄「外觀」巨型圖案單元格（68x4.2500rem 高清居中展示） */
+.pkm-avatar-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.pkm-avatar-table-large {
+  width: clamp(4.0000rem, 5.5vw, 5.3125rem);
+  height: clamp(4.0000rem, 5.5vw, 5.3125rem);
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  flex-shrink: 0;
+  transition: transform var(--transition-fast), filter var(--transition-fast);
+  cursor: pointer;
+}
+
+.pkm-avatar-table-large:hover {
+  transform: scale(1.15);
+  filter: drop-shadow(0 0.3750rem 0.8750rem rgba(2, 132, 199, 0.45));
+}
+
+.pkm-table-cell-main {
+  display: flex;
+  align-items: center;
+  gap: 0.6250rem;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  height: 100%;
+}
+
+.pkm-table-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+}
+
+/* 52poke Habitat Table Header & Table Background (天空淡藍) */
+.habitat-52poke-table {
+  background: var(--table-bg);
+}
+
+.habitat-52poke-table th {
+  background: var(--hab-th-bg) !important;
+  color: var(--hab-th-text) !important;
+  font-weight: 700;
+  border-bottom: 0.1250rem solid var(--hab-th-border);
+  letter-spacing: 0.0125rem;
+  text-align: center;
+}
+
+.habitat-52poke-table td {
+  background: var(--table-bg);
+  border-bottom: 0.0625rem solid var(--table-td-border);
+}
+
+/* Pokemon Icons Grid in Table (56x3.5000rem 純淨白底無底座高清晰展台，單行橫排流動) */
+.table-pkm-icon-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6250rem;
+  align-items: center;
+}
+
+.hab-pkm-icon-btn {
+  width: 3.5000rem;
+  height: 3.5000rem;
+  border-radius: 0.5000rem;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform var(--transition-fast), filter var(--transition-fast);
+  position: relative;
+  padding: 0;
+  margin: 0;
+}
+
+.hab-pkm-icon-btn:hover {
+  transform: scale(1.15) translateY(-0.1875rem);
+  filter: drop-shadow(0 0.3750rem 0.8750rem rgba(2, 132, 199, 0.45));
+  z-index: 10;
+}
+
+.hab-pkm-icon-btn img {
+  width: 3.2500rem;
+  height: 3.2500rem;
+  object-fit: contain;
+  transition: transform var(--transition-fast);
+}
+
+.hab-pkm-icon-btn:hover img {
+  transform: scale(1.05);
+}
+
+/* 寶可夢解鎖提示標籤 (1.0000rem 翡翠綠微型打勾圓標) */
+.pkm-unlocked-badge {
+  position: absolute;
+  bottom: 0.0000rem;
+  right: 0.0000rem;
+  width: 1.0000rem;
+  height: 1.0000rem;
+  background: #10b981;
+  color: #ffffff;
+  border: 0.0938rem solid #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6250rem;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: 0 0.0625rem 0.2500rem rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  z-index: 2;
+  animation: pkmBadgePop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+:root[data-theme="dark"] .pkm-unlocked-badge {
+  border-color: #1e293b;
+  box-shadow: 0 0.0625rem 0.3125rem rgba(0, 0, 0, 0.6);
+}
+
+/* 卡片檢視晶片中的打勾標籤微調 */
+.hab-pkm-chip {
+  position: relative;
+}
+
+.hab-pkm-chip .pkm-unlocked-badge {
+  position: static;
+  width: 0.8750rem;
+  height: 0.8750rem;
+  font-size: 0.5625rem;
+  margin-left: 0.1250rem;
+  border: none;
+}
+
+@keyframes pkmBadgePop {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Card view description quote */
+.hab-desc-quote {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  font-style: italic;
+  margin-bottom: 0.5000rem;
+  padding-left: 0.5000rem;
+  border-left: 0.1250rem solid rgba(255, 255, 255, 0.15);
+}
+
+.lightbox-caption {
+  padding: 1.0000rem 1.2500rem;
+  background: #0b0f19;
+  border-top: 0.0625rem solid rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Jump Highlight Animation */
+.highlight-target {
+  animation: pulse-target-glow 2.4s ease-out;
+}
+
+@keyframes pulse-target-glow {
+  0% {
+    box-shadow: 0 0 0 0.2500rem rgba(245, 158, 11, 0.9), 0 0 2.1875rem rgba(245, 158, 11, 0.8);
+    transform: scale(1.02);
+  }
+  50% {
+    box-shadow: 0 0 0 0.2500rem rgba(245, 158, 11, 0.6), 0 0 1.2500rem rgba(245, 158, 11, 0.4);
+  }
+  100% {
+    box-shadow: none;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 30.0000rem) {
+  .habitat-thumb-box {
+    width: 5.2500rem;
+    height: 3.5000rem;
+  }
+  .hab-catalog-thumb-box {
+    width: 5.6250rem;
+    height: 3.7500rem;
+  }
+}
+
+/* Floating Back Button (上一頁 / 返回快捷鍵) */
+.floating-back-btn {
+  position: fixed;
+  bottom: 1.7500rem;
+  right: 1.7500rem;
+  z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5000rem;
+  padding: 0.6250rem 1.1250rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px); /* blur(0.7500rem) */
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--primary-indigo);
+  border: 0.0938rem solid var(--primary-indigo);
+  border-radius: 9999px; /* 624.9375rem full rounded pill */
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 0.5000rem 1.5000rem rgba(2, 132, 199, 0.25), 0 0.1250rem 0.3750rem rgba(0, 0, 0, 0.08);
+  transition: all var(--transition-fast);
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.floating-back-btn.hidden {
+  display: none !important;
+}
+
+.floating-back-btn:hover {
+  background: var(--primary-indigo);
+  color: #ffffff;
+  box-shadow: 0 0.6250rem 1.7500rem rgba(2, 132, 199, 0.4);
+  transform: translateY(-0.1875rem) scale(1.03);
+}
+
+.floating-back-btn:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.floating-back-btn .back-arrow {
+  font-size: 1.15rem;
+  font-weight: 900;
+  transition: transform var(--transition-fast);
+}
+
+.floating-back-btn:hover .back-arrow {
+  transform: translateX(-0.1875rem);
+}
+
+:root[data-theme="dark"] .floating-back-btn {
+  background: rgba(30, 41, 59, 0.92);
+  border-color: #38bdf8;
+  color: #38bdf8;
+  box-shadow: 0 0.5000rem 1.5000rem rgba(0, 0, 0, 0.5), 0 0.1250rem 0.5000rem rgba(56, 189, 248, 0.2);
+}
+
+:root[data-theme="dark"] .floating-back-btn:hover {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+  box-shadow: 0 0.6250rem 1.7500rem rgba(2, 132, 199, 0.5);
+}
+
+/* ==========================================================================
+   Preferences & Items Encyclopedia Drawer (喜好與物品百科抽屜)
+   ========================================================================== */
+
+/* Top Bar Encyclopedia Button (無圖示、精緻置中尺寸) */
+.pref-drawer-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+  color: #ffffff;
+  border: 0.0625rem solid rgba(255, 255, 255, 0.2);
+  border-radius: 1.2500rem;
+  padding: 0.3125rem 0.6875rem;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 0.1250rem 0.5000rem rgba(236, 72, 153, 0.25);
+  transition: all var(--transition-fast);
+  user-select: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.pref-drawer-btn:hover {
+  transform: translateY(-0.0625rem);
+  box-shadow: 0 0.2500rem 0.8750rem rgba(236, 72, 153, 0.4);
+  filter: brightness(1.06);
+}
+
+.pref-drawer-btn:active {
+  transform: translateY(0);
+}
+
+.pref-drawer-btn-icon {
+  display: none !important;
+}
+
+/* 官方 5 大特徵標籤小圖標樣式 */
+.pref-tag-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: #e0f2fe;
+  color: #0369a1;
+  font-weight: 600;
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.75rem;
+}
+
+:root[data-theme="dark"] .pref-tag-badge {
+  background: rgba(3, 105, 161, 0.25);
+  color: #7dd3fc;
+}
+
+.pref-tag-icon {
+  width: 0.95rem;
+  height: 0.95rem;
+  object-fit: contain;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* Drawer Backdrop */
+.pref-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(0.2500rem);
+  z-index: 1999;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.pref-drawer-backdrop.hidden {
+  display: none !important;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Drawer Aside Container */
+.pref-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 31.2500rem;
+  max-width: 100vw;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(1.2500rem);
+  box-shadow: -0.6250rem 0 2.1875rem rgba(0, 0, 0, 0.2);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(0);
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pref-drawer.closed {
+  transform: translateX(100%);
+  pointer-events: none;
+}
+
+:root[data-theme="dark"] .pref-drawer {
+  background: rgba(15, 23, 42, 0.96);
+  border-left: 0.0625rem solid rgba(255, 255, 255, 0.1);
+  box-shadow: -0.6250rem 0 2.5000rem rgba(0, 0, 0, 0.6);
+}
+
+/* Drawer Header */
+.pref-drawer-header {
+  padding: 1.0000rem 1.2500rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 0.0625rem solid #e2e8f0;
+  background: rgba(248, 250, 252, 0.85);
+}
+
+:root[data-theme="dark"] .pref-drawer-header {
+  border-bottom: 0.0625rem solid rgba(255, 255, 255, 0.08);
+  background: rgba(30, 41, 59, 0.85);
+}
+
+.pref-drawer-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.7500rem;
+}
+
+.pref-drawer-title-icon {
+  font-size: 1.5rem;
+}
+
+.pref-drawer-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+:root[data-theme="dark"] .pref-drawer-title {
+  color: #f8fafc;
+}
+
+.pref-drawer-subtitle {
+  font-size: 0.76rem;
+  color: #64748b;
+  margin: 0.1250rem 0 0 0;
+}
+
+:root[data-theme="dark"] .pref-drawer-subtitle {
+  color: #94a3b8;
+}
+
+.pref-drawer-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  color: #64748b;
+  width: 2.1250rem;
+  height: 2.1250rem;
+  border-radius: 0.5000rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.pref-drawer-close-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+:root[data-theme="dark"] .pref-drawer-close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+}
+
+/* 4 Tabs Bar */
+.pref-drawer-tabs {
+  display: flex;
+  background: #f1f5f9;
+  padding: 0.3750rem;
+  gap: 0.3750rem;
+  border-bottom: 0.0625rem solid #e2e8f0;
+}
+
+:root[data-theme="dark"] .pref-drawer-tabs {
+  background: #0f172a;
+  border-bottom: 0.0625rem solid rgba(255, 255, 255, 0.08);
+}
+
+.pref-tab-btn {
+  flex: 1;
+  padding: 0.5000rem 0.3750rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #64748b;
+  background: transparent;
+  border: none;
+  border-radius: 0.5000rem;
+  cursor: pointer;
+  text-align: center;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.pref-tab-btn:hover {
+  color: #0f172a;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+:root[data-theme="dark"] .pref-tab-btn:hover {
+  color: #f8fafc;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.pref-tab-btn.active {
+  color: #ffffff;
+  background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+  box-shadow: 0 0.1250rem 0.3750rem rgba(37, 99, 235, 0.25);
+}
+
+:root[data-theme="dark"] .pref-tab-btn.active {
+  background: linear-gradient(135deg, #0284c7 0%, #3b82f6 100%);
+}
+
+/* Drawer Search Bar */
+.pref-drawer-search-wrap {
+  position: relative;
+  padding: 0.6250rem 1.0000rem;
+  background: #ffffff;
+  border-bottom: 0.0625rem solid #e2e8f0;
+  display: flex;
+  align-items: center;
+}
+
+:root[data-theme="dark"] .pref-drawer-search-wrap {
+  background: #1e293b;
+  border-bottom: 0.0625rem solid rgba(255, 255, 255, 0.08);
+}
+
+.pref-search-icon {
+  position: absolute;
+  left: 1.6250rem;
+  font-size: 0.9rem;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+#prefDrawerSearch {
+  width: 100%;
+  padding: 0.5000rem 2.0000rem 0.5000rem 2.1250rem;
+  font-size: 0.86rem;
+  font-family: inherit;
+  border: 0.0625rem solid #cbd5e1;
+  border-radius: 1.2500rem;
+  background: #f8fafc;
+  color: #0f172a;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+#prefDrawerSearch:focus {
+  border-color: #0284c7;
+  background: #ffffff;
+  box-shadow: 0 0 0 0.1875rem rgba(2, 132, 199, 0.12);
+}
+
+:root[data-theme="dark"] #prefDrawerSearch {
+  background: #0f172a;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #f8fafc;
+}
+
+:root[data-theme="dark"] #prefDrawerSearch:focus {
+  border-color: #38bdf8;
+  background: #1e293b;
+  box-shadow: 0 0 0 0.1875rem rgba(56, 189, 248, 0.2);
+}
+
+.pref-search-clear-btn {
+  position: absolute;
+  right: 1.6250rem;
+  background: none;
+  border: none;
+  font-size: 0.85rem;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 0.2500rem;
+}
+
+.pref-search-clear-btn:hover {
+  color: #0f172a;
+}
+
+:root[data-theme="dark"] .pref-search-clear-btn:hover {
+  color: #f8fafc;
+}
+
+/* Drawer Body & Cards */
+.pref-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.0000rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8750rem;
+}
+
+.pref-card {
+  background: #ffffff;
+  border: 0.0625rem solid #e2e8f0;
+  border-radius: 0.7500rem;
+  padding: 0.8750rem 1.0000rem;
+  box-shadow: 0 0.1250rem 0.3750rem rgba(15, 23, 42, 0.04);
+  transition: all var(--transition-fast);
+}
+
+.pref-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 0.2500rem 0.7500rem rgba(15, 23, 42, 0.08);
+}
+
+:root[data-theme="dark"] .pref-card {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0.1250rem 0.5000rem rgba(0, 0, 0, 0.3);
+}
+
+:root[data-theme="dark"] .pref-card:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.pref-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6250rem;
+}
+
+.pref-card-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 0.5000rem;
+}
+
+:root[data-theme="dark"] .pref-card-title {
+  color: #f8fafc;
+}
+
+.pref-card-badge {
+  font-size: 0.75rem;
+  padding: 0.1250rem 0.5000rem;
+  border-radius: 0.7500rem;
+  font-weight: 700;
+  background: #f1f5f9;
+  color: #475569;
+}
+
+:root[data-theme="dark"] .pref-card-badge {
+  background: rgba(255, 255, 255, 0.08);
+  color: #cbd5e1;
+}
+
+/* Snorlax Offering Box in Taste Card */
+.pref-snorlax-box {
+  background: #fffbeb;
+  border: 0.0625rem solid #fde68a;
+  border-radius: 0.5000rem;
+  padding: 0.6250rem 0.7500rem;
+  margin-bottom: 0.7500rem;
+  font-size: 0.82rem;
+  color: #92400e;
+  line-height: 1.5;
+}
+
+:root[data-theme="dark"] .pref-snorlax-box {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.25);
+  color: #fcd34d;
+}
+
+.pref-snorlax-title {
+  font-weight: 700;
+  margin-bottom: 0.2500rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3750rem;
+}
+
+.pref-snorlax-levels {
+  margin-top: 0.3750rem;
+  font-size: 0.78rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1250rem;
+}
+
+/* Sub-section in Card (Foods, Items, Pokemon) */
+.pref-section-subtitle {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #0369a1;
+  margin: 0.6250rem 0 0.3750rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+:root[data-theme="dark"] .pref-section-subtitle {
+  color: #38bdf8;
+}
+
+/* Pill Tags in Drawer */
+.pref-tags-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3750rem;
+}
+
+.pref-item-tag {
+  display: inline-block;
+  font-size: 0.78rem;
+  padding: 0.1875rem 0.5000rem;
+  background: #f1f5f9;
+  border: 0.0625rem solid #e2e8f0;
+  border-radius: 0.3750rem;
+  color: #334155;
+}
+
+:root[data-theme="dark"] .pref-item-tag {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #cbd5e1;
+}
+
+/* Pokemon Avatar Chip in Drawer */
+.pref-pkm-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2500rem;
+  background: #ffffff;
+  border: 0.0625rem solid #cbd5e1;
+  border-radius: 1.0000rem;
+  padding: 0.1250rem 0.5000rem 0.1250rem 0.2500rem;
+  font-size: 0.76rem;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.pref-pkm-chip:hover {
+  border-color: #0284c7;
+  color: #0284c7;
+  transform: translateY(-0.0625rem);
+}
+
+:root[data-theme="dark"] .pref-pkm-chip {
+  background: #0f172a;
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #e2e8f0;
+}
+
+:root[data-theme="dark"] .pref-pkm-chip:hover {
+  border-color: #38bdf8;
+  color: #38bdf8;
+}
+
+.pref-pkm-icon {
+  width: 1.2500rem;
+  height: 1.2500rem;
+  object-fit: contain;
+}
+
+/* Items Tab Category Filter Buttons */
+.pref-items-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3750rem;
+  padding-bottom: 0.5000rem;
+  border-bottom: 0.0625rem solid #e2e8f0;
+  margin-bottom: 0.7500rem;
+}
+
+:root[data-theme="dark"] .pref-items-cats {
+  border-bottom: 0.0625rem solid rgba(255, 255, 255, 0.08);
+}
+
+.pref-cat-filter-btn {
+  padding: 0.2500rem 0.6250rem;
+  font-size: 0.78rem;
+  border: 0.0625rem solid #cbd5e1;
+  border-radius: 0.8750rem;
+  background: #ffffff;
+  color: #475569;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.pref-cat-filter-btn:hover {
+  border-color: #0284c7;
+  color: #0284c7;
+}
+
+:root[data-theme="dark"] .pref-cat-filter-btn {
+  background: #0f172a;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+}
+
+.pref-cat-filter-btn.active {
+  background: #0284c7;
+  border-color: #0284c7;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+:root[data-theme="dark"] .pref-cat-filter-btn.active {
+  background: #0284c7;
+  border-color: #0284c7;
+  color: #ffffff;
+}
+
+/* Item Entry in Items Tab */
+.pref-item-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2500rem;
+  padding: 0.5000rem 0.6250rem;
+  background: #f8fafc;
+  border-radius: 0.5000rem;
+  border: 0.0625rem solid #e2e8f0;
+  margin-bottom: 0.5000rem;
+}
+
+:root[data-theme="dark"] .pref-item-row {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.pref-item-row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pref-item-name {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #0f172a;
+}
+
+:root[data-theme="dark"] .pref-item-name {
+  color: #f8fafc;
+}
+
+.pref-item-desc {
+  font-size: 0.78rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+:root[data-theme="dark"] .pref-item-desc {
+  color: #94a3b8;
+}
+
+/* ==========================================================================
+   Pure Text Preference Pills (純淨純文字藥丸標籤，無 🍬、🌶️ 圖標)
+   ========================================================================== */
+
+/* General Preference Pill */
+.pref-pill {
+  display: inline-block;
+  padding: 0.1875rem 0.5000rem;
+  border-radius: 0.3750rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.3;
+  cursor: pointer;
+  user-select: none;
+  transition: all var(--transition-fast);
+  margin: 0.1250rem 0.1875rem 0.1250rem 0;
+  white-space: nowrap;
+}
+
+.pref-pill:hover {
+  transform: translateY(-0.0625rem);
+  filter: brightness(0.96);
+  box-shadow: 0 0.1250rem 0.3750rem rgba(0, 0, 0, 0.1);
+}
+
+:root[data-theme="dark"] .pref-pill:hover {
+  filter: brightness(1.15);
+  box-shadow: 0 0.1250rem 0.5000rem rgba(0, 0, 0, 0.4);
+}
+
+/* 物品風格特徵標籤 (冷色柔和底色，如：能感受大自然的、柔軟的、木製的) */
+.pref-pill-thing {
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 0.0625rem solid #bae6fd;
+}
+
+:root[data-theme="dark"] .pref-pill-thing {
+  background: rgba(14, 165, 233, 0.15);
+  color: #7dd3fc;
+  border: 0.0625rem solid rgba(56, 189, 248, 0.3);
+}
+
+/* 食物口味標籤 (暖粉柔和底色，無 emoji，如：甜甜的、辣辣的、酸酸的、苦苦的、澀澀的、平淡無奇的) */
+.pref-pill-taste {
+  background: #fff1f2;
+  color: #be123c;
+  border: 0.0625rem solid #fecdd3;
+}
+
+:root[data-theme="dark"] .pref-pill-taste {
+  background: rgba(244, 63, 94, 0.15);
+  color: #fda4af;
+  border: 0.0625rem solid rgba(251, 113, 133, 0.3);
+}
+
+/* ==========================================================================
+   Pure Icon Item Slots & Grid (純圖片道具圖標方格與網格)
+   ========================================================================== */
+
+.pref-item-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3750rem;
+  margin-top: 0.3750rem;
+}
+
+.pref-item-slot,
+.pref-pkm-slot {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6250rem;
+  height: 2.6250rem;
+  padding: 0.1875rem;
+  background: #ffffff;
+  border: 0.0625rem solid #cbd5e1;
+  border-radius: 0.5000rem;
+  box-shadow: 0 0.0625rem 0.1250rem rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  user-select: none;
+  transition: all var(--transition-fast);
+  outline: none;
+  box-sizing: border-box;
+}
+
+.pref-item-slot:hover,
+.pref-pkm-slot:hover {
+  transform: translateY(-0.1250rem) scale(1.05);
+  border-color: #0284c7;
+  box-shadow: 0 0.2500rem 0.6250rem rgba(2, 132, 199, 0.25);
+  z-index: 10;
+}
+
+.pref-item-slot:active,
+.pref-pkm-slot:active {
+  transform: translateY(0) scale(0.96);
+}
+
+:root[data-theme="dark"] .pref-item-slot,
+:root[data-theme="dark"] .pref-pkm-slot {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.3);
+}
+
+:root[data-theme="dark"] .pref-item-slot:hover,
+:root[data-theme="dark"] .pref-pkm-slot:hover {
+  border-color: #38bdf8;
+  box-shadow: 0 0.2500rem 0.7500rem rgba(56, 189, 248, 0.35);
+}
+
+.pref-item-slot-img,
+.pref-pkm-slot-img {
+  width: 2.0000rem;
+  height: 2.0000rem;
+  object-fit: contain;
+  pointer-events: none;
+  transition: transform var(--transition-fast);
+}
+
+.pref-item-slot:hover .pref-item-slot-img,
+.pref-pkm-slot:hover .pref-pkm-slot-img {
+  transform: scale(1.1);
+}
+
+.pref-item-slot-fallback,
+.pref-pkm-slot-fallback {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+:root[data-theme="dark"] .pref-item-slot-fallback,
+:root[data-theme="dark"] .pref-pkm-slot-fallback {
+  color: #94a3b8;
+}
+
+/* Custom Tooltip on Hover */
+.pref-item-slot[data-tooltip]::after,
+.pref-pkm-slot[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 0.3750rem);
+  left: 50%;
+  transform: translateX(-50%) translateY(0.2500rem);
+  padding: 0.2500rem 0.5000rem;
+  background: rgba(15, 23, 42, 0.94);
+  color: #ffffff;
+  font-size: 0.74rem;
+  font-weight: 600;
+  white-space: nowrap;
+  border-radius: 0.3750rem;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  z-index: 1000;
+  box-shadow: 0 0.2500rem 0.7500rem rgba(0, 0, 0, 0.25);
+}
+
+.pref-item-slot[data-tooltip]:hover::after,
+.pref-pkm-slot[data-tooltip]:hover::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+:root[data-theme="dark"] .pref-item-slot[data-tooltip]::after,
+:root[data-theme="dark"] .pref-pkm-slot[data-tooltip]::after {
+  background: rgba(30, 41, 59, 0.98);
+  color: #f8fafc;
+  border: 0.0625rem solid rgba(255, 255, 255, 0.15);
+}
+
+/* Item Entry in Items Tab with Sprite */
+.pref-item-row-main {
+  display: flex;
+  align-items: center;
+  gap: 0.6250rem;
+}
+
+.pref-item-row-icon {
+  width: 2.2500rem;
+  height: 2.2500rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 0.0625rem solid #e2e8f0;
+  border-radius: 0.3750rem;
+  overflow: hidden;
+}
+
+:root[data-theme="dark"] .pref-item-row-icon {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.pref-item-row-icon img {
+  width: 1.8750rem;
+  height: 1.8750rem;
+  object-fit: contain;
+}
+
+/* Animation for Highlighting Item in Drawer */
+@keyframes prefItemPulseHighlight {
+  0% {
+    box-shadow: 0 0 0 0 rgba(2, 132, 199, 0.8);
+    border-color: #0284c7;
+    background: rgba(2, 132, 199, 0.15);
+  }
+  30% {
+    box-shadow: 0 0 1.0000rem 0.2500rem rgba(2, 132, 199, 0.7);
+    border-color: #0284c7;
+    background: rgba(2, 132, 199, 0.2);
+  }
+  100% {
+    box-shadow: none;
+    border-color: #e2e8f0;
+    background: #f8fafc;
+  }
+}
+
+@keyframes prefItemPulseHighlightDark {
+  0% {
+    box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.9);
+    border-color: #38bdf8;
+    background: rgba(56, 189, 248, 0.2);
+  }
+  30% {
+    box-shadow: 0 0 1.2500rem 0.3125rem rgba(56, 189, 248, 0.8);
+    border-color: #38bdf8;
+    background: rgba(56, 189, 248, 0.25);
+  }
+  100% {
+    box-shadow: none;
+    border-color: rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.03);
+  }
+}
+
+.pref-item-row.pref-item-highlight {
+  animation: prefItemPulseHighlight 2.5s ease-out forwards;
+}
+
+:root[data-theme="dark"] .pref-item-row.pref-item-highlight {
+  animation-name: prefItemPulseHighlightDark;
+}
+
+/* ==========================================================================
+   Pokemon Individual Detail Modal (寶可夢個人百科詳情卡)
+   支援桌面毛玻璃居中 Modal 與手機底部滑出抽屜 Bottom Sheet
+   結構化呈現口味食物樹果、環境、風格家具與雙向棲息地大圖
+   ========================================================================== */
+.pkm-detail-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(0.7500rem);
+  -webkit-backdrop-filter: blur(0.7500rem);
+  z-index: 1050;
+  transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pkm-detail-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1060;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.pkm-detail-card {
+  pointer-events: auto;
+  position: relative;
+  width: 38.7500rem;
+  max-width: 92vw;
+  max-height: 85vh;
+  background: var(--bg-card);
+  backdrop-filter: blur(1.2500rem);
+  -webkit-backdrop-filter: blur(1.2500rem);
+  border: 0.0625rem solid var(--glass-border);
+  border-radius: 1.2500rem;
+  box-shadow: 0 1.5625rem 3.7500rem -0.9375rem rgba(0, 0, 0, 0.35), 0 0 0 0.0625rem rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: pkmModalPop 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes pkmModalPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.94) translateY(0.7500rem);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.pkm-detail-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg-header);
+  backdrop-filter: blur(1.0000rem);
+  -webkit-backdrop-filter: blur(1.0000rem);
+  border-bottom: 0.0625rem solid var(--glass-border);
+  padding: 1.0000rem 1.2500rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7500rem;
+}
+
+.pkm-detail-header-info {
+  display: flex;
+  align-items: center;
+  gap: 0.8750rem;
+}
+
+.pkm-detail-avatar-wrap {
+  width: 3.3750rem;
+  height: 3.3750rem;
+  border-radius: 0.8750rem;
+  background: var(--bg-card-hover);
+  border: 0.0625rem solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0.2500rem 0.6250rem rgba(0, 0, 0, 0.08);
+}
+
+.pkm-detail-avatar {
+  width: 2.7500rem;
+  height: 2.7500rem;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.pkm-detail-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1875rem;
+}
+
+.pkm-detail-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 0.3750rem;
+}
+
+.pkm-detail-number {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.pkm-detail-name {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.0187rem;
+}
+
+.pkm-detail-close-btn {
+  width: 2.2500rem;
+  height: 2.2500rem;
+  border-radius: 50%;
+  border: 0.0625rem solid var(--glass-border);
+  background: rgba(148, 163, 184, 0.12);
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.pkm-detail-close-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.3);
+  transform: rotate(90deg);
+}
+
+.pkm-detail-body {
+  padding: 1.2500rem;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1250rem;
+}
+
+/* 詳情卡區塊樣式 */
+.pkm-detail-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6250rem;
+}
+
+.pkm-detail-sec-title {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.3750rem;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.0312rem;
+}
+
+.pkm-detail-sec-title-icon {
+  font-size: 1rem;
+}
+
+/* 屬性與專長標籤群組 */
+.pkm-detail-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5000rem;
+  align-items: center;
+}
+
+/* 棲息地展示卡 */
+.pkm-detail-hab-card {
+  background: var(--bg-card-hover);
+  border: 0.0625rem solid var(--glass-border);
+  border-radius: 0.8750rem;
+  padding: 0.7500rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5000rem;
+  align-items: center;
+}
+
+.pkm-detail-hab-thumb {
+  width: 100%;
+  max-width: 22.5000rem;
+  aspect-ratio: 3 / 2;
+  border-radius: 0.6250rem;
+  overflow: hidden;
+  box-shadow: 0 0.2500rem 0.8750rem rgba(0, 0, 0, 0.12);
+}
+
+.pkm-detail-hab-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center bottom;
+  display: block;
+}
+
+/* 喜好結構化子區塊 (口味、環境、風格) */
+.pkm-pref-box {
+  background: var(--bg-card-hover);
+  border: 0.0625rem solid var(--glass-border);
+  border-radius: 0.8750rem;
+  padding: 0.8750rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5000rem;
+}
+
+.pkm-pref-box-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pkm-pref-bonus {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.pkm-pref-items-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3750rem;
+  margin-top: 0.2500rem;
+}
+
+.pkm-pref-item-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3125rem;
+  background: var(--bg-card);
+  border: 0.0625rem solid var(--glass-border);
+  border-radius: 0.5000rem;
+  padding: 0.2500rem 0.5000rem;
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+  box-shadow: 0 0.1250rem 0.2500rem rgba(0, 0, 0, 0.04);
+}
+
+.pkm-pref-item-badge img {
+  width: 1.3750rem;
+  height: 1.3750rem;
+  object-fit: contain;
+}
+
+/* 表格列點擊提示 */
+.pokemon-table td:nth-child(2),
+.pokemon-table td:nth-child(3) {
+  cursor: pointer !important;
+}
+
+.pokemon-table td:nth-child(2) .pkm-cell-identity,
+.pokemon-table td:nth-child(3) .pkm-avatar-cell {
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+.pokemon-table tr:hover td:nth-child(2) .pkm-table-name {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.pokemon-table tr:hover td:nth-child(3) .pkm-avatar-table-large {
+  transform: scale(1.1);
+}
+/* Desktop fluid references: clamp(64px, 5.5vw, 85px) avatar, clamp(170px, 16vw, 220px) preference */
+
+/* ==========================================================================
+   Mobile Responsive Rules (<= 640px / <= 40.0000rem)
+   手機端表格隱藏第 7 欄喜好、徹底消除左右滑動 (100% 滿版)、每列高度絕對均勻
+   底部升起個人百科詳情卡 (Bottom Sheet)
+   ========================================================================== */
+@media (max-width: 640px), (max-width: 40.0000rem) {
+  /* 1. 表格容器：100% 寬度，徹底消除左右滾動條 */
+  .table-container {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 0 !important;
+    position: relative !important;
+  }
+
+  /* 2. 徹底解除全站所有表格前兩格在手機端的 sticky 凍結鎖定 */
+  .data-table th:first-child,
+  .data-table td:first-child,
+  .pokemon-table th:first-child,
+  .pokemon-table td:first-child,
+  .pokemon-table th:nth-child(2),
+  .pokemon-table td:nth-child(2),
+  .storage-table th:first-child,
+  .storage-table td:first-child,
+  .storage-table th:nth-child(2),
+  .storage-table td:nth-child(2),
+  .habitat-52poke-table th:first-child,
+  .habitat-52poke-table td:first-child,
+  .habitat-52poke-table th:nth-child(2),
+  .habitat-52poke-table td:nth-child(2),
+  :root[data-theme="dark"] .data-table th:first-child,
+  :root[data-theme="dark"] .data-table td:first-child,
+  :root[data-theme="dark"] .pokemon-table th:first-child,
+  :root[data-theme="dark"] .pokemon-table td:first-child,
+  :root[data-theme="dark"] .pokemon-table th:nth-child(2),
+  :root[data-theme="dark"] .pokemon-table td:nth-child(2) {
+    position: static !important;
+    left: unset !important;
+    z-index: auto !important;
+    box-shadow: none !important;
+    width: auto;
+  }
+  .data-table td:first-child,
+  .pokemon-table td:first-child,
+  .pokemon-table td:nth-child(2),
+  .habitat-52poke-table td:first-child,
+  .habitat-52poke-table td:nth-child(2) {
+    background: transparent !important;
+  }
+
+  /* 3. 保留標準表格 HTML 架構（thead、tbody、tr、th、td） */
+  .data-table,
+  .storage-table,
+  .habitat-52poke-table {
+    display: table !important;
+    width: auto !important;
+    min-width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  .pokemon-table {
+    display: table !important;
+    table-layout: fixed !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  .pokemon-table thead,
+  .storage-table thead,
+  .habitat-52poke-table thead {
+    display: table-header-group !important;
+  }
+
+  .pokemon-table tbody,
+  .storage-table tbody,
+  .habitat-52poke-table tbody {
+    display: table-row-group !important;
+  }
+
+  .pokemon-table tr,
+  .storage-table tr,
+  .habitat-52poke-table tr {
+    display: table-row !important;
+  }
+
+  .pokemon-table th {
+    background: var(--pokemon-th-bg, #d1fae5) !important;
+    color: var(--pokemon-th-text, #065f46) !important;
+    border-bottom: 0.1250rem solid var(--pokemon-th-border, #6ee7b7) !important;
+    font-weight: 700 !important;
+    padding: 0.3750rem 0.0625rem !important;
+    font-size: 0.76rem !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    box-sizing: border-box !important;
+  }
+
+  .habitat-52poke-table th {
+    background: var(--hab-th-bg, #bae6fd) !important;
+    color: var(--hab-th-text, #0369a1) !important;
+    border-bottom: 0.1250rem solid var(--hab-th-border, #7dd3fc) !important;
+    font-weight: 700 !important;
+    padding: 0.3750rem 0.0625rem !important;
+    font-size: 0.76rem !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    box-sizing: border-box !important;
+  }
+
+  .pokemon-table td,
+  .storage-table td,
+  .habitat-52poke-table td {
+    display: table-cell !important;
+    vertical-align: middle !important;
+    border: none !important;
+    border-bottom: 0.0625rem solid var(--glass-border) !important;
+  }
+
+  /* 4. 關鍵突破：手機端表格隱藏第 7 欄喜好，前 6 欄完美填滿 100% 螢幕，徹底告別左右滑動！ */
+  .pokemon-table th:nth-child(7),
+  .pokemon-table td:nth-child(7) {
+    display: none !important;
+  }
+
+  /* 手機端簡化表頭文字：環境屬性 -> 環境，工作專長 -> 專長 */
+  .pokemon-table th:nth-child(4) {
+    font-size: 0 !important;
+  }
+  .pokemon-table th:nth-child(4)::after {
+    content: "環境" !important;
+    font-size: 0.76rem !important;
+    font-weight: 700 !important;
+  }
+  .pokemon-table th:nth-child(5) {
+    font-size: 0 !important;
+  }
+  .pokemon-table th:nth-child(5)::after {
+    content: "專長" !important;
+    font-size: 0.76rem !important;
+    font-weight: 700 !important;
+  }
+
+  /* ===== 手機端 6 欄百分比分配（等比縮放） ===== */
+
+  /* 欄位 1：勾選框 8% */
+  .pokemon-table th:nth-child(1),
+  .pokemon-table td:nth-child(1) {
+    width: 8% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    padding: 0.2500rem 0.0625rem !important;
+    text-align: center !important;
+  }
+  .pokemon-table td:nth-child(1) .checkbox-container {
+    margin: 0 auto !important;
+  }
+
+  /* 欄位 2：編號名稱 20% */
+  .pokemon-table th:nth-child(2),
+  .pokemon-table td:nth-child(2) {
+    width: 20% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    padding: 0.2500rem 0.1250rem !important;
+  }
+  .pokemon-table td:nth-child(2) .pkm-cell-identity {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.0625rem !important;
+    line-height: 1.15 !important;
+    white-space: normal !important;
+  }
+  .pokemon-table td:nth-child(2) .card-number {
+    font-size: 0.64rem !important;
+    letter-spacing: -0.0125rem !important;
+  }
+  .pokemon-table td:nth-child(2) .pkm-table-name {
+    font-size: 0.78rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  .pokemon-table td:nth-child(2) .tag-badge {
+    font-size: 0.60rem !important;
+    padding: 0.0625rem 0.1875rem !important;
+    align-self: flex-start !important;
+  }
+
+  /* 欄位 3：外觀頭像 18%（70% 填滿） */
+  .pokemon-table th:nth-child(3),
+  .pokemon-table td:nth-child(3) {
+    width: 18% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    padding: 0.2500rem 0.0625rem !important;
+    text-align: center !important;
+  }
+  .pokemon-table td:nth-child(3) .pkm-avatar-cell {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .pokemon-table td:nth-child(3) .pkm-avatar-table-large {
+    width: 70% !important;
+    max-width: 70% !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1 !important;
+    object-fit: contain !important;
+  }
+
+  /* 欄位 4：環境 13% */
+  .pokemon-table th:nth-child(4),
+  .pokemon-table td:nth-child(4) {
+    width: 13% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    padding: 0.2500rem 0.0625rem !important;
+    text-align: center !important;
+  }
+  .pokemon-table td:nth-child(4) .tag-env {
+    font-size: clamp(0.46rem, 1.8vw, 0.60rem) !important;
+    padding: clamp(0.0625rem, 0.4vw, 0.1875rem) clamp(0.1250rem, 0.8vw, 0.3125rem) !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    max-width: 95% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 欄位 5：專長 13% */
+  .pokemon-table th:nth-child(5),
+  .pokemon-table td:nth-child(5) {
+    width: 13% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    padding: 0.2500rem 0.0625rem !important;
+    text-align: center !important;
+  }
+  .pokemon-table td:nth-child(5) .spec-column-group {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.1250rem !important;
+    align-items: center !important;
+  }
+  .pokemon-table td:nth-child(5) .tag-specialty {
+    font-size: clamp(0.46rem, 1.8vw, 0.60rem) !important;
+    padding: clamp(0.0625rem, 0.4vw, 0.1875rem) clamp(0.1250rem, 0.8vw, 0.3125rem) !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    max-width: 95% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 欄位 6：棲息地 28%（剩餘空間） */
+  .pokemon-table th:nth-child(6),
+  .pokemon-table td:nth-child(6) {
+    width: 28% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    padding: 0.2500rem 0.1250rem !important;
+    text-align: center !important;
+  }
+  .pokemon-table td:nth-child(6) .pkm-table-hab-single-wrap,
+  .pokemon-table td:nth-child(6) .pkm-table-hab-carousel {
+    width: 80% !important;
+    max-width: 80% !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.1250rem !important;
+  }
+  .pokemon-table td:nth-child(6) .pkm-table-hab-thumb {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 0 !important;
+    padding-bottom: 66.67% !important; /* 3:2 比例，用 padding-bottom 百分比實現等比縮放 */
+    border-radius: 0.3750rem !important;
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
+    box-shadow: 0 0.1250rem 0.3750rem rgba(0, 0, 0, 0.12) !important;
+  }
+  .pokemon-table td:nth-child(6) .pkm-table-hab-thumb img {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center bottom !important;
+    display: block !important;
+  }
+  .pokemon-table td:nth-child(6) .pkm-table-hab-single-wrap .pkm-hab-bottom-bar {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0.0625rem 0 !important;
+    box-sizing: border-box !important;
+  }
+  .pokemon-table td:nth-child(6) .pkm-table-hab-single-wrap .pkm-hab-name-text {
+    font-size: 0.66rem !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    text-align: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+  }
+  .pokemon-table td:nth-child(6) .pkm-table-hab-carousel .pkm-hab-bottom-bar {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 0.0625rem 0 !important;
+    box-sizing: border-box !important;
+    gap: 0.1250rem !important;
+  }
+  .pokemon-table td:nth-child(6) .pkm-table-hab-carousel .pkm-hab-name-text {
+    font-size: 0.64rem !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    text-align: center !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+  }
+  .pokemon-table td:nth-child(6) .pkm-hab-arrow-btn {
+    width: 0.8750rem !important;
+    height: 0.8750rem !important;
+    font-size: 0.65rem !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+    flex-shrink: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* 5. 儲存庫分類表格響應式無捲動 4 欄比例分配 (22% / 18% / 36% / 24%) */
+  .storage-table {
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+  .storage-table th {
+    background: var(--storage-th-bg, #ede9fe) !important;
+    color: var(--storage-th-text, #5b21b6) !important;
+    border-bottom: 0.1250rem solid var(--storage-th-border, #c4b5fd) !important;
+    font-weight: 700 !important;
+    padding: 0.3750rem 0.1250rem !important;
+    font-size: 0.76rem !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    box-sizing: border-box !important;
+  }
+  .storage-table td {
+    padding: 0.2500rem 0.1250rem !important;
+    font-size: 0.76rem !important;
+    vertical-align: top !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 欄位 1：分類名稱 22% */
+  .storage-table th:nth-child(1),
+  .storage-table td.col-storage-name {
+    width: 22% !important;
+    padding: 0.2500rem 0.1250rem !important;
+  }
+  .storage-table .storage-cat-title-group {
+    white-space: normal !important;
+    line-height: 1.25 !important;
+  }
+  .storage-table .storage-cat-title {
+    font-size: clamp(0.65rem, 2.4vw, 0.85rem) !important;
+    display: inline-block !important;
+  }
+
+  /* 欄位 2：子分類 18% */
+  .storage-table th:nth-child(2),
+  .storage-table td.col-storage-sub {
+    width: 18% !important;
+    padding: 0.2500rem 0.1250rem !important;
+  }
+  .storage-table .sub-cat-title {
+    font-size: clamp(0.60rem, 2.2vw, 0.78rem) !important;
+    line-height: 1.25 !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+  }
+
+  /* 欄位 3：收納物品細項 36% */
+  .storage-table th:nth-child(3),
+  .storage-table td.col-storage-items {
+    width: 36% !important;
+    padding: 0.2500rem 0.1250rem !important;
+  }
+  .storage-table .storage-items-wrap {
+    gap: 0.1250rem !important;
+  }
+  .storage-table .storage-items-wrap .item-pill {
+    font-size: clamp(0.52rem, 1.9vw, 0.68rem) !important;
+    padding: clamp(0.0625rem, 0.3vw, 0.1250rem) clamp(0.1250rem, 0.6vw, 0.3125rem) !important;
+    white-space: nowrap !important;
+    display: inline-block !important;
+    line-height: 1.2 !important;
+  }
+
+  /* 欄位 4：整理說明備註 24% */
+  .storage-table th:nth-child(4),
+  .storage-table td.col-storage-note {
+    width: 24% !important;
+    padding: 0.2500rem 0.1250rem !important;
+  }
+  .storage-table .storage-note-text {
+    font-size: clamp(0.50rem, 1.8vw, 0.65rem) !important;
+    line-height: 1.3 !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+  }
+
+  /* 6. 棲息地總覽表格響應式無捲動 4 欄比例分配 (16% / 36% / 22% / 30%) */
+  .habitat-52poke-table {
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+  .habitat-52poke-table th,
+  .habitat-52poke-table td {
+    padding: 0.2500rem 0.0625rem !important;
+    font-size: 0.76rem !important;
+    vertical-align: middle !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+  }
+
+  /* 欄位 1：棲息地 (編號 + 名稱 + 標籤) 16% */
+  .habitat-52poke-table th:nth-child(1),
+  .habitat-52poke-table td.col-hab-identity {
+    width: 16% !important;
+    text-align: center !important;
+    padding: 0.2500rem 0.0625rem !important;
+  }
+  .habitat-52poke-table .table-hab-id-cell {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.1250rem !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+  }
+  .habitat-52poke-table .table-hab-id-cell .hab-num-pill {
+    font-size: clamp(0.48rem, 1.8vw, 0.62rem) !important;
+    padding: 0.0625rem 0.1875rem !important;
+    margin: 0 auto !important;
+  }
+  .habitat-52poke-table .table-hab-id-cell .table-hab-name-zh {
+    font-size: clamp(0.56rem, 2.1vw, 0.72rem) !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+    line-height: 1.15 !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    width: 100% !important;
+  }
+  .habitat-52poke-table .table-hab-tags-row {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.0625rem !important;
+    align-items: center !important;
+    width: 100% !important;
+  }
+  .habitat-52poke-table .table-hab-tags-row .tag-badge {
+    font-size: clamp(0.40rem, 1.5vw, 0.52rem) !important;
+    padding: 0.0313rem 0.1250rem !important;
+    white-space: nowrap !important;
+  }
+
+  /* 欄位 2：外觀 (實機大圖) 36% */
+  .habitat-52poke-table th:nth-child(2),
+  .habitat-52poke-table td.col-hab-appearance {
+    width: 36% !important;
+    text-align: center !important;
+    padding: 0.2500rem 0.0625rem !important;
+  }
+  .habitat-52poke-table .table-hab-appearance-cell {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .habitat-52poke-table .table-hab-thumb-wrap {
+    width: 80% !important;
+    max-width: 80% !important;
+    aspect-ratio: 3 / 2 !important;
+    height: 0 !important;
+    padding-bottom: 53.33% !important; /* 80% * 2/3 = 53.33% (3:2 等比縮放) */
+    position: relative !important;
+    border-radius: 0.3750rem !important;
+    overflow: hidden !important;
+    margin: 0 auto !important;
+    box-shadow: 0 0.1250rem 0.3750rem rgba(0, 0, 0, 0.12) !important;
+  }
+  .habitat-52poke-table .table-hab-thumb-wrap img {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center bottom !important;
+  }
+
+  /* 欄位 3：擺設條件 22% */
+  .habitat-52poke-table th:nth-child(3),
+  .habitat-52poke-table td.col-hab-details {
+    width: 22% !important;
+    padding: 0.2500rem 0.0625rem !important;
+  }
+  .habitat-52poke-table .table-hab-detail-box {
+    font-size: clamp(0.48rem, 1.9vw, 0.65rem) !important;
+    line-height: 1.25 !important;
+    padding-right: 0 !important;
+  }
+  .habitat-52poke-table .hab-detail-line {
+    margin-bottom: 0.1250rem !important;
+  }
+
+  /* 欄位 4：可吸引寶可夢 30%（放大寶可夢圖標與小勾勾） */
+  .habitat-52poke-table th:nth-child(4),
+  .habitat-52poke-table td.col-hab-pokemons {
+    width: 30% !important;
+    padding: 0.2500rem 0.0625rem !important;
+    text-align: center !important;
+  }
+  .habitat-52poke-table .table-pkm-icon-grid {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.1875rem !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+  .habitat-52poke-table .hab-pkm-icon-btn {
+    width: clamp(1.4500rem, 6.5vw, 2.1500rem) !important;
+    height: clamp(1.4500rem, 6.5vw, 2.1500rem) !important;
+  }
+  .habitat-52poke-table .hab-pkm-icon-btn img {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  /* 7. 手機端寶可夢個人百科詳情卡改為底部滑出抽屜 (Bottom Sheet) */
+  .pkm-detail-modal {
+    align-items: flex-end !important;
+  }
+
+  .pkm-detail-card {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    max-height: 86vh !important;
+    border-radius: 1.3750rem 1.3750rem 0 0 !important;
+    border-bottom: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    animation: pkmSheetUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  @keyframes pkmSheetUp {
+    0% {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* === 手機端移除 hover 深色背景（行動裝置無滑鼠，避免點擊後殘留色塊）=== */
+  .habitat-52poke-table tbody tr:hover,
+  .habitat-52poke-table tbody tr:active {
+    background: transparent !important;
+  }
+
+  /* 已解鎖完成列維持純淨原底色，無綠色色塊 */
+  .habitat-52poke-table tbody tr.habitat-row-completed:hover,
+  .habitat-52poke-table tbody tr.habitat-row-completed:active {
+    background: transparent !important;
+  }
+
+  .habitat-catalog-card:hover,
+  .habitat-catalog-card:active {
+    transform: none !important;
+    background: transparent !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    box-shadow: none !important;
+  }
+
+  .habitat-catalog-card.completed:hover,
+  .habitat-catalog-card.completed:active {
+    background: transparent !important;
+    border-color: rgba(16, 185, 129, 0.4) !important;
+    opacity: 0.85 !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
+
+/* ==========================================================================
+   終局自動化農場規劃專區 (End-Game Auto Farm Styles)
+   ========================================================================== */
+
+/* 頂部快捷專屬按鈕 (稻穗金黃質感) */
+.autofarm-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.875rem;
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.15) 0%, rgba(202, 138, 4, 0.25) 100%);
+  border: 1px solid rgba(234, 179, 8, 0.4);
+  border-radius: 9999px;
+  color: #eab308;
+  font-size: 0.825rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(234, 179, 8, 0.15);
+}
+
+.autofarm-nav-btn:hover {
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.25) 0%, rgba(202, 138, 4, 0.4) 100%);
+  border-color: #facc15;
+  color: #fef08a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(234, 179, 8, 0.28);
+}
+
+.autofarm-nav-btn.active {
+  background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+  color: #1a1500;
+  border-color: #fef08a;
+  box-shadow: 0 4px 16px rgba(234, 179, 8, 0.4);
+}
+
+.autofarm-badge {
+  background: rgba(234, 179, 8, 0.2) !important;
+  color: #eab308 !important;
+  border: 1px solid rgba(234, 179, 8, 0.3) !important;
+}
+
+/* 終局農場主視圖全寬容器 */
+.autofarm-section {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 1.25rem 0.5rem 3rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+/* ==========================================================================
+   終局農場精緻現代 Page Header (Compact & High-end)
+   ========================================================================== */
+.autofarm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  padding: 0.5rem 0.25rem 0.85rem 0.25rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.autofarm-header-left {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.625rem 0.875rem;
+}
+
+.autofarm-page-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.015em;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.autofarm-tag-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.18rem 0.55rem;
+  border-radius: 9999px;
+  background: rgba(245, 158, 11, 0.12);
+  color: #b45309;
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+[data-theme="dark"] .autofarm-tag-pill {
+  background: rgba(245, 158, 11, 0.16);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+.autofarm-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.autofarm-meta-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--pill-bg);
+  border: 1px solid var(--border-color);
+  padding: 0.2rem 0.55rem;
+  border-radius: 0.4rem;
+  white-space: nowrap;
+}
+
+/* 進度條卡片 */
+.autofarm-progress-card {
+  flex: 0 0 320px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.125rem 1.25rem;
+  border-radius: 0.875rem;
+  box-sizing: border-box;
+}
+
+[data-theme="light"] .autofarm-progress-card {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(202, 138, 4, 0.2);
+}
+
+.autofarm-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.625rem;
+}
+
+.autofarm-progress-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.autofarm-progress-num {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #eab308;
+  font-family: 'Outfit', sans-serif;
+}
+
+.autofarm-progress-bar-bg {
+  width: 100%;
+  height: 0.625rem;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+[data-theme="light"] .autofarm-progress-bar-bg {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.autofarm-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ca8a04 0%, #eab308 50%, #facc15 100%);
+  border-radius: 9999px;
+  transition: width 0.4s ease;
+}
+
+.autofarm-progress-stats {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.autofarm-stat-chip {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.2rem 0.55rem;
+  border-radius: 0.375rem;
+}
+
+[data-theme="light"] .autofarm-stat-chip {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* 7 大模組網格佈局 */
+.autofarm-modules-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+/* 單個流水線模組卡片 */
+.autofarm-card {
+  background: var(--card-bg, rgba(30, 41, 59, 0.55));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.125rem;
+  padding: 1.625rem 1.75rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+[data-theme="light"] .autofarm-card {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+}
+
+.autofarm-card:hover {
+  border-color: rgba(234, 179, 8, 0.35);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22);
+}
+
+.autofarm-card-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+[data-theme="light"] .autofarm-card-header {
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+.autofarm-card-header-top {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-bottom: 0.45rem;
+}
+
+.autofarm-part-badge {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 0.2rem 0.6rem;
+  background: #eab308;
+  color: #181200;
+  border-radius: 0.375rem;
+  letter-spacing: 0.04em;
+}
+
+.autofarm-category-badge {
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  border-radius: 0.375rem;
+}
+
+[data-theme="light"] .autofarm-category-badge {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.autofarm-card-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0.25rem 0 0.35rem 0;
+}
+
+.autofarm-card-tagline {
+  font-size: 0.88rem;
+  color: #38bdf8;
+  margin: 0;
+  font-weight: 500;
+}
+
+[data-theme="light"] .autofarm-card-tagline {
+  color: #0284c7;
+}
+
+.autofarm-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.autofarm-sub-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.autofarm-sub-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+/* 作業寶可夢網格 */
+.autofarm-pkm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.875rem;
+}
+
+.autofarm-pkm-badge {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+[data-theme="light"] .autofarm-pkm-badge {
+  background: rgba(0, 0, 0, 0.025);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.autofarm-pkm-badge:hover {
+  transform: translateY(-2px);
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15);
+}
+
+.autofarm-pkm-badge:active {
+  transform: translateY(0);
+}
+
+.autofarm-pkm-avatar-wrap {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 0.625rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="light"] .autofarm-pkm-avatar-wrap {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.autofarm-pkm-sprite {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+.autofarm-pkm-info {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.autofarm-pkm-top {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-bottom: 0.2rem;
+}
+
+.autofarm-pkm-no {
+  font-size: 0.72rem;
+  font-family: 'Outfit', sans-serif;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.autofarm-pkm-name {
+  font-size: 0.92rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.autofarm-pkm-spec {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #a78bfa;
+  margin-bottom: 0.2rem;
+}
+
+[data-theme="light"] .autofarm-pkm-spec {
+  color: #7c3aed;
+}
+
+.autofarm-pkm-role {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.35;
+  margin-bottom: 0.25rem;
+}
+
+.autofarm-pkm-comfort {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.comfort-highlight {
+  color: #fbbf24;
+  font-weight: 600;
+}
+
+[data-theme="light"] .comfort-highlight {
+  color: #b45309;
+}
+
+.autofarm-no-pkm {
+  padding: 0.75rem 1rem;
+  background: rgba(14, 165, 233, 0.08);
+  border: 1px dashed rgba(14, 165, 233, 0.3);
+  border-radius: 0.625rem;
+  color: #38bdf8;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* 必備道具列（高解析圖片展示） */
+.autofarm-items-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.autofarm-item-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.625rem;
+  padding: 0.45rem 0.75rem 0.45rem 0.5rem;
+  transition: all 0.2s ease;
+}
+
+[data-theme="light"] .autofarm-item-chip {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.autofarm-item-chip:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(234, 179, 8, 0.3);
+  transform: translateY(-1px);
+}
+
+.autofarm-item-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.autofarm-item-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.autofarm-item-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.autofarm-item-qty {
+  font-size: 0.72rem;
+  color: #eab308;
+  font-weight: 600;
+}
+
+/* 建造步驟列表 */
+.autofarm-steps-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.autofarm-step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.autofarm-step-idx {
+  flex-shrink: 0;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 50%;
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Outfit', sans-serif;
+  margin-top: 0.1rem;
+}
+
+[data-theme="light"] .autofarm-step-idx {
+  background: rgba(2, 132, 199, 0.15);
+  color: #0284c7;
+}
+
+/* 避坑重點提示盒 */
+.autofarm-tips-box {
+  background: rgba(234, 179, 8, 0.08);
+  border-left: 3px solid #eab308;
+  border-radius: 0.5rem;
+  padding: 0.875rem 1rem;
+}
+
+[data-theme="light"] .autofarm-tips-box {
+  background: rgba(234, 179, 8, 0.12);
+}
+
+.autofarm-tips-title {
+  font-size: 0.825rem;
+  font-weight: 800;
+  color: #facc15;
+  margin-bottom: 0.5rem;
+}
+
+[data-theme="light"] .autofarm-tips-title {
+  color: #854d0e;
+}
+
+.autofarm-tip-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  margin-bottom: 0.35rem;
+}
+
+.autofarm-tip-row:last-child {
+  margin-bottom: 0;
+}
+
+.autofarm-tip-icon {
+  flex-shrink: 0;
+  font-size: 0.85rem;
+}
+
+/* Checklist 驗收群組 */
+.autofarm-checklist-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.autofarm-chk-label {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.55rem 0.875rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+[data-theme="light"] .autofarm-chk-label {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+.autofarm-chk-label:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(234, 179, 8, 0.3);
+}
+
+.autofarm-chk-label.is-checked {
+  background: rgba(16, 185, 129, 0.08);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.autofarm-chk-label.is-checked .autofarm-chk-text {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.autofarm-chk-input {
+  display: none;
+}
+
+.autofarm-chk-custom {
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 0.3rem;
+  border: 2px solid var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.autofarm-chk-label.is-checked .autofarm-chk-custom {
+  background: #10b981;
+  border-color: #10b981;
+}
+
+.autofarm-chk-label.is-checked .autofarm-chk-custom::after {
+  content: '✓';
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+
+.autofarm-chk-text {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.4;
+  transition: color 0.2s ease;
+}
+
+@media (max-width: 768px) {
+  .autofarm-header {
+    padding: 0.35rem 0 0.75rem 0;
+    margin-bottom: 1rem;
+  }
+  .autofarm-page-title {
+    font-size: 1.1rem;
+  }
+  .autofarm-card {
+    padding: 1.25rem 1rem;
+  }
+  .autofarm-pkm-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   我的收納盒 (Custom Storage Box Organizer & Reverse Lookup)
+   ========================================================================== */
+.custom-storage-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.875rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(217, 119, 6, 0.25) 100%);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #f59e0b;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);
+}
+
+.custom-storage-nav-btn:hover {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(217, 119, 6, 0.35) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+}
+
+.custom-storage-nav-btn.active {
+  background: #f59e0b;
+  color: #ffffff;
+  border-color: #d97706;
+}
+
+.custom-storage-badge {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.375rem;
+}
+
+/* 頂部反查與操作列 */
+.cs-top-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  background: var(--bg-card);
+  padding: 0.875rem 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.cs-search-box {
+  flex: 1 1 320px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 0.75rem;
+  padding: 0.5rem 0.875rem;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.cs-search-box:focus-within {
+  border-color: var(--primary-indigo);
+  box-shadow: 0 0 0 3px var(--primary-indigo-glow);
+}
+
+.cs-search-icon {
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+.cs-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+
+.cs-clear-search-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  padding: 0.125rem 0.375rem;
+  border-radius: 50%;
+}
+
+.cs-clear-search-btn:hover {
+  color: var(--text-primary);
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.cs-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cs-primary-btn {
+  background: var(--primary-indigo);
+  color: #ffffff;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+}
+
+.cs-primary-btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.cs-secondary-btn {
+  background: var(--pill-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--pill-border);
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.cs-secondary-btn:hover {
+  border-color: var(--primary-indigo);
+  color: var(--primary-indigo);
+}
+
+/* 反查結果橫幅 */
+.cs-search-banner {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(5, 150, 105, 0.2) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+  color: #065f46;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  animation: fadeIn 0.25s ease;
+}
+
+[data-theme="dark"] .cs-search-banner {
+  color: #6ee7b7;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.3) 100%);
+}
+
+.cs-search-banner.not-found {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.18) 100%);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #991b1b;
+}
+
+[data-theme="dark"] .cs-search-banner.not-found {
+  color: #fca5a5;
+}
+
+/* 主體佈局 */
+.cs-main-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 1.25rem;
+  align-items: start;
+  min-width: 0;
+  position: relative;
+}
+
+@media (max-width: 1024px) {
+  .cs-main-layout {
+    display: block;
+    min-width: 0;
+  }
+}
+
+/* 收納盒網格 (自適應抗裁切) */
+.cs-boxes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: 1rem;
+  min-width: 0;
+  width: 100%;
+}
+
+/* 單一收納盒卡片 */
+.cs-box-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-normal);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.cs-box-card:hover {
+  border-color: var(--primary-indigo);
+  box-shadow: var(--shadow-md);
+}
+
+.cs-box-card.is-active-target {
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.4), var(--shadow-md);
+}
+
+.cs-box-card.is-active-target::after {
+  content: '🎯 接收中';
+  position: absolute;
+  top: -0.6rem;
+  right: 1rem;
+  background: linear-gradient(135deg, #0ea5e9, #2563eb);
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  box-shadow: 0 2px 6px rgba(14, 165, 233, 0.4);
+  pointer-events: none;
+  animation: fadeInDown 0.3s ease;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.cs-box-card.card-reorder-over {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35) !important;
+  transform: translateY(-3px);
+}
+
+.cs-box-card.drag-over {
+  border: 2px dashed #f59e0b !important;
+  background: rgba(245, 158, 11, 0.06);
+  transform: scale(1.01);
+}
+
+.cs-box-card.highlight-pulse {
+  border: 2px solid #10b981 !important;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.3), var(--shadow-lg);
+  animation: pulseGlow 1.8s infinite;
+}
+
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); }
+  70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.cs-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.cs-box-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.cs-box-drag-handle {
+  cursor: grab;
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0.15rem 0.25rem;
+  border-radius: 0.25rem;
+  user-select: none;
+  transition: all var(--transition-fast);
+}
+
+.cs-box-drag-handle:hover {
+  color: var(--primary-indigo);
+  background: var(--input-bg);
+}
+
+.cs-box-drag-handle:active {
+  cursor: grabbing;
+}
+
+.cs-box-no-badge {
+  background: rgba(245, 158, 11, 0.18);
+  color: #d97706;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 0.8rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.4rem;
+  white-space: nowrap;
+}
+
+[data-theme="dark"] .cs-box-no-badge {
+  color: #fbbf24;
+}
+
+.cs-box-name-input {
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.375rem;
+  flex: 1;
+  min-width: 0;
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.cs-box-name-input:hover,
+.cs-box-name-input:focus {
+  border-color: var(--input-border);
+  background: var(--input-bg);
+}
+
+.cs-box-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.cs-box-btn-icon {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.25rem 0.375rem;
+  border-radius: 0.375rem;
+  font-size: 0.82rem;
+  transition: all var(--transition-fast);
+}
+
+.cs-box-btn-icon:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.btn-cs-move-left:hover,
+.btn-cs-move-right:hover {
+  color: #0284c7 !important;
+  background: rgba(2, 132, 199, 0.12) !important;
+}
+
+/* 物品放置區 (Drop Zone) */
+.cs-drop-zone {
+  min-height: 120px;
+  background: var(--input-bg);
+  border: 1px dashed var(--border-color);
+  border-radius: 0.75rem;
+  padding: 0.625rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.cs-drop-empty {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  cursor: pointer;
+  text-align: center;
+  gap: 0.25rem;
+  border-radius: 0.5rem;
+  transition: all var(--transition-fast);
+}
+
+.cs-drop-empty:hover {
+  color: var(--primary-indigo);
+  background: rgba(99, 102, 241, 0.05);
+}
+
+/* 放置區快捷新增物品按鈕 */
+.cs-box-add-item-btn {
+  width: 52px;
+  height: 52px;
+  border: 2px dashed var(--border-color);
+  background: transparent;
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: all var(--transition-fast);
+}
+
+.cs-box-add-item-btn:hover {
+  border-color: #38bdf8;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.08);
+  transform: translateY(-2px);
+}
+
+.cs-add-item-icon {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.cs-add-item-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+/* 盒內物品徽章 */
+.cs-box-item {
+  width: 52px;
+  height: 52px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all var(--transition-fast);
+  cursor: default;
+}
+
+.cs-box-item:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary-indigo);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+}
+
+.cs-box-item.is-match {
+  border-color: #10b981;
+  box-shadow: 0 0 0 2px #10b981;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.cs-box-item-img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  image-rendering: -webkit-optimize-contrast;
+  pointer-events: none;
+}
+
+.cs-box-item-remove {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ef4444;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  line-height: 1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  z-index: 2;
+}
+
+.cs-box-item:hover .cs-box-item-remove {
+  display: flex;
+}
+
+/* 右側物品素材庫托盤 */
+.cs-item-tray {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 5rem;
+  max-height: calc(100vh - 6.5rem);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.cs-tray-drag-handle {
+  display: none;
+}
+
+.cs-tray-close-btn {
+  display: none;
+}
+
+.cs-tray-backdrop {
+  display: none;
+}
+
+.cs-tray-header {
+  margin-bottom: 0.625rem;
+  min-width: 0;
+}
+
+.cs-tray-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.cs-tray-badge {
+  font-size: 0.72rem;
+  background: var(--pill-bg);
+  color: var(--text-sub);
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid var(--pill-border);
+}
+
+.cs-tray-search {
+  width: 100%;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  border-radius: 0.625rem;
+  padding: 0.375rem 0.625rem;
+  font-size: 0.82rem;
+  outline: none;
+  color: var(--text-primary);
+  box-sizing: border-box;
+}
+
+.cs-tray-search:focus {
+  border-color: var(--primary-indigo);
+}
+
+/* 素材庫分類滾動膠囊標籤列 (防裁切平滑滑動) */
+.cs-tray-pills {
+  display: flex;
+  gap: 0.35rem;
+  overflow-x: auto;
+  padding: 0.5rem 0.1rem 0.25rem 0.1rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  min-width: 0;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cs-tray-pills::-webkit-scrollbar {
+  display: none;
+}
+
+.cs-tray-pill {
+  flex-shrink: 0;
+  border: 1px solid var(--border-color);
+  background: var(--input-bg);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.cs-tray-pill:hover {
+  border-color: var(--primary-indigo);
+  color: var(--primary-indigo);
+}
+
+.cs-tray-pill.active {
+  background: var(--primary-indigo);
+  border-color: var(--primary-indigo);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.35);
+}
+
+[data-theme="dark"] .cs-tray-pill.active {
+  background: #6366f1;
+  color: #ffffff;
+}
+
+.cs-tray-pill-count {
+  font-size: 0.68rem;
+  opacity: 0.85;
+}
+
+.cs-tray-target-hint {
+  margin-top: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 0.5rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #0284c7;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all var(--transition-normal);
+}
+
+[data-theme="dark"] .cs-tray-target-hint {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.15);
+  border-color: rgba(56, 189, 248, 0.35);
+}
+
+.cs-tray-target-hint.target-hint-highlight {
+  background: rgba(56, 189, 248, 0.28);
+  transform: scale(1.02);
+}
+
+.cs-tray-hint {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+  margin-bottom: 0.625rem;
+  padding: 0.375rem 0.5rem;
+  background: rgba(245, 158, 11, 0.08);
+  border-radius: 0.375rem;
+  border-left: 3px solid #f59e0b;
+}
+
+.cs-tray-grid {
+  flex: 1;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+  gap: 0.375rem;
+  padding-right: 0.25rem;
+  max-height: 520px;
+}
+
+.cs-tray-item {
+  width: 46px;
+  height: 46px;
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  transition: all var(--transition-fast);
+  position: relative;
+  user-select: none;
+}
+
+.cs-tray-item:hover {
+  border-color: var(--primary-indigo);
+  transform: scale(1.08);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  z-index: 2;
+}
+
+.cs-tray-item:active {
+  cursor: grabbing;
+}
+
+.cs-tray-item img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   收納盒頁面響應式抽屜 (Responsive Drawer / Bottom Sheet for Mobile)
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .cs-tray-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-normal);
+  }
+
+  .cs-tray-backdrop.is-active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .cs-item-tray {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+    max-height: 82vh;
+    border-radius: 1.25rem 1.25rem 0 0;
+    border: 1px solid var(--border-color);
+    border-bottom: none;
+    background: var(--bg-card);
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+    transform: translateY(100%);
+    transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+    padding: 0.75rem 1rem 1.5rem 1rem;
+    pointer-events: none;
+    visibility: hidden;
+  }
+
+  .cs-item-tray.drawer-open {
+    transform: translateY(0);
+    pointer-events: auto;
+    visibility: visible;
+  }
+
+  .cs-tray-drag-handle {
+    display: block;
+    width: 38px;
+    height: 4px;
+    background: var(--border-color);
+    border-radius: 9999px;
+    margin: 0 auto 0.625rem auto;
+  }
+
+  .cs-tray-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0.65rem;
+    right: 0.875rem;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--pill-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    z-index: 10;
+  }
+
+  .cs-tray-close-btn:hover {
+    color: var(--text-primary);
+    background: var(--input-bg);
+  }
+
+  .cs-tray-grid {
+    max-height: 46vh;
+  }
+}
+
+@media (max-width: 640px) {
+  .cs-top-bar {
+    padding: 0.75rem;
+    gap: 0.5rem;
+  }
+  .cs-search-box {
+    flex: 1 1 100%;
+  }
+  .cs-actions-row {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .cs-primary-btn,
+  .cs-secondary-btn {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+    padding: 0.45rem 0.6rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* 自訂收納盒操作輕量 Toast 提示 */
+.cs-toast-container {
+  position: fixed;
+  bottom: 5.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+.cs-toast {
+  background: rgba(18, 26, 43, 0.92);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transform: translateY(10px) scale(0.95);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: auto;
+}
+
+.cs-toast.cs-toast-show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.cs-toast-info {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+}
+

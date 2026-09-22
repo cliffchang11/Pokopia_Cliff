@@ -1,0 +1,5642 @@
+[
+  {
+    "start": 0.0,
+    "duration": 5.2,
+    "text": "Today, we are talking about my perfect"
+  },
+  {
+    "start": 2.24,
+    "duration": 5.84,
+    "text": "end game Pokopia farm. It farms every"
+  },
+  {
+    "start": 5.2,
+    "duration": 4.92,
+    "text": "possible material from metal to clay to"
+  },
+  {
+    "start": 8.08,
+    "duration": 4.64,
+    "text": "bricks to everything that Pokémon"
+  },
+  {
+    "start": 10.12,
+    "duration": 4.08,
+    "text": "potentially litter to lumber to crops to"
+  },
+  {
+    "start": 12.72,
+    "duration": 2.96,
+    "text": "paints [music] to berries. And more"
+  },
+  {
+    "start": 14.2,
+    "duration": 4.04,
+    "text": "importantly, if you check the Poki"
+  },
+  {
+    "start": 15.68,
+    "duration": 4.72,
+    "text": "center, I am currently 10 out of 10 max"
+  },
+  {
+    "start": 18.24,
+    "duration": 4.44,
+    "text": "environment level with every single"
+  },
+  {
+    "start": 20.4,
+    "duration": 4.32,
+    "text": "Pokémon in awesome. And the reason why"
+  },
+  {
+    "start": 22.68,
+    "duration": 4.32,
+    "text": "math is important here is because it's a"
+  },
+  {
+    "start": 24.72,
+    "duration": 5.36,
+    "text": "really challenging problem to solve"
+  },
+  {
+    "start": 27.0,
+    "duration": 5.4,
+    "text": "given the constraints of the perfect end"
+  },
+  {
+    "start": 30.08,
+    "duration": 4.24,
+    "text": "game Pokopia farm. And let me explain."
+  },
+  {
+    "start": 32.4,
+    "duration": 5.08,
+    "text": "There's a few requirements I think the"
+  },
+  {
+    "start": 34.32,
+    "duration": 5.88,
+    "text": "perfect farm needs to satisfy. The first"
+  },
+  {
+    "start": 37.48,
+    "duration": 4.68,
+    "text": "is you cannot use more than 22 Pokémon"
+  },
+  {
+    "start": 40.2,
+    "duration": 4.32,
+    "text": "in your zone. Meaning for your entire"
+  },
+  {
+    "start": 42.16,
+    "duration": 5.08,
+    "text": "farm, you cannot have more than 22"
+  },
+  {
+    "start": 44.52,
+    "duration": 4.52,
+    "text": "Pokémon. If you have more than 22, the"
+  },
+  {
+    "start": 47.24,
+    "duration": 3.96,
+    "text": "game would force some of them to"
+  },
+  {
+    "start": 49.04,
+    "duration": 4.44,
+    "text": "despawn. This is part of Pokopia's way"
+  },
+  {
+    "start": 51.2,
+    "duration": 4.4,
+    "text": "to ensure that it has a stable frame"
+  },
+  {
+    "start": 53.48,
+    "duration": 4.24,
+    "text": "rate. However, the problem is if they"
+  },
+  {
+    "start": 55.6,
+    "duration": 4.64,
+    "text": "despawn a very important Pokémon, let's"
+  },
+  {
+    "start": 57.72,
+    "duration": 5.4,
+    "text": "say Charmander or any of my fire Pokémon"
+  },
+  {
+    "start": 60.24,
+    "duration": 5.32,
+    "text": "that's able to craft ingots for iron,"
+  },
+  {
+    "start": 63.12,
+    "duration": 4.04,
+    "text": "then if I have the raw material, which"
+  },
+  {
+    "start": 65.56,
+    "duration": 4.32,
+    "text": "is the iron ore, then there's no one to"
+  },
+  {
+    "start": 67.16,
+    "duration": 5.16,
+    "text": "process it into iron ingots. That"
+  },
+  {
+    "start": 69.88,
+    "duration": 4.12,
+    "text": "results in your output dropping for your"
+  },
+  {
+    "start": 72.32,
+    "duration": 4.52,
+    "text": "production farm. So, if you want to"
+  },
+  {
+    "start": 74.0,
+    "duration": 5.0,
+    "text": "maximize production, you cannot risk any"
+  },
+  {
+    "start": 76.84,
+    "duration": 4.72,
+    "text": "Pokémon jeopardizing kind of the"
+  },
+  {
+    "start": 79.0,
+    "duration": 5.76,
+    "text": "stability of the production chain. So,"
+  },
+  {
+    "start": 81.56,
+    "duration": 4.8,
+    "text": "22 is the maximum you can use in terms"
+  },
+  {
+    "start": 84.76,
+    "duration": 4.72,
+    "text": "of Pokémon for the farm. And to be"
+  },
+  {
+    "start": 86.36,
+    "duration": 5.24,
+    "text": "clear, this is 22 Pokémon excluding"
+  },
+  {
+    "start": 89.48,
+    "duration": 4.08,
+    "text": "yourself Ditto, which is you can see the"
+  },
+  {
+    "start": 91.6,
+    "duration": 4.28,
+    "text": "third in the first row. Then that brings"
+  },
+  {
+    "start": 93.56,
+    "duration": 6.32,
+    "text": "the second problem because if you use a"
+  },
+  {
+    "start": 95.88,
+    "duration": 7.04,
+    "text": "maximum of 22, then you need to get all"
+  },
+  {
+    "start": 99.88,
+    "duration": 5.08,
+    "text": "of their comfort levels up in order to"
+  },
+  {
+    "start": 102.92,
+    "duration": 3.92,
+    "text": "be possible to attain the max"
+  },
+  {
+    "start": 104.96,
+    "duration": 4.44,
+    "text": "environmental level for the zone, which"
+  },
+  {
+    "start": 106.84,
+    "duration": 5.64,
+    "text": "is 10. Now, this then results in a"
+  },
+  {
+    "start": 109.4,
+    "duration": 5.88,
+    "text": "mathematical problem because if let's"
+  },
+  {
+    "start": 112.48,
+    "duration": 3.52,
+    "text": "say you randomly pick Pokémon for let's"
+  },
+  {
+    "start": 115.28,
+    "duration": 3.2,
+    "text": "say [music]"
+  },
+  {
+    "start": 116.0,
+    "duration": 5.08,
+    "text": "your brick and your clay farm and your"
+  },
+  {
+    "start": 118.48,
+    "duration": 4.84,
+    "text": "iron ore and your iron ingot farm, and"
+  },
+  {
+    "start": 121.08,
+    "duration": 4.32,
+    "text": "then the resulting kind of litter farm,"
+  },
+  {
+    "start": 123.32,
+    "duration": 3.52,
+    "text": "which is all these six materials, as"
+  },
+  {
+    "start": 125.4,
+    "duration": 4.76,
+    "text": "well as your lumber farm. If you"
+  },
+  {
+    "start": 126.84,
+    "duration": 5.44,
+    "text": "randomly pick them, the problem is their"
+  },
+  {
+    "start": 130.16,
+    "duration": 4.52,
+    "text": "habitats and their preferences for"
+  },
+  {
+    "start": 132.28,
+    "duration": 5.56,
+    "text": "furnishing and decorations and toys,"
+  },
+  {
+    "start": 134.68,
+    "duration": 5.12,
+    "text": "they might conflict. A good example is"
+  },
+  {
+    "start": 137.84,
+    "duration": 3.56,
+    "text": "if you pick a Pokémon that likes kind of"
+  },
+  {
+    "start": 139.8,
+    "duration": 4.2,
+    "text": "warm environments, which is generally"
+  },
+  {
+    "start": 141.4,
+    "duration": 4.88,
+    "text": "the fire Pokémon that's working all the"
+  },
+  {
+    "start": 144.0,
+    "duration": 5.04,
+    "text": "furnaces. If you pick another Pokémon"
+  },
+  {
+    "start": 146.28,
+    "duration": 4.72,
+    "text": "that likes a humid environment, then"
+  },
+  {
+    "start": 149.04,
+    "duration": 4.36,
+    "text": "chances are they're going to conflict in"
+  },
+  {
+    "start": 151.0,
+    "duration": 4.92,
+    "text": "terms of environmental values. So, it's"
+  },
+  {
+    "start": 153.4,
+    "duration": 4.84,
+    "text": "impossible to satisfy everyone in the"
+  },
+  {
+    "start": 155.92,
+    "duration": 4.44,
+    "text": "group if they conflict in terms of their"
+  },
+  {
+    "start": 158.24,
+    "duration": 3.64,
+    "text": "habitat preferences. [music] Careful use"
+  },
+  {
+    "start": 160.36,
+    "duration": 3.36,
+    "text": "of spreadsheet is something I've been"
+  },
+  {
+    "start": 161.88,
+    "duration": 3.24,
+    "text": "busy with. By the end of this video,"
+  },
+  {
+    "start": 163.72,
+    "duration": 3.16,
+    "text": "you'll be an expert at a spreadsheet"
+  },
+  {
+    "start": 165.12,
+    "duration": 3.4,
+    "text": "anyway. I'll show you how. But if you're"
+  },
+  {
+    "start": 166.88,
+    "duration": 3.48,
+    "text": "lazy, you can just copy my composition,"
+  },
+  {
+    "start": 168.52,
+    "duration": 3.6,
+    "text": "right? Because I know this composition"
+  },
+  {
+    "start": 170.36,
+    "duration": 3.96,
+    "text": "works for sure. Now, there's a very"
+  },
+  {
+    "start": 172.12,
+    "duration": 4.32,
+    "text": "important reason why maximizing the"
+  },
+  {
+    "start": 174.32,
+    "duration": 4.96,
+    "text": "comfort of your Pokémon is important as"
+  },
+  {
+    "start": 176.44,
+    "duration": 4.92,
+    "text": "well. So, from the enclosure testing"
+  },
+  {
+    "start": 179.28,
+    "duration": 4.2,
+    "text": "over there that you can see, which is my"
+  },
+  {
+    "start": 181.36,
+    "duration": 4.32,
+    "text": "old build, I've also learned that when"
+  },
+  {
+    "start": 183.48,
+    "duration": 4.48,
+    "text": "your Pokémon is unhappy, meaning their"
+  },
+  {
+    "start": 185.68,
+    "duration": 4.12,
+    "text": "comfort level is low, their output is"
+  },
+  {
+    "start": 187.96,
+    "duration": 3.88,
+    "text": "actually lower. Meaning they don't drop"
+  },
+  {
+    "start": 189.8,
+    "duration": 4.16,
+    "text": "materials as frequent as they should."
+  },
+  {
+    "start": 191.84,
+    "duration": 3.92,
+    "text": "Meaning they would often like have that,"
+  },
+  {
+    "start": 193.96,
+    "duration": 3.6,
+    "text": "you know, cloud above their head where"
+  },
+  {
+    "start": 195.76,
+    "duration": 4.36,
+    "text": "they're complaining about their comfort."
+  },
+  {
+    "start": 197.56,
+    "duration": 3.6,
+    "text": "But if you satisfy all their needs,"
+  },
+  {
+    "start": 200.12,
+    "duration": 2.6,
+    "text": "suddenly [music] they are super"
+  },
+  {
+    "start": 201.16,
+    "duration": 3.24,
+    "text": "productive because other than playing"
+  },
+  {
+    "start": 202.72,
+    "duration": 3.28,
+    "text": "catching like that, they are mostly"
+  },
+  {
+    "start": 204.4,
+    "duration": 3.16,
+    "text": "working. So, there's actually a side"
+  },
+  {
+    "start": 206.0,
+    "duration": 3.36,
+    "text": "benefit to making sure that they are"
+  },
+  {
+    "start": 207.56,
+    "duration": 3.68,
+    "text": "happy because even though you can see"
+  },
+  {
+    "start": 209.36,
+    "duration": 4.24,
+    "text": "them like kind of just having fun here,"
+  },
+  {
+    "start": 211.24,
+    "duration": 4.28,
+    "text": "I assure you if you run two experiments,"
+  },
+  {
+    "start": 213.6,
+    "duration": 3.8,
+    "text": "and I have run it myself because I used"
+  },
+  {
+    "start": 215.52,
+    "duration": 3.68,
+    "text": "to run them in enclosures. If you fast"
+  },
+  {
+    "start": 217.4,
+    "duration": 3.68,
+    "text": "forward time, check the U daily in the"
+  },
+  {
+    "start": 219.2,
+    "duration": 4.8,
+    "text": "community box, you will realize that a"
+  },
+  {
+    "start": 221.08,
+    "duration": 4.24,
+    "text": "happy farm actually produces more. Even"
+  },
+  {
+    "start": 224.0,
+    "duration": 3.44,
+    "text": "though they're allowed to roam around"
+  },
+  {
+    "start": 225.32,
+    "duration": 3.8,
+    "text": "and have fun and just, you know, party,"
+  },
+  {
+    "start": 227.44,
+    "duration": 3.4,
+    "text": "their comfort value outweighs the"
+  },
+  {
+    "start": 229.12,
+    "duration": 3.56,
+    "text": "importance of trying to keep them in a"
+  },
+  {
+    "start": 230.84,
+    "duration": 3.36,
+    "text": "certain enclosure so that they can focus"
+  },
+  {
+    "start": 232.68,
+    "duration": 3.68,
+    "text": "on their work. Then to me, there's a"
+  },
+  {
+    "start": 234.2,
+    "duration": 4.56,
+    "text": "third criteria, which is if you are a"
+  },
+  {
+    "start": 236.36,
+    "duration": 4.64,
+    "text": "Pokémon, you should be arriving in this"
+  },
+  {
+    "start": 238.76,
+    "duration": 4.04,
+    "text": "work environment every day and feeling"
+  },
+  {
+    "start": 241.0,
+    "duration": 3.8,
+    "text": "like, \"Mhm, it's really conducive and"
+  },
+  {
+    "start": 242.8,
+    "duration": 3.92,
+    "text": "you can really enjoy kind of spending"
+  },
+  {
+    "start": 244.8,
+    "duration": 3.48,
+    "text": "time being productive in this entire"
+  },
+  {
+    "start": 246.72,
+    "duration": 4.44,
+    "text": "environment.\" And everything needs to"
+  },
+  {
+    "start": 248.28,
+    "duration": 4.68,
+    "text": "look credible and logical for Pokémon to"
+  },
+  {
+    "start": 251.16,
+    "duration": 4.0,
+    "text": "live in. Like for example, this is a"
+  },
+  {
+    "start": 252.96,
+    "duration": 4.04,
+    "text": "rest area for some food and beverage,"
+  },
+  {
+    "start": 255.16,
+    "duration": 3.639,
+    "text": "kind of like a staff canteen if you"
+  },
+  {
+    "start": 257.0,
+    "duration": 3.12,
+    "text": "will. But the point is visually, it"
+  },
+  {
+    "start": 258.799,
+    "duration": 3.201,
+    "text": "should look logical. It should look"
+  },
+  {
+    "start": 260.12,
+    "duration": 3.88,
+    "text": "clean. It should look appealing. Now, I"
+  },
+  {
+    "start": 262.0,
+    "duration": 3.92,
+    "text": "can do a way better job because my focus"
+  },
+  {
+    "start": 264.0,
+    "duration": 3.24,
+    "text": "really is on categorization. But from a"
+  },
+  {
+    "start": 265.92,
+    "duration": 3.56,
+    "text": "bird's eye view, you can see that the"
+  },
+  {
+    "start": 267.24,
+    "duration": 4.08,
+    "text": "entire farm is generally pretty logical"
+  },
+  {
+    "start": 269.48,
+    "duration": 4.56,
+    "text": "in terms of flow, which then brings me"
+  },
+  {
+    "start": 271.32,
+    "duration": 4.72,
+    "text": "to my next criteria. Number four, I"
+  },
+  {
+    "start": 274.04,
+    "duration": 4.04,
+    "text": "think if you're going to have a perfect"
+  },
+  {
+    "start": 276.04,
+    "duration": 4.96,
+    "text": "farm in Pokopia, it needs to be"
+  },
+  {
+    "start": 278.08,
+    "duration": 4.44,
+    "text": "relatively compact. Why? Because the way"
+  },
+  {
+    "start": 281.0,
+    "duration": 4.44,
+    "text": "I would think about this game now is"
+  },
+  {
+    "start": 282.52,
+    "duration": 4.08,
+    "text": "that I've built my ultimate farm in"
+  },
+  {
+    "start": 285.44,
+    "duration": 3.56,
+    "text": "Pallet Town, right? Which I have"
+  },
+  {
+    "start": 286.6,
+    "duration": 5.24,
+    "text": "renamed. So, this is now my base of"
+  },
+  {
+    "start": 289.0,
+    "duration": 5.44,
+    "text": "operations. It's my base of where all my"
+  },
+  {
+    "start": 291.84,
+    "duration": 4.88,
+    "text": "materials that I need will be generated."
+  },
+  {
+    "start": 294.44,
+    "duration": 4.16,
+    "text": "I can then now focus on building on the"
+  },
+  {
+    "start": 296.72,
+    "duration": 4.4,
+    "text": "other four zones rather than building"
+  },
+  {
+    "start": 298.6,
+    "duration": 4.12,
+    "text": "out of Pallet Town. Because again, I"
+  },
+  {
+    "start": 301.12,
+    "duration": 3.24,
+    "text": "don't want to introduce new Pokémon to"
+  },
+  {
+    "start": 302.72,
+    "duration": 4.12,
+    "text": "Pallet Town because I have a stable"
+  },
+  {
+    "start": 304.36,
+    "duration": 4.56,
+    "text": "ecosystem where all 22 Pokémon will"
+  },
+  {
+    "start": 306.84,
+    "duration": 4.16,
+    "text": "always spawn. If I were to continue"
+  },
+  {
+    "start": 308.92,
+    "duration": 3.76,
+    "text": "building on Pallet Town, I risk having"
+  },
+  {
+    "start": 311.0,
+    "duration": 5.68,
+    "text": "more Pokémon being introduced to"
+  },
+  {
+    "start": 312.68,
+    "duration": 4.0,
+    "text": "destabilize my farm. And so, you"
+  },
+  {
+    "start": 325.28,
+    "duration": 4.12,
+    "text": "get done in a few minutes. And of"
+  },
+  {
+    "start": 327.84,
+    "duration": 3.52,
+    "text": "course, if you try to minimize your"
+  },
+  {
+    "start": 329.4,
+    "duration": 4.32,
+    "text": "footprint, you must be very careful to"
+  },
+  {
+    "start": 331.36,
+    "duration": 4.0,
+    "text": "basically build your homes and your"
+  },
+  {
+    "start": 333.72,
+    "duration": 3.6,
+    "text": "habitat such that they are still"
+  },
+  {
+    "start": 335.36,
+    "duration": 3.8,
+    "text": "compatible in terms of environment"
+  },
+  {
+    "start": 337.32,
+    "duration": 3.56,
+    "text": "values. For example, you need to track"
+  },
+  {
+    "start": 339.16,
+    "duration": 4.0,
+    "text": "the border of your habitat so that you"
+  },
+  {
+    "start": 340.88,
+    "duration": 3.96,
+    "text": "don't put conflicting decorative items"
+  },
+  {
+    "start": 343.16,
+    "duration": 3.48,
+    "text": "that your Pokémon don't like. And so,"
+  },
+  {
+    "start": 344.84,
+    "duration": 4.6,
+    "text": "with that, you probably have a very good"
+  },
+  {
+    "start": 346.64,
+    "duration": 5.04,
+    "text": "sense of why I say this is ultimately a"
+  },
+  {
+    "start": 349.44,
+    "duration": 4.4,
+    "text": "math problem. So, I think the best way"
+  },
+  {
+    "start": 351.68,
+    "duration": 4.36,
+    "text": "I'll run you through all the Pokémon and"
+  },
+  {
+    "start": 353.84,
+    "duration": 4.16,
+    "text": "why and what kind of environment values"
+  },
+  {
+    "start": 356.04,
+    "duration": 4.08,
+    "text": "you need to be careful of. The best way"
+  },
+  {
+    "start": 358.0,
+    "duration": 4.44,
+    "text": "I think to do this is really to just"
+  },
+  {
+    "start": 360.12,
+    "duration": 4.44,
+    "text": "walk you through the entire farm from"
+  },
+  {
+    "start": 362.44,
+    "duration": 3.8,
+    "text": "the entrance to the so-called exit"
+  },
+  {
+    "start": 364.56,
+    "duration": 3.48,
+    "text": "towards the end. All right, so we start"
+  },
+  {
+    "start": 366.24,
+    "duration": 4.0,
+    "text": "off here on the right. Right at the"
+  },
+  {
+    "start": 368.04,
+    "duration": 4.76,
+    "text": "entrance of the farm is basically my"
+  },
+  {
+    "start": 370.24,
+    "duration": 4.32,
+    "text": "berries farm. This is automated berries"
+  },
+  {
+    "start": 372.8,
+    "duration": 3.32,
+    "text": "farming. So, the way it works is that"
+  },
+  {
+    "start": 374.56,
+    "duration": 3.64,
+    "text": "every morning, you can see that the"
+  },
+  {
+    "start": 376.12,
+    "duration": 3.92,
+    "text": "berries are automatically being"
+  },
+  {
+    "start": 378.2,
+    "duration": 3.6,
+    "text": "harvested by the water. And if you're"
+  },
+  {
+    "start": 380.04,
+    "duration": 3.52,
+    "text": "wondering how the hell is this"
+  },
+  {
+    "start": 381.8,
+    "duration": 3.48,
+    "text": "happening, you can watch the video on"
+  },
+  {
+    "start": 383.56,
+    "duration": 4.68,
+    "text": "screen. This is covered in my [music]"
+  },
+  {
+    "start": 385.28,
+    "duration": 4.88,
+    "text": "previous auto berry video. Now, my job"
+  },
+  {
+    "start": 388.24,
+    "duration": 3.8,
+    "text": "is to vacuum up all the berries, and"
+  },
+  {
+    "start": 390.16,
+    "duration": 3.52,
+    "text": "then I'll proceed to drop them in this"
+  },
+  {
+    "start": 392.04,
+    "duration": 3.16,
+    "text": "feed box over here. Now, it's kind of"
+  },
+  {
+    "start": 393.68,
+    "duration": 3.32,
+    "text": "full already because we've been kind of"
+  },
+  {
+    "start": 395.2,
+    "duration": 3.88,
+    "text": "running it for a bit, but you can see"
+  },
+  {
+    "start": 397.0,
+    "duration": 4.52,
+    "text": "that our friend Larvitar here is"
+  },
+  {
+    "start": 399.08,
+    "duration": 4.12,
+    "text": "automatically crushing these berries"
+  },
+  {
+    "start": 401.52,
+    "duration": 3.56,
+    "text": "into paint. So, overnight, it will"
+  },
+  {
+    "start": 403.2,
+    "duration": 3.44,
+    "text": "continuously work on paint based on the"
+  },
+  {
+    "start": 405.08,
+    "duration": 3.52,
+    "text": "berries that you drop. But more"
+  },
+  {
+    "start": 406.64,
+    "duration": 4.0,
+    "text": "importantly for the farm efficiency,"
+  },
+  {
+    "start": 408.6,
+    "duration": 5.0,
+    "text": "I've noticed that Larvitar, or whatever"
+  },
+  {
+    "start": 410.64,
+    "duration": 5.44,
+    "text": "crush Pokémon you use, tends to process"
+  },
+  {
+    "start": 413.6,
+    "duration": 5.24,
+    "text": "paint in a certain priority. Almost as"
+  },
+  {
+    "start": 416.08,
+    "duration": 5.56,
+    "text": "though it's prioritized by how the"
+  },
+  {
+    "start": 418.84,
+    "duration": 5.12,
+    "text": "berries are organized in game. It always"
+  },
+  {
+    "start": 421.64,
+    "duration": 4.48,
+    "text": "process rate paint first. As long as"
+  },
+  {
+    "start": 423.96,
+    "duration": 3.96,
+    "text": "there's a leppa berry in the community"
+  },
+  {
+    "start": 426.12,
+    "duration": 3.08,
+    "text": "box, it process rate paint. So, I"
+  },
+  {
+    "start": 427.92,
+    "duration": 3.72,
+    "text": "realized that if you don't want it to"
+  },
+  {
+    "start": 429.2,
+    "duration": 4.44,
+    "text": "process a certain paint, stop dropping"
+  },
+  {
+    "start": 431.64,
+    "duration": 3.8,
+    "text": "that corresponding berry into the"
+  },
+  {
+    "start": 433.64,
+    "duration": 3.2,
+    "text": "community box. So, for example, if I"
+  },
+  {
+    "start": 435.44,
+    "duration": 3.36,
+    "text": "don't want rate paint anymore, stop"
+  },
+  {
+    "start": 436.84,
+    "duration": 3.76,
+    "text": "dropping leppa berries. Now, when it"
+  },
+  {
+    "start": 438.8,
+    "duration": 4.4,
+    "text": "comes to who you want to use to crush"
+  },
+  {
+    "start": 440.6,
+    "duration": 3.84,
+    "text": "your berries, this is the only exception"
+  },
+  {
+    "start": 443.2,
+    "duration": 4.4,
+    "text": "on the farm where you don't need to do"
+  },
+  {
+    "start": 444.44,
+    "duration": 5.84,
+    "text": "much math because the person operating"
+  },
+  {
+    "start": 447.6,
+    "duration": 4.88,
+    "text": "this crushing of berries here is working"
+  },
+  {
+    "start": 450.28,
+    "duration": 3.92,
+    "text": "in isolation. You don't need a gatherer"
+  },
+  {
+    "start": 452.48,
+    "duration": 3.64,
+    "text": "because a gatherer can't pick up the"
+  },
+  {
+    "start": 454.2,
+    "duration": 3.56,
+    "text": "berries. We've tested this, it doesn't"
+  },
+  {
+    "start": 456.12,
+    "duration": 3.28,
+    "text": "work. So, you manually pick up the"
+  },
+  {
+    "start": 457.76,
+    "duration": 3.24,
+    "text": "berries, put it in the community box."
+  },
+  {
+    "start": 459.4,
+    "duration": 2.76,
+    "text": "That's your first 30 seconds every day."
+  },
+  {
+    "start": 461.0,
+    "duration": 2.88,
+    "text": "And so, whoever you want to pick for"
+  },
+  {
+    "start": 462.16,
+    "duration": 3.2,
+    "text": "your crusher doesn't matter. Because"
+  },
+  {
+    "start": 463.88,
+    "duration": 2.88,
+    "text": "similar to me, you can build a custom"
+  },
+  {
+    "start": 465.36,
+    "duration": 3.16,
+    "text": "house on the right like that, which is"
+  },
+  {
+    "start": 466.76,
+    "duration": 4.24,
+    "text": "basically attached to this berries"
+  },
+  {
+    "start": 468.52,
+    "duration": 4.68,
+    "text": "facility. And you can see over here as I"
+  },
+  {
+    "start": 471.0,
+    "duration": 3.68,
+    "text": "enter this room, it's up to you,"
+  },
+  {
+    "start": 473.2,
+    "duration": 3.8,
+    "text": "assuming these Pokémon let me actually"
+  },
+  {
+    "start": 474.68,
+    "duration": 3.76,
+    "text": "cross. But the point is this is a custom"
+  },
+  {
+    "start": 477.0,
+    "duration": 3.76,
+    "text": "house, right? So, you can put whatever"
+  },
+  {
+    "start": 478.44,
+    "duration": 4.56,
+    "text": "you want here to satisfy the Pokémon's"
+  },
+  {
+    "start": 480.76,
+    "duration": 3.92,
+    "text": "habitat and wants and all that. And in"
+  },
+  {
+    "start": 483.0,
+    "duration": 3.6,
+    "text": "case you don't know, right? Go to your"
+  },
+  {
+    "start": 484.68,
+    "duration": 4.48,
+    "text": "Pokédex, pull out whoever you want to"
+  },
+  {
+    "start": 486.6,
+    "duration": 5.8,
+    "text": "check, press R, go to the third tab, and"
+  },
+  {
+    "start": 489.16,
+    "duration": 5.76,
+    "text": "it says, \"I do habitat dark, favorites,"
+  },
+  {
+    "start": 492.4,
+    "duration": 3.92,
+    "text": "stone stuff, luxury shiny stuff.\" A"
+  },
+  {
+    "start": 494.92,
+    "duration": 2.84,
+    "text": "whole bunch of things, right? If you're"
+  },
+  {
+    "start": 496.32,
+    "duration": 2.84,
+    "text": "lazy to figure out what they mean, you"
+  },
+  {
+    "start": 497.76,
+    "duration": 4.16,
+    "text": "can just follow my guide, right? So,"
+  },
+  {
+    "start": 499.16,
+    "duration": 4.84,
+    "text": "Larvitar likes stone stuff, luxury"
+  },
+  {
+    "start": 501.92,
+    "duration": 4.36,
+    "text": "stuff, and shiny stuff. This is actually"
+  },
+  {
+    "start": 504.0,
+    "duration": 4.76,
+    "text": "relatively easy to do, right? So, you"
+  },
+  {
+    "start": 506.28,
+    "duration": 5.24,
+    "text": "need a luxury sofa, kind of a any form"
+  },
+  {
+    "start": 508.76,
+    "duration": 4.959,
+    "text": "of antique tables, this high-end guest"
+  },
+  {
+    "start": 511.52,
+    "duration": 4.28,
+    "text": "bed, stone benches like that. But let me"
+  },
+  {
+    "start": 513.719,
+    "duration": 4.161,
+    "text": "give you a hack, right? If you are lazy"
+  },
+  {
+    "start": 515.8,
+    "duration": 4.44,
+    "text": "to figure it out, what you can do is go"
+  },
+  {
+    "start": 517.88,
+    "duration": 5.279,
+    "text": "to Google and search stone stuff"
+  },
+  {
+    "start": 520.24,
+    "duration": 4.52,
+    "text": "favorites Pokopia or luxury favorites"
+  },
+  {
+    "start": 523.159,
+    "duration": 3.321,
+    "text": "Pokopia, right? And then you'll"
+  },
+  {
+    "start": 524.76,
+    "duration": 4.56,
+    "text": "basically be linked to various like"
+  },
+  {
+    "start": 526.48,
+    "duration": 4.56,
+    "text": "resources that has all the criterias"
+  },
+  {
+    "start": 529.32,
+    "duration": 3.4,
+    "text": "fulfilled by various things. Like for"
+  },
+  {
+    "start": 531.04,
+    "duration": 3.84,
+    "text": "example, I know that the stone bench"
+  },
+  {
+    "start": 532.72,
+    "duration": 4.32,
+    "text": "here is well liked by Larvitar because"
+  },
+  {
+    "start": 534.88,
+    "duration": 4.36,
+    "text": "it likes stone stuff. And so, it doesn't"
+  },
+  {
+    "start": 537.04,
+    "duration": 3.68,
+    "text": "really matter how you place them in the"
+  },
+  {
+    "start": 539.24,
+    "duration": 3.72,
+    "text": "room as long as it doesn't block the"
+  },
+  {
+    "start": 540.72,
+    "duration": 4.04,
+    "text": "door or any fulfills his wants, it will"
+  },
+  {
+    "start": 542.96,
+    "duration": 3.76,
+    "text": "basically be happy, right? So, this is"
+  },
+  {
+    "start": 544.76,
+    "duration": 4.24,
+    "text": "the simplest to do. That's the berries"
+  },
+  {
+    "start": 546.72,
+    "duration": 3.6,
+    "text": "farm. Now, as we move down the row here,"
+  },
+  {
+    "start": 549.0,
+    "duration": 3.28,
+    "text": "let's talk about the right first and"
+  },
+  {
+    "start": 550.32,
+    "duration": 5.0,
+    "text": "then we'll cover the left. So, on the"
+  },
+  {
+    "start": 552.28,
+    "duration": 4.88,
+    "text": "right here is basically my clay into"
+  },
+  {
+    "start": 555.32,
+    "duration": 3.64,
+    "text": "brick farm. This is where it starts to"
+  },
+  {
+    "start": 557.16,
+    "duration": 4.56,
+    "text": "get a bit complicated. This is where"
+  },
+  {
+    "start": 558.96,
+    "duration": 4.52,
+    "text": "math is needed. So, what is the key"
+  },
+  {
+    "start": 561.72,
+    "duration": 5.24,
+    "text": "constraint you're trying to solve for"
+  },
+  {
+    "start": 563.48,
+    "duration": 7.12,
+    "text": "here? Well, we know that the core of"
+  },
+  {
+    "start": 566.96,
+    "duration": 6.76,
+    "text": "turning clay into bricks is to basically"
+  },
+  {
+    "start": 570.6,
+    "duration": 5.28,
+    "text": "have Pokémon that can use burn to"
+  },
+  {
+    "start": 573.72,
+    "duration": 5.0,
+    "text": "convert them, right? Which means fire"
+  },
+  {
+    "start": 575.88,
+    "duration": 5.84,
+    "text": "Pokémon. Now, fire Pokémon, they tend to"
+  },
+  {
+    "start": 578.72,
+    "duration": 5.36,
+    "text": "like warm environments. Case in point,"
+  },
+  {
+    "start": 581.72,
+    "duration": 5.08,
+    "text": "if I pull out my Pokédex in this area,"
+  },
+  {
+    "start": 584.08,
+    "duration": 4.2,
+    "text": "convert to burn, filter for fire Pokémon"
+  },
+  {
+    "start": 586.8,
+    "duration": 3.44,
+    "text": "that knows burn. So, you will see that"
+  },
+  {
+    "start": 588.28,
+    "duration": 4.64,
+    "text": "it likes ideal habitat warm, right?"
+  },
+  {
+    "start": 590.24,
+    "duration": 4.16,
+    "text": "Larvitar earlier had the dark ideal"
+  },
+  {
+    "start": 592.92,
+    "duration": 4.0,
+    "text": "habitat, which means that you need a"
+  },
+  {
+    "start": 594.4,
+    "duration": 4.6,
+    "text": "roof. You cannot let natural light into"
+  },
+  {
+    "start": 596.92,
+    "duration": 3.68,
+    "text": "the house, even though I have windows. A"
+  },
+  {
+    "start": 599.0,
+    "duration": 3.04,
+    "text": "bit of windows is fine, but you want to"
+  },
+  {
+    "start": 600.6,
+    "duration": 3.28,
+    "text": "make sure it's covered. But back to"
+  },
+  {
+    "start": 602.04,
+    "duration": 3.841,
+    "text": "Charmander and fire Pokémon, right? Like"
+  },
+  {
+    "start": 603.88,
+    "duration": 4.0,
+    "text": "they would like warm habitats. So,"
+  },
+  {
+    "start": 605.881,
+    "duration": 4.519,
+    "text": "[music] you need the presence of various"
+  },
+  {
+    "start": 607.88,
+    "duration": 3.92,
+    "text": "fire items in the environment, which"
+  },
+  {
+    "start": 610.4,
+    "duration": 3.76,
+    "text": "basically, if you want to know how to"
+  },
+  {
+    "start": 611.8,
+    "duration": 4.12,
+    "text": "check the habitat kind of range, or"
+  },
+  {
+    "start": 614.16,
+    "duration": 3.16,
+    "text": "rather the environment range. So, you"
+  },
+  {
+    "start": 615.92,
+    "duration": 3.68,
+    "text": "can see on the top left here, this"
+  },
+  {
+    "start": 617.32,
+    "duration": 5.52,
+    "text": "entire enclosure here, which have this"
+  },
+  {
+    "start": 619.6,
+    "duration": 5.24,
+    "text": "wooden fence, is basically my house. So,"
+  },
+  {
+    "start": 622.84,
+    "duration": 3.32,
+    "text": "I can push down the right analog stick"
+  },
+  {
+    "start": 624.84,
+    "duration": 3.04,
+    "text": "and you can see to the top left here,"
+  },
+  {
+    "start": 626.16,
+    "duration": 4.48,
+    "text": "you can see this line that's fading in"
+  },
+  {
+    "start": 627.88,
+    "duration": 4.96,
+    "text": "and out. This shows the border of this"
+  },
+  {
+    "start": 630.64,
+    "duration": 4.44,
+    "text": "shed house, basically this habitat. So,"
+  },
+  {
+    "start": 632.84,
+    "duration": 4.52,
+    "text": "as long as you put fire in this border"
+  },
+  {
+    "start": 635.08,
+    "duration": 4.76,
+    "text": "here, it would register towards being a"
+  },
+  {
+    "start": 637.36,
+    "duration": 4.28,
+    "text": "warm habitat. That's the goal. So, that"
+  },
+  {
+    "start": 639.84,
+    "duration": 4.76,
+    "text": "might sound easy. However, the big"
+  },
+  {
+    "start": 641.64,
+    "duration": 5.96,
+    "text": "problem is the Pokémon that generates"
+  },
+  {
+    "start": 644.6,
+    "duration": 5.4,
+    "text": "squishy clay, which is the raw material"
+  },
+  {
+    "start": 647.6,
+    "duration": 4.84,
+    "text": "that is needed to make brick, they are"
+  },
+  {
+    "start": 650.0,
+    "duration": 4.92,
+    "text": "actually these two fellas over here. So,"
+  },
+  {
+    "start": 652.44,
+    "duration": 5.56,
+    "text": "the Paldean Wooper and Trapinch over"
+  },
+  {
+    "start": 654.92,
+    "duration": 5.68,
+    "text": "here, they would drop clay. However,"
+  },
+  {
+    "start": 658.0,
+    "duration": 5.32,
+    "text": "they respectively like different,"
+  },
+  {
+    "start": 660.6,
+    "duration": 5.04,
+    "text": "conflicting environments. Paldean Wooper"
+  },
+  {
+    "start": 663.32,
+    "duration": 5.48,
+    "text": "actually likes a humid environment,"
+  },
+  {
+    "start": 665.64,
+    "duration": 5.44,
+    "text": "which means it needs water. However, you"
+  },
+  {
+    "start": 668.8,
+    "duration": 4.64,
+    "text": "can imagine fire is the exact opposite"
+  },
+  {
+    "start": 671.08,
+    "duration": 4.759,
+    "text": "of water, right? And Trapinch over here"
+  },
+  {
+    "start": 673.44,
+    "duration": 5.32,
+    "text": "likes a dry environment. [music]"
+  },
+  {
+    "start": 675.839,
+    "duration": 6.681,
+    "text": "Warm is not the same as dry. However,"
+  },
+  {
+    "start": 678.76,
+    "duration": 5.92,
+    "text": "because my core team is fire Pokémon,"
+  },
+  {
+    "start": 682.52,
+    "duration": 4.52,
+    "text": "right? So, I need to prioritize the"
+  },
+  {
+    "start": 684.68,
+    "duration": 4.64,
+    "text": "environment, the outdoors being warm."
+  },
+  {
+    "start": 687.04,
+    "duration": 5.16,
+    "text": "So, the way I can solve the conflict is"
+  },
+  {
+    "start": 689.32,
+    "duration": 5.64,
+    "text": "to use instance housing, whereby"
+  },
+  {
+    "start": 692.2,
+    "duration": 5.48,
+    "text": "whatever furniture I put inside their"
+  },
+  {
+    "start": 694.96,
+    "duration": 5.72,
+    "text": "own respective instance prefabricated"
+  },
+  {
+    "start": 697.68,
+    "duration": 5.04,
+    "text": "house will not affect the habitat values"
+  },
+  {
+    "start": 700.68,
+    "duration": 4.28,
+    "text": "on the outside world. This is why for"
+  },
+  {
+    "start": 702.72,
+    "duration": 4.28,
+    "text": "Paldean Wooper, if I enter his house on"
+  },
+  {
+    "start": 704.96,
+    "duration": 4.879,
+    "text": "the right over here, if you look at his"
+  },
+  {
+    "start": 707.0,
+    "duration": 5.92,
+    "text": "Pokédex, over here, Paldean Wooper likes"
+  },
+  {
+    "start": 709.839,
+    "duration": 6.601,
+    "text": "a humid environment with garbage, lots"
+  },
+  {
+    "start": 712.92,
+    "duration": 6.88,
+    "text": "of dirt, stone stuff, cleanliness, etc.,"
+  },
+  {
+    "start": 716.44,
+    "duration": 6.0,
+    "text": "etc. This is why I put a trash can,"
+  },
+  {
+    "start": 719.8,
+    "duration": 4.76,
+    "text": "garbage bags, a humidifier because of a"
+  },
+  {
+    "start": 722.44,
+    "duration": 3.84,
+    "text": "humid environment. Because in the"
+  },
+  {
+    "start": 724.56,
+    "duration": 3.56,
+    "text": "instance housing, I don't think you can"
+  },
+  {
+    "start": 726.28,
+    "duration": 3.52,
+    "text": "dig down and produce water. Like it"
+  },
+  {
+    "start": 728.12,
+    "duration": 3.719,
+    "text": "doesn't work like the outdoors. So, a"
+  },
+  {
+    "start": 729.8,
+    "duration": 4.16,
+    "text": "humidifier is kind of like the cheat"
+  },
+  {
+    "start": 731.839,
+    "duration": 5.401,
+    "text": "sheet. If you don't have access to"
+  },
+  {
+    "start": 733.96,
+    "duration": 6.12,
+    "text": "humidifiers, you can use the 3D printing"
+  },
+  {
+    "start": 737.24,
+    "duration": 4.72,
+    "text": "trick. I will leave kind of a code that"
+  },
+  {
+    "start": 740.08,
+    "duration": 3.44,
+    "text": "you can use on your Cloud Island. You"
+  },
+  {
+    "start": 741.96,
+    "duration": 3.56,
+    "text": "visit a Cloud Island, take a picture of"
+  },
+  {
+    "start": 743.52,
+    "duration": 3.76,
+    "text": "the humidifier, and then kind of 3D"
+  },
+  {
+    "start": 745.52,
+    "duration": 3.8,
+    "text": "print it. At least that's what I did."
+  },
+  {
+    "start": 747.28,
+    "duration": 4.0,
+    "text": "And if you have no idea what I'm talking"
+  },
+  {
+    "start": 749.32,
+    "duration": 3.56,
+    "text": "about in terms of 3D printing,"
+  },
+  {
+    "start": 751.28,
+    "duration": 3.48,
+    "text": "definitely check out my Dream Island's"
+  },
+  {
+    "start": 752.88,
+    "duration": 4.24,
+    "text": "guide, where I covered the basics of"
+  },
+  {
+    "start": 754.76,
+    "duration": 3.88,
+    "text": "farming Poké Metal efficiently, and then"
+  },
+  {
+    "start": 757.12,
+    "duration": 4.0,
+    "text": "using [music] it to print any item in"
+  },
+  {
+    "start": 758.64,
+    "duration": 4.12,
+    "text": "the game. But the point is, by isolating"
+  },
+  {
+    "start": 761.12,
+    "duration": 3.28,
+    "text": "the ones, the special ones of the"
+  },
+  {
+    "start": 762.76,
+    "duration": 3.36,
+    "text": "Paldean Wooper, and by the way, they"
+  },
+  {
+    "start": 764.4,
+    "duration": 4.16,
+    "text": "have just kind of produced squishy clay"
+  },
+  {
+    "start": 766.12,
+    "duration": 6.04,
+    "text": "here. But by having all the required"
+  },
+  {
+    "start": 768.56,
+    "duration": 5.279,
+    "text": "stuff instance within its house, then we"
+  },
+  {
+    "start": 772.16,
+    "duration": 3.24,
+    "text": "are safe to not have the humid"
+  },
+  {
+    "start": 773.839,
+    "duration": 4.041,
+    "text": "environment conflict with the warm"
+  },
+  {
+    "start": 775.4,
+    "duration": 4.08,
+    "text": "environment. Same thing for Trapinch's"
+  },
+  {
+    "start": 777.88,
+    "duration": 5.32,
+    "text": "house, right? So, let's visit. So,"
+  },
+  {
+    "start": 779.48,
+    "duration": 6.32,
+    "text": "Trapinch over here likes a dry habitat"
+  },
+  {
+    "start": 783.2,
+    "duration": 5.0,
+    "text": "with hot stuff, strange stuff, exercise,"
+  },
+  {
+    "start": 785.8,
+    "duration": 5.16,
+    "text": "and lots of dirt. The key thing is that"
+  },
+  {
+    "start": 788.2,
+    "duration": 5.24,
+    "text": "because it likes dry stuff, you want to"
+  },
+  {
+    "start": 790.96,
+    "duration": 5.2,
+    "text": "include a dry stone. By putting a dry"
+  },
+  {
+    "start": 793.44,
+    "duration": 5.399,
+    "text": "stone is an instant hack to make its"
+  },
+  {
+    "start": 796.16,
+    "duration": 4.84,
+    "text": "room instantly dry. So, you fulfill its"
+  },
+  {
+    "start": 798.839,
+    "duration": 4.121,
+    "text": "habitat. Exercise, therefore a punching"
+  },
+  {
+    "start": 801.0,
+    "duration": 4.64,
+    "text": "machine here. And then because it likes"
+  },
+  {
+    "start": 802.96,
+    "duration": 4.4,
+    "text": "hot stuff, that explains the iron bear,"
+  },
+  {
+    "start": 805.64,
+    "duration": 4.08,
+    "text": "it explains the iron stand, as well as"
+  },
+  {
+    "start": 807.36,
+    "duration": 4.479,
+    "text": "the iron bench. So, that's Trapinch. So,"
+  },
+  {
+    "start": 809.72,
+    "duration": 4.36,
+    "text": "these two produce the raw materials."
+  },
+  {
+    "start": 811.839,
+    "duration": 5.521,
+    "text": "Now, the other trio that then finishes"
+  },
+  {
+    "start": 814.08,
+    "duration": 5.92,
+    "text": "up this entire brick production is then"
+  },
+  {
+    "start": 817.36,
+    "duration": 4.64,
+    "text": "Girafarig, Rolycoly, and Torkoal that"
+  },
+  {
+    "start": 820.0,
+    "duration": 4.04,
+    "text": "you see on the top left. Why these"
+  },
+  {
+    "start": 822.0,
+    "duration": 3.64,
+    "text": "three? Well, Rolycoly and Torkoal you"
+  },
+  {
+    "start": 824.04,
+    "duration": 3.0,
+    "text": "will understand, right? Because like I"
+  },
+  {
+    "start": 825.64,
+    "duration": 4.4,
+    "text": "said, they are fire Pokémon and they"
+  },
+  {
+    "start": 827.04,
+    "duration": 5.799,
+    "text": "love warm environments. However, I need"
+  },
+  {
+    "start": 830.04,
+    "duration": 4.88,
+    "text": "a gatherer because we need to take the"
+  },
+  {
+    "start": 832.839,
+    "duration": 4.321,
+    "text": "clay that is produced here to be"
+  },
+  {
+    "start": 834.92,
+    "duration": 4.4,
+    "text": "converted by the fire Pokémon into"
+  },
+  {
+    "start": 837.16,
+    "duration": 4.04,
+    "text": "brick. The way it's done is that it's"
+  },
+  {
+    "start": 839.32,
+    "duration": 3.88,
+    "text": "being deposited here. You can see the"
+  },
+  {
+    "start": 841.2,
+    "duration": 3.88,
+    "text": "community box over here, the clay and"
+  },
+  {
+    "start": 843.2,
+    "duration": 3.92,
+    "text": "the bricks that's being processed is"
+  },
+  {
+    "start": 845.08,
+    "duration": 3.759,
+    "text": "deposited over here, right? Because"
+  },
+  {
+    "start": 847.12,
+    "duration": 4.16,
+    "text": "again, if you check the habitat value,"
+  },
+  {
+    "start": 848.839,
+    "duration": 4.041,
+    "text": "it basically is within the box range."
+  },
+  {
+    "start": 851.28,
+    "duration": 3.76,
+    "text": "So, the gatherer is supposed to pick up"
+  },
+  {
+    "start": 852.88,
+    "duration": 4.12,
+    "text": "the clay and then transport it to the"
+  },
+  {
+    "start": 855.04,
+    "duration": 4.6,
+    "text": "community box where it's then processed"
+  },
+  {
+    "start": 857.0,
+    "duration": 5.68,
+    "text": "into bricks. However, the external"
+  },
+  {
+    "start": 859.64,
+    "duration": 6.24,
+    "text": "environment is warm. So, I need a"
+  },
+  {
+    "start": 862.68,
+    "duration": 6.2,
+    "text": "Pokémon that is capable of thriving in"
+  },
+  {
+    "start": 865.88,
+    "duration": 5.32,
+    "text": "warm environments and also can gather."
+  },
+  {
+    "start": 868.88,
+    "duration": 4.24,
+    "text": "This is why I picked Girafarig. So,"
+  },
+  {
+    "start": 871.2,
+    "duration": 3.639,
+    "text": "Girafarig, you can see has a ideal"
+  },
+  {
+    "start": 873.12,
+    "duration": 3.68,
+    "text": "habitat of warm. And then it likes"
+  },
+  {
+    "start": 874.839,
+    "duration": 4.0,
+    "text": "various strange stuff, rides, and stuff"
+  },
+  {
+    "start": 876.8,
+    "duration": 5.0,
+    "text": "like that. Now, then it's key to then"
+  },
+  {
+    "start": 878.839,
+    "duration": 4.641,
+    "text": "tweak the environment to suit his kind"
+  },
+  {
+    "start": 881.8,
+    "duration": 3.32,
+    "text": "of preferences. So, if you don't know,"
+  },
+  {
+    "start": 883.48,
+    "duration": 3.479,
+    "text": "habitat values, meaning the"
+  },
+  {
+    "start": 885.12,
+    "duration": 4.16,
+    "text": "compatibility of a Pokémon with its"
+  },
+  {
+    "start": 886.959,
+    "duration": 4.321,
+    "text": "habitat, is one of the biggest factors"
+  },
+  {
+    "start": 889.28,
+    "duration": 3.88,
+    "text": "for its comfort. So, Girafarig already"
+  },
+  {
+    "start": 891.28,
+    "duration": 3.679,
+    "text": "have a head start because of that. Now,"
+  },
+  {
+    "start": 893.16,
+    "duration": 3.52,
+    "text": "if you look at the table I've summarized"
+  },
+  {
+    "start": 894.959,
+    "duration": 3.641,
+    "text": "for you. Let me just fix the formatting"
+  },
+  {
+    "start": 896.68,
+    "duration": 4.36,
+    "text": "here. The point is, these five are"
+  },
+  {
+    "start": 898.6,
+    "duration": 4.64,
+    "text": "compatible with one another because most"
+  },
+  {
+    "start": 901.04,
+    "duration": 4.64,
+    "text": "of them like warm, and the two that"
+  },
+  {
+    "start": 903.24,
+    "duration": 5.04,
+    "text": "doesn't like warm can then be sent into"
+  },
+  {
+    "start": 905.68,
+    "duration": 4.64,
+    "text": "their indoor prefabricated houses"
+  },
+  {
+    "start": 908.28,
+    "duration": 4.32,
+    "text": "because they're incompatible because of"
+  },
+  {
+    "start": 910.32,
+    "duration": 4.24,
+    "text": "warm versus dry and humid. Then, for the"
+  },
+  {
+    "start": 912.6,
+    "duration": 4.359,
+    "text": "outdoors, what is some common"
+  },
+  {
+    "start": 914.56,
+    "duration": 5.08,
+    "text": "characteristics of their favorite"
+  },
+  {
+    "start": 916.959,
+    "duration": 5.561,
+    "text": "activities and wants? Well, if you look"
+  },
+  {
+    "start": 919.64,
+    "duration": 5.48,
+    "text": "into Girafarig, Rolycoly, Torkoal, some"
+  },
+  {
+    "start": 922.52,
+    "duration": 5.52,
+    "text": "similar things will emerge. Like hot"
+  },
+  {
+    "start": 925.12,
+    "duration": 5.959,
+    "text": "stuff, metal stuff over here, which"
+  },
+  {
+    "start": 928.04,
+    "duration": 5.32,
+    "text": "explains why there's a lot of metallic"
+  },
+  {
+    "start": 931.079,
+    "duration": 4.041,
+    "text": "stuff, right? Like the bench, iron bench"
+  },
+  {
+    "start": 933.36,
+    "duration": 3.719,
+    "text": "over there. And if I remember correctly,"
+  },
+  {
+    "start": 935.12,
+    "duration": 3.8,
+    "text": "the furnaces here also contributes to"
+  },
+  {
+    "start": 937.079,
+    "duration": 4.921,
+    "text": "that. And you might go, \"Wait, then how"
+  },
+  {
+    "start": 938.92,
+    "duration": 7.039,
+    "text": "about Girafarig?\" Well, Girafarig likes"
+  },
+  {
+    "start": 942.0,
+    "duration": 6.76,
+    "text": "strange stuff, and I very conveniently"
+  },
+  {
+    "start": 945.959,
+    "duration": 4.921,
+    "text": "included a kitchen over here. Strange"
+  },
+  {
+    "start": 948.76,
+    "duration": 4.28,
+    "text": "stuff includes the appliances that it"
+  },
+  {
+    "start": 950.88,
+    "duration": 4.32,
+    "text": "likes, including stoves and stuff like"
+  },
+  {
+    "start": 953.04,
+    "duration": 4.28,
+    "text": "that. And that is why he is being"
+  },
+  {
+    "start": 955.2,
+    "duration": 4.6,
+    "text": "satisfied by that. And while the other"
+  },
+  {
+    "start": 957.32,
+    "duration": 4.519,
+    "text": "two are fulfilled by the iron benches,"
+  },
+  {
+    "start": 959.8,
+    "duration": 4.72,
+    "text": "the furnaces, and whatnot. So again, if"
+  },
+  {
+    "start": 961.839,
+    "duration": 4.921,
+    "text": "in doubt, just copy my video, literally"
+  },
+  {
+    "start": 964.52,
+    "duration": 4.48,
+    "text": "just copy my setup. Now, one caveat"
+  },
+  {
+    "start": 966.76,
+    "duration": 4.84,
+    "text": "here, you can see on the frames above,"
+  },
+  {
+    "start": 969.0,
+    "duration": 5.28,
+    "text": "I've said that this is basically a brick"
+  },
+  {
+    "start": 971.6,
+    "duration": 5.04,
+    "text": "farm and Poké Metal farm, right? Why and"
+  },
+  {
+    "start": 974.28,
+    "duration": 4.16,
+    "text": "Poké Metal farm? Because as you approach"
+  },
+  {
+    "start": 976.64,
+    "duration": 3.64,
+    "text": "end game, you will be using so much Poké"
+  },
+  {
+    "start": 978.44,
+    "duration": 4.0,
+    "text": "Metal, right? They do 3D printing and"
+  },
+  {
+    "start": 980.28,
+    "duration": 3.92,
+    "text": "all that. You need a furnace to convert"
+  },
+  {
+    "start": 982.44,
+    "duration": 3.6,
+    "text": "the ore that you farm from the Dream"
+  },
+  {
+    "start": 984.2,
+    "duration": 4.32,
+    "text": "Islands into Poké Metal."
+  },
+  {
+    "start": 986.04,
+    "duration": 4.52,
+    "text": "And your iron farm is probably always"
+  },
+  {
+    "start": 988.52,
+    "duration": 4.6,
+    "text": "busy with ingots, as you can see over"
+  },
+  {
+    "start": 990.56,
+    "duration": 4.44,
+    "text": "here. So, I've placed two furnaces here"
+  },
+  {
+    "start": 993.12,
+    "duration": 4.719,
+    "text": "such that when I finish my Dream Island"
+  },
+  {
+    "start": 995.0,
+    "duration": 5.079,
+    "text": "run, I pop in and I drop my Poké Metal"
+  },
+  {
+    "start": 997.839,
+    "duration": 4.281,
+    "text": "over here so that it gets converted into"
+  },
+  {
+    "start": 1000.079,
+    "duration": 3.921,
+    "text": "Poké Metal ingots. Because again, when"
+  },
+  {
+    "start": 1002.12,
+    "duration": 3.08,
+    "text": "you convert clay into bricks, you do not"
+  },
+  {
+    "start": 1004.0,
+    "duration": 3.64,
+    "text": "need the furnace. You just need the"
+  },
+  {
+    "start": 1005.2,
+    "duration": 4.44,
+    "text": "Pokémon to breathe fire on the clay. So,"
+  },
+  {
+    "start": 1007.64,
+    "duration": 4.28,
+    "text": "that's pretty much that. A good example"
+  },
+  {
+    "start": 1009.64,
+    "duration": 3.72,
+    "text": "is this, right? It's producing clay into"
+  },
+  {
+    "start": 1011.92,
+    "duration": 3.4,
+    "text": "brick right now. This is what's"
+  },
+  {
+    "start": 1013.36,
+    "duration": 3.96,
+    "text": "happening. So, that's the Poké Metal and"
+  },
+  {
+    "start": 1015.32,
+    "duration": 3.84,
+    "text": "brick facility to the right. To the"
+  },
+  {
+    "start": 1017.32,
+    "duration": 4.519,
+    "text": "left, really quickly, might be familiar"
+  },
+  {
+    "start": 1019.16,
+    "duration": 4.72,
+    "text": "to you folks. This is basically the auto"
+  },
+  {
+    "start": 1021.839,
+    "duration": 3.561,
+    "text": "crop harvester for all the crops that"
+  },
+  {
+    "start": 1023.88,
+    "duration": 2.88,
+    "text": "you need. You guys already seen the"
+  },
+  {
+    "start": 1025.4,
+    "duration": 4.16,
+    "text": "video in the middle of the screen. And"
+  },
+  {
+    "start": 1026.76,
+    "duration": 5.12,
+    "text": "this is basically my auto farm in terms"
+  },
+  {
+    "start": 1029.56,
+    "duration": 4.0,
+    "text": "of getting all my crops harvested. You"
+  },
+  {
+    "start": 1031.88,
+    "duration": 3.72,
+    "text": "turn on the switch in the morning after"
+  },
+  {
+    "start": 1033.56,
+    "duration": 4.2,
+    "text": "you deposit the berries, and then you go"
+  },
+  {
+    "start": 1035.6,
+    "duration": 4.0,
+    "text": "off to do other things. Just before you"
+  },
+  {
+    "start": 1037.76,
+    "duration": 3.72,
+    "text": "leave Pallet Town, just come over here,"
+  },
+  {
+    "start": 1039.6,
+    "duration": 4.4,
+    "text": "hit the switch again, and the mud will"
+  },
+  {
+    "start": 1041.48,
+    "duration": 4.599,
+    "text": "turn off, and all the crops are being"
+  },
+  {
+    "start": 1044.0,
+    "duration": 4.56,
+    "text": "pushed by the water to the front. You"
+  },
+  {
+    "start": 1046.079,
+    "duration": 4.401,
+    "text": "just wait here, you just collect all the"
+  },
+  {
+    "start": 1048.56,
+    "duration": 3.88,
+    "text": "fruits that is, well, not the fruits,"
+  },
+  {
+    "start": 1050.48,
+    "duration": 4.199,
+    "text": "the vegetables that is coming to the"
+  },
+  {
+    "start": 1052.44,
+    "duration": 4.6,
+    "text": "front over here. And that pretty much is"
+  },
+  {
+    "start": 1054.679,
+    "duration": 4.0,
+    "text": "your auto crops that you need to cook"
+  },
+  {
+    "start": 1057.04,
+    "duration": 4.0,
+    "text": "anything you need. Speaking about"
+  },
+  {
+    "start": 1058.679,
+    "duration": 4.321,
+    "text": "cooking, this is why I have a kitchen"
+  },
+  {
+    "start": 1061.04,
+    "duration": 4.0,
+    "text": "over here. This allows you to cook"
+  },
+  {
+    "start": 1063.0,
+    "duration": 4.2,
+    "text": "anything from a salad that powers up"
+  },
+  {
+    "start": 1065.04,
+    "duration": 5.92,
+    "text": "your cut. It also allows you to cook"
+  },
+  {
+    "start": 1067.2,
+    "duration": 5.84,
+    "text": "your hamburger, specifically your potato"
+  },
+  {
+    "start": 1070.96,
+    "duration": 4.16,
+    "text": "hamburger steak, the most OP food in the"
+  },
+  {
+    "start": 1073.04,
+    "duration": 4.36,
+    "text": "game that powers up your ability to"
+  },
+  {
+    "start": 1075.12,
+    "duration": 4.8,
+    "text": "smash rocks and farm rarer stuff. You"
+  },
+  {
+    "start": 1077.4,
+    "duration": 4.2,
+    "text": "can also cook various stew and soup, and"
+  },
+  {
+    "start": 1079.92,
+    "duration": 6.72,
+    "text": "then you can bake bread over here. Now,"
+  },
+  {
+    "start": 1081.6,
+    "duration": 7.52,
+    "text": "one caveat, there's no automated way"
+  },
+  {
+    "start": 1086.64,
+    "duration": 4.48,
+    "text": "to farm wheat in this game because wheat"
+  },
+  {
+    "start": 1089.12,
+    "duration": 4.04,
+    "text": "is a dry crop. So, you need to kind of"
+  },
+  {
+    "start": 1091.12,
+    "duration": 4.04,
+    "text": "plant it manually to bake bread if you"
+  },
+  {
+    "start": 1093.16,
+    "duration": 3.92,
+    "text": "want to. But honestly, bread is not as"
+  },
+  {
+    "start": 1095.16,
+    "duration": 4.0,
+    "text": "useful as, you know, the other stuff,"
+  },
+  {
+    "start": 1097.08,
+    "duration": 5.32,
+    "text": "right? You use it maybe once in a while."
+  },
+  {
+    "start": 1099.16,
+    "duration": 5.36,
+    "text": "I left a open kitchen here with a window"
+  },
+  {
+    "start": 1102.4,
+    "duration": 4.24,
+    "text": "view of the ocean so that when I'm"
+  },
+  {
+    "start": 1104.52,
+    "duration": 4.48,
+    "text": "cooking, it's kind of calming, I guess,"
+  },
+  {
+    "start": 1106.64,
+    "duration": 3.96,
+    "text": "channeling my inner Gordon Ramsay here."
+  },
+  {
+    "start": 1109.0,
+    "duration": 3.919,
+    "text": "Something convenient you can do is to"
+  },
+  {
+    "start": 1110.6,
+    "duration": 4.72,
+    "text": "deposit food items in the fridge over"
+  },
+  {
+    "start": 1112.919,
+    "duration": 4.481,
+    "text": "here. This is essentially a free chest"
+  },
+  {
+    "start": 1115.32,
+    "duration": 3.96,
+    "text": "that you can use. So, for example, you"
+  },
+  {
+    "start": 1117.4,
+    "duration": 3.56,
+    "text": "can deposit your leaves and your berries"
+  },
+  {
+    "start": 1119.28,
+    "duration": 2.72,
+    "text": "over here into the fridge. And then when"
+  },
+  {
+    "start": 1120.96,
+    "duration": 2.68,
+    "text": "you need to cook, you just pull out the"
+  },
+  {
+    "start": 1122.0,
+    "duration": 3.159,
+    "text": "ingredients into your bag, then you can"
+  },
+  {
+    "start": 1123.64,
+    "duration": 3.2,
+    "text": "start cooking. So, simple as that. So,"
+  },
+  {
+    "start": 1125.159,
+    "duration": 4.441,
+    "text": "put all your crops inside here. So,"
+  },
+  {
+    "start": 1126.84,
+    "duration": 5.68,
+    "text": "that's basically the crops. Now, to the"
+  },
+  {
+    "start": 1129.6,
+    "duration": 4.88,
+    "text": "left over here is the lumber farm. The"
+  },
+  {
+    "start": 1132.52,
+    "duration": 4.88,
+    "text": "lumber farm and the lumber team is a"
+  },
+  {
+    "start": 1134.48,
+    "duration": 5.96,
+    "text": "three-man operation. But this is also a"
+  },
+  {
+    "start": 1137.4,
+    "duration": 6.48,
+    "text": "mathematical problem because the only"
+  },
+  {
+    "start": 1140.44,
+    "duration": 6.04,
+    "text": "Pokémon in the entire game that drops"
+  },
+  {
+    "start": 1143.88,
+    "duration": 4.52,
+    "text": "the raw material needed to make lumber"
+  },
+  {
+    "start": 1146.48,
+    "duration": 3.84,
+    "text": "is actually the person beside me."
+  },
+  {
+    "start": 1148.4,
+    "duration": 4.96,
+    "text": "Specifically, it's Haxorus, right?"
+  },
+  {
+    "start": 1150.32,
+    "duration": 6.04,
+    "text": "Haxorus is the only Pokémon in the game"
+  },
+  {
+    "start": 1153.36,
+    "duration": 5.04,
+    "text": "that has a litter capability of dropping"
+  },
+  {
+    "start": 1156.36,
+    "duration": 3.96,
+    "text": "the small logs that you need that you"
+  },
+  {
+    "start": 1158.4,
+    "duration": 4.16,
+    "text": "can see it basically working on,"
+  },
+  {
+    "start": 1160.32,
+    "duration": 4.24,
+    "text": "chopping it into lumber. There's no"
+  },
+  {
+    "start": 1162.56,
+    "duration": 4.28,
+    "text": "other Pokémon that can do that. So,"
+  },
+  {
+    "start": 1164.56,
+    "duration": 4.32,
+    "text": "because this is the mathematical"
+  },
+  {
+    "start": 1166.84,
+    "duration": 3.48,
+    "text": "constraint imposed on the game because"
+  },
+  {
+    "start": 1168.88,
+    "duration": 3.76,
+    "text": "it's the only one that drops the"
+  },
+  {
+    "start": 1170.32,
+    "duration": 4.76,
+    "text": "prerequisite, the entire lumber team"
+  },
+  {
+    "start": 1172.64,
+    "duration": 4.12,
+    "text": "needs to be designed around Haxorus. The"
+  },
+  {
+    "start": 1175.08,
+    "duration": 3.68,
+    "text": "most important, like I said, is the"
+  },
+  {
+    "start": 1176.76,
+    "duration": 3.919,
+    "text": "ideal habitat, right? That is one of the"
+  },
+  {
+    "start": 1178.76,
+    "duration": 3.96,
+    "text": "most important things that tends to"
+  },
+  {
+    "start": 1180.679,
+    "duration": 4.0,
+    "text": "conflict with other Pokémon. So, I need"
+  },
+  {
+    "start": 1182.72,
+    "duration": 5.04,
+    "text": "to look for another Pokémon that is able"
+  },
+  {
+    "start": 1184.679,
+    "duration": 5.321,
+    "text": "to chop and also likes the dark. On top"
+  },
+  {
+    "start": 1187.76,
+    "duration": 3.88,
+    "text": "of that, my gatherer needs to like the"
+  },
+  {
+    "start": 1190.0,
+    "duration": 3.159,
+    "text": "dark as well. He's just trying to pass"
+  },
+  {
+    "start": 1191.64,
+    "duration": 3.8,
+    "text": "me lumber here, so I'll just accept the"
+  },
+  {
+    "start": 1193.159,
+    "duration": 4.041,
+    "text": "lumber point is the final three that I"
+  },
+  {
+    "start": 1195.44,
+    "duration": 4.44,
+    "text": "went for, this is my gatherer. My"
+  },
+  {
+    "start": 1197.2,
+    "duration": 4.8,
+    "text": "gatherer is a Duskull. It likes the"
+  },
+  {
+    "start": 1199.88,
+    "duration": 4.24,
+    "text": "dark. And for the dedicated lumber"
+  },
+  {
+    "start": 1202.0,
+    "duration": 3.52,
+    "text": "chopper, it's basically XU, the one"
+  },
+  {
+    "start": 1204.12,
+    "duration": 3.84,
+    "text": "that's sleeping on the ground here. Now,"
+  },
+  {
+    "start": 1205.52,
+    "duration": 4.56,
+    "text": "the reason why these three make such a"
+  },
+  {
+    "start": 1207.96,
+    "duration": 3.36,
+    "text": "good trio, not only because they like"
+  },
+  {
+    "start": 1210.08,
+    "duration": 3.0,
+    "text": "the dark, therefore, you know, the"
+  },
+  {
+    "start": 1211.32,
+    "duration": 3.36,
+    "text": "ceiling is basically covered. There's"
+  },
+  {
+    "start": 1213.08,
+    "duration": 3.08,
+    "text": "some windows, but again, this is still"
+  },
+  {
+    "start": 1214.68,
+    "duration": 3.0,
+    "text": "considered dark. If you want to be"
+  },
+  {
+    "start": 1216.16,
+    "duration": 3.52,
+    "text": "foolproof, you just box up everything,"
+  },
+  {
+    "start": 1217.68,
+    "duration": 4.6,
+    "text": "but it looks kind of ugly. But, here's"
+  },
+  {
+    "start": 1219.68,
+    "duration": 4.2,
+    "text": "the magic. Exeggutor, XU, and Duskull,"
+  },
+  {
+    "start": 1222.28,
+    "duration": 3.4,
+    "text": "you can see that they all like the dark,"
+  },
+  {
+    "start": 1223.88,
+    "duration": 3.92,
+    "text": "which is perfect for one another."
+  },
+  {
+    "start": 1225.68,
+    "duration": 4.0,
+    "text": "Exeggutor technically can chop the small"
+  },
+  {
+    "start": 1227.8,
+    "duration": 3.92,
+    "text": "logs that it drops, but I prefer a"
+  },
+  {
+    "start": 1229.68,
+    "duration": 3.36,
+    "text": "dedicated person to chop the lumber,"
+  },
+  {
+    "start": 1231.72,
+    "duration": 3.56,
+    "text": "else the production might be a bit too"
+  },
+  {
+    "start": 1233.04,
+    "duration": 4.8,
+    "text": "slow. That is where XU comes in. So, we"
+  },
+  {
+    "start": 1235.28,
+    "duration": 4.92,
+    "text": "can satisfy their dark habitat easily."
+  },
+  {
+    "start": 1237.84,
+    "duration": 4.6,
+    "text": "Now, the question is, what commonalities"
+  },
+  {
+    "start": 1240.2,
+    "duration": 4.68,
+    "text": "do they have across their other traits?"
+  },
+  {
+    "start": 1242.44,
+    "duration": 5.52,
+    "text": "So, one thing is very clear. You can see"
+  },
+  {
+    "start": 1244.88,
+    "duration": 5.64,
+    "text": "that they all like luxury. It likes some"
+  },
+  {
+    "start": 1247.96,
+    "duration": 4.84,
+    "text": "kind of fire. And Duskull here like"
+  },
+  {
+    "start": 1250.52,
+    "duration": 4.64,
+    "text": "spooky stuff, strange stuff, and glass"
+  },
+  {
+    "start": 1252.8,
+    "duration": 4.56,
+    "text": "stuff. So, one way I can satisfy all of"
+  },
+  {
+    "start": 1255.16,
+    "duration": 4.76,
+    "text": "them is basically, again, windows,"
+  },
+  {
+    "start": 1257.36,
+    "duration": 3.96,
+    "text": "right? Windows matches Duskull, but as"
+  },
+  {
+    "start": 1259.92,
+    "duration": 3.52,
+    "text": "long as my ceiling is covered, it should"
+  },
+  {
+    "start": 1261.32,
+    "duration": 3.48,
+    "text": "be considered relatively dark. Again,"
+  },
+  {
+    "start": 1263.44,
+    "duration": 3.28,
+    "text": "black out the windows if you want to be"
+  },
+  {
+    "start": 1264.8,
+    "duration": 3.72,
+    "text": "sure. But, more importantly, if you look"
+  },
+  {
+    "start": 1266.72,
+    "duration": 5.16,
+    "text": "into spooky stuff, there's something"
+  },
+  {
+    "start": 1268.52,
+    "duration": 5.16,
+    "text": "there also matches lots of fire, and"
+  },
+  {
+    "start": 1271.88,
+    "duration": 4.56,
+    "text": "it's this thing over here. This is a"
+  },
+  {
+    "start": 1273.68,
+    "duration": 5.56,
+    "text": "very tactical decision because a eerie"
+  },
+  {
+    "start": 1276.44,
+    "duration": 5.32,
+    "text": "candle is classified as spooky stuff as"
+  },
+  {
+    "start": 1279.24,
+    "duration": 4.36,
+    "text": "well as lots of fire. That is why I put"
+  },
+  {
+    "start": 1281.76,
+    "duration": 4.24,
+    "text": "two of them, and it basically makes all"
+  },
+  {
+    "start": 1283.6,
+    "duration": 3.72,
+    "text": "three happy. And then because of luxury"
+  },
+  {
+    "start": 1286.0,
+    "duration": 3.16,
+    "text": "from the first two Pokémon, you"
+  },
+  {
+    "start": 1287.32,
+    "duration": 4.48,
+    "text": "basically want antique tables, anything"
+  },
+  {
+    "start": 1289.16,
+    "duration": 4.16,
+    "text": "antique like a clock, a luxury bed."
+  },
+  {
+    "start": 1291.8,
+    "duration": 3.44,
+    "text": "These are the things that will make"
+  },
+  {
+    "start": 1293.32,
+    "duration": 4.6,
+    "text": "these two happy, right? And then because"
+  },
+  {
+    "start": 1295.24,
+    "duration": 4.96,
+    "text": "Duskull likes strange and spooky stuff,"
+  },
+  {
+    "start": 1297.92,
+    "duration": 5.44,
+    "text": "I deliberately included as a decoration"
+  },
+  {
+    "start": 1300.2,
+    "duration": 4.88,
+    "text": "outside. If I run over here, just on"
+  },
+  {
+    "start": 1303.36,
+    "duration": 3.4,
+    "text": "this back alley here, you can see that I"
+  },
+  {
+    "start": 1305.08,
+    "duration": 3.28,
+    "text": "included other painting like this"
+  },
+  {
+    "start": 1306.76,
+    "duration": 4.2,
+    "text": "strange calligraphy painting that it"
+  },
+  {
+    "start": 1308.36,
+    "duration": 4.44,
+    "text": "likes. I guess the point is furniture"
+  },
+  {
+    "start": 1310.96,
+    "duration": 3.6,
+    "text": "that is within your habitat that you see"
+  },
+  {
+    "start": 1312.8,
+    "duration": 3.6,
+    "text": "is this boundary. I already told you how"
+  },
+  {
+    "start": 1314.56,
+    "duration": 3.48,
+    "text": "to do it. Press R3, the right stick"
+  },
+  {
+    "start": 1316.4,
+    "duration": 3.4,
+    "text": "button. And the boundary, as long as"
+  },
+  {
+    "start": 1318.04,
+    "duration": 3.92,
+    "text": "it's within the boundary, it would still"
+  },
+  {
+    "start": 1319.8,
+    "duration": 4.0,
+    "text": "contribute to the required environmental"
+  },
+  {
+    "start": 1321.96,
+    "duration": 3.56,
+    "text": "value. So, this is how you make all"
+  },
+  {
+    "start": 1323.8,
+    "duration": 3.24,
+    "text": "three of them happy. So, that's the"
+  },
+  {
+    "start": 1325.52,
+    "duration": 3.36,
+    "text": "trinity. All right, so that's lumber"
+  },
+  {
+    "start": 1327.04,
+    "duration": 3.72,
+    "text": "production. And you can see that it's"
+  },
+  {
+    "start": 1328.88,
+    "duration": 3.72,
+    "text": "absolutely going ham here, right? In the"
+  },
+  {
+    "start": 1330.76,
+    "duration": 3.52,
+    "text": "second community box. Honestly, I think"
+  },
+  {
+    "start": 1332.6,
+    "duration": 3.24,
+    "text": "lumber is one of the most important"
+  },
+  {
+    "start": 1334.28,
+    "duration": 4.399,
+    "text": "materials in the game because you look"
+  },
+  {
+    "start": 1335.84,
+    "duration": 4.56,
+    "text": "at high-end builds, wood is such a good"
+  },
+  {
+    "start": 1338.679,
+    "duration": 3.721,
+    "text": "material. It's cheap, it looks good"
+  },
+  {
+    "start": 1340.4,
+    "duration": 3.88,
+    "text": "against nature like stone and anything"
+  },
+  {
+    "start": 1342.4,
+    "duration": 3.88,
+    "text": "that is dark in nature. It's always a"
+  },
+  {
+    "start": 1344.28,
+    "duration": 4.2,
+    "text": "nice contrast. So, definitely get a"
+  },
+  {
+    "start": 1346.28,
+    "duration": 4.2,
+    "text": "lumber farm going. So, that's the lumber"
+  },
+  {
+    "start": 1348.48,
+    "duration": 3.84,
+    "text": "stuff on the left. Now, let's proceed"
+  },
+  {
+    "start": 1350.48,
+    "duration": 4.76,
+    "text": "down the left, and then we'll cover iron"
+  },
+  {
+    "start": 1352.32,
+    "duration": 5.28,
+    "text": "as the last stop. On the left here is"
+  },
+  {
+    "start": 1355.24,
+    "duration": 4.6,
+    "text": "basically what I call the litter farm."
+  },
+  {
+    "start": 1357.6,
+    "duration": 4.4,
+    "text": "This is basically Pokémon that drops"
+  },
+  {
+    "start": 1359.84,
+    "duration": 4.32,
+    "text": "various raw materials that is not really"
+  },
+  {
+    "start": 1362.0,
+    "duration": 5.2,
+    "text": "processed into anything, but it's"
+  },
+  {
+    "start": 1364.16,
+    "duration": 5.2,
+    "text": "required for various important uses in"
+  },
+  {
+    "start": 1367.2,
+    "duration": 4.12,
+    "text": "the game. Honey, which drops from Combee"
+  },
+  {
+    "start": 1369.36,
+    "duration": 3.4,
+    "text": "here, is used to summon Pokémon from"
+  },
+  {
+    "start": 1371.32,
+    "duration": 3.6,
+    "text": "anywhere in the game, right? Like you"
+  },
+  {
+    "start": 1372.76,
+    "duration": 3.48,
+    "text": "drop a honey, you can summon them from"
+  },
+  {
+    "start": 1374.92,
+    "duration": 2.759,
+    "text": "any habitat, especially if they're"
+  },
+  {
+    "start": 1376.24,
+    "duration": 3.32,
+    "text": "missing. And then you have fluff, you"
+  },
+  {
+    "start": 1377.679,
+    "duration": 3.441,
+    "text": "have stone, which is used to make"
+  },
+  {
+    "start": 1379.56,
+    "duration": 3.08,
+    "text": "various materials, but stone, more"
+  },
+  {
+    "start": 1381.12,
+    "duration": 3.24,
+    "text": "importantly, is used in a lot of"
+  },
+  {
+    "start": 1382.64,
+    "duration": 4.48,
+    "text": "construction materials, right? Like"
+  },
+  {
+    "start": 1384.36,
+    "duration": 5.4,
+    "text": "blocks, benches, various things, right?"
+  },
+  {
+    "start": 1387.12,
+    "duration": 3.68,
+    "text": "Then you have twine, leaves, and twigs."
+  },
+  {
+    "start": 1389.76,
+    "duration": 3.76,
+    "text": "I think leaf is kind of"
+  },
+  {
+    "start": 1390.8,
+    "duration": 4.366,
+    "text": "self-explanatory. You use them in salads"
+  },
+  {
+    "start": 1393.52,
+    "duration": 3.12,
+    "text": "to empower your cut. And then there's"
+  },
+  {
+    "start": 1395.166,
+    "duration": 3.154,
+    "text": "[music] twine, which is used in various"
+  },
+  {
+    "start": 1396.64,
+    "duration": 4.28,
+    "text": "construction materials. Meanwhile, your"
+  },
+  {
+    "start": 1398.32,
+    "duration": 4.56,
+    "text": "sturdy stick or your twig is basically"
+  },
+  {
+    "start": 1400.92,
+    "duration": 4.08,
+    "text": "used in, I think, a few recipes. So,"
+  },
+  {
+    "start": 1402.88,
+    "duration": 4.96,
+    "text": "what's the trick here? Well, as you can"
+  },
+  {
+    "start": 1405.0,
+    "duration": 4.96,
+    "text": "already guess from over here, use this a"
+  },
+  {
+    "start": 1407.84,
+    "duration": 5.04,
+    "text": "very interesting trick that the"
+  },
+  {
+    "start": 1409.96,
+    "duration": 5.6,
+    "text": "prefabricated houses allows for."
+  },
+  {
+    "start": 1412.88,
+    "duration": 5.4,
+    "text": "Specifically, if you put a Pokémon"
+  },
+  {
+    "start": 1415.56,
+    "duration": 4.16,
+    "text": "inside it that has the litter function,"
+  },
+  {
+    "start": 1418.28,
+    "duration": 3.88,
+    "text": "which allows it to then drop the"
+  },
+  {
+    "start": 1419.72,
+    "duration": 5.24,
+    "text": "materials that we just went through. If"
+  },
+  {
+    "start": 1422.16,
+    "duration": 4.44,
+    "text": "you do that, it will always drop its raw"
+  },
+  {
+    "start": 1424.96,
+    "duration": 4.52,
+    "text": "material at the entrance [music]"
+  },
+  {
+    "start": 1426.6,
+    "duration": 5.56,
+    "text": "of the prefabricated house. Now, I chose"
+  },
+  {
+    "start": 1429.48,
+    "duration": 4.72,
+    "text": "to use the stone hut kit. Why do you use"
+  },
+  {
+    "start": 1432.16,
+    "duration": 4.519,
+    "text": "that kit? A hut? Well, you can use other"
+  },
+  {
+    "start": 1434.2,
+    "duration": 5.12,
+    "text": "types, but the point is a hut is big"
+  },
+  {
+    "start": 1436.679,
+    "duration": 4.641,
+    "text": "enough for any Pokémon in the game to go"
+  },
+  {
+    "start": 1439.32,
+    "duration": 4.28,
+    "text": "inside it. This is why Venusaur that"
+  },
+  {
+    "start": 1441.32,
+    "duration": 3.72,
+    "text": "drops my leaves is able to fit within"
+  },
+  {
+    "start": 1443.6,
+    "duration": 2.88,
+    "text": "that, even though, like, you know, if"
+  },
+  {
+    "start": 1445.04,
+    "duration": 3.76,
+    "text": "you look at it visually, it makes it"
+  },
+  {
+    "start": 1446.48,
+    "duration": 4.36,
+    "text": "impossible, but it can enter this big"
+  },
+  {
+    "start": 1448.8,
+    "duration": 6.36,
+    "text": "house. On top of that, one of the"
+  },
+  {
+    "start": 1450.84,
+    "duration": 7.08,
+    "text": "benefits of a stone hut is that its roof"
+  },
+  {
+    "start": 1455.16,
+    "duration": 5.72,
+    "text": "is pretty flat, so you can use it to fit"
+  },
+  {
+    "start": 1457.92,
+    "duration": 4.72,
+    "text": "into a lot of designs very naturally."
+  },
+  {
+    "start": 1460.88,
+    "duration": 4.4,
+    "text": "But, like I said, the trick here is"
+  },
+  {
+    "start": 1462.64,
+    "duration": 4.4,
+    "text": "basically they all will litter in front"
+  },
+  {
+    "start": 1465.28,
+    "duration": 4.04,
+    "text": "of their house, which then means you"
+  },
+  {
+    "start": 1467.04,
+    "duration": 4.84,
+    "text": "just need a gatherer that within its"
+  },
+  {
+    "start": 1469.32,
+    "duration": 6.16,
+    "text": "habitat includes the six drop points"
+  },
+  {
+    "start": 1471.88,
+    "duration": 6.16,
+    "text": "plus a community box. And this sounds"
+  },
+  {
+    "start": 1475.48,
+    "duration": 5.64,
+    "text": "easier than it really is because if you"
+  },
+  {
+    "start": 1478.04,
+    "duration": 5.56,
+    "text": "are trying to create a habitat for,"
+  },
+  {
+    "start": 1481.12,
+    "duration": 5.52,
+    "text": "let's say, my gatherer, and it must"
+  },
+  {
+    "start": 1483.6,
+    "duration": 5.28,
+    "text": "include these stone huts, the stone huts"
+  },
+  {
+    "start": 1486.64,
+    "duration": 4.72,
+    "text": "needs to be constructed relatively"
+  },
+  {
+    "start": 1488.88,
+    "duration": 3.799,
+    "text": "compact to one another. On top of that,"
+  },
+  {
+    "start": 1491.36,
+    "duration": 3.52,
+    "text": "I have this challenge where I wanted to"
+  },
+  {
+    "start": 1492.679,
+    "duration": 3.521,
+    "text": "look nice, so instead of just creating a"
+  },
+  {
+    "start": 1494.88,
+    "duration": 3.36,
+    "text": "grass patch in the middle and let"
+  },
+  {
+    "start": 1496.2,
+    "duration": 4.16,
+    "text": "Minccino, my gatherer, live in it, I"
+  },
+  {
+    "start": 1498.24,
+    "duration": 4.76,
+    "text": "also wanted it to look nice, right? So,"
+  },
+  {
+    "start": 1500.36,
+    "duration": 6.6,
+    "text": "the way I did it, all these six huts"
+  },
+  {
+    "start": 1503.0,
+    "duration": 5.64,
+    "text": "have individual Pokémons in it. Minccino"
+  },
+  {
+    "start": 1506.96,
+    "duration": 3.2,
+    "text": "is basically living in this giant house"
+  },
+  {
+    "start": 1508.64,
+    "duration": 3.12,
+    "text": "by itself because if you look at how"
+  },
+  {
+    "start": 1510.16,
+    "duration": 3.96,
+    "text": "it's constructed, it basically has a"
+  },
+  {
+    "start": 1511.76,
+    "duration": 4.68,
+    "text": "border like that. It has a door over"
+  },
+  {
+    "start": 1514.12,
+    "duration": 4.6,
+    "text": "here, and therefore it qualifies as a"
+  },
+  {
+    "start": 1516.44,
+    "duration": 4.48,
+    "text": "house. However, you might be wondering"
+  },
+  {
+    "start": 1518.72,
+    "duration": 4.2,
+    "text": "then, how is Minccino actually being"
+  },
+  {
+    "start": 1520.92,
+    "duration": 4.04,
+    "text": "happy, right? How do we satisfy its"
+  },
+  {
+    "start": 1522.92,
+    "duration": 4.16,
+    "text": "wants? Well, this is a bit of a hackery,"
+  },
+  {
+    "start": 1524.96,
+    "duration": 4.64,
+    "text": "so basically within the white line that"
+  },
+  {
+    "start": 1527.08,
+    "duration": 4.52,
+    "text": "you see over there, right, for Minccino,"
+  },
+  {
+    "start": 1529.6,
+    "duration": 3.36,
+    "text": "if I rotate the camera, it goes all the"
+  },
+  {
+    "start": 1531.6,
+    "duration": 2.96,
+    "text": "way, you can see, to the right here,"
+  },
+  {
+    "start": 1532.96,
+    "duration": 3.92,
+    "text": "over here. It goes all the way to the"
+  },
+  {
+    "start": 1534.56,
+    "duration": 4.88,
+    "text": "back here. So, what I've done is I"
+  },
+  {
+    "start": 1536.88,
+    "duration": 4.84,
+    "text": "created a fake house that is not really"
+  },
+  {
+    "start": 1539.44,
+    "duration": 4.36,
+    "text": "a house by putting a door here, but"
+  },
+  {
+    "start": 1541.72,
+    "duration": 3.4,
+    "text": "instead of boxing it up, I use a planter"
+  },
+  {
+    "start": 1543.8,
+    "duration": 3.12,
+    "text": "on the ground so that it's not"
+  },
+  {
+    "start": 1545.12,
+    "duration": 3.84,
+    "text": "classified as a house. Because if you"
+  },
+  {
+    "start": 1546.92,
+    "duration": 4.32,
+    "text": "use brick here, this is now going to be"
+  },
+  {
+    "start": 1548.96,
+    "duration": 4.6,
+    "text": "the second house. And the problem is"
+  },
+  {
+    "start": 1551.24,
+    "duration": 4.439,
+    "text": "Minccino will automatically be allocated"
+  },
+  {
+    "start": 1553.56,
+    "duration": 3.8,
+    "text": "to this, and its habitat will not cover"
+  },
+  {
+    "start": 1555.679,
+    "duration": 4.521,
+    "text": "all six spawn points. But, more"
+  },
+  {
+    "start": 1557.36,
+    "duration": 4.28,
+    "text": "importantly, why Minccino is my gatherer"
+  },
+  {
+    "start": 1560.2,
+    "duration": 3.52,
+    "text": "of choice, and I think there's only a"
+  },
+  {
+    "start": 1561.64,
+    "duration": 3.24,
+    "text": "few gatherers that have this trait."
+  },
+  {
+    "start": 1563.72,
+    "duration": 2.84,
+    "text": "Minccino is definitely not the only one,"
+  },
+  {
+    "start": 1564.88,
+    "duration": 3.88,
+    "text": "but there's only a few. Is if you look"
+  },
+  {
+    "start": 1566.56,
+    "duration": 4.84,
+    "text": "at Minccino as a gatherer, it likes a"
+  },
+  {
+    "start": 1568.76,
+    "duration": 4.44,
+    "text": "bright habitat. So, meaning open air. It"
+  },
+  {
+    "start": 1571.4,
+    "duration": 4.16,
+    "text": "likes soft stuff, fabrics, and cute"
+  },
+  {
+    "start": 1573.2,
+    "duration": 3.88,
+    "text": "stuff, right? Which is also explains why"
+  },
+  {
+    "start": 1575.56,
+    "duration": 3.4,
+    "text": "you have all these things. It likes"
+  },
+  {
+    "start": 1577.08,
+    "duration": 3.0,
+    "text": "cleanliness, which is why you have that,"
+  },
+  {
+    "start": 1578.96,
+    "duration": 3.28,
+    "text": "you know,"
+  },
+  {
+    "start": 1580.08,
+    "duration": 4.44,
+    "text": "cleaning utensils over there. And then"
+  },
+  {
+    "start": 1582.24,
+    "duration": 4.24,
+    "text": "right, basically, anything that is space"
+  },
+  {
+    "start": 1584.52,
+    "duration": 4.68,
+    "text": "related, it fulfills that. Anyway, the"
+  },
+  {
+    "start": 1586.48,
+    "duration": 4.52,
+    "text": "point is, with Minccino, you can't"
+  },
+  {
+    "start": 1589.2,
+    "duration": 3.32,
+    "text": "basically box up the sky because it"
+  },
+  {
+    "start": 1591.0,
+    "duration": 3.08,
+    "text": "needs it bright, right? Which is why you"
+  },
+  {
+    "start": 1592.52,
+    "duration": 4.04,
+    "text": "have all these lights. So, that's why"
+  },
+  {
+    "start": 1594.08,
+    "duration": 5.12,
+    "text": "Minccino is happy. Now, I'll quickly fly"
+  },
+  {
+    "start": 1596.56,
+    "duration": 4.28,
+    "text": "through the six litter Pokémon because,"
+  },
+  {
+    "start": 1599.2,
+    "duration": 3.64,
+    "text": "to be honest, these one you don't need"
+  },
+  {
+    "start": 1600.84,
+    "duration": 3.36,
+    "text": "math, right? Because they all have their"
+  },
+  {
+    "start": 1602.84,
+    "duration": 2.72,
+    "text": "instance housing. And so, you just need"
+  },
+  {
+    "start": 1604.2,
+    "duration": 3.479,
+    "text": "to make sure, similar to what is on"
+  },
+  {
+    "start": 1605.56,
+    "duration": 4.44,
+    "text": "screen, you have the required kind of"
+  },
+  {
+    "start": 1607.679,
+    "duration": 4.441,
+    "text": "environments, right? So, for stone, you"
+  },
+  {
+    "start": 1610.0,
+    "duration": 4.44,
+    "text": "can use any fossil Pokémon to do the"
+  },
+  {
+    "start": 1612.12,
+    "duration": 4.24,
+    "text": "job. So, for Bastiodon, as you can see,"
+  },
+  {
+    "start": 1614.44,
+    "duration": 3.88,
+    "text": "it likes a dark environment, so don't"
+  },
+  {
+    "start": 1616.36,
+    "duration": 3.76,
+    "text": "put any light. It likes stone, it likes"
+  },
+  {
+    "start": 1618.32,
+    "duration": 5.16,
+    "text": "hot stuff, which explains the stone"
+  },
+  {
+    "start": 1620.12,
+    "duration": 5.4,
+    "text": "bench and the iron rack and chair here."
+  },
+  {
+    "start": 1623.48,
+    "duration": 3.76,
+    "text": "It also likes luxury and exercise, so"
+  },
+  {
+    "start": 1625.52,
+    "duration": 3.56,
+    "text": "that's why you have this fancy bed,"
+  },
+  {
+    "start": 1627.24,
+    "duration": 3.64,
+    "text": "which is a antique bed, and it likes"
+  },
+  {
+    "start": 1629.08,
+    "duration": 3.76,
+    "text": "exercise, so I put a bike here. That's"
+  },
+  {
+    "start": 1630.88,
+    "duration": 3.76,
+    "text": "why it's happy. For my twine, I use"
+  },
+  {
+    "start": 1632.84,
+    "duration": 3.48,
+    "text": "Ariados. So, as you can see from the top"
+  },
+  {
+    "start": 1634.64,
+    "duration": 3.8,
+    "text": "of the screen, it likes humid"
+  },
+  {
+    "start": 1636.32,
+    "duration": 3.72,
+    "text": "environments, so I put a humidifier. It"
+  },
+  {
+    "start": 1638.44,
+    "duration": 4.32,
+    "text": "likes wooden stuff, so lots of wooden"
+  },
+  {
+    "start": 1640.04,
+    "duration": 5.28,
+    "text": "benches, toy blocks, a stool."
+  },
+  {
+    "start": 1642.76,
+    "duration": 4.28,
+    "text": "Ironically, like garbage, so trash bags,"
+  },
+  {
+    "start": 1645.32,
+    "duration": 3.48,
+    "text": "trash bin, you get the point. Oh, it"
+  },
+  {
+    "start": 1647.04,
+    "duration": 3.32,
+    "text": "likes nature, too. So, therefore, the"
+  },
+  {
+    "start": 1648.8,
+    "duration": 4.0,
+    "text": "greenery on the wall. So, that's"
+  },
+  {
+    "start": 1650.36,
+    "duration": 4.68,
+    "text": "Ariados. Then you have Cacnea. Now,"
+  },
+  {
+    "start": 1652.8,
+    "duration": 4.36,
+    "text": "Cacnea looks a bit, um,"
+  },
+  {
+    "start": 1655.04,
+    "duration": 4.28,
+    "text": "cluttered. I'll be honest. Because it"
+  },
+  {
+    "start": 1657.16,
+    "duration": 4.08,
+    "text": "was tough to figure out what sharp stuff"
+  },
+  {
+    "start": 1659.32,
+    "duration": 3.68,
+    "text": "actually means. So, it's a bit of a"
+  },
+  {
+    "start": 1661.24,
+    "duration": 3.24,
+    "text": "trial and error for me, but I've learned"
+  },
+  {
+    "start": 1663.0,
+    "duration": 3.04,
+    "text": "that this pencil holder here is"
+  },
+  {
+    "start": 1664.48,
+    "duration": 4.199,
+    "text": "considered a sharp stuff because maybe"
+  },
+  {
+    "start": 1666.04,
+    "duration": 5.0,
+    "text": "of the pencils. Uh, this paper windmill"
+  },
+  {
+    "start": 1668.679,
+    "duration": 3.801,
+    "text": "toy thing that is very common is also"
+  },
+  {
+    "start": 1671.04,
+    "duration": 3.68,
+    "text": "considered a sharp stuff. But, more"
+  },
+  {
+    "start": 1672.48,
+    "duration": 3.92,
+    "text": "importantly, it likes dry environment,"
+  },
+  {
+    "start": 1674.72,
+    "duration": 3.76,
+    "text": "which is why you need a smooth stone"
+  },
+  {
+    "start": 1676.4,
+    "duration": 5.44,
+    "text": "over here to dry the environment out,"
+  },
+  {
+    "start": 1678.48,
+    "duration": 6.4,
+    "text": "right? Um, it also likes shiny stuff,"
+  },
+  {
+    "start": 1681.84,
+    "duration": 5.56,
+    "text": "which is why this, uh, electric mobile"
+  },
+  {
+    "start": 1684.88,
+    "duration": 3.92,
+    "text": "generator was part of this whole setup."
+  },
+  {
+    "start": 1687.4,
+    "duration": 3.56,
+    "text": "It likes luxury, and that's why you also"
+  },
+  {
+    "start": 1688.8,
+    "duration": 4.32,
+    "text": "have the antique sofa over here. Um, the"
+  },
+  {
+    "start": 1690.96,
+    "duration": 3.719,
+    "text": "chic table is also one of the things"
+  },
+  {
+    "start": 1693.12,
+    "duration": 3.2,
+    "text": "that can fulfill that. Also, if I'm not"
+  },
+  {
+    "start": 1694.679,
+    "duration": 4.281,
+    "text": "wrong, Cacnea is the only one that drops"
+  },
+  {
+    "start": 1696.32,
+    "duration": 4.76,
+    "text": "sturdy stick in the entire game. So, I"
+  },
+  {
+    "start": 1698.96,
+    "duration": 4.04,
+    "text": "think you're stuck with Cacnea. Then you"
+  },
+  {
+    "start": 1701.08,
+    "duration": 3.599,
+    "text": "have, for fluff, I use Mareep. Uh,"
+  },
+  {
+    "start": 1703.0,
+    "duration": 3.08,
+    "text": "Mareep is pretty simple. You can see"
+  },
+  {
+    "start": 1704.679,
+    "duration": 3.0,
+    "text": "from the top here, it likes electronics,"
+  },
+  {
+    "start": 1706.08,
+    "duration": 3.28,
+    "text": "that's why I put this arcade machine."
+  },
+  {
+    "start": 1707.679,
+    "duration": 3.881,
+    "text": "When it's actually in the room, it will"
+  },
+  {
+    "start": 1709.36,
+    "duration": 3.92,
+    "text": "power on the electricity here, so the"
+  },
+  {
+    "start": 1711.56,
+    "duration": 4.0,
+    "text": "lamp and the arcade machine will turn"
+  },
+  {
+    "start": 1713.28,
+    "duration": 3.84,
+    "text": "on, so that's not a problem. It likes"
+  },
+  {
+    "start": 1715.56,
+    "duration": 3.04,
+    "text": "cute stuff, so you have this very cute"
+  },
+  {
+    "start": 1717.12,
+    "duration": 3.24,
+    "text": "bed over here. In case you're wondering,"
+  },
+  {
+    "start": 1718.6,
+    "duration": 5.079,
+    "text": "it's the pop art bed. Um, and then you"
+  },
+  {
+    "start": 1720.36,
+    "duration": 4.88,
+    "text": "have pop art chair and stylish stool."
+  },
+  {
+    "start": 1723.679,
+    "duration": 3.361,
+    "text": "And because it likes bright environment,"
+  },
+  {
+    "start": 1725.24,
+    "duration": 3.24,
+    "text": "make sure you include because it likes"
+  },
+  {
+    "start": 1727.04,
+    "duration": 3.32,
+    "text": "bright environments, make sure you have"
+  },
+  {
+    "start": 1728.48,
+    "duration": 3.76,
+    "text": "lighting sources. So, I included a"
+  },
+  {
+    "start": 1730.36,
+    "duration": 3.559,
+    "text": "mushroom lamp that will always be on"
+  },
+  {
+    "start": 1732.24,
+    "duration": 3.2,
+    "text": "regardless of electricity because of"
+  },
+  {
+    "start": 1733.919,
+    "duration": 3.881,
+    "text": "that. So, that's Mareep. And then we"
+  },
+  {
+    "start": 1735.44,
+    "duration": 3.76,
+    "text": "have Venusaur, which drops leaves. I"
+  },
+  {
+    "start": 1737.8,
+    "duration": 2.92,
+    "text": "think there's quite a few Pokémon that"
+  },
+  {
+    "start": 1739.2,
+    "duration": 3.28,
+    "text": "drops leaf. Actually, I think there's"
+  },
+  {
+    "start": 1740.72,
+    "duration": 3.56,
+    "text": "two. It's quite simple, very similar as"
+  },
+  {
+    "start": 1742.48,
+    "duration": 3.52,
+    "text": "well. It likes cute stuff, so the pop"
+  },
+  {
+    "start": 1744.28,
+    "duration": 3.399,
+    "text": "art bed. It likes bright environment, so"
+  },
+  {
+    "start": 1746.0,
+    "duration": 3.52,
+    "text": "make sure you have lighting. It likes"
+  },
+  {
+    "start": 1747.679,
+    "duration": 3.841,
+    "text": "nature, so make sure greenery on the"
+  },
+  {
+    "start": 1749.52,
+    "duration": 4.08,
+    "text": "walls like that. And also cute stuff, so"
+  },
+  {
+    "start": 1751.52,
+    "duration": 3.44,
+    "text": "cute chairs like that. Basically, pretty"
+  },
+  {
+    "start": 1753.6,
+    "duration": 3.04,
+    "text": "straightforward. And then last but not"
+  },
+  {
+    "start": 1754.96,
+    "duration": 4.24,
+    "text": "least, we have Combee. Same thing for"
+  },
+  {
+    "start": 1756.64,
+    "duration": 4.32,
+    "text": "Combee. It likes bright environment, so"
+  },
+  {
+    "start": 1759.2,
+    "duration": 3.36,
+    "text": "make sure you have lighting. It likes"
+  },
+  {
+    "start": 1760.96,
+    "duration": 3.56,
+    "text": "wooden stuff, as you can see from its"
+  },
+  {
+    "start": 1762.56,
+    "duration": 4.8,
+    "text": "favorites one. So, everything is wooden,"
+  },
+  {
+    "start": 1764.52,
+    "duration": 5.04,
+    "text": "right? Bed, chair, table, crate, toy"
+  },
+  {
+    "start": 1767.36,
+    "duration": 3.92,
+    "text": "block. Very easy to make happy. And so,"
+  },
+  {
+    "start": 1769.56,
+    "duration": 4.48,
+    "text": "that's really the litter farm. I would"
+  },
+  {
+    "start": 1771.28,
+    "duration": 6.16,
+    "text": "say the criteria here is to basically"
+  },
+  {
+    "start": 1774.04,
+    "duration": 5.36,
+    "text": "have the right gatherer, include its"
+  },
+  {
+    "start": 1777.44,
+    "duration": 3.719,
+    "text": "radius, you can see the white bounding"
+  },
+  {
+    "start": 1779.4,
+    "duration": 3.68,
+    "text": "box there, community box, and the six"
+  },
+  {
+    "start": 1781.159,
+    "duration": 4.0,
+    "text": "spawn points. On top of that, you need"
+  },
+  {
+    "start": 1783.08,
+    "duration": 4.2,
+    "text": "to make sure that there's three unique"
+  },
+  {
+    "start": 1785.159,
+    "duration": 4.401,
+    "text": "kind of furniture. So, I have a chair,"
+  },
+  {
+    "start": 1787.28,
+    "duration": 4.2,
+    "text": "and I use these lights as well as these"
+  },
+  {
+    "start": 1789.56,
+    "duration": 3.4,
+    "text": "hanging decorations to ensure that"
+  },
+  {
+    "start": 1791.48,
+    "duration": 3.48,
+    "text": "Minccino is willing to move in. And"
+  },
+  {
+    "start": 1792.96,
+    "duration": 4.6,
+    "text": "then, the real hack is making sure that"
+  },
+  {
+    "start": 1794.96,
+    "duration": 4.64,
+    "text": "I make Minccino happy by having a kind"
+  },
+  {
+    "start": 1797.56,
+    "duration": 4.16,
+    "text": "of a spare yard over here that's not"
+  },
+  {
+    "start": 1799.6,
+    "duration": 4.36,
+    "text": "really a room, include the stuff that it"
+  },
+  {
+    "start": 1801.72,
+    "duration": 3.84,
+    "text": "likes over here in the shed, as you can"
+  },
+  {
+    "start": 1803.96,
+    "duration": 3.16,
+    "text": "see. Now, let's cover the last bit,"
+  },
+  {
+    "start": 1805.56,
+    "duration": 3.64,
+    "text": "which is really the iron farm that you"
+  },
+  {
+    "start": 1807.12,
+    "duration": 4.72,
+    "text": "see over here. And it's probably the"
+  },
+  {
+    "start": 1809.2,
+    "duration": 5.4,
+    "text": "most complicated, I think. So, here's"
+  },
+  {
+    "start": 1811.84,
+    "duration": 6.04,
+    "text": "why I think it's complex. We need to ask"
+  },
+  {
+    "start": 1814.6,
+    "duration": 5.96,
+    "text": "ourselves what is the raw material for"
+  },
+  {
+    "start": 1817.88,
+    "duration": 5.64,
+    "text": "iron, right? The raw material for iron"
+  },
+  {
+    "start": 1820.56,
+    "duration": 4.52,
+    "text": "is iron ore, and there is only two ways"
+  },
+  {
+    "start": 1823.52,
+    "duration": 4.52,
+    "text": "to get iron ore in this game. Number"
+  },
+  {
+    "start": 1825.08,
+    "duration": 5.04,
+    "text": "one, it drops off a Pokémon that is able"
+  },
+  {
+    "start": 1828.04,
+    "duration": 4.8,
+    "text": "to litter iron ore, and there's really"
+  },
+  {
+    "start": 1830.12,
+    "duration": 5.84,
+    "text": "only two of them that's capable of doing"
+  },
+  {
+    "start": 1832.84,
+    "duration": 5.2,
+    "text": "this, which is Roggenrola and Boldore."
+  },
+  {
+    "start": 1835.96,
+    "duration": 4.32,
+    "text": "Now, the problem is Boldore and"
+  },
+  {
+    "start": 1838.04,
+    "duration": 4.4,
+    "text": "Roggenrola, they like the dark, as you"
+  },
+  {
+    "start": 1840.28,
+    "duration": 4.8,
+    "text": "can see from the bottom left over here"
+  },
+  {
+    "start": 1842.44,
+    "duration": 4.52,
+    "text": "for them. But then, like I said, when we"
+  },
+  {
+    "start": 1845.08,
+    "duration": 5.2,
+    "text": "talk about clay, when you're processing"
+  },
+  {
+    "start": 1846.96,
+    "duration": 5.64,
+    "text": "iron ore into iron bar iron ingots like"
+  },
+  {
+    "start": 1850.28,
+    "duration": 4.72,
+    "text": "that, you need fire Pokémon, and they"
+  },
+  {
+    "start": 1852.6,
+    "duration": 4.6,
+    "text": "like warm environment. So, the habitat"
+  },
+  {
+    "start": 1855.0,
+    "duration": 4.24,
+    "text": "already conflicts, per se. On top of"
+  },
+  {
+    "start": 1857.2,
+    "duration": 4.16,
+    "text": "that, you need a gatherer that is"
+  },
+  {
+    "start": 1859.24,
+    "duration": 4.52,
+    "text": "complementary to the entire setup in"
+  },
+  {
+    "start": 1861.36,
+    "duration": 4.56,
+    "text": "terms of habitat. So, the easiest way to"
+  },
+  {
+    "start": 1863.76,
+    "duration": 4.52,
+    "text": "solve this conundrum is similar to what"
+  },
+  {
+    "start": 1865.92,
+    "duration": 4.84,
+    "text": "we did with clay is to put the people"
+  },
+  {
+    "start": 1868.28,
+    "duration": 4.04,
+    "text": "that is producing the raw material into"
+  },
+  {
+    "start": 1870.76,
+    "duration": 4.16,
+    "text": "their own instance housing. [music] In"
+  },
+  {
+    "start": 1872.32,
+    "duration": 4.52,
+    "text": "this case, Boldore and Roggenrola. So,"
+  },
+  {
+    "start": 1874.92,
+    "duration": 3.36,
+    "text": "do you make Roggenrola and Boldore"
+  },
+  {
+    "start": 1876.84,
+    "duration": 3.12,
+    "text": "happy, right? How do you bring them to"
+  },
+  {
+    "start": 1878.28,
+    "duration": 2.96,
+    "text": "awesome in terms of comfort levels?"
+  },
+  {
+    "start": 1879.96,
+    "duration": 3.48,
+    "text": "Actually simple. If you check the"
+  },
+  {
+    "start": 1881.24,
+    "duration": 3.84,
+    "text": "Pokédex, they are actually super"
+  },
+  {
+    "start": 1883.44,
+    "duration": 3.8,
+    "text": "similar. You can see they both like"
+  },
+  {
+    "start": 1885.08,
+    "duration": 3.8,
+    "text": "dark, garbage, stone, and hot stuff."
+  },
+  {
+    "start": 1887.24,
+    "duration": 3.68,
+    "text": "Same thing for Roggenrola here, right?"
+  },
+  {
+    "start": 1888.88,
+    "duration": 4.24,
+    "text": "So, super simple. Don't place any"
+  },
+  {
+    "start": 1890.92,
+    "duration": 4.12,
+    "text": "lighting sources. Place stone materials"
+  },
+  {
+    "start": 1893.12,
+    "duration": 4.48,
+    "text": "like a bench, and then I put a garbage"
+  },
+  {
+    "start": 1895.04,
+    "duration": 4.08,
+    "text": "can, some garbage bags, and a toy. Oh,"
+  },
+  {
+    "start": 1897.6,
+    "duration": 3.52,
+    "text": "and also this iron bench over here for"
+  },
+  {
+    "start": 1899.12,
+    "duration": 3.6,
+    "text": "feels. So, their setup is the same for"
+  },
+  {
+    "start": 1901.12,
+    "duration": 4.08,
+    "text": "both of them. That's how you get them to"
+  },
+  {
+    "start": 1902.72,
+    "duration": 5.0,
+    "text": "awesome. And then, the fire Pokémon"
+  },
+  {
+    "start": 1905.2,
+    "duration": 5.16,
+    "text": "would then live in this enclosure that"
+  },
+  {
+    "start": 1907.72,
+    "duration": 4.72,
+    "text": "is demarcated by this fence alongside"
+  },
+  {
+    "start": 1910.36,
+    "duration": 4.08,
+    "text": "the door to make it its very own kind of"
+  },
+  {
+    "start": 1912.44,
+    "duration": 4.36,
+    "text": "house like that alongside Machoke, which"
+  },
+  {
+    "start": 1914.44,
+    "duration": 4.16,
+    "text": "is my gatherer. Okay, so, other than"
+  },
+  {
+    "start": 1916.8,
+    "duration": 4.08,
+    "text": "having iron ore drop from the litter"
+  },
+  {
+    "start": 1918.6,
+    "duration": 3.92,
+    "text": "Pokémon, there's another way, the second"
+  },
+  {
+    "start": 1920.88,
+    "duration": 4.68,
+    "text": "way in the game to get iron ore, which"
+  },
+  {
+    "start": 1922.52,
+    "duration": 5.48,
+    "text": "is through using a very specific Pokémon"
+  },
+  {
+    "start": 1925.56,
+    "duration": 5.84,
+    "text": "called Garbodor. So, Garbodor is unique"
+  },
+  {
+    "start": 1928.0,
+    "duration": 6.679,
+    "text": "because it litters non-burnable garbage,"
+  },
+  {
+    "start": 1931.4,
+    "duration": 5.68,
+    "text": "which it can then recycle into iron ore."
+  },
+  {
+    "start": 1934.679,
+    "duration": 4.241,
+    "text": "If you watch my first farm video, you"
+  },
+  {
+    "start": 1937.08,
+    "duration": 4.16,
+    "text": "would know that Garbodor was something"
+  },
+  {
+    "start": 1938.92,
+    "duration": 4.759,
+    "text": "that I considered highly rated. However,"
+  },
+  {
+    "start": 1941.24,
+    "duration": 5.2,
+    "text": "in my new setup, I am not using"
+  },
+  {
+    "start": 1943.679,
+    "duration": 5.361,
+    "text": "Garbodor, really because I realized that"
+  },
+  {
+    "start": 1946.44,
+    "duration": 4.68,
+    "text": "the double output of iron ore from"
+  },
+  {
+    "start": 1949.04,
+    "duration": 3.52,
+    "text": "Boldore and Roggenrola is sufficient,"
+  },
+  {
+    "start": 1951.12,
+    "duration": 2.92,
+    "text": "just [music] from testing, right? In my"
+  },
+  {
+    "start": 1952.56,
+    "duration": 3.08,
+    "text": "previous build, I only had Boldore, I"
+  },
+  {
+    "start": 1954.04,
+    "duration": 3.52,
+    "text": "didn't have Roggenrola. But I realized"
+  },
+  {
+    "start": 1955.64,
+    "duration": 4.08,
+    "text": "just having the raw drop of Boldore and"
+  },
+  {
+    "start": 1957.56,
+    "duration": 3.96,
+    "text": "Roggenrola is more than sufficient to"
+  },
+  {
+    "start": 1959.72,
+    "duration": 3.76,
+    "text": "keep your iron ore going. So, you can"
+  },
+  {
+    "start": 1961.52,
+    "duration": 4.44,
+    "text": "disregard the second way of getting iron"
+  },
+  {
+    "start": 1963.48,
+    "duration": 4.92,
+    "text": "ore. And fun fact, garbage wouldn't fit"
+  },
+  {
+    "start": 1965.96,
+    "duration": 3.719,
+    "text": "into a tiny den like that. So, it's"
+  },
+  {
+    "start": 1968.4,
+    "duration": 2.4,
+    "text": "additional hassle. And then, you're"
+  },
+  {
+    "start": 1969.679,
+    "duration": 3.041,
+    "text": "wondering about the third den. Don't"
+  },
+  {
+    "start": 1970.8,
+    "duration": 3.96,
+    "text": "worry, I'll cover it shortly. It's not"
+  },
+  {
+    "start": 1972.72,
+    "duration": 4.76,
+    "text": "exactly for the people working on the"
+  },
+  {
+    "start": 1974.76,
+    "duration": 4.52,
+    "text": "iron farm. So, the strategy is Boldore"
+  },
+  {
+    "start": 1977.48,
+    "duration": 4.52,
+    "text": "and Roggenrola in instance housing"
+  },
+  {
+    "start": 1979.28,
+    "duration": 5.36,
+    "text": "themselves. Then, Machoke, Carkol, and"
+  },
+  {
+    "start": 1982.0,
+    "duration": 4.88,
+    "text": "Charmander are basically outdoors within"
+  },
+  {
+    "start": 1984.64,
+    "duration": 4.76,
+    "text": "this enclosure itself because they all"
+  },
+  {
+    "start": 1986.88,
+    "duration": 5.16,
+    "text": "generally like the same type of habitat."
+  },
+  {
+    "start": 1989.4,
+    "duration": 5.08,
+    "text": "Bright and warm habitat are actually"
+  },
+  {
+    "start": 1992.04,
+    "duration": 5.04,
+    "text": "very, very compatible because bright"
+  },
+  {
+    "start": 1994.48,
+    "duration": 4.88,
+    "text": "just requires, well, light, which is"
+  },
+  {
+    "start": 1997.08,
+    "duration": 4.2,
+    "text": "basically lamp or daylight, no shelter,"
+  },
+  {
+    "start": 1999.36,
+    "duration": 4.4,
+    "text": "right? Warm is very simple, just put"
+  },
+  {
+    "start": 2001.28,
+    "duration": 4.52,
+    "text": "fires. So, they're very compatible. Then"
+  },
+  {
+    "start": 2003.76,
+    "duration": 4.2,
+    "text": "now, we need to look at the respective"
+  },
+  {
+    "start": 2005.8,
+    "duration": 5.4,
+    "text": "favorites of the three of them, Machoke,"
+  },
+  {
+    "start": 2007.96,
+    "duration": 5.719,
+    "text": "Carkol, and Charmander. So, one very big"
+  },
+  {
+    "start": 2011.2,
+    "duration": 5.0,
+    "text": "commonality you can see here is hot"
+  },
+  {
+    "start": 2013.679,
+    "duration": 4.721,
+    "text": "stuff. So, this is again where math is"
+  },
+  {
+    "start": 2016.2,
+    "duration": 4.36,
+    "text": "amazing, right? Find similarities, solve"
+  },
+  {
+    "start": 2018.4,
+    "duration": 5.68,
+    "text": "constraints. So, hot stuff is actually"
+  },
+  {
+    "start": 2020.56,
+    "duration": 5.96,
+    "text": "quite easy to do. Stone bench, even the"
+  },
+  {
+    "start": 2024.08,
+    "duration": 4.28,
+    "text": "stone tiling contributes to the"
+  },
+  {
+    "start": 2026.52,
+    "duration": 4.52,
+    "text": "environmental value here. Also, you"
+  },
+  {
+    "start": 2028.36,
+    "duration": 4.36,
+    "text": "notice that there's two common exercises"
+  },
+  {
+    "start": 2031.04,
+    "duration": 3.92,
+    "text": "here, right? Therefore, there's a"
+  },
+  {
+    "start": 2032.72,
+    "duration": 4.52,
+    "text": "punching bag over here. So, by finding"
+  },
+  {
+    "start": 2034.96,
+    "duration": 4.08,
+    "text": "commonalities like that, this is how I"
+  },
+  {
+    "start": 2037.24,
+    "duration": 4.0,
+    "text": "make the three of them really happy,"
+  },
+  {
+    "start": 2039.04,
+    "duration": 3.639,
+    "text": "Machoke, Carkol, and Charmander. And you"
+  },
+  {
+    "start": 2041.24,
+    "duration": 2.92,
+    "text": "can see I'm not really min-maxing"
+  },
+  {
+    "start": 2042.679,
+    "duration": 3.121,
+    "text": "either. There's still so much space in"
+  },
+  {
+    "start": 2044.16,
+    "duration": 3.88,
+    "text": "the enclosure to put other decorative"
+  },
+  {
+    "start": 2045.8,
+    "duration": 3.96,
+    "text": "items. So, like by adding more stuff,"
+  },
+  {
+    "start": 2048.04,
+    "duration": 3.6,
+    "text": "you would definitely be able to meet the"
+  },
+  {
+    "start": 2049.76,
+    "duration": 3.2,
+    "text": "criterias. And the same for the other"
+  },
+  {
+    "start": 2051.64,
+    "duration": 2.68,
+    "text": "enclosures, right? Like this is still"
+  },
+  {
+    "start": 2052.96,
+    "duration": 3.12,
+    "text": "relatively open. There's still a lot of"
+  },
+  {
+    "start": 2054.32,
+    "duration": 3.44,
+    "text": "space to decorate. So, if you really"
+  },
+  {
+    "start": 2056.08,
+    "duration": 3.079,
+    "text": "want to min-max, you can still min-max"
+  },
+  {
+    "start": 2057.76,
+    "duration": 3.36,
+    "text": "it, right? There's still a lot of space"
+  },
+  {
+    "start": 2059.159,
+    "duration": 3.361,
+    "text": "to put other decorative items. One thing"
+  },
+  {
+    "start": 2061.12,
+    "duration": 2.92,
+    "text": "to keep in mind is that, let's say I"
+  },
+  {
+    "start": 2062.52,
+    "duration": 3.8,
+    "text": "drop a decorative item that's good for"
+  },
+  {
+    "start": 2064.04,
+    "duration": 4.04,
+    "text": "Machoke, it wouldn't counteract"
+  },
+  {
+    "start": 2066.32,
+    "duration": 4.52,
+    "text": "Charmander because I noticed that"
+  },
+  {
+    "start": 2068.08,
+    "duration": 5.599,
+    "text": "decorative items has no conflicts. It's"
+  },
+  {
+    "start": 2070.84,
+    "duration": 6.039,
+    "text": "unlike humidity versus fire. So, habitat"
+  },
+  {
+    "start": 2073.679,
+    "duration": 4.841,
+    "text": "has conflicts, but furniture decoration,"
+  },
+  {
+    "start": 2076.879,
+    "duration": 3.681,
+    "text": "like there's no conflict in that. So, in"
+  },
+  {
+    "start": 2078.52,
+    "duration": 4.24,
+    "text": "that case, more is always better for"
+  },
+  {
+    "start": 2080.56,
+    "duration": 3.48,
+    "text": "decoration and toys and stuff like that."
+  },
+  {
+    "start": 2082.76,
+    "duration": 2.919,
+    "text": "All right, so now let's talk about what"
+  },
+  {
+    "start": 2084.04,
+    "duration": 3.68,
+    "text": "this third den is for. You can see that"
+  },
+  {
+    "start": 2085.679,
+    "duration": 5.121,
+    "text": "it's for Eevee, actually. And why Eevee?"
+  },
+  {
+    "start": 2087.72,
+    "duration": 5.199,
+    "text": "Because I actually still want someone to"
+  },
+  {
+    "start": 2090.8,
+    "duration": 4.68,
+    "text": "operate the Pokémon Center's trade"
+  },
+  {
+    "start": 2092.919,
+    "duration": 4.721,
+    "text": "facility. And by the way, pro tip, when"
+  },
+  {
+    "start": 2095.48,
+    "duration": 5.04,
+    "text": "someone is operating the trade facility"
+  },
+  {
+    "start": 2097.64,
+    "duration": 4.64,
+    "text": "in the Pokémon Center, this open for"
+  },
+  {
+    "start": 2100.52,
+    "duration": 3.44,
+    "text": "business sign, this black sign, is"
+  },
+  {
+    "start": 2102.28,
+    "duration": 3.48,
+    "text": "displayed. When there's no one there,"
+  },
+  {
+    "start": 2103.96,
+    "duration": 3.28,
+    "text": "the sign will be missing. And I'm sorry"
+  },
+  {
+    "start": 2105.76,
+    "duration": 2.76,
+    "text": "if my Poké Center is a bit messy. I was"
+  },
+  {
+    "start": 2107.24,
+    "duration": 3.119,
+    "text": "taking pictures of stuff earlier, but"
+  },
+  {
+    "start": 2108.52,
+    "duration": 3.36,
+    "text": "you can see Eevee is operating the Poké"
+  },
+  {
+    "start": 2110.359,
+    "duration": 2.961,
+    "text": "Center. Like for example, once in a"
+  },
+  {
+    "start": 2111.88,
+    "duration": 3.24,
+    "text": "while you get a really good bargain, for"
+  },
+  {
+    "start": 2113.32,
+    "duration": 2.92,
+    "text": "example, this arcade machine. I would"
+  },
+  {
+    "start": 2115.12,
+    "duration": 2.68,
+    "text": "love to buy this arcade machine,"
+  },
+  {
+    "start": 2116.24,
+    "duration": 3.92,
+    "text": "actually, because I currently do not"
+  },
+  {
+    "start": 2117.8,
+    "duration": 4.28,
+    "text": "have the recipe. So, I still want at"
+  },
+  {
+    "start": 2120.16,
+    "duration": 4.28,
+    "text": "least one trader in there. And that is"
+  },
+  {
+    "start": 2122.08,
+    "duration": 5.04,
+    "text": "why I have the third pre-fabricator"
+  },
+  {
+    "start": 2124.44,
+    "duration": 4.24,
+    "text": "house available for Eevee to stay in. In"
+  },
+  {
+    "start": 2127.12,
+    "duration": 3.52,
+    "text": "case you don't know what prefab houses"
+  },
+  {
+    "start": 2128.68,
+    "duration": 4.0,
+    "text": "are, these are like the house kits that"
+  },
+  {
+    "start": 2130.64,
+    "duration": 3.8,
+    "text": "you can buy from the PC, drop it down,"
+  },
+  {
+    "start": 2132.68,
+    "duration": 3.16,
+    "text": "put the resources in, ask Pokémon to"
+  },
+  {
+    "start": 2134.44,
+    "duration": 3.2,
+    "text": "build, and it'll be ready after some"
+  },
+  {
+    "start": 2135.84,
+    "duration": 4.32,
+    "text": "time. Any form of pre-fabricator"
+  },
+  {
+    "start": 2137.64,
+    "duration": 4.719,
+    "text": "housing, remember, is instanced, meaning"
+  },
+  {
+    "start": 2140.16,
+    "duration": 4.16,
+    "text": "it does not interact with the outside"
+  },
+  {
+    "start": 2142.359,
+    "duration": 4.601,
+    "text": "world in terms of values. And so, with"
+  },
+  {
+    "start": 2144.32,
+    "duration": 5.16,
+    "text": "the constraint of Eevee of needing a"
+  },
+  {
+    "start": 2146.96,
+    "duration": 5.399,
+    "text": "trade Pokémon, that actually nicely"
+  },
+  {
+    "start": 2149.48,
+    "duration": 4.52,
+    "text": "brings me to 22 Pokémon in total, if"
+  },
+  {
+    "start": 2152.359,
+    "duration": 3.0,
+    "text": "you've been counting alongside me. So,"
+  },
+  {
+    "start": 2154.0,
+    "duration": 3.44,
+    "text": "this is a spreadsheet that I'm kind of"
+  },
+  {
+    "start": 2155.359,
+    "duration": 4.121,
+    "text": "developing. I'm not exactly done yet."
+  },
+  {
+    "start": 2157.44,
+    "duration": 3.52,
+    "text": "One of the things I'm trying to do is,"
+  },
+  {
+    "start": 2159.48,
+    "duration": 2.76,
+    "text": "for example, Larvitar here, right? For"
+  },
+  {
+    "start": 2160.96,
+    "duration": 3.84,
+    "text": "whatever reason, if I change it to"
+  },
+  {
+    "start": 2162.24,
+    "duration": 5.52,
+    "text": "Pikachu, pressing enter, I'm able to"
+  },
+  {
+    "start": 2164.8,
+    "duration": 4.44,
+    "text": "change the values of its habitat to its"
+  },
+  {
+    "start": 2167.76,
+    "duration": 3.32,
+    "text": "favorites. But it's not foolproof yet."
+  },
+  {
+    "start": 2169.24,
+    "duration": 3.48,
+    "text": "I'm still working out a few bugs. But"
+  },
+  {
+    "start": 2171.08,
+    "duration": 3.72,
+    "text": "this is basically using math to solve"
+  },
+  {
+    "start": 2172.72,
+    "duration": 3.28,
+    "text": "problem, and I'm a nerd that way, in"
+  },
+  {
+    "start": 2174.8,
+    "duration": 3.16,
+    "text": "case you haven't realized from this"
+  },
+  {
+    "start": 2176.0,
+    "duration": 3.8,
+    "text": "channel already. But if you want a cheat"
+  },
+  {
+    "start": 2177.96,
+    "duration": 3.2,
+    "text": "sheet, this is essentially it, right?"
+  },
+  {
+    "start": 2179.8,
+    "duration": 3.28,
+    "text": "What you see on screen here. Okay, I'm"
+  },
+  {
+    "start": 2181.16,
+    "duration": 4.56,
+    "text": "going to like minimize it to a certain"
+  },
+  {
+    "start": 2183.08,
+    "duration": 4.48,
+    "text": "size, and let's just talk about some uh"
+  },
+  {
+    "start": 2185.72,
+    "duration": 4.24,
+    "text": "things that is worth as a final"
+  },
+  {
+    "start": 2187.56,
+    "duration": 4.44,
+    "text": "reminder. Little tips and tricks and"
+  },
+  {
+    "start": 2189.96,
+    "duration": 4.12,
+    "text": "where I think are optional spots if you"
+  },
+  {
+    "start": 2192.0,
+    "duration": 3.56,
+    "text": "really need to cut uh Pokémon. So, if"
+  },
+  {
+    "start": 2194.08,
+    "duration": 3.68,
+    "text": "you don't care about trading, you can"
+  },
+  {
+    "start": 2195.56,
+    "duration": 4.0,
+    "text": "remove Eevee, right? For example, if you"
+  },
+  {
+    "start": 2197.76,
+    "duration": 3.52,
+    "text": "there's a favorite Pokémon of yours that"
+  },
+  {
+    "start": 2199.56,
+    "duration": 3.48,
+    "text": "you want living on your island with you,"
+  },
+  {
+    "start": 2201.28,
+    "duration": 3.96,
+    "text": "you can technically cut Eevee, you don't"
+  },
+  {
+    "start": 2203.04,
+    "duration": 3.68,
+    "text": "need it. Just to kind of show you, if"
+  },
+  {
+    "start": 2205.24,
+    "duration": 3.8,
+    "text": "you [music] just count all of these"
+  },
+  {
+    "start": 2206.72,
+    "duration": 4.2,
+    "text": "Pokémon, there's total of 22. So, it's a"
+  },
+  {
+    "start": 2209.04,
+    "duration": 4.76,
+    "text": "pretty tight fit, but I'll say Eevee is"
+  },
+  {
+    "start": 2210.92,
+    "duration": 5.24,
+    "text": "optional. If you want to cut anyone, if"
+  },
+  {
+    "start": 2213.8,
+    "duration": 4.92,
+    "text": "you ask me what is the least important,"
+  },
+  {
+    "start": 2216.16,
+    "duration": 4.88,
+    "text": "I would say maybe the dedicated"
+  },
+  {
+    "start": 2218.72,
+    "duration": 5.68,
+    "text": "gatherers here, you can maybe drop one"
+  },
+  {
+    "start": 2221.04,
+    "duration": 5.28,
+    "text": "of them. Really because, as you can see,"
+  },
+  {
+    "start": 2224.4,
+    "duration": 4.84,
+    "text": "Girafarig and Machoke, their sole"
+  },
+  {
+    "start": 2226.32,
+    "duration": 5.72,
+    "text": "purpose is to gather. But Rolycoly, as"
+  },
+  {
+    "start": 2229.24,
+    "duration": 5.2,
+    "text": "well as Carkol, they can both burn and"
+  },
+  {
+    "start": 2232.04,
+    "duration": 4.2,
+    "text": "gather. But it also means that while"
+  },
+  {
+    "start": 2234.44,
+    "duration": 4.24,
+    "text": "they're burning, they cannot gather. So,"
+  },
+  {
+    "start": 2236.24,
+    "duration": 4.0,
+    "text": "your efficiency drops. If for some"
+  },
+  {
+    "start": 2238.68,
+    "duration": 3.44,
+    "text": "reason they get stuck in the loop of"
+  },
+  {
+    "start": 2240.24,
+    "duration": 5.04,
+    "text": "production, so that's something to take"
+  },
+  {
+    "start": 2242.12,
+    "duration": 5.92,
+    "text": "note of. One other possible flex spot is"
+  },
+  {
+    "start": 2245.28,
+    "duration": 5.12,
+    "text": "to drop the dedicated lumber chopper,"
+  },
+  {
+    "start": 2248.04,
+    "duration": 5.319,
+    "text": "which is Axew, because again, Haxorus"
+  },
+  {
+    "start": 2250.4,
+    "duration": 5.08,
+    "text": "can do both, drop small logs plus make"
+  },
+  {
+    "start": 2253.359,
+    "duration": 4.201,
+    "text": "lumber by chopping. And lumber in"
+  },
+  {
+    "start": 2255.48,
+    "duration": 4.64,
+    "text": "general is one of those materials that"
+  },
+  {
+    "start": 2257.56,
+    "duration": 4.04,
+    "text": "you need a lot of, but they also produce"
+  },
+  {
+    "start": 2260.12,
+    "duration": 3.48,
+    "text": "in bulk, right? Like for example, if you"
+  },
+  {
+    "start": 2261.6,
+    "duration": 4.4,
+    "text": "make lumber from small logs, like each"
+  },
+  {
+    "start": 2263.6,
+    "duration": 4.44,
+    "text": "time I think you produce in bulk of 10"
+  },
+  {
+    "start": 2266.0,
+    "duration": 4.2,
+    "text": "or 20, a ton of them, basically. And if"
+  },
+  {
+    "start": 2268.04,
+    "duration": 3.8,
+    "text": "you really think of dropping litterers,"
+  },
+  {
+    "start": 2270.2,
+    "duration": 4.0,
+    "text": "I would say the one sturdy stick is the"
+  },
+  {
+    "start": 2271.84,
+    "duration": 5.12,
+    "text": "least important. And so, basically, this"
+  },
+  {
+    "start": 2274.2,
+    "duration": 4.24,
+    "text": "is my [music] optimized end-game farm,"
+  },
+  {
+    "start": 2276.96,
+    "duration": 3.52,
+    "text": "and I'm pretty happy with it. And I"
+  },
+  {
+    "start": 2278.44,
+    "duration": 3.8,
+    "text": "don't think I'll change any more unless"
+  },
+  {
+    "start": 2280.48,
+    "duration": 4.48,
+    "text": "I learn new tech. The only thing to"
+  },
+  {
+    "start": 2282.24,
+    "duration": 5.08,
+    "text": "really optimize is maybe this crop"
+  },
+  {
+    "start": 2284.96,
+    "duration": 4.56,
+    "text": "harvester thing, which requires me to"
+  },
+  {
+    "start": 2287.32,
+    "duration": 3.72,
+    "text": "push a switch. Basically, um it's"
+  },
+  {
+    "start": 2289.52,
+    "duration": 3.4,
+    "text": "automated with a lava clock or"
+  },
+  {
+    "start": 2291.04,
+    "duration": 4.24,
+    "text": "something. Maybe that's the only thing I"
+  },
+  {
+    "start": 2292.92,
+    "duration": 4.96,
+    "text": "will change. Oh, by the way, I have a"
+  },
+  {
+    "start": 2295.28,
+    "duration": 4.32,
+    "text": "backyard here where I put a concrete"
+  },
+  {
+    "start": 2297.88,
+    "duration": 4.2,
+    "text": "mixer. There's a fun fact for you,"
+  },
+  {
+    "start": 2299.6,
+    "duration": 4.04,
+    "text": "folks. Um concrete is one of those"
+  },
+  {
+    "start": 2302.08,
+    "duration": 4.16,
+    "text": "things that you need as a building"
+  },
+  {
+    "start": 2303.64,
+    "duration": 4.92,
+    "text": "material sometimes, but there's no real"
+  },
+  {
+    "start": 2306.24,
+    "duration": 4.92,
+    "text": "way to automate it. So, you do need a"
+  },
+  {
+    "start": 2308.56,
+    "duration": 4.32,
+    "text": "space for a concrete mixer, and this is"
+  },
+  {
+    "start": 2311.16,
+    "duration": 3.36,
+    "text": "basically what I've decided to do,"
+  },
+  {
+    "start": 2312.88,
+    "duration": 3.4,
+    "text": "basically. I carve out some space in the"
+  },
+  {
+    "start": 2314.52,
+    "duration": 4.04,
+    "text": "backyard, put some water and a concrete"
+  },
+  {
+    "start": 2316.28,
+    "duration": 4.04,
+    "text": "mixer. So, if I really need to use it, I"
+  },
+  {
+    "start": 2318.56,
+    "duration": 3.6,
+    "text": "just get someone with crush to do it,"
+  },
+  {
+    "start": 2320.32,
+    "duration": 3.72,
+    "text": "and I already have a friend that's"
+  },
+  {
+    "start": 2322.16,
+    "duration": 3.76,
+    "text": "crushing berries, so I can get a"
+  },
+  {
+    "start": 2324.04,
+    "duration": 4.44,
+    "text": "Larvitar to basically operate the mixer"
+  },
+  {
+    "start": 2325.92,
+    "duration": 4.4,
+    "text": "if needed. Bastiodon is also able to do"
+  },
+  {
+    "start": 2328.48,
+    "duration": 4.04,
+    "text": "crush, so he can operate the concrete"
+  },
+  {
+    "start": 2330.32,
+    "duration": 3.96,
+    "text": "mixer as well. So, this is the end-game"
+  },
+  {
+    "start": 2332.52,
+    "duration": 4.4,
+    "text": "production farm. Something else I need"
+  },
+  {
+    "start": 2334.28,
+    "duration": 4.92,
+    "text": "to do is to basically expand maybe to"
+  },
+  {
+    "start": 2336.92,
+    "duration": 4.96,
+    "text": "the left of my Pokémon Center a"
+  },
+  {
+    "start": 2339.2,
+    "duration": 4.88,
+    "text": "underground storage. Now, so I can"
+  },
+  {
+    "start": 2341.88,
+    "duration": 5.4,
+    "text": "delete all these old enclosures from my"
+  },
+  {
+    "start": 2344.08,
+    "duration": 4.68,
+    "text": "previous farm, and now I can repurpose"
+  },
+  {
+    "start": 2347.28,
+    "duration": 2.92,
+    "text": "this entire storage. This might look"
+  },
+  {
+    "start": 2348.76,
+    "duration": 3.28,
+    "text": "familiar to you because it might be one"
+  },
+  {
+    "start": 2350.2,
+    "duration": 3.92,
+    "text": "of the first few videos you got to watch"
+  },
+  {
+    "start": 2352.04,
+    "duration": 4.68,
+    "text": "of my Poképia stuff. It's basically this"
+  },
+  {
+    "start": 2354.12,
+    "duration": 4.16,
+    "text": "like 17-box system that categorizes"
+  },
+  {
+    "start": 2356.72,
+    "duration": 3.48,
+    "text": "everything, and I still use this"
+  },
+  {
+    "start": 2358.28,
+    "duration": 5.04,
+    "text": "categorization system to this day."
+  },
+  {
+    "start": 2360.2,
+    "duration": 4.32,
+    "text": "However, I now need more space because,"
+  },
+  {
+    "start": 2363.32,
+    "duration": 2.8,
+    "text": "as you play more and more of this game,"
+  },
+  {
+    "start": 2364.52,
+    "duration": 3.16,
+    "text": "there's just some materials that one box"
+  },
+  {
+    "start": 2366.12,
+    "duration": 3.96,
+    "text": "is not sufficient. So, I'm going to"
+  },
+  {
+    "start": 2367.68,
+    "duration": 4.679,
+    "text": "build an underground storage facility"
+  },
+  {
+    "start": 2370.08,
+    "duration": 4.64,
+    "text": "beside the Pokémon Center that basically"
+  },
+  {
+    "start": 2372.359,
+    "duration": 5.401,
+    "text": "leads downwards, and that will basically"
+  },
+  {
+    "start": 2374.72,
+    "duration": 5.72,
+    "text": "house all the farm materials that we get"
+  },
+  {
+    "start": 2377.76,
+    "duration": 4.16,
+    "text": "from this entire stretch of uh things"
+  },
+  {
+    "start": 2380.44,
+    "duration": 3.4,
+    "text": "that you see on screen. And so, if you"
+  },
+  {
+    "start": 2381.92,
+    "duration": 4.2,
+    "text": "found this guide helpful, don't thank"
+  },
+  {
+    "start": 2383.84,
+    "duration": 4.44,
+    "text": "me, thank all the YouTube members that"
+  },
+  {
+    "start": 2386.12,
+    "duration": 4.28,
+    "text": "you see on screen. These are the MVPs"
+  },
+  {
+    "start": 2388.28,
+    "duration": 4.08,
+    "text": "that is keeping this channel alive. As a"
+  },
+  {
+    "start": 2390.4,
+    "duration": 3.88,
+    "text": "special thank you, I'll be uploading all"
+  },
+  {
+    "start": 2392.36,
+    "duration": 3.76,
+    "text": "the spreadsheet stuff to the members"
+  },
+  {
+    "start": 2394.28,
+    "duration": 4.0,
+    "text": "Discord when it's ready. I just need to"
+  },
+  {
+    "start": 2396.12,
+    "duration": 4.0,
+    "text": "fix a few more bugs. I'm also replying"
+  },
+  {
+    "start": 2398.28,
+    "duration": 3.96,
+    "text": "to all the questions from members in the"
+  },
+  {
+    "start": 2400.12,
+    "duration": 3.56,
+    "text": "Discord on a daily basis. So, if you"
+  },
+  {
+    "start": 2402.24,
+    "duration": 3.24,
+    "text": "have questions about builds, you don't"
+  },
+  {
+    "start": 2403.68,
+    "duration": 3.16,
+    "text": "understand certain things, just ping me"
+  },
+  {
+    "start": 2405.48,
+    "duration": 3.04,
+    "text": "and I'll respond daily. Thanks for"
+  },
+  {
+    "start": 2406.84,
+    "duration": 3.2,
+    "text": "supporting the community, and if you"
+  },
+  {
+    "start": 2408.52,
+    "duration": 3.0,
+    "text": "enjoyed this video, hit the subscribe"
+  },
+  {
+    "start": 2410.04,
+    "duration": 2.88,
+    "text": "button. More guides like that coming"
+  },
+  {
+    "start": 2411.52,
+    "duration": 2.96,
+    "text": "your way, just like the one that you see"
+  },
+  {
+    "start": 2412.92,
+    "duration": 3.28,
+    "text": "in the middle of the screen. Enjoy your"
+  },
+  {
+    "start": 2414.48,
+    "duration": 4.24,
+    "text": "day in Pokopia. I'll see you in the next"
+  },
+  {
+    "start": 2416.2,
+    "duration": 2.52,
+    "text": "video."
+  }
+]

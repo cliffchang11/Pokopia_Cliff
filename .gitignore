@@ -1,0 +1,21 @@
+# 巨大二進制檔與日誌
+ngrok
+*.log
+*.pid
+ngrok.pid
+server.pid
+
+# Python 快取
+__pycache__/
+*.pyc
+
+# 臨時分析與截圖
+scratch/
+scratch_*.txt
+mobile_test.png
+
+# 系統與編輯器設定
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
