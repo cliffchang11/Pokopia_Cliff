@@ -2299,12 +2299,90 @@ body {
 
 .app-footer {
   border-top: 0.0625rem solid var(--glass-border);
-  padding: 1.2500rem;
-  text-align: center;
+  padding: 1.5000rem 1.0000rem;
+  margin-top: 3.0000rem;
+  background: var(--bg-card);
+  backdrop-filter: blur(0.75rem);
+  box-shadow: 0 -0.25rem 1.0rem rgba(0, 0, 0, 0.04);
+}
+
+.footer-container {
+  max-width: 75.0000rem;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.7500rem;
+  font-size: 0.92rem;
+  color: var(--text-sub);
+}
+
+.footer-title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.02rem;
+  color: var(--text-sub);
+}
+
+.footer-divider {
+  color: var(--glass-border);
+  font-weight: 300;
+  user-select: none;
+}
+
+.footer-author-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4000rem;
+  background: rgba(255, 255, 255, 0.85);
+  border: 0.0625rem solid #cbd5e1;
+  padding: 0.1875rem 0.6500rem 0.1875rem 0.5000rem;
+  border-radius: 9999px;
+  box-shadow: 0 0.1250rem 0.3750rem rgba(0, 0, 0, 0.06);
+}
+
+.footer-author-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06rem;
   color: var(--text-muted);
-  font-size: 0.82rem;
-  margin-top: 2.5000rem;
-  background: rgba(11, 15, 25, 0.8);
+}
+
+.footer-author-badge {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 900;
+  letter-spacing: 0.03rem;
+  color: #0f172a;
+  display: inline-block;
+}
+
+:root[data-theme="dark"] .app-footer {
+  background: rgba(15, 23, 42, 0.85);
+  border-top-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 -0.25rem 1.25rem rgba(0, 0, 0, 0.4);
+}
+
+:root[data-theme="dark"] .footer-title {
+  color: #94a3b8;
+}
+
+:root[data-theme="dark"] .footer-author-box {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: 0 0.1250rem 0.6250rem rgba(0, 0, 0, 0.35), 0 0 0.5000rem rgba(245, 158, 11, 0.2);
+}
+
+:root[data-theme="dark"] .footer-author-label {
+  color: #94a3b8;
+}
+
+:root[data-theme="dark"] .footer-author-badge {
+  color: #fbbf24;
+  text-shadow: 0 0.0625rem 0.2500rem rgba(245, 158, 11, 0.4);
 }
 
 /* ==========================================================================

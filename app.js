@@ -157,6 +157,8 @@
     autoFarmProgressText: document.getElementById('autoFarmProgressText'),
     btnCardView: document.getElementById('btnCardView'),
     btnTableView: document.getElementById('btnTableView'),
+    toolbarContainer: document.querySelector('.toolbar-container'),
+    viewToggleGroup: document.querySelector('.view-toggle-group'),
     btnThemeToggle: document.getElementById('btnThemeToggle'),
     btnPrefDrawer: document.getElementById('btnPrefDrawer'),
     prefDrawer: document.getElementById('prefDrawer'),
@@ -1236,6 +1238,22 @@
       if (DOM.filterToolbar) DOM.filterToolbar.classList.add('hidden');
       if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.add('hidden');
       renderCustomStorage();
+    }
+
+    // 依據 tab 動態適配全域工具列與視圖切換按鈕，最大化釋放垂直操作空間
+    if (DOM.toolbarContainer) {
+      if (tab === 'autofarm' || tab === 'customStorage') {
+        DOM.toolbarContainer.classList.add('hidden');
+      } else {
+        DOM.toolbarContainer.classList.remove('hidden');
+      }
+    }
+    if (DOM.viewToggleGroup) {
+      if (tab === 'storage') {
+        DOM.viewToggleGroup.classList.add('hidden');
+      } else if (tab === 'habitat' || tab === 'habitatCatalog') {
+        DOM.viewToggleGroup.classList.remove('hidden');
+      }
     }
 
     if (!skipSync) {
