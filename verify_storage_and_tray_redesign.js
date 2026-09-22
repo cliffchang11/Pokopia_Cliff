@@ -28,8 +28,8 @@ assert(cssContent.includes('flex-wrap: wrap;'), 'CSS 控制列必須支援 flex-
 assert(cssContent.includes('.cs-tray-controls-row .cs-tray-select'), 'CSS 必須定義 .cs-tray-select 樣式');
 assert(cssContent.includes('.cs-tray-target-row'), 'CSS 必須定義 .cs-tray-target-row 目標盒子切換樣式');
 
-// 3.2 收納箱卡片寬幅安全防線與標題框防重疊
-assert(cssContent.includes('minmax(min(100%, 480px), 1fr)') || cssContent.includes('minmax(min(100%, 320px), 1fr)'), 'CSS 必須具備收納盒安全寬度');
+// 3.2 收納箱卡片純單欄安全佈局與標題框防重疊
+assert(cssContent.includes('grid-template-columns: 1fr;') || cssContent.includes('minmax(min(100%, 480px), 1fr)'), 'CSS 必須具備收納盒純單欄安全佈局');
 assert(cssContent.includes('.cs-box-name-input') && cssContent.includes('min-width: 0;'), '.cs-box-name-input 必須具備 min-width: 0 保證彈性自適應且防重疊');
 assert(cssContent.includes('.cs-box-actions') && cssContent.includes('gap: 0.2rem;'), '.cs-box-actions 必須緊湊化');
 

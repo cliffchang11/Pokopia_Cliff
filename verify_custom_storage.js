@@ -333,9 +333,9 @@ csApi.openCsDrawer();
 elements.btnCsCloseTray.dispatchEvent('click');
 assert(!elements.csItemTray.classList.contains('drawer-open'), '點擊 ✕ 關閉按鈕應關閉素材庫抽屜');
 
-// 驗證 CSS 中具備防裁切 minmax(min(100%, 480px), 1fr) 與 RWD 抽屜規則
+// 驗證 CSS 中具備純單欄 1fr 或防裁切安全佈局與 RWD 抽屜規則
 const cssContent = fs.readFileSync('index.css', 'utf8');
-assert(cssContent.includes('minmax(min(100%, 480px), 1fr)') || cssContent.includes('minmax(min(100%, 320px), 1fr)') || cssContent.includes('minmax(min(100%, 280px), 1fr)'), 'CSS 必須具備收納盒防裁切自適應 minmax');
+assert(cssContent.includes('grid-template-columns: 1fr;') || cssContent.includes('minmax(min(100%, 480px), 1fr)'), 'CSS 必須具備收納盒純單欄或安全寬幅佈局');
 assert(cssContent.includes('.cs-item-tray.drawer-open'), 'CSS 必須具備抽屜開啟樣式 .cs-item-tray.drawer-open');
 assert(cssContent.includes('@media (max-width: 1024px)'), 'CSS 必須具備小螢幕響應式斷點');
 console.log('✅ [PASS] 9. 響應式底部抽屜 (Bottom Sheet) 互動與防裁切機制驗證通過');

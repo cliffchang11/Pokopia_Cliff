@@ -6525,13 +6525,15 @@ body {
   }
 }
 
-/* 收納盒網格 (寬幅橫條自適應佈局，告別細長立柱與標頭擠壓) */
+/* 收納盒網格 (全尺寸純單欄直覺佈局，大螢幕 1100px 居中，告別多欄並排) */
 .cs-boxes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 480px), 1fr));
+  grid-template-columns: 1fr;
   gap: 1.25rem;
   min-width: 0;
   width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
 /* 單一收納盒卡片 */
