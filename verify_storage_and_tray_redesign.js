@@ -37,9 +37,9 @@ assert(cssContent.includes('clamp(380px, 62vh, 560px)'), 'CSS 抽屜必須採用
 assert(cssContent.includes('max-height: 65vh;'), 'CSS 抽屜最大高度必須適度限制在 65vh');
 // 3.4 方格與素材圖片等比比例縮放 (Fluid Proportional Scaling)
 assert(cssContent.includes('clamp(48px, 6.5vw, 64px)'), '.cs-box-item 必須具備 clamp(48px, 6.5vw, 64px) 流式等比縮放');
-assert(cssContent.includes('.cs-box-item-img {\n  width: 78%;\n  height: 78%;'), '.cs-box-item-img 必須使用百分比等比縮放');
+assert(cssContent.includes('.cs-box-item-img {\n  width: 64%;\n  height: 64%;'), '.cs-box-item-img 必須使用 64% 黃金比例等比縮放');
 assert(cssContent.includes('min-height: clamp(80px, 10vh, 110px);'), '.cs-drop-zone 必須具備響應式自適應高度');
-console.log('✅ [PASS] 2. CSS 左右並排、卡片 320px 防線、抽屜滿版與物品圖片流式等比縮放規則驗證通過');
+console.log('✅ [PASS] 2. CSS 左右並排、卡片 320px 防線、抽屜滿版與物品圖片 64% 黃金比例縮放規則驗證通過');
 
 // 4. 沙盒驗證 JS 邏輯與 14 大分類選項
 const storageMap = {
