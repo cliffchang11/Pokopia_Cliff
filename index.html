@@ -23,6 +23,51 @@
   <header class="app-header">
     <div class="header-container">
       <div class="brand">
+        <!-- 52poke 風格「:≡」目次按鈕與 Popover Menu (位於風速狗 Logo 左側，全頁面常駐，每一頁皆可點擊) -->
+        <div class="toc-container">
+          <button id="btnTocMenu" class="toc-btn" title="切換目次 (儲存庫 / 圖鑑 / 棲息地)" aria-label="切換目次" aria-expanded="false">
+            <span class="toc-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+              </svg>
+            </span>
+          </button>
+          <!-- 下拉氣泡目次清單 (Popover) -->
+          <div id="tocDropdown" class="toc-dropdown hidden" role="menu">
+            <div class="toc-dropdown-header">
+              <span class="toc-header-title">目次</span>
+              <span class="toc-header-hint">Pokopia 導航</span>
+            </div>
+            <div class="toc-menu-list">
+              <button id="tabStorage" class="toc-menu-item active" data-tab="storage">
+                <span class="toc-item-text">儲存庫分類</span>
+                <span class="toc-item-badge">9 大類</span>
+              </button>
+              <button id="tabHabitat" class="toc-menu-item" data-tab="habitat">
+                <span class="toc-item-text">寶可夢圖鑑</span>
+                <span class="toc-item-badge">367 隻</span>
+              </button>
+              <button id="tabHabitatCatalog" class="toc-menu-item" data-tab="habitatCatalog">
+                <span class="toc-item-text">棲息地總覽</span>
+                <span class="toc-item-badge">252 種</span>
+              </button>
+              <button id="tabAutoFarm" class="toc-menu-item hidden" data-tab="autofarm">
+                <span class="toc-item-text">🌾 終局農場規劃</span>
+                <span class="toc-item-badge autofarm-badge">7 大模組</span>
+              </button>
+              <button id="tabCustomStorage" class="toc-menu-item hidden" data-tab="customStorage">
+                <span class="toc-item-text">📦 我的收納盒</span>
+                <span class="toc-item-badge custom-storage-badge">自訂管理</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
         <!-- 風速狗品牌 Logo (點擊完整回歸首頁: 寶可夢圖鑑 ‧ 表格視窗) -->
         <a href="#habitat-table" id="brandLogo" class="brand-logo" title="Pokopia 助手 ‧ 回到首頁 (寶可夢圖鑑)" aria-label="回到首頁">
           <img src="assets/logo.png?v=4.7.0" alt="Pokopia 風速狗 Logo" class="brand-logo-img">
@@ -81,61 +126,16 @@
       </div>
     </div>
 
-    <!-- Search Bar & Controls Bar (單行整合視圖與漏斗篩選，舊分頁列全面移除) -->
-    <div class="toolbar-container">
+    <!-- Search Bar & Controls Bar (單行整合視圖與漏斗篩選，各頁面依需求智能顯示/隱藏) -->
+    <div id="toolbarContainer" class="toolbar-container">
       <div class="search-row">
-        <!-- 52poke 風格「:≡」目次按鈕與 Popover Menu (位於搜尋框左側) -->
-        <div class="toc-container">
-          <button id="btnTocMenu" class="toc-btn" title="切換目次 (儲存庫 / 圖鑑 / 棲息地)" aria-label="切換目次" aria-expanded="false">
-            <span class="toc-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="8" y1="6" x2="21" y2="6"></line>
-                <line x1="8" y1="12" x2="21" y2="12"></line>
-                <line x1="8" y1="18" x2="21" y2="18"></line>
-                <line x1="3" y1="6" x2="3.01" y2="6"></line>
-                <line x1="3" y1="12" x2="3.01" y2="12"></line>
-                <line x1="3" y1="18" x2="3.01" y2="18"></line>
-              </svg>
-            </span>
-          </button>
-          <!-- 下拉氣泡目次清單 (Popover) -->
-          <div id="tocDropdown" class="toc-dropdown hidden" role="menu">
-            <div class="toc-dropdown-header">
-              <span class="toc-header-title">目次</span>
-              <span class="toc-header-hint">Pokopia 導航</span>
-            </div>
-            <div class="toc-menu-list">
-              <button id="tabStorage" class="toc-menu-item active" data-tab="storage">
-                <span class="toc-item-text">儲存庫分類</span>
-                <span class="toc-item-badge">9 大類</span>
-              </button>
-              <button id="tabHabitat" class="toc-menu-item" data-tab="habitat">
-                <span class="toc-item-text">寶可夢圖鑑</span>
-                <span class="toc-item-badge">367 隻</span>
-              </button>
-              <button id="tabHabitatCatalog" class="toc-menu-item" data-tab="habitatCatalog">
-                <span class="toc-item-text">棲息地總覽</span>
-                <span class="toc-item-badge">252 種</span>
-              </button>
-              <button id="tabAutoFarm" class="toc-menu-item hidden" data-tab="autofarm">
-                <span class="toc-item-text">🌾 終局農場規劃</span>
-                <span class="toc-item-badge autofarm-badge">7 大模組</span>
-              </button>
-              <button id="tabCustomStorage" class="toc-menu-item hidden" data-tab="customStorage">
-                <span class="toc-item-text">📦 我的收納盒</span>
-                <span class="toc-item-badge custom-storage-badge">自訂管理</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
         <div class="search-box">
           <span class="search-icon">🔍</span>
           <input type="text" id="searchInput" placeholder="搜尋物品名稱、分類、寶可夢、棲息地或傢俱 (如: 樹枝, 綠意長椅, 妙蛙種子)...">
           <button id="clearSearchBtn" class="clear-btn" title="清除搜尋">✕</button>
         </div>
 
-        <div class="view-toggle-group">
+        <div id="viewToggleGroup" class="view-toggle-group">
           <button id="btnCardView" class="view-btn active" title="切換為卡片視圖">
             <span class="view-btn-text">卡片</span>
           </button>
@@ -372,16 +372,9 @@
     </div>
   </div>
 
-  <!-- Footer (Author Signature Badge: Cliff) -->
+  <!-- Footer -->
   <footer class="app-footer">
-    <div class="footer-container">
-      <span class="footer-title">Pokopia Storage &amp; Habitat Manager</span>
-      <span class="footer-divider">|</span>
-      <div class="footer-author-box">
-        <span class="footer-author-label">Author</span>
-        <span class="footer-author-badge">Cliff</span>
-      </div>
-    </div>
+    <p>Pokopia Storage &amp; Habitat Manager ‧ <span class="footer-author">Cliff</span></p>
   </footer>
 
   <!-- Preferences & Items Encyclopedia Slide-over Drawer -->

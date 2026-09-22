@@ -157,8 +157,6 @@
     autoFarmProgressText: document.getElementById('autoFarmProgressText'),
     btnCardView: document.getElementById('btnCardView'),
     btnTableView: document.getElementById('btnTableView'),
-    toolbarContainer: document.querySelector('.toolbar-container'),
-    viewToggleGroup: document.querySelector('.view-toggle-group'),
     btnThemeToggle: document.getElementById('btnThemeToggle'),
     btnPrefDrawer: document.getElementById('btnPrefDrawer'),
     prefDrawer: document.getElementById('prefDrawer'),
@@ -170,6 +168,8 @@
     searchInput: document.getElementById('searchInput'),
     clearSearchBtn: document.getElementById('clearSearchBtn'),
     filterToolbar: document.getElementById('filterToolbar'),
+    toolbarContainer: document.getElementById('toolbarContainer'),
+    viewToggleGroup: document.getElementById('viewToggleGroup'),
     categoryFilterGroup: document.getElementById('categoryFilterGroup'),
     categoryFilter: document.getElementById('categoryFilter'),
     envFilterGroup: document.getElementById('envFilterGroup'),
@@ -1191,12 +1191,16 @@
       DOM.tabStorage.classList.add('active');
       DOM.storageSection.classList.remove('hidden-section');
       DOM.storageSection.classList.add('active-section');
+      if (DOM.toolbarContainer) DOM.toolbarContainer.classList.remove('hidden');
+      if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.add('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.add('hidden');
       if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.add('hidden');
     } else if (tab === 'habitat') {
       DOM.tabHabitat.classList.add('active');
       DOM.habitatSection.classList.remove('hidden-section');
       DOM.habitatSection.classList.add('active-section');
+      if (DOM.toolbarContainer) DOM.toolbarContainer.classList.remove('hidden');
+      if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.remove('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.remove('hidden');
       if (DOM.specialtyFilterGroup) DOM.specialtyFilterGroup.classList.remove('hidden');
       if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.remove('hidden');
@@ -1206,6 +1210,8 @@
       DOM.tabHabitatCatalog.classList.add('active');
       DOM.habitatCatalogSection.classList.remove('hidden-section');
       DOM.habitatCatalogSection.classList.add('active-section');
+      if (DOM.toolbarContainer) DOM.toolbarContainer.classList.remove('hidden');
+      if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.remove('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.remove('hidden');
       if (DOM.specialtyFilterGroup) DOM.specialtyFilterGroup.classList.add('hidden');
       if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.remove('hidden');
@@ -1222,6 +1228,7 @@
         DOM.autoFarmSection.classList.remove('hidden-section');
         DOM.autoFarmSection.classList.add('active-section');
       }
+      if (DOM.toolbarContainer) DOM.toolbarContainer.classList.add('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.add('hidden');
       if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.add('hidden');
     } else if (tab === 'customStorage') {
@@ -1235,25 +1242,10 @@
         DOM.customStorageSection.classList.remove('hidden-section');
         DOM.customStorageSection.classList.add('active-section');
       }
+      if (DOM.toolbarContainer) DOM.toolbarContainer.classList.add('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.add('hidden');
       if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.add('hidden');
       renderCustomStorage();
-    }
-
-    // 依據 tab 動態適配全域工具列與視圖切換按鈕，最大化釋放垂直操作空間
-    if (DOM.toolbarContainer) {
-      if (tab === 'autofarm' || tab === 'customStorage') {
-        DOM.toolbarContainer.classList.add('hidden');
-      } else {
-        DOM.toolbarContainer.classList.remove('hidden');
-      }
-    }
-    if (DOM.viewToggleGroup) {
-      if (tab === 'storage') {
-        DOM.viewToggleGroup.classList.add('hidden');
-      } else if (tab === 'habitat' || tab === 'habitatCatalog') {
-        DOM.viewToggleGroup.classList.remove('hidden');
-      }
     }
 
     if (!skipSync) {
