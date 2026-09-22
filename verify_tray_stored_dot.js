@@ -18,8 +18,8 @@ console.log('✅ [PASS] 1. CSS 橘色圓點樣式規格（右上角定位、50% 
 // 2. 檢驗 app.js 邏輯
 const appContent = fs.readFileSync('app.js', 'utf8');
 assert(appContent.includes('function updateTrayStoredStatus()'), 'app.js 必須包含 updateTrayStoredStatus 函式');
-assert(appContent.includes("storedClass = isStored ? 'is-stored' : '';"), 'renderCustomTrayItems 必須在渲染時賦予 is-stored class');
-console.log('✅ [PASS] 2. app.js 包含已收納判定與 updateTrayStoredStatus 即時聯動邏輯');
+assert(appContent.includes("unstoredClass = !isStored ? 'is-unstored' : '';"), 'renderCustomTrayItems 必須在渲染時為未收納物品賦予 is-unstored class');
+console.log('✅ [PASS] 2. app.js 包含未收納判定與 updateTrayStoredStatus 即時聯動邏輯');
 
 // 3. 建立輕量 DOM Mock 環境在 vm 中執行沙盒測試
 const elements = {};
@@ -165,7 +165,7 @@ Object.defineProperty(trayGridEl, 'innerHTML', {
 
 csApi.renderCustomStorage();
 
-// 初始預設收納盒 #01~#06 內含物品應在素材庫被標記 is-stored
+// 初始預設收納盒 #01~#06 內含物品應在素材庫乾淨無橘點 (!is-unstored)
 const boxes = csApi.getState().customBoxes || [];
 assert(boxes.length > 0, '應存在至少一個預設收納盒');
 const firstBoxItems = boxes[0].items || [];
@@ -173,21 +173,23 @@ assert(firstBoxItems.length > 0, '預設第 1 箱應有初始物品');
 
 const testItemName = firstBoxItems[0];
 const targetChild = trayGridEl._children.find(c => c.getAttribute('data-item-name') === testItemName);
-assert(targetChild && targetChild.classList.contains('is-stored'), `收納盒 #01 中的「${testItemName}」在素材庫中必須具備 is-stored 橘點`);
-console.log(`✅ [PASS] 4. 收納盒已有物品「${testItemName}」在素材庫方格右上角具備 is-stored 橘點`);
+assert(targetChild && !targetChild.classList.contains('is-unstored'), `收納盒 #01 中的「${testItemName}」已歸檔，素材庫中不得具備 is-unstored 橘點`);
+console.log(`✅ [PASS] 4. 已收納物品「${testItemName}」在素材庫中乾淨無橘點 (歸檔完成)`);
 
-// 5. 測試新物品存入後即時點亮橘點
-let unStoredChild = trayGridEl._children.find(c => !c.classList.contains('is-stored'));
-assert(unStoredChild, '素材庫中應存在尚未收納的物品');
+// 5. 測試未收納物品初始具備 is-unstored 橘點
+let unStoredChild = trayGridEl._children.find(c => c.classList.contains('is-unstored'));
+assert(unStoredChild, '素材庫中應存在未收納的物品且標記 is-unstored 橘點');
 const newItemName = unStoredChild.getAttribute('data-item-name');
+console.log(`✅ [PASS] 5. 未收納物品「${newItemName}」方格右上角具備 is-unstored 橘點 Todo 提示`);
 
+// 6. 測試存入收納盒後橘點即刻熄滅
 csApi.addItemToBox(boxes[0].id, newItemName);
-assert(unStoredChild.classList.contains('is-stored'), `將「${newItemName}」存入收納盒後，素材庫方格應即時點亮 is-stored 橘點`);
-console.log(`✅ [PASS] 5. 存入「${newItemName}」後，素材庫方格即時點亮橘色圓點`);
+assert(!unStoredChild.classList.contains('is-unstored'), `將「${newItemName}」存入收納盒後，素材庫方格的 is-unstored 橘點應即時熄滅`);
+console.log(`✅ [PASS] 6. 存入「${newItemName}」後，素材庫方格的橘色圓點即時熄滅 (歸檔成功)`);
 
-// 6. 測試物品移除後即時熄滅橘點
+// 7. 測試物品從收納盒移除後橘點即刻重新亮起
 csApi.removeItemFromBox(boxes[0].id, newItemName);
-assert(!unStoredChild.classList.contains('is-stored'), `將「${newItemName}」從收納盒移除後，素材庫方格的 is-stored 橘點應即時熄滅`);
-console.log(`✅ [PASS] 6. 移除「${newItemName}」後，素材庫方格的橘色圓點即時熄滅`);
+assert(unStoredChild.classList.contains('is-unstored'), `將「${newItemName}」從收納盒移除後，素材庫方格的 is-unstored 橘點應即時重新亮起`);
+console.log(`✅ [PASS] 7. 移除「${newItemName}」後，素材庫方格的橘色圓點即時重新亮起 (待辦提示恢復)`);
 
-console.log('\n🎉 素材庫已收納物品右上角橘色圓點標記與雙向聯動驗證 100% 全部通過！\n');
+console.log('\n🎉 素材庫未收納物品右上角橘色圓點標記與雙向聯動驗證 100% 全部通過！\n');

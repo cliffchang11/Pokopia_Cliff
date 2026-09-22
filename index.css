@@ -7241,7 +7241,8 @@ body {
   pointer-events: none;
 }
 
-/* 物品已收納狀態：右上角立體微光橘色小點 (Orange Status Dot) */
+/* 物品待收納狀態：未加入任何收納盒之物品右上角顯示立體微光橘色小點 (Todo Dot) */
+.cs-tray-item.is-unstored::after,
 .cs-tray-item.is-stored::after {
   content: '';
   position: absolute;

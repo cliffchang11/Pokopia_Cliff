@@ -2828,16 +2828,16 @@
       });
     });
 
-    // 5. 渲染素材項目方格 (已收納物品右上角標記圓形橘色小點)
+    // 5. 渲染素材項目方格 (未收納物品右上角標記圓形橘色小點 Todo 提醒)
     let html = '';
     targetItems.forEach(item => {
       const icon = item.icon || (db.itemIcons && db.itemIcons[item.name]) || FALLBACK_SPRITE;
       const isStored = storedMap.has(item.name);
       const baseTitle = `${escapeHTML(item.name)}${item.description ? ' - ' + escapeHTML(item.description) : ''}`;
-      const storedHint = isStored ? `\n📦 已收納於：${storedMap.get(item.name).join('、')}` : '';
-      const storedClass = isStored ? 'is-stored' : '';
+      const hint = isStored ? `\n📦 已收納於：${storedMap.get(item.name).join('、')}` : '\n💡 尚未加入任何收納盒';
+      const unstoredClass = !isStored ? 'is-unstored' : '';
       html += `
-        <div class="cs-tray-item ${storedClass}" draggable="true" data-item-name="${escapeHTML(item.name)}" data-base-title="${baseTitle}" title="${baseTitle}${storedHint}">
+        <div class="cs-tray-item ${unstoredClass}" draggable="true" data-item-name="${escapeHTML(item.name)}" data-base-title="${baseTitle}" title="${baseTitle}${hint}">
           <img src="${icon}" alt="${escapeHTML(item.name)}" loading="lazy">
         </div>
       `;
@@ -2966,7 +2966,7 @@
     showCsToast(`已將「${movedBox.name}」移至 #${movedBox.no}`);
   }
 
-  // 即時更新素材庫托盤中各項目的已收納橘點狀態
+  // 即時更新素材庫托盤中各項目的待收納橘點狀態 (未加入標記橘點，已加入熄滅)
   function updateTrayStoredStatus() {
     if (!DOM.csTrayGrid) return;
     const storedMap = new Map();
@@ -2982,12 +2982,16 @@
       const itemName = item.getAttribute('data-item-name');
       const isStored = storedMap.has(itemName);
       const baseTitle = item.getAttribute('data-base-title') || item.getAttribute('title') || itemName;
-      if (isStored) {
-        item.classList.add('is-stored');
-        item.setAttribute('title', `${baseTitle}\n📦 已收納於：${storedMap.get(itemName).join('、')}`);
-      } else {
+      if (!isStored) {
+        // 未收納：顯示橘點 (Todo Dot 待收納)
+        item.classList.add('is-unstored');
         item.classList.remove('is-stored');
-        item.setAttribute('title', baseTitle);
+        item.setAttribute('title', `${baseTitle}\n💡 尚未加入任何收納盒`);
+      } else {
+        // 已收納：乾淨熄滅橘點，顯示已歸檔提示
+        item.classList.remove('is-unstored');
+        item.classList.remove('is-stored');
+        item.setAttribute('title', `${baseTitle}\n📦 已收納於：${storedMap.get(itemName).join('、')}`);
       }
     });
   }
