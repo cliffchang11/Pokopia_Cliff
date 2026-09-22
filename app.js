@@ -550,6 +550,16 @@
     showFloatingBackBtn('棲息地總覽');
   }
 
+  // 自適應搜尋框提示文字 (避免窄螢幕時文字過長被擠壓)
+  function updateResponsivePlaceholders() {
+    if (!DOM.searchInput) return;
+    if (window.innerWidth <= 768) {
+      DOM.searchInput.placeholder = '搜尋物品、寶可夢、棲息地、傢俱...';
+    } else {
+      DOM.searchInput.placeholder = '搜尋物品名稱、分類、寶可夢、棲息地或傢俱 (如: 樹枝, 綠意長椅, 妙蛙種子)...';
+    }
+  }
+
   // Initialize App
   function init() {
     applyTheme(state.currentTheme);
@@ -562,6 +572,10 @@
     switchTab(state.currentTab, true);
     switchView(state.currentView, true);
     syncNavStateToURLAndStorage();
+
+    // 視窗自適應 Placeholder，防窄螢幕擠壓
+    updateResponsivePlaceholders();
+    window.addEventListener('resize', updateResponsivePlaceholders);
 
     // Listen to popstate & hashchange for browser forward/back navigation
     window.addEventListener('popstate', handlePopState);

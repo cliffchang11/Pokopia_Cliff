@@ -366,9 +366,9 @@ def run_tests():
     # 驗證 52poke 目次導航清單 (TOC Popover) 與經典漏斗篩選圖示
     assert '<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>' not in html_src, "index.html 篩選按鈕與漏斗圖示應已徹底移除"
 
-    # 驗證右上角固定釘選與 Header 預留邊距
-    assert "position: fixed" in css_src and "right: 20px" in css_src, "index.css .header-actions 應設為 position: fixed 釘選於右上角"
-    assert "padding-right: 170px" in css_src, "index.css .header-container 應預留 padding-right 防止內容與右上角按鈕重疊"
+    # 驗證導航列採用標準 Flexbox 流式佈局，徹底拔除脫流的 fixed 釘選與寫死右邊距，防範重疊
+    assert ".header-actions {" in css_src and "display: flex" in css_src, "index.css .header-actions 應採用 Flexbox 流式佈局"
+    assert "padding-right: 170px" not in css_src, "index.css 不應殘留寫死的 padding-right: 170px"
 
     # 驗證 CSS clamp 流體字級與大圖流體縮放
     assert "clamp(180px, 18vw, 260px)" in css_src, "index.css 棲息地縮圖應包含 clamp(180px, 18vw, 260px) 流體比例縮放"
@@ -585,6 +585,11 @@ if (!elements['floatingBackBtn']) process.exit(29);
     res_storage = subprocess.run(["node", "verify_custom_storage.js"], capture_output=True, text=True)
     assert res_storage.returncode == 0, f"verify_custom_storage.js 驗證失敗:\n{res_storage.stderr or res_storage.stdout}"
     print("✅ [PASS] 獨立模組 verify_custom_storage.js 自訂收納盒增刪改、拖曳放入、物品反查 8 大項驗證 100% 通過！")
+
+    # 執行獨立模組 verify_responsive_header.js 驗證頂部導航重疊修復與響應式字級防擠壓
+    res_resp = subprocess.run(["node", "verify_responsive_header.js"], capture_output=True, text=True)
+    assert res_resp.returncode == 0, f"verify_responsive_header.js 驗證失敗:\n{res_resp.stderr or res_resp.stdout}"
+    print("✅ [PASS] 獨立模組 verify_responsive_header.js 頂部導航重疊修復與全站響應式自適應驗證 100% 通過！")
 
     print("\n🎉 全部驗收項目 100% 通過 (100% PASS)！")
 
