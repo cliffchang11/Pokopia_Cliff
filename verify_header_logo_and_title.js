@@ -19,10 +19,10 @@ const cssContent = fs.readFileSync(path.join(__dirname, 'index.css'), 'utf8');
 // Logo 尺寸與 3D 陰影
 assert(cssContent.includes('width: 3.25rem;'), 'Logo 寬度必須升級為 3.25rem');
 assert(cssContent.includes('height: 3.25rem;'), 'Logo 高度必須升級為 3.25rem');
-assert(cssContent.includes('border: 0.1250rem solid rgba(255, 255, 255, 0.90);'), 'Logo 必須具有立體白邊');
-assert(cssContent.includes('rgba(15, 23, 42, 0.40)'), 'Logo 必須包含底層接觸深色陰影');
-assert(cssContent.includes('rgba(245, 158, 11, 0.45)'), 'Logo 必須包含外層暖橙色柔和漫射輝光');
-console.log('✔ [Check 2] Logo 3.25rem 尺寸、立體白邊與雙層 3D 物理投影定義正確');
+assert(cssContent.includes('gap: 0.8500rem;'), 'Brand 間距必須擴大為 0.8500rem');
+assert(cssContent.includes('drop-shadow(0 0.16rem 0.28rem rgba(15, 23, 42, 0.22))'), 'Logo 必須使用乾淨垂直收斂深色投影');
+assert(!cssContent.includes('.brand-logo-img {\n  width: 3.25rem;\n  height: 3.25rem;\n  border-radius: 50%;\n  object-fit: contain;\n  display: block;\n  /* 雙層'), 'Logo 舊漫射橘光必須移除');
+console.log('✔ [Check 2] Logo 3.25rem 尺寸、間距 0.85rem 與乾淨垂直深色陰影定義正確 (橘光已徹底清除)');
 
 // 字體與漸層
 assert(cssContent.includes(".brand-title-accent"), '必須包含 .brand-title-accent 樣式');
