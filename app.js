@@ -830,12 +830,14 @@
         // 1. 清空搜尋框與重設所有篩選狀態
         if (DOM.searchInput) DOM.searchInput.value = '';
         state.searchQuery = '';
-        state.activeCategory = 'all';
-        state.activeEnv = 'all';
-        state.activeSpecialty = 'all';
+        state.selectedPkmCategory = 'all';
+        state.selectedEnvFilter = 'env-all';
+        state.selectedSpecialtyFilter = 'all';
+        state.selectedUnlockFilter = 'all';
         if (DOM.categoryFilter) DOM.categoryFilter.value = 'all';
-        if (DOM.envFilter) DOM.envFilter.value = 'all';
+        if (DOM.envFilter) DOM.envFilter.value = 'env-all';
         if (DOM.specialtyFilter) DOM.specialtyFilter.value = 'all';
+        if (DOM.unlockFilter) DOM.unlockFilter.value = 'all';
 
         // 2. 切換至首頁（寶可夢圖鑑 + 表格視窗）
         closeTocDropdown();
