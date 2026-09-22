@@ -11218,7 +11218,7 @@ window.POKOPIA_DATA = {
       "favorites": [],
       "habitat1": "雀躍沙灘 - 沙浴場 x 1 大泳圈 x 1",
       "habitat1_id": "hab_e006",
-      "habitat1_img": "",
+      "habitat1_img": "assets/habitats/hab_e006.webp",
       "habitat2": "無特別需求",
       "habitat2_id": "",
       "habitat2_img": ""
@@ -11236,7 +11236,7 @@ window.POKOPIA_DATA = {
       "favorites": [],
       "habitat1": "海洋風休閒處 - 泳圈 x 1 冷藏箱 x 1 沙灘排球套組 x 1",
       "habitat1_id": "hab_e007",
-      "habitat1_img": "",
+      "habitat1_img": "assets/habitats/hab_e007.webp",
       "habitat2": "無特別需求",
       "habitat2_id": "",
       "habitat2_img": ""
@@ -18527,7 +18527,7 @@ window.POKOPIA_DATA = {
       "en_name": "",
       "desc": "泡進可愛的沙浴場中，或者用大大的泳圈玩耍吧。",
       "details": "沙浴場 x 1 大泳圈 x 1",
-      "image": "",
+      "image": "assets/habitats/hab_e006.webp",
       "environment": "🌲 一般",
       "pokemons": [
         {
@@ -18548,7 +18548,7 @@ window.POKOPIA_DATA = {
       "en_name": "",
       "desc": "可以玩沙灘排球，也可以浮在泳圈上放鬆。盡情享受大海吧。",
       "details": "泳圈 x 1 冷藏箱 x 1 沙灘排球套組 x 1",
-      "image": "",
+      "image": "assets/habitats/hab_e007.webp",
       "environment": "🌲 一般",
       "pokemons": [
         {
