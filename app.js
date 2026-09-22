@@ -140,6 +140,7 @@
     csClearSearchBtn: document.getElementById('csClearSearchBtn'),
     csSearchResultBanner: document.getElementById('csSearchResultBanner'),
     btnCsAddBox: document.getElementById('btnCsAddBox'),
+    btnCsAddBoxBottom: document.getElementById('btnCsAddBoxBottom'),
     btnCsToggleDrawer: document.getElementById('btnCsToggleDrawer'),
     csItemTray: document.getElementById('csItemTray'),
     csTrayBackdrop: document.getElementById('csTrayBackdrop'),
@@ -2355,9 +2356,12 @@
     if (isCustomStorageEventsBound) return;
     isCustomStorageEventsBound = true;
 
-    // 1. 新增收納盒
+    // 1. 新增收納盒 (頂部與底部雙通道便捷入口)
     if (DOM.btnCsAddBox) {
       DOM.btnCsAddBox.addEventListener('click', addNewBox);
+    }
+    if (DOM.btnCsAddBoxBottom) {
+      DOM.btnCsAddBoxBottom.addEventListener('click', addNewBox);
     }
 
     // 2. 切換/開關物品素材庫抽屜 (小螢幕 Bottom Sheet)
@@ -2815,12 +2819,25 @@
       return;
     }
 
-    // 5. 渲染素材項目方格
+    // 統計已收納物品 (全域任一收納盒包含即標記)
+    const storedMap = new Map();
+    (state.customBoxes || []).forEach(box => {
+      (box.items || []).forEach(name => {
+        if (!storedMap.has(name)) storedMap.set(name, []);
+        storedMap.get(name).push(`#${box.no} ${box.name}`);
+      });
+    });
+
+    // 5. 渲染素材項目方格 (已收納物品右上角標記圓形橘色小點)
     let html = '';
     targetItems.forEach(item => {
       const icon = item.icon || (db.itemIcons && db.itemIcons[item.name]) || FALLBACK_SPRITE;
+      const isStored = storedMap.has(item.name);
+      const baseTitle = `${escapeHTML(item.name)}${item.description ? ' - ' + escapeHTML(item.description) : ''}`;
+      const storedHint = isStored ? `\n📦 已收納於：${storedMap.get(item.name).join('、')}` : '';
+      const storedClass = isStored ? 'is-stored' : '';
       html += `
-        <div class="cs-tray-item" draggable="true" data-item-name="${escapeHTML(item.name)}" title="${escapeHTML(item.name)}${item.description ? ' - ' + escapeHTML(item.description) : ''}">
+        <div class="cs-tray-item ${storedClass}" draggable="true" data-item-name="${escapeHTML(item.name)}" data-base-title="${baseTitle}" title="${baseTitle}${storedHint}">
           <img src="${icon}" alt="${escapeHTML(item.name)}" loading="lazy">
         </div>
       `;
@@ -2949,6 +2966,32 @@
     showCsToast(`已將「${movedBox.name}」移至 #${movedBox.no}`);
   }
 
+  // 即時更新素材庫托盤中各項目的已收納橘點狀態
+  function updateTrayStoredStatus() {
+    if (!DOM.csTrayGrid) return;
+    const storedMap = new Map();
+    (state.customBoxes || []).forEach(box => {
+      (box.items || []).forEach(name => {
+        if (!storedMap.has(name)) storedMap.set(name, []);
+        storedMap.get(name).push(`#${box.no} ${box.name}`);
+      });
+    });
+
+    const trayItems = DOM.csTrayGrid.querySelectorAll('.cs-tray-item');
+    trayItems.forEach(item => {
+      const itemName = item.getAttribute('data-item-name');
+      const isStored = storedMap.has(itemName);
+      const baseTitle = item.getAttribute('data-base-title') || item.getAttribute('title') || itemName;
+      if (isStored) {
+        item.classList.add('is-stored');
+        item.setAttribute('title', `${baseTitle}\n📦 已收納於：${storedMap.get(itemName).join('、')}`);
+      } else {
+        item.classList.remove('is-stored');
+        item.setAttribute('title', baseTitle);
+      }
+    });
+  }
+
   // 加入物品至指定收納盒
   function addItemToBox(boxId, itemName) {
     const box = (state.customBoxes || []).find(b => b.id === boxId);
@@ -2968,6 +3011,7 @@
     box.items.push(itemName);
     saveCustomBoxes();
     renderCustomBoxesGrid();
+    updateTrayStoredStatus();
     showCsToast(`✅ 已加入「${itemName}」至 #${box.no} ${box.name}`);
   }
 
@@ -2979,6 +3023,7 @@
     box.items = box.items.filter(i => i !== itemName);
     saveCustomBoxes();
     renderCustomBoxesGrid();
+    updateTrayStoredStatus();
   }
 
   // 重新命名收納盒
@@ -2987,6 +3032,7 @@
     if (!box) return;
     box.name = newName || `收納盒 #${box.no}`;
     saveCustomBoxes();
+    updateTrayStoredStatus();
   }
 
   // 清空收納盒
@@ -2997,6 +3043,7 @@
       box.items = [];
       saveCustomBoxes();
       renderCustomBoxesGrid();
+      updateTrayStoredStatus();
     }
   }
 
@@ -3008,6 +3055,7 @@
       state.customBoxes = (state.customBoxes || []).filter(b => b.id !== boxId);
       saveCustomBoxes();
       renderCustomBoxesGrid();
+      updateTrayStoredStatus();
     }
   }
 

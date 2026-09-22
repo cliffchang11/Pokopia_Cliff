@@ -299,9 +299,19 @@
 
       <!-- 主體佈局：左側（或上方）收納盒網格，右側（或底部）可收合物品素材庫托盤 -->
       <div class="cs-main-layout">
-        <!-- 收納盒容器網格 -->
-        <div id="csBoxesContainer" class="cs-boxes-grid">
-          <!-- 由 JS 動態渲染收納盒卡片 -->
+        <!-- 收納盒欄位（左側單欄主體） -->
+        <div class="cs-boxes-wrapper">
+          <!-- 收納盒容器網格 -->
+          <div id="csBoxesContainer" class="cs-boxes-grid">
+            <!-- 由 JS 動態渲染收納盒卡片 -->
+          </div>
+          <!-- 底部新增收納盒按鈕區 (居中精緻小膠囊) -->
+          <div class="cs-bottom-add-wrap">
+            <button id="btnCsAddBoxBottom" class="cs-bottom-add-btn" title="新增一個新的收納盒">
+              <span class="cs-bottom-add-icon">➕</span>
+              <span>新增收納盒</span>
+            </button>
+          </div>
         </div>
 
         <!-- 物品素材庫抽屜遮罩 (手機端) -->

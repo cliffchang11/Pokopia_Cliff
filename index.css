@@ -6525,6 +6525,14 @@ body {
   }
 }
 
+/* 收納盒左側單欄包覆容器 */
+.cs-boxes-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+}
+
 /* 收納盒網格 (全尺寸純單欄直覺佈局，大螢幕 1100px 居中，告別多欄並排) */
 .cs-boxes-grid {
   display: grid;
@@ -6534,6 +6542,50 @@ body {
   width: 100%;
   max-width: 1100px;
   margin: 0 auto;
+}
+
+/* 底部新增收納盒居中小膠囊按鈕 */
+.cs-bottom-add-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.25rem 0 1.5rem 0;
+  width: 100%;
+}
+
+.cs-bottom-add-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.45rem 1.2rem;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.cs-bottom-add-btn:hover {
+  border-color: var(--primary-indigo);
+  color: var(--primary-indigo);
+  background: var(--input-bg);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.cs-bottom-add-btn:active {
+  transform: translateY(0);
+}
+
+.cs-bottom-add-icon {
+  font-size: 0.9rem;
+  line-height: 1;
 }
 
 /* 單一收納盒卡片 */
@@ -7153,6 +7205,22 @@ body {
   pointer-events: none;
 }
 
+/* 物品已收納狀態：右上角圓形橘色小點 (Orange Status Dot) */
+.cs-tray-item.is-stored::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 8px;
+  height: 8px;
+  background-color: #f97316;
+  border: 1.5px solid var(--bg-card);
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(249, 115, 22, 0.45);
+  pointer-events: none;
+  z-index: 3;
+}
+
 .cs-tray-item:hover {
   border-color: var(--primary-indigo);
   transform: scale(1.08);
@@ -7162,13 +7230,6 @@ body {
 
 .cs-tray-item:active {
   cursor: grabbing;
-}
-
-.cs-tray-item img {
-  width: 34px;
-  height: 34px;
-  object-fit: contain;
-  pointer-events: none;
 }
 
 /* ==========================================================================
