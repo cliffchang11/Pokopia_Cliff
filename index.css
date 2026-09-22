@@ -6544,7 +6544,7 @@ body {
   margin: 0 auto;
 }
 
-/* 底部新增收納盒居中小膠囊按鈕 */
+/* 底部新增收納盒居中小膠囊按鈕 (現代遊戲精緻膠囊，帶彈性反饋) */
 .cs-bottom-add-wrap {
   display: flex;
   justify-content: center;
@@ -6558,77 +6558,93 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
-  padding: 0.45rem 1.2rem;
-  background: var(--bg-card);
+  padding: 0.5rem 1.35rem;
+  background: linear-gradient(135deg, var(--bg-card) 0%, var(--input-bg) 100%);
   color: var(--text-primary);
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(99, 102, 241, 0.28);
   border-radius: 9999px;
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  box-shadow: var(--shadow-sm);
-  transition: all var(--transition-fast);
+  box-shadow: 0 2px 10px -2px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(99, 102, 241, 0.06);
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+              border-color 0.18s ease;
   user-select: none;
 }
 
 .cs-bottom-add-btn:hover {
   border-color: var(--primary-indigo);
   color: var(--primary-indigo);
-  background: var(--input-bg);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
+  background: var(--bg-card);
+  box-shadow: 0 8px 20px -2px rgba(99, 102, 241, 0.22), 0 2px 6px -1px rgba(15, 23, 42, 0.06);
+  transform: translateY(-2px) scale(1.02);
 }
 
 .cs-bottom-add-btn:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.97);
 }
 
 .cs-bottom-add-icon {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   line-height: 1;
 }
 
-/* 單一收納盒卡片 */
+/* 單一收納盒卡片 (主機級柔和多層漫射陰影、微光邊框與立體層次) */
 .cs-box-card {
   background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 1rem;
-  padding: 1rem;
-  box-shadow: var(--shadow-sm);
-  transition: all var(--transition-normal);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 1.15rem;
+  padding: 1.1rem 1.25rem;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+  transition: transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.24s cubic-bezier(0.34, 1.56, 0.64, 1),
+              border-color 0.2s ease;
   position: relative;
   display: flex;
   flex-direction: column;
 }
 
+[data-theme="dark"] .cs-box-card {
+  border-color: rgba(255, 255, 255, 0.09);
+  box-shadow: 0 8px 26px -4px rgba(0, 0, 0, 0.38), 0 2px 8px -2px rgba(0, 0, 0, 0.22);
+}
+
 .cs-box-card:hover {
-  border-color: var(--primary-indigo);
-  box-shadow: var(--shadow-md);
+  border-color: rgba(99, 102, 241, 0.45);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -4px rgba(99, 102, 241, 0.12), 0 4px 10px -2px rgba(15, 23, 42, 0.06);
+}
+
+[data-theme="dark"] .cs-box-card:hover {
+  border-color: rgba(129, 140, 248, 0.55);
+  box-shadow: 0 12px 32px -4px rgba(99, 102, 241, 0.28), 0 4px 12px -2px rgba(0, 0, 0, 0.35);
 }
 
 .cs-box-card.is-active-target {
   border-color: #38bdf8 !important;
-  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.4), var(--shadow-md);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.45), 0 8px 24px -2px rgba(56, 189, 248, 0.2) !important;
 }
 
 .cs-box-card.is-active-target::after {
   content: '🎯 接收中';
   position: absolute;
-  top: -0.6rem;
-  right: 1rem;
-  background: linear-gradient(135deg, #0ea5e9, #2563eb);
+  top: -0.65rem;
+  right: 1.25rem;
+  background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
   color: #ffffff;
   font-size: 0.68rem;
-  font-weight: 700;
-  padding: 0.15rem 0.5rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  padding: 0.18rem 0.6rem;
   border-radius: 9999px;
-  box-shadow: 0 2px 6px rgba(14, 165, 233, 0.4);
+  box-shadow: 0 3px 8px rgba(14, 165, 233, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.2);
   pointer-events: none;
-  animation: fadeInDown 0.3s ease;
+  animation: fadeInDown 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-4px); }
+  from { opacity: 0; transform: translateY(-6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -6697,19 +6713,25 @@ body {
 }
 
 .cs-box-no-badge {
-  background: rgba(245, 158, 11, 0.18);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.22) 0%, rgba(217, 119, 6, 0.12) 100%);
   color: #d97706;
+  border: 1px solid rgba(245, 158, 11, 0.32);
   font-family: 'Outfit', sans-serif;
   font-weight: 800;
   font-size: 0.8rem;
-  padding: 0.2rem 0.5rem;
-  border-radius: 0.4rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 0.45rem;
   white-space: nowrap;
   flex-shrink: 0;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.45), 0 1px 2px rgba(245, 158, 11, 0.15);
+  letter-spacing: 0.03em;
 }
 
 [data-theme="dark"] .cs-box-no-badge {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.25) 0%, rgba(217, 119, 6, 0.18) 100%);
   color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.4);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .cs-box-name-input {
@@ -6837,27 +6859,38 @@ body {
   letter-spacing: 0.02em;
 }
 
-/* 盒內物品徽章 (寬幅橫條黃金方格 46px~54px) */
+/* 盒內物品徽章 (現代遊戲道具槽位微立體質感 46px~54px) */
 .cs-box-item {
   width: clamp(46px, 4.2vw, 54px);
   height: clamp(46px, 4.2vw, 54px);
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 0.5rem;
+  background: linear-gradient(135deg, var(--bg-card) 0%, var(--input-bg) 100%);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 0.55rem;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  transition: all var(--transition-fast);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+              border-color 0.15s ease;
   cursor: default;
   flex-shrink: 0;
 }
 
+[data-theme="dark"] .cs-box-item {
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08), 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
 .cs-box-item:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px) scale(1.05);
   border-color: var(--primary-indigo);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 6px 14px -2px rgba(99, 102, 241, 0.25), 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.cs-box-item:active {
+  transform: scale(0.96);
 }
 
 .cs-box-item.is-match {
@@ -7184,16 +7217,19 @@ body {
 .cs-tray-item {
   width: clamp(44px, 5.5vw, 56px);
   height: clamp(44px, 5.5vw, 56px);
-  background: var(--input-bg);
+  background: linear-gradient(135deg, var(--input-bg) 0%, var(--bg-card) 100%);
   border: 1px solid var(--border-color);
-  border-radius: clamp(0.35rem, 0.8vw, 0.55rem);
+  border-radius: clamp(0.4rem, 0.8vw, 0.6rem);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: grab;
-  transition: all var(--transition-fast);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+              border-color 0.15s ease;
   position: relative;
   user-select: none;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .cs-tray-item img {
@@ -7205,7 +7241,7 @@ body {
   pointer-events: none;
 }
 
-/* 物品已收納狀態：右上角圓形橘色小點 (Orange Status Dot) */
+/* 物品已收納狀態：右上角立體微光橘色小點 (Orange Status Dot) */
 .cs-tray-item.is-stored::after {
   content: '';
   position: absolute;
@@ -7214,22 +7250,30 @@ body {
   width: 8px;
   height: 8px;
   background-color: #f97316;
+  background-image: radial-gradient(circle at 35% 35%, #fb923c 0%, #ea580c 100%);
   border: 1.5px solid var(--bg-card);
   border-radius: 50%;
-  box-shadow: 0 1px 3px rgba(249, 115, 22, 0.45);
+  box-shadow: 0 1px 4px rgba(234, 88, 12, 0.5), 0 0 0 1px rgba(251, 146, 60, 0.25);
   pointer-events: none;
   z-index: 3;
+  animation: dotPop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes dotPop {
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 .cs-tray-item:hover {
   border-color: var(--primary-indigo);
-  transform: scale(1.08);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  transform: translateY(-3px) scale(1.08);
+  box-shadow: 0 6px 16px -2px rgba(99, 102, 241, 0.25);
   z-index: 2;
 }
 
 .cs-tray-item:active {
   cursor: grabbing;
+  transform: scale(0.96);
 }
 
 /* ==========================================================================
