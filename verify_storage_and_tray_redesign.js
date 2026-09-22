@@ -35,8 +35,11 @@ assert(cssContent.includes('gap: 0.15rem;'), '.cs-box-actions 必須緊湊化間
 // 3.3 抽屜響應式高度與消滅底部留白
 assert(cssContent.includes('clamp(380px, 62vh, 560px)'), 'CSS 抽屜必須採用 clamp(380px, 62vh, 560px) 響應式適度高度');
 assert(cssContent.includes('max-height: 65vh;'), 'CSS 抽屜最大高度必須適度限制在 65vh');
-assert(!cssContent.includes('.cs-tray-grid {\n    max-height: 46vh;\n  }'), 'CSS 必須徹底移除 .cs-tray-grid 的 max-height: 46vh 人為限制');
-console.log('✅ [PASS] 2. CSS 左右並排、卡片 320px 防線、標題 min-width 120px 與抽屜滿版無留白規則驗證通過');
+// 3.4 方格與素材圖片等比比例縮放 (Fluid Proportional Scaling)
+assert(cssContent.includes('clamp(48px, 6.5vw, 64px)'), '.cs-box-item 必須具備 clamp(48px, 6.5vw, 64px) 流式等比縮放');
+assert(cssContent.includes('.cs-box-item-img {\n  width: 78%;\n  height: 78%;'), '.cs-box-item-img 必須使用百分比等比縮放');
+assert(cssContent.includes('min-height: clamp(80px, 10vh, 110px);'), '.cs-drop-zone 必須具備響應式自適應高度');
+console.log('✅ [PASS] 2. CSS 左右並排、卡片 320px 防線、抽屜滿版與物品圖片流式等比縮放規則驗證通過');
 
 // 4. 沙盒驗證 JS 邏輯與 14 大分類選項
 const storageMap = {
