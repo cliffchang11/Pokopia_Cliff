@@ -35,12 +35,14 @@ console.log('✅ [PASS] 4. 下拉選單安全最小寬度、換行彈性與字�
 // 5. 驗證 app.js 搜尋框自適應 Placeholder
 assert(js.includes('function updateResponsivePlaceholders()'), 'app.js 必須具備 updateResponsivePlaceholders 函式');
 assert(js.includes("window.addEventListener('resize', updateResponsivePlaceholders)"), '必須監聽 resize 事件以即時自適應');
-console.log('✅ [PASS] 5. 搜尋列 placeholder 動態精簡防溢出驗證通過');
+// 6. 驗證手機端導航列左右順序不顛倒 (.brand 不得設定 order: 1)
+assert(!css.includes('.brand {\n    order: 1;\n'), '.brand 不得包含 order: 1，避免在小螢幕造成左右顛倒');
+console.log('✅ [PASS] 6. 手機端導航列左右順序保障（左標題、右按鈕）驗證通過');
 
-// 6. CSS 括號嚴格平衡
+// 7. CSS 括號嚴格平衡
 const openB = (css.match(/{/g) || []).length;
 const closeB = (css.match(/}/g) || []).length;
 assert(openB === closeB, `CSS 括號必須嚴格平衡: Open=${openB}, Close=${closeB}`);
-console.log(`✅ [PASS] 6. CSS 大括號完全平衡 (Open: ${openB}, Close: ${closeB})`);
+console.log(`✅ [PASS] 7. CSS 大括號完全平衡 (Open: ${openB}, Close: ${closeB})`);
 
 console.log('\n🎉 頂部導航重疊修復與全站響應式自適應規則 100% 全部通過！\n');

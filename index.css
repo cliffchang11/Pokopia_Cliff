@@ -2353,7 +2353,6 @@ body {
 
   /* Brand (left) 零固定 padding，自由彈性收縮 */
   .brand {
-    order: 1;
     flex: 1 1 auto;
     min-width: 0;
     gap: 0.3750rem;
