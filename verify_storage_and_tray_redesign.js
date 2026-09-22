@@ -22,8 +22,9 @@ assert(htmlContent.includes('class="cs-tray-controls-row"'), 'HTML 必須包含 
 console.log('✅ [PASS] 1. HTML 結構包含分類選單、目標收納盒切換器與並排控制列');
 
 // 3. 驗證 CSS 樣式規則
-// 3.1 搜尋與選單並排 50%
+// 3.1 搜尋與選單自適應全寬折行 (零裁切)
 assert(cssContent.includes('.cs-tray-controls-row'), 'CSS 必須具備 .cs-tray-controls-row 規則');
+assert(cssContent.includes('flex-wrap: wrap;'), 'CSS 控制列必須支援 flex-wrap: wrap 自適應折行');
 assert(cssContent.includes('.cs-tray-controls-row .cs-tray-select'), 'CSS 必須定義 .cs-tray-select 樣式');
 assert(cssContent.includes('.cs-tray-target-row'), 'CSS 必須定義 .cs-tray-target-row 目標盒子切換樣式');
 
@@ -159,7 +160,7 @@ csApi.renderCustomStorage();
 // 5. 驗證 14 大官方分類下拉選項與去重計數
 const selectHtml = elements.csTrayCategorySelect.innerHTML;
 assert(selectHtml.includes('value="all"'), '分類選單必須具備全部分類選項');
-assert(selectHtml.includes('全部分類 (1238)'), '全部分類必須精準標示 (1238)');
+assert(selectHtml.includes('全部 (1238)'), '全部分類必須精準標示 全部 (1238)');
 
 const expectedCategories = [
   '材料', '食物', '家具', '雜貨', '戶外', '實用', '大自然', '建築', '方塊', '套組', '重要的物品', '其他', '特別收錄'

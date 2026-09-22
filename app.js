@@ -2716,7 +2716,7 @@
 
     // 1. 渲染下拉選單 (主功能)
     if (DOM.csTrayCategorySelect) {
-      let optionsHtml = `<option value="all" ${activeCat === 'all' ? 'selected' : ''}>全部分類 (${allUniqueSet.size})</option>`;
+      let optionsHtml = `<option value="all" ${activeCat === 'all' ? 'selected' : ''}>全部 (${allUniqueSet.size})</option>`;
       categories.forEach(cat => {
         const count = catCounts[cat] || 0;
         const isSel = activeCat === cat ? 'selected' : '';
