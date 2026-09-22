@@ -2313,9 +2313,62 @@
     return "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24' fill='%2364748b'><rect width='20' height='20' x='2' y='2' rx='4' fill-opacity='0.15' stroke='%2364748b' stroke-width='2'/><text x='12' y='16' font-size='12' text-anchor='middle' fill='%2364748b'>📦</text></svg>";
   }
 
+  // 素材庫物品官方全局順序索引映射 (快取 1238 種官方物品順序)
+  let _trayItemOrderMap = null;
+  function getTrayItemOrderMap() {
+    if (_trayItemOrderMap && _trayItemOrderMap.size > 0) return _trayItemOrderMap;
+    _trayItemOrderMap = new Map();
+    const db = window.POKOPIA_PREFERENCES_DB;
+    const itemsDb = (db && db.items) ? db.items : {};
+    let idx = 0;
+    Object.keys(itemsDb).forEach(cat => {
+      (itemsDb[cat] || []).forEach(item => {
+        if (item && item.name && !_trayItemOrderMap.has(item.name)) {
+          _trayItemOrderMap.set(item.name, idx++);
+        }
+      });
+    });
+    return _trayItemOrderMap;
+  }
+
+  // 將收納盒物品陣列依據素材庫官方順序排列
+  function sortBoxItems(items) {
+    if (!Array.isArray(items) || items.length <= 1) return items || [];
+    const orderMap = getTrayItemOrderMap();
+    return items.sort((a, b) => {
+      const orderA = orderMap.has(a) ? orderMap.get(a) : 999999;
+      const orderB = orderMap.has(b) ? orderMap.get(b) : 999999;
+      if (orderA !== orderB) return orderA - orderB;
+      return a.localeCompare(b, 'zh-Hant');
+    });
+  }
+
+  // 整理所有收納盒內的物品順序
+  function sortAllCustomBoxes() {
+    if (!Array.isArray(state.customBoxes)) return;
+    state.customBoxes.forEach(box => {
+      if (Array.isArray(box.items)) {
+        sortBoxItems(box.items);
+      }
+    });
+  }
+
+  // 觸發加入物品至當前選中之收納盒
+  function handleTrayItemAdd(itemName) {
+    if (!itemName) return;
+    const boxes = state.customBoxes || [];
+    if (boxes.length === 0) {
+      alert('請先建立至少一個收納盒！');
+      return;
+    }
+    const targetBox = boxes.find(b => b.id === activeDropTargetBoxId) || boxes[0];
+    addItemToBox(targetBox.id, itemName);
+  }
+
   // 主渲染入口
   function renderCustomStorage() {
     if (!DOM.customStorageSection) return;
+    sortAllCustomBoxes();
     initCustomStorageEvents();
     renderCustomBoxesGrid();
     renderCustomTrayItems(state.activeTraySearch || '');
@@ -2428,6 +2481,65 @@
         handleReverseSearch('');
       });
     }
+
+    // 6. 素材庫卡片點擊與拖曳 (事件委派 + Pointer 容差 6px 判定，保證 100% 靈敏度並兼容原生拖曳)
+    if (DOM.csTrayGrid) {
+      let trayPointerStart = null;
+      let lastTrayAddTimestamp = 0;
+
+      DOM.csTrayGrid.addEventListener('pointerdown', (e) => {
+        if (e.button !== undefined && e.button !== 0) return;
+        const itemEl = e.target.closest('.cs-tray-item');
+        if (!itemEl) return;
+        trayPointerStart = {
+          x: e.clientX,
+          y: e.clientY,
+          time: Date.now(),
+          itemName: itemEl.getAttribute('data-item-name')
+        };
+      });
+
+      DOM.csTrayGrid.addEventListener('pointerup', (e) => {
+        if (!trayPointerStart) return;
+        const start = trayPointerStart;
+        trayPointerStart = null;
+        const dx = e.clientX - start.x;
+        const dy = e.clientY - start.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const duration = Date.now() - start.time;
+
+        // 容差 <= 6px 且點擊間隔 < 600ms，判定為有效點擊！
+        if (dist <= 6 && duration < 600) {
+          lastTrayAddTimestamp = Date.now();
+          handleTrayItemAdd(start.itemName);
+        }
+      });
+
+      DOM.csTrayGrid.addEventListener('pointercancel', () => {
+        trayPointerStart = null;
+      });
+
+      DOM.csTrayGrid.addEventListener('dragstart', (e) => {
+        trayPointerStart = null; // 開始拖曳，取消點擊判定
+        const itemEl = e.target.closest('.cs-tray-item');
+        if (!itemEl) return;
+        const itemName = itemEl.getAttribute('data-item-name');
+        if (itemName && e.dataTransfer) {
+          e.dataTransfer.setData('text/plain', itemName);
+          e.dataTransfer.effectAllowed = 'copy';
+        }
+      });
+
+      DOM.csTrayGrid.addEventListener('click', (e) => {
+        // 若剛剛 pointerup 已在 400ms 內觸發過加入，防重保護
+        if (Date.now() - lastTrayAddTimestamp < 400) return;
+        const itemEl = e.target.closest('.cs-tray-item');
+        if (!itemEl) return;
+        const itemName = itemEl.getAttribute('data-item-name');
+        lastTrayAddTimestamp = Date.now();
+        handleTrayItemAdd(itemName);
+      });
+    }
   }
 
   // 渲染素材庫目標收納盒下拉選單
@@ -2451,6 +2563,7 @@
     if (!DOM.csBoxesContainer) return;
 
     const boxes = Array.isArray(state.customBoxes) ? state.customBoxes : (state.customBoxes = []);
+    boxes.forEach(b => { if (Array.isArray(b.items)) sortBoxItems(b.items); });
     if (boxes.length === 0) {
       DOM.csBoxesContainer.innerHTML = `
         <div class="empty-state" style="grid-column: 1 / -1; padding: 2.5rem 1rem;">
@@ -2845,26 +2958,7 @@
 
     DOM.csTrayGrid.innerHTML = html;
 
-    // 6. 綁定托盤拖曳與點擊事件
-    const trayItems = DOM.csTrayGrid.querySelectorAll('.cs-tray-item');
-    trayItems.forEach(item => {
-      const itemName = item.getAttribute('data-item-name');
-
-      item.addEventListener('dragstart', (e) => {
-        e.dataTransfer.setData('text/plain', itemName);
-        e.dataTransfer.effectAllowed = 'copy';
-      });
-
-      item.addEventListener('click', () => {
-        const boxes = state.customBoxes || [];
-        if (boxes.length === 0) {
-          alert('請先建立至少一個收納盒！');
-          return;
-        }
-        const targetBox = boxes.find(b => b.id === activeDropTargetBoxId) || boxes[0];
-        addItemToBox(targetBox.id, itemName);
-      });
-    });
+    // 6. 點擊與拖曳事件已由 DOM.csTrayGrid 容器事件委派高效統一處理 (含 Pointer 容差判定)
   }
 
   // 輕量操作回饋 Toast
@@ -3013,6 +3107,7 @@
     }
 
     box.items.push(itemName);
+    sortBoxItems(box.items);
     saveCustomBoxes();
     renderCustomBoxesGrid();
     updateTrayStoredStatus();
@@ -4005,6 +4100,10 @@
     openCsDrawer,
     closeCsDrawer,
     toggleCsDrawer,
+    sortBoxItems,
+    getTrayItemOrderMap,
+    sortAllCustomBoxes,
+    handleTrayItemAdd,
     getActiveTargetBoxId: () => activeDropTargetBoxId,
     getState: () => {
       state.activeDropTargetBoxId = activeDropTargetBoxId;
