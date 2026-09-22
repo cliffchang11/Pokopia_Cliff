@@ -18447,10 +18447,10 @@ window.POKOPIA_DATA = {
       "environment": "☀️ 明亮",
       "pokemons": [
         {
-          "id": "pkm_s1_309",
-          "number": "No. 001",
-          "name": "毽子草",
-          "sprite": "assets/pkm_sprites/pkm_icon_0187.webp"
+          "id": "pkm_s1_310",
+          "number": "No. 002",
+          "name": "毽子花",
+          "sprite": "assets/pkm_sprites/pkm_icon_0188.webp"
         }
       ],
       "category": "event",
