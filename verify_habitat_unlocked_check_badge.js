@@ -14,7 +14,8 @@ const cssContent = fs.readFileSync(cssPath, 'utf8');
 assert(cssContent.includes('.habitat-thumb-badge.is-unlocked'), 'CSS 必須包含 .habitat-thumb-badge.is-unlocked');
 assert(cssContent.includes(':root[data-theme="dark"] .habitat-thumb-badge.is-unlocked'), 'CSS 必須包含暗色模式 .habitat-thumb-badge.is-unlocked');
 assert(cssContent.includes('#10b981'), 'CSS 翡翠綠漸層應包含 #10b981');
-console.log('✔ [Check 1] index.css 樣式定義正確 (白天與深色模式均包含翡翠綠打勾樣式)');
+assert(cssContent.includes('border-radius: 50%'), 'CSS 解鎖戳章必須設定為圓形 border-radius: 50%');
+console.log('✔ [Check 1] index.css 樣式定義正確 (白天與深色模式均包含翡翠綠圓形戳章樣式)');
 
 // 2. 檢驗 app.js 邏輯
 const appJsPath = path.join(__dirname, 'app.js');
