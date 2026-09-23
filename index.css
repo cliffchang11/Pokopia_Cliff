@@ -833,7 +833,8 @@ body {
 
 .toolbar-title {
   margin: 0;
-  font-size: 1.15rem;
+  font-size: 1.4rem;
+  line-height: 1.3;
   font-weight: 600;
   color: var(--text-main);
   letter-spacing: -0.01em;
@@ -3895,7 +3896,7 @@ body {
 
 .pkm-cell-identity .pkm-table-name {
   font-size: clamp(0.72rem, 1.1vw, 0.88rem);
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1.2;
   color: var(--text-main);
   white-space: nowrap !important;
@@ -3970,7 +3971,7 @@ body {
 
 .pkm-table-name {
   font-size: 0.95rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-main);
   white-space: nowrap !important;
   word-break: keep-all !important;
@@ -5982,36 +5983,54 @@ body {
    終局自動化農場規劃專區 (End-Game Auto Farm Styles)
    ========================================================================== */
 
-/* 頂部快捷專屬按鈕 (稻穗金黃質感) */
+/* 頂部快捷專屬按鈕 (高對比深琥珀金，純文字無 Emoji) */
 .autofarm-nav-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
   padding: 0.375rem 0.875rem;
-  background: linear-gradient(135deg, rgba(234, 179, 8, 0.15) 0%, rgba(202, 138, 4, 0.25) 100%);
-  border: 1px solid rgba(234, 179, 8, 0.4);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(217, 119, 6, 0.18) 100%);
+  border: 1px solid rgba(217, 119, 6, 0.35);
   border-radius: 9999px;
-  color: #eab308;
+  color: #92400e;
   font-size: 0.825rem;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 2px 8px rgba(234, 179, 8, 0.15);
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.1);
+}
+
+.autofarm-nav-btn-icon,
+.custom-storage-nav-btn-icon {
+  display: none;
 }
 
 .autofarm-nav-btn:hover {
-  background: linear-gradient(135deg, rgba(234, 179, 8, 0.25) 0%, rgba(202, 138, 4, 0.4) 100%);
-  border-color: #facc15;
-  color: #fef08a;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.22) 0%, rgba(217, 119, 6, 0.3) 100%);
+  border-color: #d97706;
+  color: #78350f;
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(234, 179, 8, 0.28);
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.2);
 }
 
 .autofarm-nav-btn.active {
-  background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
-  color: #1a1500;
-  border-color: #fef08a;
-  box-shadow: 0 4px 16px rgba(234, 179, 8, 0.4);
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  color: #ffffff;
+  border-color: #b45309;
+  box-shadow: 0 4px 14px rgba(180, 83, 9, 0.35);
+}
+
+:root[data-theme="dark"] .autofarm-nav-btn {
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.15) 0%, rgba(202, 138, 4, 0.25) 100%);
+  border-color: rgba(234, 179, 8, 0.4);
+  color: #fde047;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+:root[data-theme="dark"] .autofarm-nav-btn:hover {
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.25) 0%, rgba(202, 138, 4, 0.4) 100%);
+  color: #fef08a;
+  border-color: #facc15;
 }
 
 .autofarm-badge {
@@ -6679,32 +6698,49 @@ body {
 /* ==========================================================================
    我的收納盒 (Custom Storage Box Organizer & Reverse Lookup)
    ========================================================================== */
+/* 頂部快捷專屬按鈕 (高對比深暖橙褐，純文字無 Emoji) */
 .custom-storage-nav-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
   padding: 0.375rem 0.875rem;
   border-radius: 9999px;
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(217, 119, 6, 0.25) 100%);
-  border: 1px solid rgba(245, 158, 11, 0.4);
-  color: #f59e0b;
+  background: linear-gradient(135deg, rgba(234, 88, 12, 0.1) 0%, rgba(194, 65, 12, 0.16) 100%);
+  border: 1px solid rgba(234, 88, 12, 0.35);
+  color: #9a3412;
   font-size: 0.82rem;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-fast);
-  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);
+  box-shadow: 0 2px 8px rgba(234, 88, 12, 0.1);
 }
 
 .custom-storage-nav-btn:hover {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(217, 119, 6, 0.35) 100%);
+  background: linear-gradient(135deg, rgba(234, 88, 12, 0.2) 0%, rgba(194, 65, 12, 0.28) 100%);
+  border-color: #ea580c;
+  color: #7c2d12;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.2);
 }
 
 .custom-storage-nav-btn.active {
-  background: #f59e0b;
+  background: #ea580c;
   color: #ffffff;
-  border-color: #d97706;
+  border-color: #c2410c;
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
+}
+
+:root[data-theme="dark"] .custom-storage-nav-btn {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(217, 119, 6, 0.25) 100%);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #fdba74;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+:root[data-theme="dark"] .custom-storage-nav-btn:hover {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(217, 119, 6, 0.35) 100%);
+  color: #fed7aa;
+  border-color: #fb923c;
 }
 
 .custom-storage-badge {
