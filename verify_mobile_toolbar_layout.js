@@ -47,10 +47,15 @@ assert(css.includes('grid-template-columns: 1fr 1fr'), '手機端 filter-toolbar
 assert(css.includes('display: grid !important;'), '手機端 filter-toolbar-row 必須以 grid 佈局');
 console.log('✅ [PASS] 4. CSS 佈局：手機端 filter-toolbar-row 嚴格採用 2x2 雙行網格');
 
-// 6. 驗證 CSS 括號平衡
+// 6. 驗證手機端篩選列與圖鑑表格/卡片之緊湊間距 (合計約 7px)
+assert(css.includes('padding: 0.6250rem 0.7500rem 0.2000rem 0.7500rem;'), '手機端 app-header 底部內距應收窄至 0.2000rem (約 3px)');
+assert(css.includes('padding: 0.2500rem 0.5000rem 0.6250rem 0.5000rem;'), '手機端 main-content 頂部內距應收窄至 0.2500rem (約 4px)');
+console.log('✅ [PASS] 5. 手機端篩選項目與下方圖鑑表格/卡片之緊湊間距 (約 7px) 驗證通過');
+
+// 7. 驗證 CSS 括號平衡
 const openB = (css.match(/{/g) || []).length;
 const closeB = (css.match(/}/g) || []).length;
 assert(openB === closeB, `CSS 括號必須平衡: Open=${openB}, Close=${closeB}`);
-console.log(`✅ [PASS] 5. CSS 括號完全平衡 (${openB} === ${closeB})`);
+console.log(`✅ [PASS] 6. CSS 括號完全平衡 (${openB} === ${closeB})`);
 
-console.log('\n🎉 手機端圖鑑標題、進度列與 2x2 雙行篩選列驗證 100% 全部通過！\n');
+console.log('\n🎉 手機端圖鑑標題、進度列、2x2 雙行篩選列與緊湊表格間距驗證 100% 全部通過！\n');

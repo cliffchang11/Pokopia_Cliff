@@ -2482,7 +2482,7 @@ body {
   .app-header {
     position: relative !important;
     top: unset !important;
-    padding: 0.6250rem 0.7500rem;
+    padding: 0.6250rem 0.7500rem 0.2000rem 0.7500rem;
   }
 
   .header-container {
@@ -2687,9 +2687,9 @@ body {
     box-sizing: border-box;
   }
 
-  /* Main Card Grid - Mobile Single Column */
+  /* Main Card Grid & Table View - Mobile Compact Top Spacing */
   .main-content {
-    padding: 0.6250rem 0.5000rem;
+    padding: 0.2500rem 0.5000rem 0.6250rem 0.5000rem;
   }
 
   .card-grid {
