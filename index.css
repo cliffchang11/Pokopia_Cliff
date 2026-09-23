@@ -4150,36 +4150,54 @@ body {
    Preferences & Items Encyclopedia Drawer (喜好與物品百科抽屜)
    ========================================================================== */
 
-/* Top Bar Encyclopedia Button (無圖示、精緻置中尺寸) */
+/* Top Bar Encyclopedia Button (柔和毛玻璃、沉穩協調尺寸) */
 .pref-drawer-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
-  color: #ffffff;
-  border: 0.0625rem solid rgba(255, 255, 255, 0.2);
+  background: var(--bg-card);
+  color: var(--text-main);
+  border: 0.0625rem solid rgba(236, 72, 153, 0.22);
   border-radius: 1.2500rem;
   padding: 0.3125rem 0.6875rem;
   font-family: inherit;
-  font-size: 0.78rem;
-  font-weight: 700;
+  font-size: 0.82rem;
+  font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 0.1250rem 0.5000rem rgba(236, 72, 153, 0.25);
+  box-shadow: var(--shadow-main), 0 0.1250rem 0.3750rem rgba(236, 72, 153, 0.08);
   transition: all var(--transition-fast);
   user-select: none;
   white-space: nowrap;
   flex-shrink: 0;
+  backdrop-filter: blur(0.5rem);
+  -webkit-backdrop-filter: blur(0.5rem);
 }
 
 .pref-drawer-btn:hover {
   transform: translateY(-0.0625rem);
-  box-shadow: 0 0.2500rem 0.8750rem rgba(236, 72, 153, 0.4);
-  filter: brightness(1.06);
+  border-color: rgba(236, 72, 153, 0.45);
+  color: #db2777;
+  background: var(--bg-card-hover);
+  box-shadow: var(--shadow-hover), 0 0.1875rem 0.6250rem rgba(236, 72, 153, 0.16);
 }
 
 .pref-drawer-btn:active {
   transform: translateY(0);
+}
+
+:root[data-theme="dark"] .pref-drawer-btn {
+  background: rgba(30, 41, 59, 0.75);
+  color: #f1f5f9;
+  border-color: rgba(244, 114, 182, 0.28);
+  box-shadow: var(--shadow-main), 0 0.1250rem 0.5000rem rgba(0, 0, 0, 0.25);
+}
+
+:root[data-theme="dark"] .pref-drawer-btn:hover {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: rgba(244, 114, 182, 0.55);
+  color: #f472b6;
+  box-shadow: var(--shadow-hover), 0 0 0.75rem rgba(244, 114, 182, 0.25);
 }
 
 .pref-drawer-btn-icon {
