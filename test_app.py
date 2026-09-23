@@ -591,10 +591,15 @@ if (!elements['floatingBackBtn']) process.exit(29);
     assert res_resp.returncode == 0, f"verify_responsive_header.js 驗證失敗:\n{res_resp.stderr or res_resp.stdout}"
     print("✅ [PASS] 獨立模組 verify_responsive_header.js 頂部導航重疊修復與全站響應式自適應驗證 100% 通過！")
 
-    # 執行獨立模組 verify_storage_and_tray_redesign.js 驗證素材庫分類選單化、目標切換器、抽屜無留白與收納盒抗裁切
-    res_tray = subprocess.run(["node", "verify_storage_and_tray_redesign.js"], capture_output=True, text=True)
-    assert res_tray.returncode == 0, f"verify_storage_and_tray_redesign.js 驗證失敗:\n{res_tray.stderr or res_tray.stdout}"
-    print("✅ [PASS] 獨立模組 verify_storage_and_tray_redesign.js 素材庫分類選單、目標切換器、抽屜無留白與收納盒抗裁切驗證 100% 通過！")
+    # 執行獨立模組 verify_page_toolbar_and_footer.js 驗證智能空間釋放、目次常駐與頁尾作者
+    res_footer = subprocess.run(["node", "verify_page_toolbar_and_footer.js"], capture_output=True, text=True)
+    assert res_footer.returncode == 0, f"verify_page_toolbar_and_footer.js 驗證失敗:\n{res_footer.stderr or res_footer.stdout}"
+    print("✅ [PASS] 獨立模組 verify_page_toolbar_and_footer.js 空間釋放、目次常駐與頁尾樣式驗證 100% 通過！")
+
+    # 執行獨立模組 verify_pref_view_all.js 驗證卡片特徵風格與口味「查看全部 ↗」跳轉百科
+    res_pref_all = subprocess.run(["node", "verify_pref_view_all.js"], capture_output=True, text=True)
+    assert res_pref_all.returncode == 0, f"verify_pref_view_all.js 驗證失敗:\n{res_pref_all.stderr or res_pref_all.stdout}"
+    print("✅ [PASS] 獨立模組 verify_pref_view_all.js 卡片特徵與口味「查看全部 ↗」跳轉百科驗證 100% 通過！")
 
     print("\n🎉 全部驗收項目 100% 通過 (100% PASS)！")
 

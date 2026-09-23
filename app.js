@@ -1053,12 +1053,16 @@
         return;
       }
 
-      // 2. 喜好藥丸標籤跳轉
-      const pill = e.target.closest('.pref-pill, .fav-pill');
+      // 2. 喜好藥丸標籤與「查看全部」跳轉 (支援特徵風格、口味)
+      const pill = e.target.closest('.pref-pill, .fav-pill, .taste-pill, .pkm-pref-thing-link, .pkm-pref-taste-link');
       if (pill) {
         e.stopPropagation();
-        const fav = pill.dataset.fav || pill.textContent.trim();
-        const isTaste = TASTE_SET.has(fav);
+        let fav = pill.dataset.fav || pill.textContent.trim();
+        // 清理文字前綴與查看全部字樣
+        fav = fav.replace(/^(喜歡的口味：|🛋️\s*特徵風格：|特徵風格：)/, '').replace(/查看全部\s*↗?/, '').trim();
+        if (!fav && pill.dataset.fav) fav = pill.dataset.fav.trim();
+        if (!fav) return;
+        const isTaste = TASTE_SET.has(fav) || pill.classList.contains('pkm-pref-taste-link') || pill.classList.contains('taste-pill');
         const targetTab = isTaste ? 'tastes' : 'things';
         openPrefDrawer(targetTab, fav);
       }
@@ -3383,6 +3387,7 @@
     if (matchedTastes.length > 0) {
       tastesHTML = matchedTastes.map(t => {
         const foods = t.foods || [];
+        const hasMore = foods.length > 8;
         const foodBadges = foods.slice(0, 8).map(food => {
           const icon = (db.itemIcons && db.itemIcons[food]) || '';
           return `
@@ -3396,7 +3401,8 @@
         return `
           <div class="pkm-pref-box">
             <div class="pkm-pref-box-title">
-              <span class="pref-pill-btn taste-pill" style="font-size:0.8rem;">喜歡的口味：${escapeHTML(t.name)}</span>
+              <span class="pref-pill-btn taste-pill" data-fav="${escapeHTML(t.name)}" style="font-size:0.8rem; cursor:pointer;" title="點擊在喜好百科查看「${escapeHTML(t.name)}」料理與說明">喜歡的口味：${escapeHTML(t.name)}</span>
+              ${hasMore ? `<span class="pkm-pref-taste-link" data-fav="${escapeHTML(t.name)}" style="font-size:0.75rem; color:var(--primary-indigo); cursor:pointer; font-weight:600;" title="點擊在喜好百科查看「${escapeHTML(t.name)}」完整料理清單">查看全部 ↗</span>` : ''}
             </div>
             ${t.snorlaxEffect ? `<div class="pkm-pref-bonus">✨ 供奉苔卡比獸效果：${escapeHTML(t.snorlaxEffect)}</div>` : ''}
             ${foodBadges ? `<div class="pkm-pref-items-grid">${foodBadges}</div>` : ''}
@@ -3410,6 +3416,7 @@
     if (matchedThings.length > 0) {
       thingsHTML = matchedThings.map(th => {
         const items = th.items || [];
+        const hasMore = items.length > 10;
         const itemBadges = items.slice(0, 10).map(item => {
           const icon = (db.itemIcons && db.itemIcons[item]) || '';
           return `
@@ -3423,7 +3430,8 @@
         return `
           <div class="pkm-pref-box">
             <div class="pkm-pref-box-title">
-              <span class="pref-pill-btn" style="font-size:0.8rem;">🛋️ 特徵風格：${escapeHTML(th.name)}</span>
+              <span class="pref-pill-btn fav-pill" data-fav="${escapeHTML(th.name)}" style="font-size:0.8rem; cursor:pointer;" title="點擊在喜好百科查看「${escapeHTML(th.name)}」物品與說明">🛋️ 特徵風格：${escapeHTML(th.name)}</span>
+              ${hasMore ? `<span class="pkm-pref-thing-link" data-fav="${escapeHTML(th.name)}" style="font-size:0.75rem; color:var(--primary-indigo); cursor:pointer; font-weight:600;" title="點擊在喜好百科查看「${escapeHTML(th.name)}」完整物品清單">查看全部 ↗</span>` : ''}
             </div>
             ${itemBadges ? `<div class="pkm-pref-items-grid">${itemBadges}</div>` : '<div style="font-size:0.75rem; color:var(--text-muted);">收錄代表風格物品</div>'}
           </div>

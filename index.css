@@ -5165,6 +5165,27 @@ body {
   justify-content: space-between;
 }
 
+.pkm-pref-link,
+.pkm-pref-env-link,
+.pkm-pref-thing-link,
+.pkm-pref-taste-link {
+  font-size: 0.75rem;
+  color: var(--primary-indigo);
+  cursor: pointer;
+  font-weight: 600;
+  transition: color 0.18s ease, transform 0.18s ease;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.pkm-pref-link:hover,
+.pkm-pref-env-link:hover,
+.pkm-pref-thing-link:hover,
+.pkm-pref-taste-link:hover {
+  color: var(--primary-orange);
+  transform: translateX(0.1250rem);
+}
+
 .pkm-pref-bonus {
   font-size: 0.74rem;
   color: var(--text-muted);
