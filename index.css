@@ -173,10 +173,9 @@ body {
   transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
-/* Header & Sticky Toolbar */
+/* Header & Toolbar (Unpinned, naturally scrolls out on page scroll) */
 .app-header {
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 100;
   background: var(--bg-header);
   backdrop-filter: blur(1.125rem) saturate(160%);

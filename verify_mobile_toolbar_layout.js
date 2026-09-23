@@ -79,10 +79,15 @@ console.log('✅ [PASS] 7. 終局農場卡片材質與全站圖鑑/儲存庫卡�
 assert(css.includes('font-weight: 500;'), '標籤與下拉選單必須具備 font-weight: 500 輕量化');
 console.log('✅ [PASS] 8. 次要標籤與下拉選單非粗體輕量化驗證通過');
 
-// 10. 驗證 CSS 括號平衡
+// 10. 驗證全站頂部卡片解除 sticky 釘選，隨頁面自然滑出釋放畫面空間
+assert(!css.includes('.app-header {\n  position: sticky;') && !css.includes('.app-header {\r\n  position: sticky;'), '全域 .app-header 不得設置 position: sticky');
+assert(css.includes('.app-header {\n  position: relative;') || css.includes('.app-header {\r\n  position: relative;'), '全域 .app-header 必須為 position: relative 以自然隨頁面滾出');
+console.log('✅ [PASS] 9. 全域頂部卡片解除 sticky 釘選（改為 relative 自然滾出視窗）驗證通過');
+
+// 11. 驗證 CSS 括號平衡
 const openB = (css.match(/{/g) || []).length;
 const closeB = (css.match(/}/g) || []).length;
 assert(openB === closeB, `CSS 括號必須平衡: Open=${openB}, Close=${closeB}`);
-console.log(`✅ [PASS] 9. CSS 括號完全平衡 (${openB} === ${closeB})`);
+console.log(`✅ [PASS] 10. CSS 括號完全平衡 (${openB} === ${closeB})`);
 
 console.log('\n🎉 全站 5 大頁面統一頂部卡片、2x2 雙行篩選列、目次統一與農場卡片材質統一驗證 100% 全部通過！\n');
