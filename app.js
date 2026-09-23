@@ -167,6 +167,7 @@
     prefDrawerBody: document.getElementById('prefDrawerBody'),
     searchInput: document.getElementById('searchInput'),
     clearSearchBtn: document.getElementById('clearSearchBtn'),
+    searchRow: document.querySelector('.search-row'),
     filterToolbar: document.getElementById('filterToolbar'),
     toolbarContainer: document.getElementById('toolbarContainer'),
     toolbarHeaderRow: document.getElementById('toolbarHeaderRow'),
@@ -1208,6 +1209,7 @@
       if (DOM.catalogProgressBadge) DOM.catalogProgressBadge.classList.remove('hidden');
       if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '📦';
       if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>9</strong> 大分類 ‧ 44 方案';
+      if (DOM.searchRow) DOM.searchRow.classList.remove('hidden');
       if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.add('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.add('hidden');
       if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.add('hidden');
@@ -1225,6 +1227,7 @@
         DOM.catalogDoneCount = document.getElementById('catalogDoneCount');
         DOM.catalogTotalCount = document.getElementById('catalogTotalCount');
       }
+      if (DOM.searchRow) DOM.searchRow.classList.remove('hidden');
       if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.remove('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.remove('hidden');
       if (DOM.specialtyFilterGroup) DOM.specialtyFilterGroup.classList.remove('hidden');
@@ -1245,6 +1248,7 @@
         DOM.catalogDoneCount = document.getElementById('catalogDoneCount');
         DOM.catalogTotalCount = document.getElementById('catalogTotalCount');
       }
+      if (DOM.searchRow) DOM.searchRow.classList.remove('hidden');
       if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.remove('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.remove('hidden');
       if (DOM.specialtyFilterGroup) DOM.specialtyFilterGroup.classList.add('hidden');
@@ -1262,8 +1266,13 @@
         DOM.autoFarmSection.classList.remove('hidden-section');
         DOM.autoFarmSection.classList.add('active-section');
       }
-      if (DOM.toolbarContainer) DOM.toolbarContainer.classList.add('hidden');
-      if (DOM.toolbarHeaderRow) DOM.toolbarHeaderRow.classList.add('hidden');
+      if (DOM.toolbarContainer) DOM.toolbarContainer.classList.remove('hidden');
+      if (DOM.toolbarHeaderRow) DOM.toolbarHeaderRow.classList.remove('hidden');
+      if (DOM.toolbarTitle) DOM.toolbarTitle.textContent = '終局農場';
+      if (DOM.catalogProgressBadge) DOM.catalogProgressBadge.classList.remove('hidden');
+      if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🌾';
+      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>7</strong> 大全自動流水線';
+      if (DOM.searchRow) DOM.searchRow.classList.add('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.add('hidden');
       if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.add('hidden');
     } else if (tab === 'customStorage') {
@@ -1277,8 +1286,14 @@
         DOM.customStorageSection.classList.remove('hidden-section');
         DOM.customStorageSection.classList.add('active-section');
       }
-      if (DOM.toolbarContainer) DOM.toolbarContainer.classList.add('hidden');
-      if (DOM.toolbarHeaderRow) DOM.toolbarHeaderRow.classList.add('hidden');
+      if (DOM.toolbarContainer) DOM.toolbarContainer.classList.remove('hidden');
+      if (DOM.toolbarHeaderRow) DOM.toolbarHeaderRow.classList.remove('hidden');
+      if (DOM.toolbarTitle) DOM.toolbarTitle.textContent = '我的收納盒';
+      if (DOM.catalogProgressBadge) DOM.catalogProgressBadge.classList.remove('hidden');
+      if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '📦';
+      const boxCount = (state.customBoxes || []).length;
+      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = boxCount > 0 ? '<strong>' + boxCount + '</strong> 箱收納管理' : '自訂收納管理';
+      if (DOM.searchRow) DOM.searchRow.classList.add('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.add('hidden');
       if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.add('hidden');
       renderCustomStorage();
@@ -1343,6 +1358,13 @@
     if (state.currentTab === 'storage') {
       if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '📦';
       if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>9</strong> 大分類 ‧ 44 方案';
+    } else if (state.currentTab === 'autofarm') {
+      if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🌾';
+      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>7</strong> 大全自動流水線';
+    } else if (state.currentTab === 'customStorage') {
+      if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '📦';
+      const boxCount = (state.customBoxes || []).length;
+      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = boxCount > 0 ? '<strong>' + boxCount + '</strong> 箱收納管理' : '自訂收納管理';
     } else {
       if (DOM.catalogDoneCount && DOM.catalogTotalCount) {
         if (state.currentTab === 'habitat') {
@@ -2432,11 +2454,11 @@
     renderCustomBoxesGrid();
     renderCustomTrayItems(state.activeTraySearch || '');
 
-    // 更新收納盒標題徽章箱數
-    const csBadgeText = DOM.csBadgeText || document.getElementById('csBadgeText');
-    if (csBadgeText) {
+    // 更新收納盒標題徽章箱數 (統一頂部卡片徽章)
+    const badgeText = DOM.catalogBadgeText || document.getElementById('catalogBadgeText');
+    if (badgeText && state.currentTab === 'customStorage') {
       const boxCount = (state.customBoxes || []).length;
-      csBadgeText.innerHTML = boxCount > 0 ? `<strong>${boxCount}</strong> 箱收納管理` : '自訂收納管理';
+      badgeText.innerHTML = boxCount > 0 ? `<strong>${boxCount}</strong> 箱收納管理` : '自訂收納管理';
     }
   }
 

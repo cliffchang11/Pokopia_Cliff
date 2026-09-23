@@ -6021,12 +6021,12 @@ body {
 
 /* 終局農場主視圖全寬容器 */
 .autofarm-section {
-  max-width: 1300px;
+  max-width: 87.5000rem;
   margin: 0 auto;
-  padding: 1.25rem 0.5rem 3rem 0.5rem;
+  padding: 0 0.5rem 2rem 0.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
+  gap: 1.25rem;
 }
 
 /* ==========================================================================
@@ -6181,25 +6181,23 @@ body {
   gap: 2rem;
 }
 
-/* 單個流水線模組卡片 */
+/* 單個流水線模組卡片 - 與全站圖鑑卡片 100% 統一材質 */
 .autofarm-card {
-  background: var(--card-bg, rgba(30, 41, 59, 0.55));
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 1.125rem;
-  padding: 1.625rem 1.75rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
-}
-
-[data-theme="light"] .autofarm-card {
-  background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.08);
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+  background: var(--bg-card);
+  backdrop-filter: blur(0.7500rem);
+  -webkit-backdrop-filter: blur(0.7500rem);
+  border: 0.0625rem solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-main), var(--card-edge-glow);
+  transition: transform 0.25s var(--ease-spring), border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.2s ease;
 }
 
 .autofarm-card:hover {
-  border-color: rgba(234, 179, 8, 0.35);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22);
+  transform: translateY(-0.1250rem);
+  border-color: var(--glass-border-focus);
+  box-shadow: var(--shadow-hover), var(--card-edge-glow), 0 0 16px var(--primary-indigo-glow);
+  background: var(--bg-card-hover);
 }
 
 .autofarm-card-header {
