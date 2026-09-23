@@ -835,7 +835,7 @@ body {
 .toolbar-title {
   margin: 0;
   font-size: 1.15rem;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--text-main);
   letter-spacing: -0.01em;
   display: flex;
@@ -885,7 +885,7 @@ body {
   font-size: 0.82rem;
   color: var(--text-sub);
   white-space: nowrap;
-  font-weight: 700;
+  font-weight: 500;
   flex-shrink: 0;
 }
 
@@ -2637,6 +2637,7 @@ body {
 
   .toolbar-title {
     font-size: 1.05rem;
+    font-weight: 600;
   }
 
   .toolbar-header-row .catalog-progress-badge {
@@ -2668,7 +2669,7 @@ body {
 
   .filter-select-item .chip-label {
     font-size: 0.78rem;
-    font-weight: 700;
+    font-weight: 500;
     white-space: nowrap;
     flex-shrink: 0;
   }
@@ -2677,6 +2678,7 @@ body {
   .specialty-select {
     padding: 0.2000rem 0.4000rem;
     font-size: 0.80rem;
+    font-weight: 500;
     height: 2.0000rem;
     line-height: 2.0000rem;
     border-radius: 0.8750rem;
@@ -2687,8 +2689,9 @@ body {
     box-sizing: border-box;
   }
 
-  /* Main Card Grid & Table View - Mobile Compact Top Spacing */
+  /* Main Card Grid & Table View - Mobile Compact Top Spacing & Zero Margin Top */
   .main-content {
+    margin: 0 auto 1.5000rem auto !important;
     padding: 0.2500rem 0.5000rem 0.6250rem 0.5000rem;
   }
 
