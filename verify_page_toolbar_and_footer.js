@@ -23,18 +23,21 @@ assert(htmlContent.includes('id="toolbarContainer"'), '必須包含 id="toolbarC
 assert(htmlContent.includes('id="viewToggleGroup"'), '必須包含 id="viewToggleGroup"');
 console.log('✔ [Check 2] 工具列容器與視圖切換群組 ID 定義完備');
 
-// 檢驗頁尾作者
+// 檢驗頁尾作者與分隔符
+assert(htmlContent.includes('<span class="footer-divider">|</span>'), '頁尾必須包含 .footer-divider 分隔線');
 assert(htmlContent.includes('<span class="footer-author">Cliff</span>'), '頁尾必須包含 .footer-author 標籤並註明 Cliff');
-console.log('✔ [Check 3] 頁尾作者標註 Cliff 結構正確');
+console.log('✔ [Check 3] 頁尾作者標註 Cliff 與業界豎線分隔符結構正確');
 
 // 2. 檢驗 index.css 樣式
 const cssPath = path.join(__dirname, 'index.css');
 const cssContent = fs.readFileSync(cssPath, 'utf8');
 
 assert(cssContent.includes('.footer-author'), 'CSS 必須包含 .footer-author 樣式');
-assert(cssContent.includes('#f8fafc'), 'CSS 頁尾作者必須使用高對比亮白字體');
-assert(cssContent.includes(':root[data-theme="dark"] .footer-author'), 'CSS 必須支援暗色模式作者高亮');
-console.log('✔ [Check 4] 頁尾作者字體調亮樣式定義完備');
+assert(cssContent.includes('.footer-divider'), 'CSS 必須包含 .footer-divider 樣式');
+assert(cssContent.includes('#ff8a00'), 'CSS 頁尾作者必須使用專屬亮橘色');
+assert(cssContent.includes('rgba(255, 255, 255, 0.95)'), 'CSS 頁尾作者必須具有純白光暈 text-shadow');
+assert(cssContent.includes('background: #0b0f19'), 'CSS 頁尾容器必須維持深黑底');
+console.log('✔ [Check 4] 頁尾黑底白字、無膠囊、Cliff 橘字白光暈樣式驗證完備');
 
 // 3. 檢驗 app.js switchTab 邏輯
 const appJsPath = path.join(__dirname, 'app.js');
