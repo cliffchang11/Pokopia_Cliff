@@ -1053,13 +1053,13 @@
         return;
       }
 
-      // 2. 喜好藥丸標籤與「查看全部」跳轉 (支援特徵風格、口味)
+      // 2. 喜好藥丸標籤與「查看全部」跳轉 (支援喜歡的東西、口味)
       const pill = e.target.closest('.pref-pill, .fav-pill, .taste-pill, .pkm-pref-thing-link, .pkm-pref-taste-link');
       if (pill) {
         e.stopPropagation();
         let fav = pill.dataset.fav || pill.textContent.trim();
         // 清理文字前綴與查看全部字樣
-        fav = fav.replace(/^(喜歡的口味：|🛋️\s*特徵風格：|特徵風格：)/, '').replace(/查看全部\s*↗?/, '').trim();
+        fav = fav.replace(/^(喜歡的口味：|喜歡的東西：|🛋️\s*特徵風格：|特徵風格：)/, '').replace(/查看全部\s*↗?/, '').trim();
         if (!fav && pill.dataset.fav) fav = pill.dataset.fav.trim();
         if (!fav) return;
         const isTaste = TASTE_SET.has(fav) || pill.classList.contains('pkm-pref-taste-link') || pill.classList.contains('taste-pill');
@@ -3430,7 +3430,7 @@
         return `
           <div class="pkm-pref-box">
             <div class="pkm-pref-box-title">
-              <span class="pref-pill-btn fav-pill" data-fav="${escapeHTML(th.name)}" style="font-size:0.8rem; cursor:pointer;" title="點擊在喜好百科查看「${escapeHTML(th.name)}」物品與說明">🛋️ 特徵風格：${escapeHTML(th.name)}</span>
+              <span class="pref-pill-btn fav-pill" data-fav="${escapeHTML(th.name)}" style="font-size:0.8rem; cursor:pointer;" title="點擊在喜好百科查看「${escapeHTML(th.name)}」物品與說明">喜歡的東西：${escapeHTML(th.name)}</span>
               ${hasMore ? `<span class="pkm-pref-thing-link" data-fav="${escapeHTML(th.name)}" style="font-size:0.75rem; color:var(--primary-indigo); cursor:pointer; font-weight:600;" title="點擊在喜好百科查看「${escapeHTML(th.name)}」完整物品清單">查看全部 ↗</span>` : ''}
             </div>
             ${itemBadges ? `<div class="pkm-pref-items-grid">${itemBadges}</div>` : '<div style="font-size:0.75rem; color:var(--text-muted);">收錄代表風格物品</div>'}
@@ -3457,18 +3457,21 @@
         `;
       }).join('');
 
+      const isDark = (envObj.name || '').includes('黑暗');
+      const envItemsSection = envItemBadges ? `
+        <div style="font-size:0.75rem; color:var(--text-muted); margin:4px 0 6px 0;">代表營造家具 / 物品：</div>
+        <div class="pkm-pref-items-grid">${envItemBadges}</div>
+      ` : (isDark ? '' : '<div style="font-size:0.75rem; color:var(--text-muted);">收錄代表營造物品</div>');
+
       envsHTML = `
         <div class="pkm-pref-box">
           <div class="pkm-pref-box-title" style="display:flex; justify-content:space-between; align-items:center;">
             <span class="pref-pill-btn env-pill" data-env="${escapeHTML(envObj.name)}" style="font-size:0.8rem; cursor:pointer;" title="點擊在喜好百科查看「${escapeHTML(envObj.name)}」營造家具與說明">
-              🌤️ 喜歡的環境：${escapeHTML(envObj.name)} ${envObj.dimension ? `【維度：${escapeHTML(envObj.dimension)}】` : ''}
+              喜歡的環境：${escapeHTML(envObj.name)} ${envObj.dimension ? `【維度：${escapeHTML(envObj.dimension)}】` : ''}
             </span>
             <span class="pkm-pref-env-link" data-env="${escapeHTML(envObj.name)}" style="font-size:0.75rem; color:var(--primary-indigo); cursor:pointer; font-weight:600;" title="點擊在喜好百科查看完整營造物品清單">查看全部 ↗</span>
           </div>
-          ${envItemBadges ? `
-            <div style="font-size:0.75rem; color:var(--text-muted); margin:4px 0 6px 0;">代表營造家具 / 物品：</div>
-            <div class="pkm-pref-items-grid">${envItemBadges}</div>
-          ` : '<div style="font-size:0.75rem; color:var(--text-muted);">收錄代表營造物品</div>'}
+          ${envItemsSection}
         </div>
       `;
     }

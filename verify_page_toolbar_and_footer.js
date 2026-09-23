@@ -23,10 +23,12 @@ assert(htmlContent.includes('id="toolbarContainer"'), '必須包含 id="toolbarC
 assert(htmlContent.includes('id="viewToggleGroup"'), '必須包含 id="viewToggleGroup"');
 console.log('✔ [Check 2] 工具列容器與視圖切換群組 ID 定義完備');
 
-// 檢驗頁尾作者與分隔符
+// 檢驗頁尾作者與分隔符、手機標題結構
 assert(htmlContent.includes('<span class="footer-divider">|</span>'), '頁尾必須包含 .footer-divider 分隔線');
 assert(htmlContent.includes('<span class="footer-author">Cliff</span>'), '頁尾必須包含 .footer-author 標籤並註明 Cliff');
-console.log('✔ [Check 3] 頁尾作者標註 Cliff 與業界豎線分隔符結構正確');
+assert(htmlContent.includes('class="brand-title-full"'), '必須包含 brand-title-full 供電腦版完整顯示');
+assert(htmlContent.includes('class="brand-title-short"'), '必須包含 brand-title-short 供手機版精簡顯示');
+console.log('✔ [Check 3] 頁尾作者、業界豎線與手機響應式標題結構正確');
 
 // 2. 檢驗 index.css 樣式
 const cssPath = path.join(__dirname, 'index.css');
@@ -34,10 +36,12 @@ const cssContent = fs.readFileSync(cssPath, 'utf8');
 
 assert(cssContent.includes('.footer-author'), 'CSS 必須包含 .footer-author 樣式');
 assert(cssContent.includes('.footer-divider'), 'CSS 必須包含 .footer-divider 樣式');
-assert(cssContent.includes('#ff8a00'), 'CSS 頁尾作者必須使用專屬亮橘色');
-assert(cssContent.includes('rgba(255, 255, 255, 0.95)'), 'CSS 頁尾作者必須具有純白光暈 text-shadow');
+assert(cssContent.includes('-webkit-background-clip: text'), 'CSS 頁尾作者必須使用金屬文字剪裁');
+assert(cssContent.includes('font-weight: 600'), 'CSS 頁尾作者保持優雅不加粗');
 assert(cssContent.includes('background: #0b0f19'), 'CSS 頁尾容器必須維持深黑底');
-console.log('✔ [Check 4] 頁尾黑底白字、無膠囊、Cliff 橘字白光暈樣式驗證完備');
+assert(cssContent.includes('.brand-title-short'), 'CSS 必須定義手機端 brand-title-short 規則');
+assert(cssContent.includes('.pref-drawer-btn::before'), 'CSS 必須包含手機端喜好百科 ::before 圖示');
+console.log('✔ [Check 4] 頁尾黑底白字、無膠囊、Cliff 香檳金橘金屬銘牌樣式與手機端防重疊樣式驗證完備');
 
 // 3. 檢驗 app.js switchTab 邏輯
 const appJsPath = path.join(__dirname, 'app.js');

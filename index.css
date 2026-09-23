@@ -436,6 +436,14 @@ body {
   filter: drop-shadow(0 0.0625rem 0.25rem rgba(245, 158, 11, 0.45));
 }
 
+.brand-title-full {
+  display: inline;
+}
+
+.brand-title-short {
+  display: none;
+}
+
 .subtitle {
   font-size: clamp(0.72rem, 1vw, 0.85rem);
   color: var(--text-sub);
@@ -2319,12 +2327,17 @@ body {
 }
 
 .footer-author {
-  color: #ff8a00 !important;
-  font-weight: 800;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
   letter-spacing: 0.05rem;
   display: inline-block;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.95), 0 0 20px rgba(255, 255, 255, 0.5) !important;
-  transition: color 0.2s ease, text-shadow 0.2s ease;
+  background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 22%, #fb923c 48%, #ea580c 72%, #fdba74 92%, #fff7ed 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.75))
+          drop-shadow(0 0 2px rgba(251, 146, 60, 0.4)) !important;
+  text-shadow: none !important;
+  transition: filter 0.25s ease, transform 0.25s ease;
 }
 
 :root[data-theme="dark"] .app-footer {
@@ -2333,8 +2346,14 @@ body {
 }
 
 :root[data-theme="dark"] .footer-author {
-  color: #ff8a00 !important;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.95), 0 0 20px rgba(255, 255, 255, 0.5) !important;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  background: linear-gradient(135deg, #ffffff 0%, #fde047 20%, #fb923c 50%, #f97316 75%, #ffedd5 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.9))
+          drop-shadow(0 0 2px rgba(251, 146, 60, 0.5)) !important;
+  text-shadow: none !important;
 }
 
 /* ==========================================================================
@@ -2389,7 +2408,8 @@ body {
 /* Tablet & Mobile Nav Adaptive Breakpoint (<= 768px) */
 @media (max-width: 768px) {
   .autofarm-nav-btn,
-  .custom-storage-nav-btn {
+  .custom-storage-nav-btn,
+  .pref-drawer-btn {
     width: 2.25rem !important;
     height: 2.25rem !important;
     min-width: 2.25rem !important;
@@ -2402,15 +2422,21 @@ body {
   .custom-storage-nav-btn-text {
     display: none !important;
   }
+  .pref-drawer-btn-text {
+    display: none !important;
+  }
   .autofarm-nav-btn-icon,
   .custom-storage-nav-btn-icon {
+    display: inline-flex !important;
     font-size: 1.15rem !important;
     margin: 0 !important;
     line-height: 1 !important;
   }
-  .pref-drawer-btn {
-    padding: 0.35rem 0.65rem;
-    font-size: 0.82rem;
+  .pref-drawer-btn::before {
+    content: "💖";
+    display: inline-flex !important;
+    font-size: 1.15rem !important;
+    line-height: 1 !important;
   }
 }
 
@@ -2441,7 +2467,13 @@ body {
     padding-right: 0 !important;
   }
 
-  .brand h1 {
+  .brand-text {
+    min-width: 0;
+    overflow: hidden;
+    flex: 1 1 auto;
+  }
+
+  .brand-text h1 {
     font-size: 1.05rem;
     font-weight: 800;
     line-height: 1.2;
@@ -2449,11 +2481,23 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .brand-title-full {
+    display: none !important;
+  }
+
+  .brand-title-short {
+    display: inline !important;
+    white-space: nowrap;
   }
 
   .brand-logo-img {
-    width: 2.35rem;
-    height: 2.35rem;
+    width: 2.25rem;
+    height: 2.25rem;
     border-width: 0.0938rem;
   }
 
@@ -2477,11 +2521,13 @@ body {
   }
 
   .pref-drawer-btn {
-    padding: 0.3125rem 0.5500rem;
-    font-size: 0.80rem;
-    border-radius: 0.8750rem;
-    justify-content: center;
-    text-align: center;
+    width: 2.25rem !important;
+    height: 2.25rem !important;
+    min-width: 2.25rem !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    justify-content: center !important;
+    text-align: center !important;
   }
 
   .theme-toggle-btn {

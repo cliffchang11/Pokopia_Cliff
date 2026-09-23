@@ -11,14 +11,19 @@ console.log('=== 開始驗證特徵風格與口味「查看全部 ↗」跳轉�
 const appJsPath = path.join(__dirname, 'app.js');
 const appJsContent = fs.readFileSync(appJsPath, 'utf8');
 
-// 檢驗 HTML 生成中是否包含查看全部邏輯與門檻判斷
+// 檢驗 HTML 生成中是否包含查看全部邏輯與門檻判斷、正名為喜歡的東西且移除 emoji
 assert(appJsContent.includes('const hasMore = items.length > 10;'), '特徵風格必須包含 items.length > 10 門檻判斷');
-assert(appJsContent.includes('pkm-pref-thing-link'), '特徵風格標題必須包含 pkm-pref-thing-link 查看全部按鈕');
+assert(appJsContent.includes('pkm-pref-thing-link'), '標題必須包含 pkm-pref-thing-link 查看全部按鈕');
 assert(appJsContent.includes('pkm-pref-taste-link'), '口味標題必須包含 pkm-pref-taste-link 查看全部按鈕');
-console.log('✔ [Check 1] app.js 特徵風格與口味「查看全部 ↗」HTML 結構與數量門檻判定完備');
+assert(appJsContent.includes('喜歡的東西：${escapeHTML(th.name)}'), '標籤必須正名為「喜歡的東西：」');
+assert(!appJsContent.includes('🛋️ 特徵風格：'), '必須完全移除 🛋️ 特徵風格');
+assert(!appJsContent.includes('🌤️ 喜歡的環境：'), '環境標籤必須移除開頭第一個 emoji 🌤️');
+assert(appJsContent.includes("const isDark = (envObj.name || '').includes('黑暗')"), '黑暗環境必須進行特別判斷');
+console.log('✔ [Check 1] app.js 正名「喜歡的東西」、移除 Emoji、黑暗環境清理與「查看全部 ↗」完備');
 
 // 檢驗全域事件委派
 assert(appJsContent.includes('.pkm-pref-thing-link, .pkm-pref-taste-link'), '全域點擊事件委派必須支援 pkm-pref-thing-link 與 pkm-pref-taste-link');
+assert(appJsContent.includes('喜歡的東西：'), '全域點擊事件委派必須支援「喜歡的東西：」前綴過濾');
 console.log('✔ [Check 2] 全域點擊事件委派跳轉喜好百科邏輯完備');
 
 // 2. 檢驗 index.css 樣式
@@ -49,7 +54,7 @@ function renderMockThingHeader(th) {
   const hasMore = items.length > 10;
   return `
     <div class="pkm-pref-box-title">
-      <span class="pref-pill-btn fav-pill" data-fav="${th.name}">🛋️ 特徵風格：${th.name}</span>
+      <span class="pref-pill-btn fav-pill" data-fav="${th.name}">喜歡的東西：${th.name}</span>
       ${hasMore ? `<span class="pkm-pref-thing-link" data-fav="${th.name}">查看全部 ↗</span>` : ''}
     </div>
   `;

@@ -81,12 +81,12 @@ vm.runInContext(appContent, sandbox);
 sandbox.window.openPkmDetailModal('pkm_s1_1'); // 妙蛙種子
 const modalBodyHTML = elements['pkmDetailBody'].innerHTML;
 
-assert(modalBodyHTML.includes('🌤️ 喜歡的環境：明亮'), '彈窗應包含「🌤️ 喜歡的環境：明亮」');
+assert(modalBodyHTML.includes('喜歡的環境：明亮') && !modalBodyHTML.includes('🌤️ 喜歡的環境：'), '彈窗應包含「喜歡的環境：明亮」且移除開頭 emoji 🌤️');
 assert(modalBodyHTML.includes('【維度：亮度】'), '彈窗應包含環境所屬維度【維度：亮度】');
 assert(modalBodyHTML.includes('代表營造家具 / 物品：'), '彈窗應包含代表營造家具區塊');
 assert(modalBodyHTML.includes('火堆') || modalBodyHTML.includes('火炬'), '彈窗應展示明亮環境的營造家具');
 assert(modalBodyHTML.includes('查看全部 ↗'), '彈窗應提供直達喜好百科抽屜的查看全部按鈕');
-console.log('✅ [PASS] 1. 寶可夢個人百科彈窗成功完整渲染喜歡的環境、維度與代表家具道具！');
+console.log('✅ [PASS] 1. 寶可夢個人百科彈窗成功完整渲染純淨喜歡的環境、維度與代表家具道具！');
 
 // 2. 驗證全域環境標籤點擊跳轉喜好百科
 assert(typeof docClickHandler === 'function', '應已註冊全域點擊委派');
