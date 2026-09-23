@@ -169,6 +169,8 @@
     clearSearchBtn: document.getElementById('clearSearchBtn'),
     filterToolbar: document.getElementById('filterToolbar'),
     toolbarContainer: document.getElementById('toolbarContainer'),
+    toolbarHeaderRow: document.getElementById('toolbarHeaderRow'),
+    toolbarTitle: document.getElementById('toolbarTitle'),
     viewToggleGroup: document.getElementById('viewToggleGroup'),
     categoryFilterGroup: document.getElementById('categoryFilterGroup'),
     categoryFilter: document.getElementById('categoryFilter'),
@@ -1196,6 +1198,7 @@
       DOM.storageSection.classList.remove('hidden-section');
       DOM.storageSection.classList.add('active-section');
       if (DOM.toolbarContainer) DOM.toolbarContainer.classList.remove('hidden');
+      if (DOM.toolbarHeaderRow) DOM.toolbarHeaderRow.classList.add('hidden');
       if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.add('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.add('hidden');
       if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.add('hidden');
@@ -1204,6 +1207,9 @@
       DOM.habitatSection.classList.remove('hidden-section');
       DOM.habitatSection.classList.add('active-section');
       if (DOM.toolbarContainer) DOM.toolbarContainer.classList.remove('hidden');
+      if (DOM.toolbarHeaderRow) DOM.toolbarHeaderRow.classList.remove('hidden');
+      if (DOM.toolbarTitle) DOM.toolbarTitle.textContent = '寶可夢圖鑑';
+      if (DOM.catalogProgressBadge) DOM.catalogProgressBadge.classList.remove('hidden');
       if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.remove('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.remove('hidden');
       if (DOM.specialtyFilterGroup) DOM.specialtyFilterGroup.classList.remove('hidden');
@@ -1215,6 +1221,9 @@
       DOM.habitatCatalogSection.classList.remove('hidden-section');
       DOM.habitatCatalogSection.classList.add('active-section');
       if (DOM.toolbarContainer) DOM.toolbarContainer.classList.remove('hidden');
+      if (DOM.toolbarHeaderRow) DOM.toolbarHeaderRow.classList.remove('hidden');
+      if (DOM.toolbarTitle) DOM.toolbarTitle.textContent = '棲息地總覽';
+      if (DOM.catalogProgressBadge) DOM.catalogProgressBadge.classList.remove('hidden');
       if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.remove('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.remove('hidden');
       if (DOM.specialtyFilterGroup) DOM.specialtyFilterGroup.classList.add('hidden');
@@ -1233,6 +1242,7 @@
         DOM.autoFarmSection.classList.add('active-section');
       }
       if (DOM.toolbarContainer) DOM.toolbarContainer.classList.add('hidden');
+      if (DOM.toolbarHeaderRow) DOM.toolbarHeaderRow.classList.add('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.add('hidden');
       if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.add('hidden');
     } else if (tab === 'customStorage') {
@@ -1247,6 +1257,7 @@
         DOM.customStorageSection.classList.add('active-section');
       }
       if (DOM.toolbarContainer) DOM.toolbarContainer.classList.add('hidden');
+      if (DOM.toolbarHeaderRow) DOM.toolbarHeaderRow.classList.add('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.add('hidden');
       if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.add('hidden');
       renderCustomStorage();

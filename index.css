@@ -817,6 +817,41 @@ body {
   align-items: center;
   gap: 0.5000rem;
 }
+/* Toolbar Header Row (搜尋列上方標題與進度徽章) */
+.toolbar-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 87.5000rem;
+  margin: 0 auto 0.5000rem auto;
+  box-sizing: border-box;
+}
+
+.toolbar-header-row.hidden {
+  display: none !important;
+}
+
+.toolbar-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+}
+
+.toolbar-header-row .catalog-progress-badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(0.1250rem, 0.5vw, 0.3750rem);
+  padding: clamp(0.1875rem, 0.6vw, 0.3125rem) clamp(0.3750rem, 1.2vw, 0.7500rem);
+  font-size: clamp(0.7rem, 1.2vw, 0.82rem);
+  white-space: nowrap;
+}
+
 /* Unified Filter Toolbar (支援自適應流式換行，嚴格保障下拉選單寬度與文字清晰度) */
 .filter-toolbar-row {
   display: flex;
@@ -895,7 +930,8 @@ body {
   font-size: 0.84rem;
 }
 
-/* Filter Toolbar Progress Badge */
+/* Filter Toolbar & Header Row Progress Badge */
+.toolbar-header-row .catalog-progress-badge,
 .filter-toolbar-row .catalog-progress-badge {
   margin-left: auto;
   flex-shrink: 0;
@@ -2594,26 +2630,44 @@ body {
   }
 
 
-  /* Mobile Single-Row Fluid Scaling with Wrap protection */
+  /* Mobile Toolbar Header Row */
+  .toolbar-header-row {
+    margin-bottom: 0.3750rem;
+  }
+
+  .toolbar-title {
+    font-size: 1.05rem;
+  }
+
+  .toolbar-header-row .catalog-progress-badge {
+    font-size: 0.78rem;
+    padding: 0.1875rem 0.5000rem;
+    border-radius: 0.7500rem;
+    white-space: nowrap;
+  }
+
+  /* Mobile 2x2 Grid for Filters */
   .filter-toolbar-row {
-    display: flex !important;
-    align-items: center;
-    flex-wrap: wrap !important;
-    gap: 0.3750rem 0.5000rem;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.3750rem 0.5000rem !important;
     width: 100%;
     margin-top: 0.3750rem;
     padding: 0.1250rem 0;
+    box-sizing: border-box;
   }
 
   .filter-select-item {
-    display: inline-flex;
+    display: flex !important;
     align-items: center;
     gap: 0.2500rem;
-    flex-shrink: 0;
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box;
   }
 
   .filter-select-item .chip-label {
-    font-size: 0.80rem;
+    font-size: 0.78rem;
     font-weight: 700;
     white-space: nowrap;
     flex-shrink: 0;
@@ -2621,22 +2675,16 @@ body {
 
   .capsule-select,
   .specialty-select {
-    padding: 0.2000rem 0.5000rem;
+    padding: 0.2000rem 0.4000rem;
     font-size: 0.80rem;
     height: 2.0000rem;
     line-height: 2.0000rem;
     border-radius: 0.8750rem;
     min-width: 4.5000rem;
-    flex-shrink: 0;
-  }
-
-  .filter-toolbar-row .catalog-progress-badge {
-    margin-left: auto;
-    flex-shrink: 0;
-    font-size: 0.78rem;
-    padding: 0.1875rem 0.5000rem;
-    border-radius: 0.7500rem;
-    white-space: nowrap;
+    width: 100% !important;
+    flex: 1 1 0%;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
   }
 
   /* Main Card Grid - Mobile Single Column */

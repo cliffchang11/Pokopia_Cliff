@@ -134,6 +134,14 @@
 
     <!-- Search Bar & Controls Bar (單行整合視圖與漏斗篩選，各頁面依需求智能顯示/隱藏) -->
     <div id="toolbarContainer" class="toolbar-container">
+      <div id="toolbarHeaderRow" class="toolbar-header-row">
+        <h2 id="toolbarTitle" class="toolbar-title">寶可夢圖鑑</h2>
+        <div id="catalogProgressBadge" class="catalog-progress-badge">
+          <span class="progress-pill-icon">✨</span>
+          <span class="progress-pill-text">已解鎖 <strong id="catalogDoneCount">0</strong> / <span id="catalogTotalCount">0</span></span>
+        </div>
+      </div>
+
       <div class="search-row">
         <div class="search-box">
           <span class="search-icon">🔍</span>
@@ -187,11 +195,6 @@
             <option value="unlocked">已解鎖</option>
             <option value="locked">未解鎖</option>
           </select>
-        </div>
-
-        <div id="catalogProgressBadge" class="catalog-progress-badge">
-          <span class="progress-pill-icon">✨</span>
-          <span class="progress-pill-text">已解鎖 <strong id="catalogDoneCount">0</strong> / <span id="catalogTotalCount">0</span></span>
         </div>
       </div>
     </div>

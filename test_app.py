@@ -601,6 +601,11 @@ if (!elements['floatingBackBtn']) process.exit(29);
     assert res_pref_all.returncode == 0, f"verify_pref_view_all.js 驗證失敗:\n{res_pref_all.stderr or res_pref_all.stdout}"
     print("✅ [PASS] 獨立模組 verify_pref_view_all.js 卡片特徵與口味「查看全部 ↗」跳轉百科驗證 100% 通過！")
 
+    # 執行獨立模組 verify_mobile_toolbar_layout.js 驗證圖鑑上方標題、進度徽章與 2x2 雙行篩選列
+    res_mob_tb = subprocess.run(["node", "verify_mobile_toolbar_layout.js"], capture_output=True, text=True)
+    assert res_mob_tb.returncode == 0, f"verify_mobile_toolbar_layout.js 驗證失敗:\n{res_mob_tb.stderr or res_mob_tb.stdout}"
+    print("✅ [PASS] 獨立模組 verify_mobile_toolbar_layout.js 圖鑑標題、進度徽章與 2x2 雙行篩選列驗證 100% 通過！")
+
     print("\n🎉 全部驗收項目 100% 通過 (100% PASS)！")
 
 if __name__ == "__main__":
