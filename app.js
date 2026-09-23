@@ -220,7 +220,10 @@
     pkmDetailName: document.getElementById('pkmDetailName'),
     pkmDetailCategory: document.getElementById('pkmDetailCategory'),
     pkmDetailForm: document.getElementById('pkmDetailForm'),
-    pkmDetailBody: document.getElementById('pkmDetailBody')
+    pkmDetailBody: document.getElementById('pkmDetailBody'),
+    csHeaderRow: document.getElementById('csHeaderRow'),
+    csTitle: document.getElementById('csTitle'),
+    csBadgeText: document.getElementById('csBadgeText')
   };
 
   // 官方口味集合 (用於純文字喜好標籤柔和色系微區分，絕無 emoji)
@@ -2428,6 +2431,13 @@
     initCustomStorageEvents();
     renderCustomBoxesGrid();
     renderCustomTrayItems(state.activeTraySearch || '');
+
+    // 更新收納盒標題徽章箱數
+    const csBadgeText = DOM.csBadgeText || document.getElementById('csBadgeText');
+    if (csBadgeText) {
+      const boxCount = (state.customBoxes || []).length;
+      csBadgeText.innerHTML = boxCount > 0 ? `<strong>${boxCount}</strong> 箱收納管理` : '自訂收納管理';
+    }
   }
 
   // 手機/小螢幕素材庫抽屜控制 (Bottom Sheet Drawer Controller)

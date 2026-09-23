@@ -74,10 +74,16 @@ console.log('✅ [PASS] 7. 終局農場手機端排版緊湊精緻化驗證通�
 assert(css.includes('font-weight: 500;'), '標籤與下拉選單必須具備 font-weight: 500 輕量化');
 console.log('✅ [PASS] 8. 次要標籤與下拉選單非粗體輕量化驗證通過');
 
-// 10. 驗證 CSS 括號平衡
+// 10. 驗證我的收納盒標題列與動態箱數徽章
+assert(html.includes('<h2 id="csTitle" class="toolbar-title">我的收納盒</h2>'), '我的收納盒必須具備標準 toolbar-title 標題');
+assert(html.includes('id="csProgressBadge"'), '我的收納盒必須具備標準 csProgressBadge 膠囊徽章');
+assert(js.includes('箱收納管理'), 'app.js 必須支援收納盒箱數動態更新至徽章');
+console.log('✅ [PASS] 9. 我的收納盒標題列與箱數動態徽章驗證通過');
+
+// 11. 驗證 CSS 括號平衡
 const openB = (css.match(/{/g) || []).length;
 const closeB = (css.match(/}/g) || []).length;
 assert(openB === closeB, `CSS 括號必須平衡: Open=${openB}, Close=${closeB}`);
-console.log(`✅ [PASS] 9. CSS 括號完全平衡 (${openB} === ${closeB})`);
+console.log(`✅ [PASS] 10. CSS 括號完全平衡 (${openB} === ${closeB})`);
 
-console.log('\n🎉 手機端圖鑑/儲存庫標題、2x2 雙行篩選列、目次統一與終局農場優化驗證 100% 全部通過！\n');
+console.log('\n🎉 全站 5 大頁面標題列、2x2 雙行篩選列、目次統一與終局農場優化驗證 100% 全部通過！\n');
