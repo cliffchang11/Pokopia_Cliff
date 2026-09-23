@@ -42,10 +42,11 @@ console.log('✅ [PASS] 3. app.js 分頁切換聯動標題與顯隱邏輯正確'
 assert(css.includes('.toolbar-header-row {'), 'index.css 必須定義 .toolbar-header-row');
 assert(css.includes('.toolbar-title {'), 'index.css 必須定義 .toolbar-title');
 
-// 驗證手機端 2x2 grid 佈局
+// 驗證手機端 2x2 grid 佈局與標題等高
 assert(css.includes('grid-template-columns: 1fr 1fr'), '手機端 filter-toolbar-row 必須設置 grid-template-columns: 1fr 1fr 達成 2x2 雙行網格');
 assert(css.includes('display: grid !important;'), '手機端 filter-toolbar-row 必須以 grid 佈局');
-console.log('✅ [PASS] 4. CSS 佈局：手機端 filter-toolbar-row 嚴格採用 2x2 雙行網格');
+assert(css.includes('font-size: 1.25rem;'), '手機端 toolbar-title 字級應提升至 1.25rem 齊平卡片高度');
+console.log('✅ [PASS] 4. CSS 佈局：手機端 filter-toolbar-row 2x2 網格與標題 1.25rem 等高齊平驗證通過');
 
 // 6. 驗證手機端篩選列與圖鑑表格/卡片之緊湊間距 (徹底清除 24px margin-top，留白合計約 7px)
 assert(css.includes('padding: 0.6250rem 0.7500rem 0.2000rem 0.7500rem;'), '手機端 app-header 底部內距應收窄至 0.2000rem (約 3px)');
