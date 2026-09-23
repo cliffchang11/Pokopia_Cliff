@@ -6061,6 +6061,10 @@ body {
   gap: 0.35rem;
 }
 
+.autofarm-title-short {
+  display: none;
+}
+
 .autofarm-tag-pill {
   font-size: 0.72rem;
   font-weight: 700;
@@ -6621,15 +6625,52 @@ body {
 }
 
 @media (max-width: 768px) {
-  .autofarm-header {
-    padding: 0.35rem 0 0.75rem 0;
-    margin-bottom: 1rem;
+  .autofarm-section {
+    padding: 0.25rem 0.5rem 2rem 0.5rem !important;
   }
-  .autofarm-page-title {
-    font-size: 1.1rem;
+  .autofarm-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 0.25rem 0 0.5rem 0 !important;
+    margin-bottom: 0.75rem !important;
+  }
+  .autofarm-header-left {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+  }
+  .autofarm-title-full {
+    display: none !important;
+  }
+  .autofarm-title-short {
+    display: inline-block !important;
+    font-size: 1.25rem !important;
+    font-weight: 600 !important;
+    line-height: 1.3 !important;
+    color: var(--text-main) !important;
+  }
+  .autofarm-header-left .autofarm-tag-pill {
+    display: none !important;
+  }
+  .autofarm-header-right {
+    margin-left: auto !important;
+  }
+  .autofarm-meta-badge {
+    font-size: 0.78rem !important;
+    padding: 0.1875rem 0.5000rem !important;
+    border-radius: 0.7500rem !important;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(217, 119, 6, 0.18)) !important;
+    border: 1px solid rgba(245, 158, 11, 0.35) !important;
+    color: #f59e0b !important;
+    font-weight: 600 !important;
+  }
+  .autofarm-modules-grid {
+    gap: 0.875rem !important;
   }
   .autofarm-card {
-    padding: 1.25rem 1rem;
+    padding: 1rem 0.875rem !important;
+    border-radius: var(--radius-md) !important;
   }
   .autofarm-pkm-grid {
     grid-template-columns: 1fr;

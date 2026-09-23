@@ -57,12 +57,12 @@
                 <span class="toc-item-badge">252 種</span>
               </button>
               <button id="tabAutoFarm" class="toc-menu-item hidden" data-tab="autofarm">
-                <span class="toc-item-text">🌾 終局農場規劃</span>
-                <span class="toc-item-badge autofarm-badge">7 大模組</span>
+                <span class="toc-item-text">終局農場</span>
+                <span class="toc-item-badge">7 大模組</span>
               </button>
               <button id="tabCustomStorage" class="toc-menu-item hidden" data-tab="customStorage">
-                <span class="toc-item-text">📦 我的收納盒</span>
-                <span class="toc-item-badge custom-storage-badge">自訂管理</span>
+                <span class="toc-item-text">我的收納盒</span>
+                <span class="toc-item-badge">自訂管理</span>
               </button>
             </div>
           </div>
@@ -137,8 +137,8 @@
       <div id="toolbarHeaderRow" class="toolbar-header-row">
         <h2 id="toolbarTitle" class="toolbar-title">寶可夢圖鑑</h2>
         <div id="catalogProgressBadge" class="catalog-progress-badge">
-          <span class="progress-pill-icon">✨</span>
-          <span class="progress-pill-text">已解鎖 <strong id="catalogDoneCount">0</strong> / <span id="catalogTotalCount">0</span></span>
+          <span class="progress-pill-icon" id="catalogBadgeIcon">✨</span>
+          <span class="progress-pill-text" id="catalogBadgeText">已解鎖 <strong id="catalogDoneCount">0</strong> / <span id="catalogTotalCount">0</span></span>
         </div>
       </div>
 
@@ -273,7 +273,10 @@
       <!-- 現代緊湊型 Page Header (高度約 44px) -->
       <header class="autofarm-header">
         <div class="autofarm-header-left">
-          <h2 class="autofarm-page-title">🌾 終局自動化農場全規劃</h2>
+          <h2 class="autofarm-page-title">
+            <span class="autofarm-title-full">🌾 終局自動化農場全規劃</span>
+            <span class="autofarm-title-short">終局農場</span>
+          </h2>
           <span class="autofarm-tag-pill">22 隻滿舒適度</span>
           <span class="autofarm-tag-pill">7 大全自動流水線</span>
         </div>

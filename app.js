@@ -181,6 +181,8 @@
     unlockFilterGroup: document.getElementById('unlockFilterGroup'),
     unlockFilter: document.getElementById('unlockFilter'),
     catalogProgressBadge: document.getElementById('catalogProgressBadge'),
+    catalogBadgeIcon: document.getElementById('catalogBadgeIcon'),
+    catalogBadgeText: document.getElementById('catalogBadgeText'),
     catalogDoneCount: document.getElementById('catalogDoneCount'),
     catalogTotalCount: document.getElementById('catalogTotalCount'),
     storageSection: document.getElementById('storageSection'),
@@ -1198,7 +1200,11 @@
       DOM.storageSection.classList.remove('hidden-section');
       DOM.storageSection.classList.add('active-section');
       if (DOM.toolbarContainer) DOM.toolbarContainer.classList.remove('hidden');
-      if (DOM.toolbarHeaderRow) DOM.toolbarHeaderRow.classList.add('hidden');
+      if (DOM.toolbarHeaderRow) DOM.toolbarHeaderRow.classList.remove('hidden');
+      if (DOM.toolbarTitle) DOM.toolbarTitle.textContent = '儲存庫分類';
+      if (DOM.catalogProgressBadge) DOM.catalogProgressBadge.classList.remove('hidden');
+      if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '📦';
+      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>9</strong> 大分類 ‧ 44 方案';
       if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.add('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.add('hidden');
       if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.add('hidden');
@@ -1210,6 +1216,12 @@
       if (DOM.toolbarHeaderRow) DOM.toolbarHeaderRow.classList.remove('hidden');
       if (DOM.toolbarTitle) DOM.toolbarTitle.textContent = '寶可夢圖鑑';
       if (DOM.catalogProgressBadge) DOM.catalogProgressBadge.classList.remove('hidden');
+      if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '✨';
+      if (DOM.catalogBadgeText) {
+        DOM.catalogBadgeText.innerHTML = '已解鎖 <strong id="catalogDoneCount">0</strong> / <span id="catalogTotalCount">0</span>';
+        DOM.catalogDoneCount = document.getElementById('catalogDoneCount');
+        DOM.catalogTotalCount = document.getElementById('catalogTotalCount');
+      }
       if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.remove('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.remove('hidden');
       if (DOM.specialtyFilterGroup) DOM.specialtyFilterGroup.classList.remove('hidden');
@@ -1224,6 +1236,12 @@
       if (DOM.toolbarHeaderRow) DOM.toolbarHeaderRow.classList.remove('hidden');
       if (DOM.toolbarTitle) DOM.toolbarTitle.textContent = '棲息地總覽';
       if (DOM.catalogProgressBadge) DOM.catalogProgressBadge.classList.remove('hidden');
+      if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '✨';
+      if (DOM.catalogBadgeText) {
+        DOM.catalogBadgeText.innerHTML = '已解鎖 <strong id="catalogDoneCount">0</strong> / <span id="catalogTotalCount">0</span>';
+        DOM.catalogDoneCount = document.getElementById('catalogDoneCount');
+        DOM.catalogTotalCount = document.getElementById('catalogTotalCount');
+      }
       if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.remove('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.remove('hidden');
       if (DOM.specialtyFilterGroup) DOM.specialtyFilterGroup.classList.add('hidden');
@@ -1319,13 +1337,18 @@
     if (DOM.habDoneCount) DOM.habDoneCount.textContent = doneHab;
     if (DOM.habTotalCount) DOM.habTotalCount.textContent = totalHab;
 
-    if (DOM.catalogDoneCount && DOM.catalogTotalCount) {
-      if (state.currentTab === 'habitat') {
-        DOM.catalogDoneCount.textContent = donePkm;
-        DOM.catalogTotalCount.textContent = totalPkm;
-      } else if (state.currentTab === 'habitatCatalog') {
-        DOM.catalogDoneCount.textContent = doneHab;
-        DOM.catalogTotalCount.textContent = totalHab;
+    if (state.currentTab === 'storage') {
+      if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '📦';
+      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>9</strong> 大分類 ‧ 44 方案';
+    } else {
+      if (DOM.catalogDoneCount && DOM.catalogTotalCount) {
+        if (state.currentTab === 'habitat') {
+          DOM.catalogDoneCount.textContent = donePkm;
+          DOM.catalogTotalCount.textContent = totalPkm;
+        } else if (state.currentTab === 'habitatCatalog') {
+          DOM.catalogDoneCount.textContent = doneHab;
+          DOM.catalogTotalCount.textContent = totalHab;
+        }
       }
     }
     updateUnlockFilterOptions();
