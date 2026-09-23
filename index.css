@@ -51,17 +51,17 @@
   --table-tr-hover: #f8fafc;
   --table-tr-completed: transparent;
 
-  --storage-th-bg: #ede9fe;
-  --storage-th-text: #5b21b6;
-  --storage-th-border: #c4b5fd;
+  --storage-th-bg: #f3f0ff;
+  --storage-th-text: #6d28d9;
+  --storage-th-border: #ddd6fe;
 
-  --pokemon-th-bg: #d1fae5;
-  --pokemon-th-text: #065f46;
-  --pokemon-th-border: #6ee7b7;
+  --pokemon-th-bg: #e6f7f0;
+  --pokemon-th-text: #047857;
+  --pokemon-th-border: #a7f3d0;
 
-  --hab-th-bg: #bae6fd;
+  --hab-th-bg: #eaf6fe;
   --hab-th-text: #0369a1;
-  --hab-th-border: #7dd3fc;
+  --hab-th-border: #bae6fd;
 
   --pill-bg: #f0f9ff;
   --pill-text: #0369a1;
@@ -1028,7 +1028,7 @@ body {
 /* Main Content Area */
 .main-content {
   max-width: 87.5000rem;
-  margin: 1.5000rem auto;
+  margin: 0.7500rem auto 1.5000rem auto;
   padding: 0 1.5000rem;
   flex: 1;
   width: 100%;
@@ -2174,9 +2174,11 @@ body {
 .table-container {
   background: var(--bg-card);
   backdrop-filter: blur(0.7500rem);
+  -webkit-backdrop-filter: blur(0.7500rem);
   border: 0.0625rem solid var(--glass-border);
   border-radius: var(--radius-lg);
   overflow-x: auto;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
 }
 
 .data-table {
@@ -3697,11 +3699,11 @@ body {
 }
 
 .storage-table th {
-  background: var(--storage-th-bg, #ede9fe) !important;
-  color: var(--storage-th-text, #5b21b6) !important;
-  font-weight: 700;
-  border-bottom: 0.1250rem solid var(--storage-th-border, #c4b5fd);
-  border-right: 0.0625rem solid rgba(196, 181, 253, 0.5);
+  background: var(--storage-th-bg, #f3f0ff) !important;
+  color: var(--storage-th-text, #6d28d9) !important;
+  font-weight: 600;
+  border-bottom: 0.0625rem solid var(--storage-th-border, #ddd6fe);
+  border-right: 0.0625rem solid rgba(196, 181, 253, 0.4);
   letter-spacing: 0.0125rem;
   text-align: center;
   padding: 0.6875rem 0.7500rem;
@@ -3825,10 +3827,10 @@ body {
 }
 
 .pokemon-table th {
-  background: var(--pokemon-th-bg, #d1fae5) !important;
-  color: var(--pokemon-th-text, #065f46) !important;
-  font-weight: 700;
-  border-bottom: 0.1250rem solid var(--pokemon-th-border, #6ee7b7);
+  background: var(--pokemon-th-bg, #e6f7f0) !important;
+  color: var(--pokemon-th-text, #047857) !important;
+  font-weight: 600;
+  border-bottom: 0.0625rem solid var(--pokemon-th-border, #a7f3d0);
   letter-spacing: 0.0125rem;
   text-align: center;
   white-space: nowrap !important;
@@ -3982,8 +3984,8 @@ body {
 .habitat-52poke-table th {
   background: var(--hab-th-bg) !important;
   color: var(--hab-th-text) !important;
-  font-weight: 700;
-  border-bottom: 0.1250rem solid var(--hab-th-border);
+  font-weight: 600;
+  border-bottom: 0.0625rem solid var(--hab-th-border);
   letter-spacing: 0.0125rem;
   text-align: center;
 }
