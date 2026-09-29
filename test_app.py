@@ -606,6 +606,11 @@ if (!elements['floatingBackBtn']) process.exit(29);
     assert res_mob_tb.returncode == 0, f"verify_mobile_toolbar_layout.js 驗證失敗:\n{res_mob_tb.stderr or res_mob_tb.stdout}"
     print("✅ [PASS] 獨立模組 verify_mobile_toolbar_layout.js 圖鑑標題、進度徽章與 2x2 雙行篩選列驗證 100% 通過！")
 
+    # 執行獨立模組 verify_region_map.js 驗證地區地圖與世界觀指南、純文字目次、寶可夢自由編輯
+    res_reg_map = subprocess.run(["node", "verify_region_map.js"], capture_output=True, text=True)
+    assert res_reg_map.returncode == 0, f"verify_region_map.js 驗證失敗:\n{res_reg_map.stderr or res_reg_map.stdout}"
+    print("✅ [PASS] 獨立模組 verify_region_map.js 地區地圖與世界觀指南、純文字目次、寶可夢自由編輯驗證 100% 通過！")
+
     print("\n🎉 全部驗收項目 100% 通過 (100% PASS)！")
 
 if __name__ == "__main__":

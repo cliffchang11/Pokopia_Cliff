@@ -119,7 +119,18 @@
     reverseSearchItem: '',
     prefTab: 'tastes',            // 'tastes' | 'environments' | 'things' | 'items'
     prefSearch: '',
-    prefItemCat: '材料'
+    prefItemCat: '材料',
+    regionAssignments: (function() {
+      const saved = loadProgress('pokopia_region_assignments', null);
+      if (saved && typeof saved === 'object') return saved;
+      const initial = {};
+      const regData = (window.POKOPIA_REGION_DATA && window.POKOPIA_REGION_DATA.regions) || [];
+      regData.forEach(r => {
+        initial[r.id] = [...(r.defaultPokemonIds || [])];
+      });
+      return initial;
+    })(),
+    activeAssignRegionId: null
   };
 
   // DOM Elements Cache
@@ -224,7 +235,17 @@
     pkmDetailBody: document.getElementById('pkmDetailBody'),
     csHeaderRow: document.getElementById('csHeaderRow'),
     csTitle: document.getElementById('csTitle'),
-    csBadgeText: document.getElementById('csBadgeText')
+    csBadgeText: document.getElementById('csBadgeText'),
+    tabRegionMap: document.getElementById('tabRegionMap'),
+    regionMapSection: document.getElementById('regionMapSection'),
+    regionMapContainer: document.getElementById('regionMapContainer'),
+    regionPkmAssignModal: document.getElementById('regionPkmAssignModal'),
+    regionPkmBackdrop: document.getElementById('regionPkmBackdrop'),
+    regionPkmCloseBtn: document.getElementById('regionPkmCloseBtn'),
+    regionPkmTargetBadge: document.getElementById('regionPkmTargetBadge'),
+    regionPkmModalTitle: document.getElementById('regionPkmModalTitle'),
+    regionPkmSearchInput: document.getElementById('regionPkmSearchInput'),
+    regionPkmCandidateList: document.getElementById('regionPkmCandidateList')
   };
 
   // 官方口味集合 (用於純文字喜好標籤柔和色系微區分，絕無 emoji)
@@ -272,7 +293,7 @@
 
   // Navigation State Persistence (URL Hash 絕對第一優先權 + LocalStorage 回退)
   function getInitialNavState() {
-    const validTabs = ['storage', 'habitat', 'habitatCatalog', 'autofarm', 'customStorage'];
+    const validTabs = ['storage', 'habitat', 'habitatCatalog', 'autofarm', 'customStorage', 'regionMap'];
     const validViews = ['card', 'table'];
 
     let tab = null;
@@ -578,6 +599,7 @@
     applyTheme(state.currentTheme);
     initSpecialtyDropdown();
     bindEvents();
+    initRegionMapEvents();
     renderStats();
     updateAutoFarmAuthUI();
 
@@ -917,6 +939,15 @@
       });
     }
 
+    if (DOM.tabRegionMap) {
+      DOM.tabRegionMap.addEventListener('click', () => {
+        closeTocDropdown();
+        switchTab('regionMap', true);
+        pushNavHistory({ tab: 'regionMap' });
+        hideFloatingBackBtn();
+      });
+    }
+
     if (DOM.btnCustomStorageNav) {
       DOM.btnCustomStorageNav.addEventListener('click', () => {
         closeTocDropdown();
@@ -1183,6 +1214,7 @@
     if (DOM.btnAutoFarmNav) DOM.btnAutoFarmNav.classList.remove('active');
     if (DOM.tabCustomStorage) DOM.tabCustomStorage.classList.remove('active');
     if (DOM.btnCustomStorageNav) DOM.btnCustomStorageNav.classList.remove('active');
+    if (DOM.tabRegionMap) DOM.tabRegionMap.classList.remove('active');
 
     DOM.storageSection.classList.add('hidden-section');
     DOM.storageSection.classList.remove('active-section');
@@ -1197,6 +1229,10 @@
     if (DOM.customStorageSection) {
       DOM.customStorageSection.classList.add('hidden-section');
       DOM.customStorageSection.classList.remove('active-section');
+    }
+    if (DOM.regionMapSection) {
+      DOM.regionMapSection.classList.add('hidden-section');
+      DOM.regionMapSection.classList.remove('active-section');
     }
 
     if (tab === 'storage') {
@@ -1297,6 +1333,23 @@
       if (DOM.filterToolbar) DOM.filterToolbar.classList.add('hidden');
       if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.add('hidden');
       renderCustomStorage();
+    } else if (tab === 'regionMap') {
+      if (DOM.tabRegionMap) DOM.tabRegionMap.classList.add('active');
+      if (DOM.regionMapSection) {
+        DOM.regionMapSection.classList.remove('hidden-section');
+        DOM.regionMapSection.classList.add('active-section');
+      }
+      if (DOM.toolbarContainer) DOM.toolbarContainer.classList.remove('hidden');
+      if (DOM.toolbarHeaderRow) DOM.toolbarHeaderRow.classList.remove('hidden');
+      if (DOM.toolbarTitle) DOM.toolbarTitle.textContent = '地區地圖';
+      if (DOM.catalogProgressBadge) DOM.catalogProgressBadge.classList.remove('hidden');
+      if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🗺️';
+      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>5</strong> 大世界區域';
+      if (DOM.searchRow) DOM.searchRow.classList.add('hidden');
+      if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.add('hidden');
+      if (DOM.filterToolbar) DOM.filterToolbar.classList.add('hidden');
+      if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.add('hidden');
+      renderRegionMap();
     }
 
     if (!skipSync) {
@@ -1365,6 +1418,9 @@
       if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '📦';
       const boxCount = (state.customBoxes || []).length;
       if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = boxCount > 0 ? '<strong>' + boxCount + '</strong> 箱收納管理' : '自訂收納管理';
+    } else if (state.currentTab === 'regionMap') {
+      if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🗺️';
+      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>5</strong> 大世界區域';
     } else {
       if (DOM.catalogDoneCount && DOM.catalogTotalCount) {
         if (state.currentTab === 'habitat') {
@@ -4177,7 +4233,392 @@
     });
   }
 
-  // 暴露自訂收納盒 API 供測試與外部交互
+  // ==========================================================================
+  // 地區地圖與世界觀指南 (Region Map & World Guide)
+  // ==========================================================================
+
+  function getRegionAssignments() {
+    if (!state.regionAssignments || typeof state.regionAssignments !== 'object') {
+      state.regionAssignments = {};
+      const regData = (window.POKOPIA_REGION_DATA && window.POKOPIA_REGION_DATA.regions) || [];
+      regData.forEach(r => {
+        state.regionAssignments[r.id] = [...(r.defaultPokemonIds || [])];
+      });
+      saveRegionAssignments();
+    }
+    return state.regionAssignments;
+  }
+
+  function saveRegionAssignments() {
+    try {
+      localStorage.setItem('pokopia_region_assignments', JSON.stringify(state.regionAssignments));
+    } catch (e) {}
+  }
+
+  function renderRegionMap() {
+    if (!DOM.regionMapContainer) return;
+    const regionData = window.POKOPIA_REGION_DATA;
+    if (!regionData) {
+      DOM.regionMapContainer.innerHTML = '<p class="error-text">地區地圖資料尚未載入。</p>';
+      return;
+    }
+
+    const assignments = getRegionAssignments();
+    const pkmMap = new Map();
+    (window.POKOPIA_DATA.pokemons || []).forEach(p => pkmMap.set(p.id, p));
+
+    // 1. 樞紐羅盤 (Hub Compass)
+    const hub = regionData.hubGuidance || {};
+    const hubDirectionsHTML = (hub.directions || []).map(dir => {
+      return `
+        <div class="reg-hub-gate-card" data-target-region="${escapeHTML(dir.targetId)}">
+          <div class="reg-hub-gate-arrow">${escapeHTML(dir.arrow)}</div>
+          <div class="reg-hub-gate-info">
+            <div class="reg-hub-gate-title">
+              <span class="reg-hub-gate-dir">${escapeHTML(dir.direction)}</span>
+              <strong class="reg-hub-gate-target">${escapeHTML(dir.targetName)}</strong>
+              <span class="reg-hub-gate-tag">${escapeHTML(dir.tag)}</span>
+            </div>
+            <div class="reg-hub-gate-tip">${escapeHTML(dir.gateTip)}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    const hubHTML = `
+      <div class="reg-hub-compass-card">
+        <div class="reg-hub-header">
+          <div class="reg-hub-title-group">
+            <span class="reg-hub-badge">🧭 世界樞紐連通羅盤</span>
+            <h2 class="reg-hub-title">${escapeHTML(hub.title || 'Pokopia 四大閘門走向指南')}</h2>
+            <p class="reg-hub-center-desc">以中央 <strong>${escapeHTML(hub.centerName || '空空鎮')}</strong> 為樞紐 ‧ ${escapeHTML(hub.centerDesc || '')}</p>
+          </div>
+          <div class="reg-hub-map-preview-btn-wrap">
+            <button class="reg-btn-view-all-map" id="btnViewAllMapModal" title="點擊檢視 4 大區域連通高解析大地圖">
+              🗺️ 檢視全域連通大圖
+            </button>
+          </div>
+        </div>
+        <div class="reg-hub-gates-grid">
+          ${hubDirectionsHTML}
+        </div>
+      </div>
+    `;
+
+    // 2. 5 大區域卡片網格 (Regions Cards Flow)
+    const regionsHTML = (regionData.regions || []).map(reg => {
+      const pkmIds = assignments[reg.id] || [];
+      const assignedPokemons = pkmIds.map(id => pkmMap.get(id)).filter(Boolean);
+
+      const pkmRosterHTML = assignedPokemons.map(pkm => {
+        const isUnlocked = !!(state.pkmChecked && state.pkmChecked[pkm.id]);
+        return `
+          <div class="reg-pkm-slot" data-pkm-id="${pkm.id}">
+            <button class="reg-pkm-remove-btn" data-region-id="${reg.id}" data-pkm-id="${pkm.id}" title="從此區域移除">✕</button>
+            <div class="reg-pkm-avatar-wrap" data-pkm-id="${pkm.id}" title="點擊查看 ${escapeHTML(pkm.name)} 完整百科">
+              <img src="${pkm.sprite}" alt="${escapeHTML(pkm.name)}" onerror="this.src='${FALLBACK_SPRITE}'">
+              ${isUnlocked ? '<span class="reg-pkm-unlocked-badge" title="已解鎖">✔</span>' : ''}
+            </div>
+            <div class="reg-pkm-name" data-pkm-id="${pkm.id}" title="點擊查看 ${escapeHTML(pkm.name)} 完整百科">${escapeHTML(pkm.name)}</div>
+          </div>
+        `;
+      }).join('');
+
+      const landmarksHTML = (reg.keyLandmarks || []).map(lm => `
+        <span class="reg-landmark-pill">${escapeHTML(lm)}</span>
+      `).join('');
+
+      const extraImageHTML = reg.extraImage ? `
+        <button class="reg-map-thumb-btn" data-img="${reg.extraImage}" data-caption="<strong>${escapeHTML(reg.name)}</strong> - 遇見傳說寶可夢【蓋歐卡】深海出沒位置">
+          <img src="${reg.extraImage}" alt="${escapeHTML(reg.name)} 蓋歐卡出沒" loading="lazy">
+          <span class="reg-map-thumb-overlay">🌊 蓋歐卡出沒點 ↗</span>
+        </button>
+      ` : '';
+
+      return `
+        <div class="reg-region-card" id="regionCard_${reg.id}" style="--region-theme: ${reg.themeColor};">
+          <div class="reg-card-header">
+            <div class="reg-header-titles">
+              <div class="reg-badge-row">
+                <span class="reg-theme-badge" style="background: ${reg.themeColor}22; color: ${reg.themeColor}; border: 1px solid ${reg.themeColor}44;">
+                  ${escapeHTML(reg.badgeText)}
+                </span>
+                <span class="reg-kanto-pill">${escapeHTML(reg.kantoOrigin)}</span>
+              </div>
+              <h3 class="reg-name">${escapeHTML(reg.name)} <span class="reg-name-en">${escapeHTML(reg.nameEn)}</span></h3>
+            </div>
+            <div class="reg-header-highlight">${escapeHTML(reg.highlightTitle)}</div>
+          </div>
+
+          <div class="reg-card-body">
+            <div class="reg-desc-box">
+              <div class="reg-desc-story">${escapeHTML(reg.story)}</div>
+              <div class="reg-desc-mission">
+                <strong>🎯 核心任務與使命：</strong>
+                <span>${escapeHTML(reg.mission)}</span>
+              </div>
+              <div class="reg-landmarks-wrap">
+                <strong>📍 關鍵地標與設施：</strong>
+                <div class="reg-landmarks-list">${landmarksHTML}</div>
+              </div>
+            </div>
+
+            <div class="reg-map-preview-col">
+              <button class="reg-map-thumb-btn" data-img="${reg.mapImage}" data-caption="<strong>${escapeHTML(reg.name)}</strong> - 高解析全景地圖">
+                <img src="${reg.mapImage}" alt="${escapeHTML(reg.name)} 地圖" loading="lazy">
+                <span class="reg-map-thumb-overlay">🔍 點擊查看大圖 ↗</span>
+              </button>
+              ${extraImageHTML}
+            </div>
+          </div>
+
+          <!-- 區域寶可夢自訂放置展台 -->
+          <div class="reg-roster-section">
+            <div class="reg-roster-header">
+              <div class="reg-roster-title">
+                <span>🐾 該地區放置的寶可夢夥伴</span>
+                <span class="reg-roster-count" id="regRosterCount_${reg.id}">${assignedPokemons.length} 隻</span>
+              </div>
+              <button class="reg-btn-assign" data-region-id="${reg.id}" title="從 367 筆寶可夢中選擇並指派到此地區">
+                ➕ 配置寶可夢
+              </button>
+            </div>
+            <div class="reg-roster-grid" id="regRosterGrid_${reg.id}">
+              ${pkmRosterHTML || '<div class="reg-roster-empty">尚未配置任何寶可夢，點擊上方「➕ 配置寶可夢」進行安排！</div>'}
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    DOM.regionMapContainer.innerHTML = `
+      <div class="reg-page-layout">
+        ${hubHTML}
+        <div class="reg-cards-list">
+          ${regionsHTML}
+        </div>
+      </div>
+    `;
+
+    bindRegionMapInteractions();
+  }
+
+  function bindRegionMapInteractions() {
+    if (!DOM.regionMapContainer) return;
+
+    // 檢視全圖大圖
+    const btnAll = DOM.regionMapContainer.querySelector('#btnViewAllMapModal');
+    if (btnAll) {
+      btnAll.addEventListener('click', () => {
+        openLightbox('assets/maps/map_all.jpg', 'Pokopia 4 大世界區域連通關係全貌 (空空鎮、空島、海邊、山地、荒野)');
+      });
+    }
+
+    // 縮圖放大點擊
+    DOM.regionMapContainer.querySelectorAll('.reg-map-thumb-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const img = btn.getAttribute('data-img');
+        const caption = btn.getAttribute('data-caption') || '';
+        if (img) openLightbox(img, caption);
+      });
+    });
+
+    // 閘門卡點擊平滑滾動
+    DOM.regionMapContainer.querySelectorAll('.reg-hub-gate-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const targetId = card.getAttribute('data-target-region');
+        const targetEl = document.getElementById(`regionCard_${targetId}`);
+        if (targetEl) {
+          targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          targetEl.classList.add('reg-card-highlight-pulse');
+          setTimeout(() => targetEl.classList.remove('reg-card-highlight-pulse'), 1600);
+        }
+      });
+    });
+
+    // 寶可夢頭像點擊查看百科
+    DOM.regionMapContainer.querySelectorAll('.reg-pkm-avatar-wrap, .reg-pkm-name').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const pkmId = el.getAttribute('data-pkm-id');
+        if (pkmId) showPokemonModal(pkmId);
+      });
+    });
+
+    // 移除寶可夢按鈕
+    DOM.regionMapContainer.querySelectorAll('.reg-pkm-remove-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const regId = btn.getAttribute('data-region-id');
+        const pkmId = btn.getAttribute('data-pkm-id');
+        if (regId && pkmId) {
+          removePokemonFromRegion(regId, pkmId);
+        }
+      });
+    });
+
+    // 開啟指派彈窗
+    DOM.regionMapContainer.querySelectorAll('.reg-btn-assign').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const regId = btn.getAttribute('data-region-id');
+        if (regId) openRegionAssignModal(regId);
+      });
+    });
+  }
+
+  function removePokemonFromRegion(regionId, pkmId) {
+    const assignments = getRegionAssignments();
+    if (!assignments[regionId]) return;
+    assignments[regionId] = assignments[regionId].filter(id => id !== pkmId);
+    saveRegionAssignments();
+    renderRegionMap();
+  }
+
+  function addPokemonToRegion(regionId, pkmId) {
+    const assignments = getRegionAssignments();
+    if (!assignments[regionId]) assignments[regionId] = [];
+    if (!assignments[regionId].includes(pkmId)) {
+      assignments[regionId].push(pkmId);
+      saveRegionAssignments();
+      renderRegionMap();
+    }
+  }
+
+  // 區域寶可夢指派 Modal
+  function openRegionAssignModal(regionId) {
+    state.activeAssignRegionId = regionId;
+    const regionData = window.POKOPIA_REGION_DATA;
+    const reg = (regionData && regionData.regions ? regionData.regions : []).find(r => r.id === regionId);
+    if (!reg || !DOM.regionPkmAssignModal) return;
+
+    if (DOM.regionPkmTargetBadge) {
+      DOM.regionPkmTargetBadge.textContent = reg.name;
+      DOM.regionPkmTargetBadge.style.color = reg.themeColor;
+      DOM.regionPkmTargetBadge.style.borderColor = `${reg.themeColor}55`;
+    }
+    if (DOM.regionPkmModalTitle) {
+      DOM.regionPkmModalTitle.textContent = `配置寶可夢至【${reg.name}】`;
+    }
+    if (DOM.regionPkmSearchInput) {
+      DOM.regionPkmSearchInput.value = '';
+    }
+
+    renderCandidatePokemonList('');
+    DOM.regionPkmAssignModal.classList.remove('hidden');
+    document.body.classList.add('modal-open');
+    if (DOM.regionPkmSearchInput) DOM.regionPkmSearchInput.focus();
+  }
+
+  function closeRegionAssignModal() {
+    if (!DOM.regionPkmAssignModal) return;
+    DOM.regionPkmAssignModal.classList.add('hidden');
+    document.body.classList.remove('modal-open');
+    state.activeAssignRegionId = null;
+  }
+
+  function renderCandidatePokemonList(query = '') {
+    if (!DOM.regionPkmCandidateList || !state.activeAssignRegionId) return;
+    const regionId = state.activeAssignRegionId;
+    const assignments = getRegionAssignments();
+    const assignedSet = new Set(assignments[regionId] || []);
+
+    const allPokemons = (window.POKOPIA_DATA && window.POKOPIA_DATA.pokemons) || [];
+    const q = query.trim().toLowerCase();
+
+    const filtered = allPokemons.filter(p => {
+      if (!q) return true;
+      return (p.name && p.name.toLowerCase().includes(q)) ||
+             (p.number && p.number.toLowerCase().includes(q)) ||
+             (p.environment && p.environment.toLowerCase().includes(q)) ||
+             (p.categoryName && p.categoryName.toLowerCase().includes(q));
+    });
+
+    if (filtered.length === 0) {
+      DOM.regionPkmCandidateList.innerHTML = `
+        <div class="reg-pkm-empty-search">
+          <span>🔍 找不到符合「${escapeHTML(query)}」的寶可夢</span>
+        </div>
+      `;
+      return;
+    }
+
+    DOM.regionPkmCandidateList.innerHTML = filtered.map(pkm => {
+      const isAssigned = assignedSet.has(pkm.id);
+      const isUnlocked = !!(state.pkmChecked && state.pkmChecked[pkm.id]);
+      return `
+        <div class="reg-candidate-card ${isAssigned ? 'is-assigned' : ''}" data-pkm-id="${pkm.id}">
+          <div class="reg-candidate-avatar">
+            <img src="${pkm.sprite}" alt="${escapeHTML(pkm.name)}" onerror="this.src='${FALLBACK_SPRITE}'">
+            ${isUnlocked ? '<span class="reg-candidate-unlocked-dot" title="已吸引解鎖">✔</span>' : ''}
+          </div>
+          <div class="reg-candidate-info">
+            <span class="reg-candidate-number">${escapeHTML(pkm.number)}</span>
+            <strong class="reg-candidate-name">${escapeHTML(pkm.name)}</strong>
+          </div>
+          <button class="reg-candidate-action-btn ${isAssigned ? 'btn-remove' : 'btn-add'}" data-pkm-id="${pkm.id}">
+            ${isAssigned ? '已放置 (✕)' : '＋ 加入'}
+          </button>
+        </div>
+      `;
+    }).join('');
+
+    // 綁定加入/移除按鈕事件
+    DOM.regionPkmCandidateList.querySelectorAll('.reg-candidate-action-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const pkmId = btn.getAttribute('data-pkm-id');
+        if (!pkmId) return;
+        if (assignedSet.has(pkmId)) {
+          removePokemonFromRegion(regionId, pkmId);
+          assignedSet.delete(pkmId);
+          btn.textContent = '＋ 加入';
+          btn.classList.remove('btn-remove');
+          btn.classList.add('btn-add');
+          btn.closest('.reg-candidate-card').classList.remove('is-assigned');
+        } else {
+          addPokemonToRegion(regionId, pkmId);
+          assignedSet.add(pkmId);
+          btn.textContent = '已放置 (✕)';
+          btn.classList.remove('btn-add');
+          btn.classList.add('btn-remove');
+          btn.closest('.reg-candidate-card').classList.add('is-assigned');
+        }
+      });
+    });
+  }
+
+  function initRegionMapEvents() {
+    if (DOM.regionPkmCloseBtn) {
+      DOM.regionPkmCloseBtn.addEventListener('click', closeRegionAssignModal);
+    }
+    if (DOM.regionPkmBackdrop) {
+      DOM.regionPkmBackdrop.addEventListener('click', closeRegionAssignModal);
+    }
+    if (DOM.regionPkmSearchInput) {
+      DOM.regionPkmSearchInput.addEventListener('input', (e) => {
+        renderCandidatePokemonList(e.target.value);
+      });
+    }
+
+    // 按下 ESC 鍵關閉彈窗
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && DOM.regionPkmAssignModal && !DOM.regionPkmAssignModal.classList.contains('hidden')) {
+        closeRegionAssignModal();
+      }
+    });
+  }
+
+  // 暴露地區地圖 API
+  window.PokopiaRegionMap = {
+    renderRegionMap,
+    getRegionAssignments,
+    saveRegionAssignments,
+    addPokemonToRegion,
+    removePokemonFromRegion,
+    openRegionAssignModal,
+    closeRegionAssignModal
+  };
   window.PokopiaCustomStorage = {
     renderCustomStorage,
     renderCustomBoxesGrid,

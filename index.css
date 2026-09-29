@@ -7818,3 +7818,759 @@ body {
   color: #fbbf24;
 }
 
+/* ==========================================================================
+   地區地圖與世界觀指南 (Region Map & World Guide Styles)
+   ========================================================================== */
+
+.region-map-section {
+  width: 100%;
+}
+
+.reg-page-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+/* 1. 世界樞紐羅盤卡片 */
+.reg-hub-compass-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(0.75rem);
+  -webkit-backdrop-filter: blur(0.75rem);
+  border: 0.0625rem solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.05);
+}
+
+.reg-hub-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 0.0625rem solid var(--glass-border);
+  padding-bottom: 1rem;
+}
+
+.reg-hub-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.reg-hub-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  font-size: 0.75rem;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.reg-hub-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.reg-hub-center-desc {
+  font-size: 0.88rem;
+  color: var(--text-sub);
+  margin: 0;
+}
+
+.reg-btn-view-all-map {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  background: var(--bg-header);
+  border: 1px solid var(--glass-border);
+  color: var(--text-main);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.reg-btn-view-all-map:hover {
+  background: var(--primary-indigo, #6366f1);
+  color: #ffffff;
+  border-color: var(--primary-indigo, #6366f1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+}
+
+.reg-hub-gates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 1rem;
+}
+
+.reg-hub-gate-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  padding: 1rem;
+  background: var(--bg-header);
+  border: 1px solid var(--glass-border);
+  border-radius: 0.875rem;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reg-hub-gate-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.reg-hub-gate-arrow {
+  font-size: 1.5rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.reg-hub-gate-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.reg-hub-gate-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.reg-hub-gate-dir {
+  font-size: 0.75rem;
+  color: var(--text-sub);
+}
+
+.reg-hub-gate-target {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.reg-hub-gate-tag {
+  font-size: 0.68rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.375rem;
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--primary-indigo, #6366f1);
+  white-space: nowrap;
+}
+
+.reg-hub-gate-tip {
+  font-size: 0.82rem;
+  color: var(--text-sub);
+  line-height: 1.4;
+}
+
+/* 2. 5 大區域探索卡片流 */
+.reg-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.reg-region-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(0.75rem);
+  -webkit-backdrop-filter: blur(0.75rem);
+  border: 0.0625rem solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.reg-region-card.reg-card-highlight-pulse {
+  border-color: var(--region-theme, #6366f1) !important;
+  box-shadow: 0 0 24px var(--region-theme, #6366f1) !important;
+}
+
+.reg-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  border-bottom: 0.0625rem solid var(--glass-border);
+  padding-bottom: 0.875rem;
+}
+
+.reg-header-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.reg-badge-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.reg-theme-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  line-height: 1.2;
+}
+
+.reg-kanto-pill {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  background: rgba(100, 116, 139, 0.12);
+  color: var(--text-sub);
+  border: 1px solid rgba(100, 116, 139, 0.2);
+}
+
+.reg-name {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.reg-name-en {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--text-sub);
+}
+
+.reg-header-highlight {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-main);
+  align-self: center;
+}
+
+.reg-card-body {
+  display: grid;
+  grid-template-columns: 1fr 18rem;
+  gap: 1.5rem;
+}
+
+.reg-desc-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-main);
+}
+
+.reg-desc-story {
+  color: var(--text-main);
+}
+
+.reg-desc-mission {
+  padding: 0.75rem 1rem;
+  border-radius: 0.625rem;
+  background: rgba(99, 102, 241, 0.05);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  font-size: 0.88rem;
+}
+
+.reg-landmarks-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.reg-landmarks-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.reg-landmark-pill {
+  font-size: 0.78rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.375rem;
+  background: var(--bg-header);
+  border: 1px solid var(--glass-border);
+  color: var(--text-sub);
+}
+
+.reg-map-preview-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.reg-map-thumb-btn {
+  position: relative;
+  border: 1px solid var(--glass-border);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  padding: 0;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  display: block;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reg-map-thumb-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.reg-map-thumb-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.reg-map-thumb-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.375rem 0.5rem;
+  background: linear-gradient(180deg, transparent 0%, rgba(15, 23, 42, 0.85) 100%);
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-align: right;
+}
+
+/* 3. 區域寶可夢放置展台 */
+.reg-roster-section {
+  background: var(--bg-header);
+  border: 1px solid var(--glass-border);
+  border-radius: 0.875rem;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.reg-roster-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.reg-roster-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.reg-roster-count {
+  font-size: 0.75rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 9999px;
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--primary-indigo, #6366f1);
+  font-weight: 600;
+}
+
+.reg-btn-assign {
+  padding: 0.35rem 0.875rem;
+  border-radius: 9999px;
+  background: var(--primary-indigo, #6366f1);
+  color: #ffffff;
+  border: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
+}
+
+.reg-btn-assign:hover {
+  background: #4f46e5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+}
+
+.reg-roster-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  min-height: 4.5rem;
+  align-items: center;
+}
+
+.reg-roster-empty {
+  font-size: 0.82rem;
+  color: var(--text-sub);
+  padding: 1rem;
+  text-align: center;
+  width: 100%;
+}
+
+.reg-pkm-slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.625rem;
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: 0.625rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 4.75rem;
+  box-sizing: border-box;
+}
+
+.reg-pkm-slot:hover {
+  transform: translateY(-2px);
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.reg-pkm-remove-btn {
+  position: absolute;
+  top: -0.35rem;
+  right: -0.35rem;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  background: #ef4444;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  font-size: 0.62rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.reg-pkm-slot:hover .reg-pkm-remove-btn {
+  opacity: 1;
+}
+
+.reg-pkm-remove-btn:hover {
+  transform: scale(1.15);
+  background: #dc2626;
+}
+
+.reg-pkm-avatar-wrap {
+  position: relative;
+  width: 2.75rem;
+  height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reg-pkm-avatar-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.reg-pkm-unlocked-badge {
+  position: absolute;
+  bottom: -0.1rem;
+  right: -0.1rem;
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 50%;
+  background: #10b981;
+  color: #ffffff;
+  font-size: 0.55rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.reg-pkm-name {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  text-align: center;
+}
+
+/* 4. 區域寶可夢指派 Modal */
+.region-pkm-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.region-pkm-modal.hidden {
+  display: none !important;
+}
+
+.region-pkm-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(0.25rem);
+}
+
+.region-pkm-dialog {
+  position: relative;
+  z-index: 10;
+  width: 90%;
+  max-width: 48rem;
+  max-height: 85vh;
+  background: var(--bg-card);
+  backdrop-filter: blur(1rem);
+  -webkit-backdrop-filter: blur(1rem);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.region-pkm-modal-header {
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.region-pkm-header-info {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.region-pkm-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid currentColor;
+}
+
+.region-pkm-modal-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.region-pkm-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  color: var(--text-sub);
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
+}
+
+.region-pkm-close-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-main);
+}
+
+.region-pkm-search-bar {
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.region-pkm-search-input {
+  width: 100%;
+  padding: 0.6rem 0.875rem;
+  border-radius: 0.5rem;
+  background: var(--bg-header);
+  border: 1px solid var(--glass-border);
+  color: var(--text-main);
+  font-size: 0.88rem;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.region-pkm-search-input:focus {
+  border-color: var(--primary-indigo, #6366f1);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.region-pkm-modal-body {
+  padding: 1rem 1.25rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.region-pkm-candidate-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13.5rem, 1fr));
+  gap: 0.75rem;
+}
+
+.reg-candidate-card {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-header);
+  border: 1px solid var(--glass-border);
+  border-radius: 0.625rem;
+  transition: all 0.2s ease;
+}
+
+.reg-candidate-card.is-assigned {
+  background: rgba(99, 102, 241, 0.06);
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+.reg-candidate-avatar {
+  position: relative;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+}
+
+.reg-candidate-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.reg-candidate-unlocked-dot {
+  position: absolute;
+  bottom: -0.1rem;
+  right: -0.1rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: #10b981;
+  color: #ffffff;
+  font-size: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reg-candidate-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.reg-candidate-number {
+  font-size: 0.68rem;
+  color: var(--text-sub);
+}
+
+.reg-candidate-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.reg-candidate-action-btn {
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.reg-candidate-action-btn.btn-add {
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--primary-indigo, #6366f1);
+}
+
+.reg-candidate-action-btn.btn-add:hover {
+  background: var(--primary-indigo, #6366f1);
+  color: #ffffff;
+}
+
+.reg-candidate-action-btn.btn-remove {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+}
+
+.reg-candidate-action-btn.btn-remove:hover {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.reg-pkm-empty-search {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-sub);
+  font-size: 0.9rem;
+  grid-column: 1 / -1;
+}
+
+/* 響應式微調 (<= 768px) */
+@media (max-width: 768px) {
+  .reg-card-body {
+    grid-template-columns: 1fr;
+  }
+  .reg-map-preview-col {
+    order: -1;
+  }
+  .reg-hub-gates-grid {
+    grid-template-columns: 1fr;
+  }
+  .reg-header-titles {
+    width: 100%;
+  }
+  .reg-header-highlight {
+    align-self: flex-start;
+  }
+}
+
+

@@ -64,6 +64,10 @@
                 <span class="toc-item-text">我的收納盒</span>
                 <span class="toc-item-badge">自訂管理</span>
               </button>
+              <button id="tabRegionMap" class="toc-menu-item" data-tab="regionMap">
+                <span class="toc-item-text">地區地圖</span>
+                <span class="toc-item-badge">5 大區域</span>
+              </button>
             </div>
           </div>
         </div>
@@ -349,6 +353,12 @@
       </div>
     </section>
 
+    <!-- Region Map & World Guide Section (地區地圖 ‧ 世界觀與區域寶可夢指派) -->
+    <section id="regionMapSection" class="view-section hidden-section region-map-section">
+      <!-- 由 app.js 動態渲染樞紐羅盤與 5 大區域探索卡片 -->
+      <div id="regionMapContainer" class="region-map-container"></div>
+    </section>
+
     <!-- Empty State Result Notice -->
     <div id="emptyResult" class="empty-state hidden">
       <div class="empty-icon">🔎</div>
@@ -443,6 +453,28 @@
     </div>
   </div>
 
+  <!-- Region Pokemon Assignment Modal (區域寶可夢指派選擇器) -->
+  <div id="regionPkmAssignModal" class="region-pkm-modal hidden">
+    <div id="regionPkmBackdrop" class="region-pkm-backdrop"></div>
+    <div class="region-pkm-dialog">
+      <div class="region-pkm-modal-header">
+        <div class="region-pkm-header-info">
+          <span class="region-pkm-badge" id="regionPkmTargetBadge">區域</span>
+          <h3 id="regionPkmModalTitle">配置寶可夢至該地區</h3>
+        </div>
+        <button id="regionPkmCloseBtn" class="region-pkm-close-btn" title="關閉">✕</button>
+      </div>
+      <div class="region-pkm-search-bar">
+        <input type="text" id="regionPkmSearchInput" class="region-pkm-search-input" placeholder="搜尋寶可夢名稱、編號（如：皮卡丘、No. 025）...">
+      </div>
+      <div class="region-pkm-modal-body">
+        <div id="regionPkmCandidateList" class="region-pkm-candidate-grid">
+          <!-- 由 JS 動態注入候選寶可夢卡片 -->
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Floating Back Button (上一頁 / 返回導航) -->
   <button id="floatingBackBtn" class="floating-back-btn hidden">
     <span class="back-arrow">↩</span>
@@ -453,6 +485,7 @@
   <script src="data.js?v=4.7.0"></script>
   <script src="preferences_db.js?v=4.7.0"></script>
   <script src="autofarm_data.js?v=4.7.0"></script>
+  <script src="region_data.js?v=4.7.0"></script>
   <script src="firebase.js?v=4.7.0"></script>
   <script src="app.js?v=4.7.0"></script>
 </body>
