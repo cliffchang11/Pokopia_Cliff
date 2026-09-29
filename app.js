@@ -103,6 +103,7 @@
     selectedEnvFilter: 'env-all',
     selectedSpecialtyFilter: 'all',
     selectedUnlockFilter: 'all',
+    selectedRegionFilter: 'all',
     selectedPkmCategory: 'all',   // 'all' | 'main' | 'event' | 'underwater'
     selectedHabCategory: 'all',   // 'all' | 'main' | 'event' | 'underwater'
     catChecked: loadProgress(STORAGE_KEY_CAT),
@@ -192,6 +193,8 @@
     specialtyFilter: document.getElementById('specialtyFilter'),
     unlockFilterGroup: document.getElementById('unlockFilterGroup'),
     unlockFilter: document.getElementById('unlockFilter'),
+    regionFilterGroup: document.getElementById('regionFilterGroup'),
+    regionFilter: document.getElementById('regionFilter'),
     catalogProgressBadge: document.getElementById('catalogProgressBadge'),
     catalogBadgeIcon: document.getElementById('catalogBadgeIcon'),
     catalogBadgeText: document.getElementById('catalogBadgeText'),
@@ -866,10 +869,12 @@
         state.selectedEnvFilter = 'env-all';
         state.selectedSpecialtyFilter = 'all';
         state.selectedUnlockFilter = 'all';
+        state.selectedRegionFilter = 'all';
         if (DOM.categoryFilter) DOM.categoryFilter.value = 'all';
         if (DOM.envFilter) DOM.envFilter.value = 'env-all';
         if (DOM.specialtyFilter) DOM.specialtyFilter.value = 'all';
         if (DOM.unlockFilter) DOM.unlockFilter.value = 'all';
+        if (DOM.regionFilter) DOM.regionFilter.value = 'all';
 
         // 2. 切換至首頁（寶可夢圖鑑 + 表格視窗）
         closeTocDropdown();
@@ -1030,6 +1035,13 @@
     if (DOM.unlockFilter) {
       DOM.unlockFilter.addEventListener('change', (e) => {
         state.selectedUnlockFilter = e.target.value;
+        renderAll();
+      });
+    }
+
+    if (DOM.regionFilter) {
+      DOM.regionFilter.addEventListener('change', (e) => {
+        state.selectedRegionFilter = e.target.value;
         renderAll();
       });
     }
@@ -1267,6 +1279,7 @@
       if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.remove('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.remove('hidden');
       if (DOM.specialtyFilterGroup) DOM.specialtyFilterGroup.classList.remove('hidden');
+      if (DOM.regionFilterGroup) DOM.regionFilterGroup.classList.remove('hidden');
       if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.remove('hidden');
       updateCategoryFilterOptions();
       updateUnlockFilterOptions();
@@ -1288,6 +1301,7 @@
       if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.remove('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.remove('hidden');
       if (DOM.specialtyFilterGroup) DOM.specialtyFilterGroup.classList.add('hidden');
+      if (DOM.regionFilterGroup) DOM.regionFilterGroup.classList.add('hidden');
       if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.remove('hidden');
       updateCategoryFilterOptions();
       updateUnlockFilterOptions();
@@ -1567,6 +1581,15 @@
       if (state.selectedUnlockFilter === 'locked' && state.pkmChecked[pkm.id]) {
         return false;
       }
+      // Region filter (all / specific regionId / unassigned)
+      if (state.selectedRegionFilter && state.selectedRegionFilter !== 'all') {
+        const curReg = getPokemonCurrentRegion(pkm.id);
+        if (state.selectedRegionFilter === 'unassigned') {
+          if (curReg !== null) return false;
+        } else {
+          if (!curReg || curReg.regionId !== state.selectedRegionFilter) return false;
+        }
+      }
       // Search query filter
       if (!query) return true;
       const specs = pkm.specialties || pkm.abilities || [];
@@ -1639,6 +1662,17 @@
         </div>
       ` : '';
 
+      const currentReg = getPokemonCurrentRegion(pkm.id);
+      const locationChipHTML = currentReg ? `
+        <span class="pkm-location-chip" data-region-id="${currentReg.regionId}" style="--loc-theme:${currentReg.themeColor};" title="目前位於【${escapeHTML(currentReg.regionName)}】（點擊跳轉至地圖）">
+          📍 ${escapeHTML(currentReg.regionName)}
+        </span>
+      ` : `
+        <span class="pkm-location-chip unassigned" data-region-id="" title="尚未安置至任何度假村（點擊跳轉至地圖進行配置）">
+          📍 未安置
+        </span>
+      `;
+
       return `
         <div class="item-card ${isChecked ? 'completed' : ''}" data-id="${pkm.id}">
           <div class="card-header">
@@ -1661,6 +1695,7 @@
           </div>
           <div class="pokemon-meta">
             <span class="tag-badge tag-env" data-env="${escapeHTML(pkm.environment)}" title="點擊在喜好百科查看「${escapeHTML(pkm.environment)}」營造家具與說明">${escapeHTML(pkm.environment)}</span>
+            ${locationChipHTML}
             ${specialtiesHTML}
           </div>
           ${habsCardHTML}
@@ -1676,6 +1711,16 @@
     DOM.habitatTableBody.innerHTML = pokemons.map(pkm => {
       const isChecked = !!state.pkmChecked[pkm.id];
       const specs = pkm.specialties || pkm.abilities || [];
+      const currentReg = getPokemonCurrentRegion(pkm.id);
+      const locationChipHTML = currentReg ? `
+        <span class="pkm-location-chip" data-region-id="${currentReg.regionId}" style="--loc-theme:${currentReg.themeColor};" title="目前位於【${escapeHTML(currentReg.regionName)}】（點擊跳轉至地圖）">
+          📍 ${escapeHTML(currentReg.regionName)}
+        </span>
+      ` : `
+        <span class="pkm-location-chip unassigned" data-region-id="" title="尚未安置至任何度假村（點擊跳轉至地圖進行配置）">
+          📍 未安置
+        </span>
+      `;
       
       const habList = [];
       if (pkm.habitat1 && pkm.habitat1 !== '無特別需求') {
@@ -1756,6 +1801,9 @@
                 return `<span class="tag-specialty" data-spec="${escapeHTML(s)}" title="點擊篩選專長：${escapeHTML(s)}">${icon} ${escapeHTML(s)}</span>`;
               }).join('')}
             </div>
+          </td>
+          <td class="pkm-col-location">
+            ${locationChipHTML}
           </td>
           <td>${habsCell}</td>
           <td class="col-favorites">
@@ -1910,6 +1958,15 @@
           }
           renderAll();
         }
+      });
+    });
+
+    // Event listeners for Pokemon Location Chips (點擊直接跳轉至地區地圖)
+    document.querySelectorAll('.pkm-location-chip').forEach(chip => {
+      chip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const rId = chip.getAttribute('data-region-id');
+        navigateToRegion(rId || 'palette_town');
       });
     });
 
@@ -3598,6 +3655,29 @@
       `;
     }
 
+    // 所在區域控制
+    const curPkmRegion = getPokemonCurrentRegion(pkm.id);
+    const regOptionsHTML = ((window.POKOPIA_REGION_DATA && window.POKOPIA_REGION_DATA.regions) || []).map(r => `
+      <option value="${r.id}" ${curPkmRegion && curPkmRegion.regionId === r.id ? 'selected' : ''}>
+        📍 ${escapeHTML(r.name)} (${escapeHTML(r.badgeText)})
+      </option>
+    `).join('');
+
+    const locationControlHTML = `
+      <div class="pkm-detail-location-bar">
+        <div class="pkm-detail-loc-left">
+          <span class="pkm-detail-loc-title">📍 目前位置：</span>
+          <select class="pkm-detail-region-select" id="pkmDetailRegionSelect" data-pkm-id="${pkm.id}" title="直接更換此寶可夢安置的地區">
+            <option value="unassigned" ${!curPkmRegion ? 'selected' : ''}>⚪ 未安置</option>
+            ${regOptionsHTML}
+          </select>
+        </div>
+        <button type="button" class="pkm-detail-goto-region-btn" id="btnDetailGotoRegion" data-region-id="${curPkmRegion ? curPkmRegion.regionId : ''}" title="在地圖頁面查看此區域">
+          前往地圖 ↗
+        </button>
+      </div>
+    `;
+
     // 5. 組合注入 Detail Body
     DOM.pkmDetailBody.innerHTML = `
       <!-- 基礎屬性與專長 -->
@@ -3609,6 +3689,7 @@
           <span class="tag-badge tag-env" data-env="${escapeHTML(pkm.environment)}" style="font-size:0.8rem; padding:4px 10px;" title="點擊在喜好百科查看「${escapeHTML(pkm.environment)}」營造家具與說明">${escapeHTML(pkm.environment)}</span>
           ${specsHTML}
         </div>
+        ${locationControlHTML}
       </div>
 
       <!-- 官方實機棲息地 -->
@@ -3674,6 +3755,27 @@
         }
       });
     });
+
+    // 所在區域即時更換與跳轉
+    const selReg = DOM.pkmDetailBody.querySelector('#pkmDetailRegionSelect');
+    if (selReg) {
+      selReg.addEventListener('change', (e) => {
+        const targetRegId = e.target.value;
+        setPokemonRegion(pkm.id, targetRegId);
+        const gotoBtn = DOM.pkmDetailBody.querySelector('#btnDetailGotoRegion');
+        if (gotoBtn) {
+          gotoBtn.dataset.regionId = targetRegId !== 'unassigned' ? targetRegId : '';
+        }
+      });
+    }
+
+    const gotoMapBtn = DOM.pkmDetailBody.querySelector('#btnDetailGotoRegion');
+    if (gotoMapBtn) {
+      gotoMapBtn.addEventListener('click', () => {
+        const rId = gotoMapBtn.dataset.regionId;
+        navigateToRegion(rId || 'palette_town');
+      });
+    }
 
     // 7. 顯示 Modal
     DOM.pkmDetailModal.classList.remove('hidden');
@@ -4210,11 +4312,13 @@
     state.selectedEnvFilter = 'env-all';
     state.selectedSpecialtyFilter = 'all';
     state.selectedUnlockFilter = 'all';
+    state.selectedRegionFilter = 'all';
     state.selectedPkmCategory = 'all';
     state.selectedHabCategory = 'all';
     if (DOM.envFilter) DOM.envFilter.value = 'env-all';
     if (DOM.specialtyFilter) DOM.specialtyFilter.value = 'all';
     if (DOM.unlockFilter) DOM.unlockFilter.value = 'all';
+    if (DOM.regionFilter) DOM.regionFilter.value = 'all';
     if (DOM.categoryFilter) DOM.categoryFilter.value = 'all';
     renderAll();
   }
@@ -4253,6 +4357,71 @@
     try {
       localStorage.setItem('pokopia_region_assignments', JSON.stringify(state.regionAssignments));
     } catch (e) {}
+  }
+
+  // 取得寶可夢當前所在區域（單一歸屬互斥：全站唯一或 null）
+  function getPokemonCurrentRegion(pkmId) {
+    if (!pkmId) return null;
+    const assignments = getRegionAssignments();
+    const regData = (window.POKOPIA_REGION_DATA && window.POKOPIA_REGION_DATA.regions) || [];
+    for (const reg of regData) {
+      const list = assignments[reg.id] || [];
+      if (list.includes(pkmId)) {
+        return {
+          regionId: reg.id,
+          regionName: reg.name,
+          themeColor: reg.themeColor || '#6366f1',
+          badgeText: reg.badgeText || ''
+        };
+      }
+    }
+    return null;
+  }
+
+  // 設定寶可夢區域（若 targetRegionId 為空或 'unassigned' 則設為未安置；否則移出其他所有區域並加入目標區域）
+  function setPokemonRegion(pkmId, targetRegionId) {
+    if (!pkmId) return;
+    const assignments = getRegionAssignments();
+    
+    // 1. 先從所有區域中移出，確保單一歸屬互斥！
+    Object.keys(assignments).forEach(rId => {
+      assignments[rId] = (assignments[rId] || []).filter(id => id !== pkmId);
+    });
+
+    // 2. 若指定了目標區域，加入目標區域
+    if (targetRegionId && targetRegionId !== 'unassigned') {
+      if (!assignments[targetRegionId]) assignments[targetRegionId] = [];
+      if (!assignments[targetRegionId].includes(pkmId)) {
+        assignments[targetRegionId].push(pkmId);
+      }
+    }
+
+    saveRegionAssignments();
+
+    // 3. 根據當前分頁即時更新畫面
+    if (state.currentTab === 'regionMap') {
+      renderRegionMap();
+    } else if (state.currentTab === 'habitat') {
+      renderHabitatView();
+    }
+  }
+
+  // 跨頁跳轉至指定地區地圖卡片並高亮
+  function navigateToRegion(regionId) {
+    if (DOM.pkmDetailModal && !DOM.pkmDetailModal.classList.contains('hidden')) {
+      closePkmDetailModal();
+    }
+    switchTab('regionMap');
+    if (regionId) {
+      setTimeout(() => {
+        const targetEl = document.getElementById(`regionCard_${regionId}`);
+        if (targetEl) {
+          targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          targetEl.classList.add('reg-card-highlight-pulse');
+          setTimeout(() => targetEl.classList.remove('reg-card-highlight-pulse'), 1600);
+        }
+      }, 100);
+    }
   }
 
   function renderRegionMap() {
@@ -4427,21 +4596,11 @@
   }
 
   function removePokemonFromRegion(regionId, pkmId) {
-    const assignments = getRegionAssignments();
-    if (!assignments[regionId]) return;
-    assignments[regionId] = assignments[regionId].filter(id => id !== pkmId);
-    saveRegionAssignments();
-    renderRegionMap();
+    setPokemonRegion(pkmId, null);
   }
 
   function addPokemonToRegion(regionId, pkmId) {
-    const assignments = getRegionAssignments();
-    if (!assignments[regionId]) assignments[regionId] = [];
-    if (!assignments[regionId].includes(pkmId)) {
-      assignments[regionId].push(pkmId);
-      saveRegionAssignments();
-      renderRegionMap();
-    }
+    setPokemonRegion(pkmId, regionId);
   }
 
   // 區域寶可夢指派 Modal
@@ -4573,6 +4732,9 @@
     renderRegionMap,
     getRegionAssignments,
     saveRegionAssignments,
+    getPokemonCurrentRegion,
+    setPokemonRegion,
+    navigateToRegion,
     addPokemonToRegion,
     removePokemonFromRegion,
     openRegionAssignModal,
