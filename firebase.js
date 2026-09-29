@@ -89,6 +89,11 @@
     } else if (local && local.customBoxes && Array.isArray(local.customBoxes)) {
       merged.customBoxes = local.customBoxes;
     }
+    if (cloud && cloud.regionAssignments && typeof cloud.regionAssignments === 'object') {
+      merged.regionAssignments = cloud.regionAssignments;
+    } else if (local && local.regionAssignments && typeof local.regionAssignments === 'object') {
+      merged.regionAssignments = local.regionAssignments;
+    }
     return merged;
   }
 

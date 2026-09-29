@@ -429,10 +429,13 @@
       const user = fb.getCurrentUser();
       if (user) {
         const snapshot = {
-          catChecked:     state.catChecked     || {},
-          pkmChecked:     state.pkmChecked     || {},
-          habChecked:     state.habChecked     || {},
-          benchOverrides: state.benchOverrides || {}
+          catChecked:        state.catChecked        || {},
+          pkmChecked:        state.pkmChecked        || {},
+          habChecked:        state.habChecked        || {},
+          benchOverrides:    state.benchOverrides    || {},
+          autoFarmChecked:   state.autoFarmChecked   || {},
+          customBoxes:       state.customBoxes       || [],
+          regionAssignments: state.regionAssignments || {}
         };
         fb.debouncedSave(user.uid, snapshot);
       }
@@ -687,12 +690,13 @@
 
           const cloudData = await fb.loadCloudProgress(user.uid);
           const localSnapshot = {
-            catChecked:      state.catChecked      || {},
-            pkmChecked:      state.pkmChecked      || {},
-            habChecked:      state.habChecked      || {},
-            benchOverrides:  state.benchOverrides  || {},
-            autoFarmChecked: state.autoFarmChecked || {},
-            customBoxes:     state.customBoxes     || []
+            catChecked:        state.catChecked        || {},
+            pkmChecked:        state.pkmChecked        || {},
+            habChecked:        state.habChecked        || {},
+            benchOverrides:    state.benchOverrides    || {},
+            autoFarmChecked:   state.autoFarmChecked   || {},
+            customBoxes:       state.customBoxes       || [],
+            regionAssignments: state.regionAssignments || (typeof getRegionAssignments === 'function' ? getRegionAssignments() : {})
           };
           const merged = fb.mergeProgressUnion(localSnapshot, cloudData);
 
@@ -703,6 +707,12 @@
           state.autoFarmChecked = merged.autoFarmChecked || {};
           if (merged.customBoxes && Array.isArray(merged.customBoxes)) {
             state.customBoxes   = merged.customBoxes;
+          }
+          if (merged.regionAssignments && typeof merged.regionAssignments === 'object') {
+            state.regionAssignments = merged.regionAssignments;
+            try {
+              localStorage.setItem('pokopia_region_assignments', JSON.stringify(state.regionAssignments));
+            } catch (e) {}
           }
           saveProgress(STORAGE_KEY_CAT,            state.catChecked);
           saveProgress(STORAGE_KEY_PKM,            state.pkmChecked);
@@ -717,24 +727,27 @@
           renderAll();
           renderStats();
           if (state.currentTab === 'customStorage') renderCustomStorage();
+          if (state.currentTab === 'regionMap') renderRegionMap();
 
           // ─── 多裝置實時雙向監聽 (Real-time Sync) ─────────────────
           fb.subscribeCloudProgress(user.uid, function (remoteData, hasPendingWrites) {
             if (hasPendingWrites || !remoteData) return;
             const currentSnap = {
-              catChecked:      state.catChecked      || {},
-              pkmChecked:      state.pkmChecked      || {},
-              habChecked:      state.habChecked      || {},
-              benchOverrides:  state.benchOverrides  || {},
-              autoFarmChecked: state.autoFarmChecked || {},
-              customBoxes:     state.customBoxes     || []
+              catChecked:        state.catChecked        || {},
+              pkmChecked:        state.pkmChecked        || {},
+              habChecked:        state.habChecked        || {},
+              benchOverrides:    state.benchOverrides    || {},
+              autoFarmChecked:   state.autoFarmChecked   || {},
+              customBoxes:       state.customBoxes       || [],
+              regionAssignments: state.regionAssignments || (typeof getRegionAssignments === 'function' ? getRegionAssignments() : {})
             };
             const updated = fb.mergeProgressUnion(currentSnap, remoteData);
             const isChanged = JSON.stringify(state.pkmChecked) !== JSON.stringify(updated.pkmChecked) ||
                               JSON.stringify(state.catChecked) !== JSON.stringify(updated.catChecked) ||
                               JSON.stringify(state.habChecked) !== JSON.stringify(updated.habChecked) ||
                               JSON.stringify(state.autoFarmChecked) !== JSON.stringify(updated.autoFarmChecked) ||
-                              JSON.stringify(state.customBoxes) !== JSON.stringify(updated.customBoxes);
+                              JSON.stringify(state.customBoxes) !== JSON.stringify(updated.customBoxes) ||
+                              JSON.stringify(state.regionAssignments) !== JSON.stringify(updated.regionAssignments);
             if (isChanged) {
               state.catChecked      = updated.catChecked      || {};
               state.pkmChecked      = updated.pkmChecked      || {};
@@ -743,6 +756,12 @@
               state.autoFarmChecked = updated.autoFarmChecked || {};
               if (updated.customBoxes && Array.isArray(updated.customBoxes)) {
                 state.customBoxes   = updated.customBoxes;
+              }
+              if (updated.regionAssignments && typeof updated.regionAssignments === 'object') {
+                state.regionAssignments = updated.regionAssignments;
+                try {
+                  localStorage.setItem('pokopia_region_assignments', JSON.stringify(state.regionAssignments));
+                } catch (e) {}
               }
               try {
                 localStorage.setItem(STORAGE_KEY_CAT,            JSON.stringify(state.catChecked));
@@ -755,6 +774,7 @@
               renderAll();
               renderStats();
               if (state.currentTab === 'customStorage') renderCustomStorage();
+              if (state.currentTab === 'regionMap') renderRegionMap();
             }
           });
 
@@ -1775,17 +1795,9 @@
         </option>
       `).join('');
 
-      // 電腦端獨立直欄下拉選擇器
+      // 整合於第 2 欄名稱下方的小巧膠囊下拉選擇器
       const tableLocationSelectHTML = `
         <select class="pkm-table-region-select ${!currentReg ? 'is-unassigned' : ''}" data-pkm-id="${pkm.id}" style="--loc-theme: ${currentReg ? currentReg.themeColor : '#64748b'};" title="點擊切換此寶可夢安置的地區">
-          <option value="unassigned" ${!currentReg ? 'selected' : ''}>⚪ 未安置</option>
-          ${regOptionsHTML}
-        </select>
-      `;
-
-      // 手機端整合於第 2 欄名稱下方的小巧膠囊下拉選擇器
-      const mobileLocationSelectHTML = `
-        <select class="pkm-mobile-location-select ${!currentReg ? 'is-unassigned' : ''}" data-pkm-id="${pkm.id}" style="--loc-theme: ${currentReg ? currentReg.themeColor : '#64748b'};" title="點擊切換此寶可夢安置的地區">
           <option value="unassigned" ${!currentReg ? 'selected' : ''}>⚪ 未安置</option>
           ${regOptionsHTML}
         </select>
@@ -1809,7 +1821,7 @@
               <strong class="pkm-table-name">${escapeHTML(baseName)}</strong>
               ${formName ? `<span class="pkm-form-badge">${escapeHTML(formName)}</span>` : ''}
               <span class="tag-badge tag-cat-${escapeHTML(pkm.category || 'main')}">${escapeHTML(pkm.categoryName || '主圖鑑')}</span>
-              ${mobileLocationSelectHTML}
+              ${tableLocationSelectHTML}
             </div>
           </td>
           <td class="pkm-col-avatar" title="點擊查看 ${escapeHTML(pkm.name)} 完整百科與喜好">
@@ -1825,9 +1837,6 @@
                 return `<span class="tag-specialty" data-spec="${escapeHTML(s)}" title="點擊篩選專長：${escapeHTML(s)}">${icon} ${escapeHTML(s)}</span>`;
               }).join('')}
             </div>
-          </td>
-          <td class="pkm-col-location">
-            ${tableLocationSelectHTML}
           </td>
           <td class="pkm-col-hab">${habsCell}</td>
           <td class="col-favorites">
@@ -4394,6 +4403,24 @@
     try {
       localStorage.setItem('pokopia_region_assignments', JSON.stringify(state.regionAssignments));
     } catch (e) {}
+
+    // 若已登入 Google，自動觸發雲端 Firestore 防抖上傳
+    const fb = window.PokopiaFirebase;
+    if (fb && typeof fb.getCurrentUser === 'function') {
+      const user = fb.getCurrentUser();
+      if (user) {
+        const snapshot = {
+          catChecked:        state.catChecked        || {},
+          pkmChecked:        state.pkmChecked        || {},
+          habChecked:        state.habChecked        || {},
+          benchOverrides:    state.benchOverrides    || {},
+          autoFarmChecked:   state.autoFarmChecked   || {},
+          customBoxes:       state.customBoxes       || [],
+          regionAssignments: state.regionAssignments || {}
+        };
+        fb.debouncedSave(user.uid, snapshot);
+      }
+    }
   }
 
   // 取得寶可夢當前所在區域（單一歸屬互斥：全站唯一或 null）
