@@ -1768,6 +1768,29 @@
         `;
       }
 
+      const allRegions = (window.POKOPIA_REGION_DATA && window.POKOPIA_REGION_DATA.regions) || [];
+      const regOptionsHTML = allRegions.map(r => `
+        <option value="${r.id}" ${currentReg && currentReg.regionId === r.id ? 'selected' : ''}>
+          📍 ${escapeHTML(r.name)}
+        </option>
+      `).join('');
+
+      // 電腦端獨立直欄下拉選擇器
+      const tableLocationSelectHTML = `
+        <select class="pkm-table-region-select ${!currentReg ? 'is-unassigned' : ''}" data-pkm-id="${pkm.id}" style="--loc-theme: ${currentReg ? currentReg.themeColor : '#64748b'};" title="點擊切換此寶可夢安置的地區">
+          <option value="unassigned" ${!currentReg ? 'selected' : ''}>⚪ 未安置</option>
+          ${regOptionsHTML}
+        </select>
+      `;
+
+      // 手機端整合於第 2 欄名稱下方的小巧膠囊下拉選擇器
+      const mobileLocationSelectHTML = `
+        <select class="pkm-mobile-location-select ${!currentReg ? 'is-unassigned' : ''}" data-pkm-id="${pkm.id}" style="--loc-theme: ${currentReg ? currentReg.themeColor : '#64748b'};" title="點擊切換此寶可夢安置的地區">
+          <option value="unassigned" ${!currentReg ? 'selected' : ''}>⚪ 未安置</option>
+          ${regOptionsHTML}
+        </select>
+      `;
+
       const formMatch = pkm.name.match(/^(.*?)[（\(](.*?)[）\)]$/);
       const baseName = formMatch ? formMatch[1].trim() : pkm.name;
       const formName = formMatch ? formMatch[2].trim() : '';
@@ -1786,6 +1809,7 @@
               <strong class="pkm-table-name">${escapeHTML(baseName)}</strong>
               ${formName ? `<span class="pkm-form-badge">${escapeHTML(formName)}</span>` : ''}
               <span class="tag-badge tag-cat-${escapeHTML(pkm.category || 'main')}">${escapeHTML(pkm.categoryName || '主圖鑑')}</span>
+              ${mobileLocationSelectHTML}
             </div>
           </td>
           <td class="pkm-col-avatar" title="點擊查看 ${escapeHTML(pkm.name)} 完整百科與喜好">
@@ -1803,9 +1827,9 @@
             </div>
           </td>
           <td class="pkm-col-location">
-            ${locationChipHTML}
+            ${tableLocationSelectHTML}
           </td>
-          <td>${habsCell}</td>
+          <td class="pkm-col-hab">${habsCell}</td>
           <td class="col-favorites">
             <div class="fav-column-group">
               ${pkm.favorites.map(f => renderPrefPill(f)).join('')}
@@ -1967,6 +1991,19 @@
         e.stopPropagation();
         const rId = chip.getAttribute('data-region-id');
         navigateToRegion(rId || 'palette_town');
+      });
+    });
+
+    // Event listeners for Table & Mobile Location Selects (表格內直接更換地區)
+    document.querySelectorAll('.pkm-table-region-select, .pkm-mobile-location-select').forEach(sel => {
+      sel.addEventListener('change', (e) => {
+        e.stopPropagation();
+        const pkmId = sel.getAttribute('data-pkm-id');
+        const targetRegionId = sel.value;
+        setPokemonRegion(pkmId, targetRegionId);
+      });
+      sel.addEventListener('click', (e) => {
+        e.stopPropagation();
       });
     });
 

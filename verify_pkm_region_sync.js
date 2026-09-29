@@ -12,7 +12,7 @@ assert(html.includes('id="regionFilterGroup"'), 'index.html 必須包含 id="reg
 assert(html.includes('id="regionFilter"'), 'index.html 必須包含 id="regionFilter"');
 assert(html.includes('value="palette_town"'), 'regionFilter 必須包含空空鎮選項');
 assert(html.includes('value="unassigned"'), 'regionFilter 必須包含未安置選項');
-assert(html.includes('<th width="110">目前位置</th>'), 'pokemon-table 表頭必須包含「目前位置」直欄');
+assert(html.includes('class="col-th-location">目前位置</th>'), 'pokemon-table 表頭必須包含「目前位置」直欄');
 console.log('✅ [PASS] 1. index.html 篩選器與表格表頭位置欄位驗證通過');
 
 // 2. 驗證 index.css
@@ -22,10 +22,12 @@ const css = fs.readFileSync(cssPath, 'utf8');
 assert(css.includes('.pkm-location-chip'), 'index.css 必須包含 .pkm-location-chip 樣式');
 assert(css.includes('.pkm-location-chip.unassigned'), 'index.css 必須包含 .pkm-location-chip.unassigned 樣式');
 assert(css.includes('.pkm-col-location'), 'index.css 必須包含 .pkm-col-location 樣式');
+assert(css.includes('.pkm-table-region-select'), 'index.css 必須包含 .pkm-table-region-select 樣式');
+assert(css.includes('.pkm-mobile-location-select'), 'index.css 必須包含 .pkm-mobile-location-select 樣式');
 assert(css.includes('.pkm-detail-location-bar'), 'index.css 必須包含 .pkm-detail-location-bar 樣式');
 assert(css.includes('.pkm-detail-region-select'), 'index.css 必須包含 .pkm-detail-region-select 樣式');
 assert(css.includes('.pkm-detail-goto-region-btn'), 'index.css 必須包含 .pkm-detail-goto-region-btn 樣式');
-console.log('✅ [PASS] 2. index.css 位置膠囊、表格欄位與百科位置切換器樣式驗證通過');
+console.log('✅ [PASS] 2. index.css 位置膠囊、表格下拉選擇器與手機端小選擇器樣式驗證通過');
 
 // 3. 驗證 app.js
 const appPath = path.join(__dirname, 'app.js');
@@ -37,7 +39,8 @@ assert(app.includes('getPokemonCurrentRegion'), 'app.js 必須包含 getPokemonC
 assert(app.includes('setPokemonRegion'), 'app.js 必須包含 setPokemonRegion 函式');
 assert(app.includes('navigateToRegion'), 'app.js 必須包含 navigateToRegion 函式');
 assert(app.includes('pkm-col-location'), 'app.js 渲染表格必須包含 pkm-col-location 直欄');
-assert(app.includes('pkm-location-chip'), 'app.js 必須渲染 pkm-location-chip 膠囊標籤');
+assert(app.includes('pkm-table-region-select'), 'app.js 表格必須包含 pkm-table-region-select 電腦端下拉選單');
+assert(app.includes('pkm-mobile-location-select'), 'app.js 表格必須包含 pkm-mobile-location-select 手機端下拉選單');
 assert(app.includes('pkmDetailRegionSelect'), 'app.js 詳情彈窗必須包含 pkmDetailRegionSelect');
 assert(app.includes('btnDetailGotoRegion'), 'app.js 詳情彈窗必須包含 btnDetailGotoRegion 前往地圖按鈕');
 console.log('✅ [PASS] 3. app.js 邏輯、狀態管理、卡片/表格/百科連動驗證通過');

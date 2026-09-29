@@ -5483,6 +5483,15 @@ body {
     display: none !important;
   }
 
+  .pokemon-table th.col-th-location,
+  .pokemon-table td.pkm-col-location,
+  .pokemon-table th.col-th-favorites,
+  .pokemon-table td.col-favorites,
+  .pokemon-table th:nth-child(8),
+  .pokemon-table td:nth-child(8) {
+    display: none !important;
+  }
+
   /* 手機端簡化表頭文字：環境屬性 -> 環境，工作專長 -> 專長 */
   .pokemon-table th:nth-child(4) {
     font-size: 0 !important;
@@ -5616,6 +5625,10 @@ body {
   }
 
   /* 欄位 6：棲息地 28%（剩餘空間） */
+  .pokemon-table th.col-th-habitat,
+  .pokemon-table td.pkm-col-hab,
+  .pokemon-table th:nth-child(7),
+  .pokemon-table td:nth-child(7),
   .pokemon-table th:nth-child(6),
   .pokemon-table td:nth-child(6) {
     width: 28% !important;
@@ -5624,6 +5637,10 @@ body {
     padding: 0.2500rem 0.1250rem !important;
     text-align: center !important;
   }
+  .pokemon-table td.pkm-col-hab .pkm-table-hab-single-wrap,
+  .pokemon-table td.pkm-col-hab .pkm-table-hab-carousel,
+  .pokemon-table td:nth-child(7) .pkm-table-hab-single-wrap,
+  .pokemon-table td:nth-child(7) .pkm-table-hab-carousel,
   .pokemon-table td:nth-child(6) .pkm-table-hab-single-wrap,
   .pokemon-table td:nth-child(6) .pkm-table-hab-carousel {
     width: 80% !important;
@@ -5634,6 +5651,8 @@ body {
     align-items: center !important;
     gap: 0.1250rem !important;
   }
+  .pokemon-table td.pkm-col-hab .pkm-table-hab-thumb,
+  .pokemon-table td:nth-child(7) .pkm-table-hab-thumb,
   .pokemon-table td:nth-child(6) .pkm-table-hab-thumb {
     position: relative !important;
     width: 100% !important;
@@ -5645,6 +5664,8 @@ body {
     flex-shrink: 0 !important;
     box-shadow: 0 0.1250rem 0.3750rem rgba(0, 0, 0, 0.12) !important;
   }
+  .pokemon-table td.pkm-col-hab .pkm-table-hab-thumb img,
+  .pokemon-table td:nth-child(7) .pkm-table-hab-thumb img,
   .pokemon-table td:nth-child(6) .pkm-table-hab-thumb img {
     position: absolute !important;
     top: 0 !important;
@@ -5655,6 +5676,8 @@ body {
     object-position: center bottom !important;
     display: block !important;
   }
+  .pokemon-table td.pkm-col-hab .pkm-table-hab-single-wrap .pkm-hab-bottom-bar,
+  .pokemon-table td:nth-child(7) .pkm-table-hab-single-wrap .pkm-hab-bottom-bar,
   .pokemon-table td:nth-child(6) .pkm-table-hab-single-wrap .pkm-hab-bottom-bar {
     width: 100% !important;
     max-width: 100% !important;
@@ -8685,6 +8708,68 @@ body {
 .pkm-detail-goto-region-btn:hover {
   background: rgba(99, 102, 241, 0.1);
   text-decoration: underline;
+}
+
+/* 4. 電腦端表格直欄位置選擇器（圓角膠囊） */
+.pkm-table-region-select {
+  padding: 0.22rem 0.55rem;
+  font-size: 0.74rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--loc-theme, #6366f1) 12%, transparent);
+  color: var(--loc-theme, #6366f1);
+  border: 1px solid color-mix(in srgb, var(--loc-theme, #6366f1) 32%, transparent);
+  cursor: pointer;
+  outline: none;
+  max-width: 100%;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.pkm-table-region-select:hover,
+.pkm-table-region-select:focus {
+  background: color-mix(in srgb, var(--loc-theme, #6366f1) 22%, transparent);
+  border-color: var(--loc-theme, #6366f1);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--loc-theme, #6366f1) 20%, transparent);
+}
+
+.pkm-table-region-select.is-unassigned {
+  background: rgba(148, 163, 184, 0.12);
+  color: var(--text-sub);
+  border-color: rgba(148, 163, 184, 0.3);
+  font-style: italic;
+}
+
+/* 5. 手機端第 2 欄小巧膠囊下拉選擇器 */
+.pkm-mobile-location-select {
+  display: none; /* 電腦端隱藏 */
+}
+
+@media (max-width: 640px) {
+  .pkm-mobile-location-select {
+    display: inline-flex !important;
+    font-size: 0.62rem !important;
+    font-weight: 600 !important;
+    padding: 0.08rem 0.35rem !important;
+    border-radius: 9999px !important;
+    background: color-mix(in srgb, var(--loc-theme, #6366f1) 14%, transparent) !important;
+    color: var(--loc-theme, #6366f1) !important;
+    border: 1px solid color-mix(in srgb, var(--loc-theme, #6366f1) 35%, transparent) !important;
+    margin-top: 0.15rem !important;
+    width: fit-content !important;
+    max-width: 100% !important;
+    cursor: pointer !important;
+    outline: none !important;
+  }
+  .pkm-mobile-location-select.is-unassigned {
+    background: rgba(148, 163, 184, 0.14) !important;
+    color: var(--text-sub) !important;
+    border-color: rgba(148, 163, 184, 0.3) !important;
+    font-style: italic !important;
+  }
+  #unlockFilterGroup {
+    grid-column: 1 / -1 !important;
+  }
 }
 
 
