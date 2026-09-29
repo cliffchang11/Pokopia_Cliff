@@ -8068,11 +8068,17 @@ body {
   color: var(--text-sub);
 }
 
+.reg-header-highlight-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
 .reg-header-highlight {
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-main);
-  align-self: center;
 }
 
 .reg-card-body {

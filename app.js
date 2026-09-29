@@ -4267,45 +4267,7 @@
     const pkmMap = new Map();
     (window.POKOPIA_DATA.pokemons || []).forEach(p => pkmMap.set(p.id, p));
 
-    // 1. 樞紐羅盤 (Hub Compass)
-    const hub = regionData.hubGuidance || {};
-    const hubDirectionsHTML = (hub.directions || []).map(dir => {
-      return `
-        <div class="reg-hub-gate-card" data-target-region="${escapeHTML(dir.targetId)}">
-          <div class="reg-hub-gate-arrow">${escapeHTML(dir.arrow)}</div>
-          <div class="reg-hub-gate-info">
-            <div class="reg-hub-gate-title">
-              <span class="reg-hub-gate-dir">${escapeHTML(dir.direction)}</span>
-              <strong class="reg-hub-gate-target">${escapeHTML(dir.targetName)}</strong>
-              <span class="reg-hub-gate-tag">${escapeHTML(dir.tag)}</span>
-            </div>
-            <div class="reg-hub-gate-tip">${escapeHTML(dir.gateTip)}</div>
-          </div>
-        </div>
-      `;
-    }).join('');
-
-    const hubHTML = `
-      <div class="reg-hub-compass-card">
-        <div class="reg-hub-header">
-          <div class="reg-hub-title-group">
-            <span class="reg-hub-badge">🧭 世界樞紐連通羅盤</span>
-            <h2 class="reg-hub-title">${escapeHTML(hub.title || 'Pokopia 四大閘門走向指南')}</h2>
-            <p class="reg-hub-center-desc">以中央 <strong>${escapeHTML(hub.centerName || '空空鎮')}</strong> 為樞紐 ‧ ${escapeHTML(hub.centerDesc || '')}</p>
-          </div>
-          <div class="reg-hub-map-preview-btn-wrap">
-            <button class="reg-btn-view-all-map" id="btnViewAllMapModal" title="點擊檢視 4 大區域連通高解析大地圖">
-              🗺️ 檢視全域連通大圖
-            </button>
-          </div>
-        </div>
-        <div class="reg-hub-gates-grid">
-          ${hubDirectionsHTML}
-        </div>
-      </div>
-    `;
-
-    // 2. 5 大區域卡片網格 (Regions Cards Flow)
+    // 5 大區域卡片列表 (Regions Cards Flow)
     const regionsHTML = (regionData.regions || []).map(reg => {
       const pkmIds = assignments[reg.id] || [];
       const assignedPokemons = pkmIds.map(id => pkmMap.get(id)).filter(Boolean);
@@ -4335,6 +4297,14 @@
         </button>
       ` : '';
 
+      const viewAllMapBtnHTML = reg.id === 'palette_town' ? `
+        <div class="reg-hub-map-preview-btn-wrap">
+          <button class="reg-btn-view-all-map" id="btnViewAllMapModal" title="點擊檢視 4 大區域連通高解析大地圖">
+            🗺️ 檢視全域連通大圖
+          </button>
+        </div>
+      ` : '';
+
       return `
         <div class="reg-region-card" id="regionCard_${reg.id}" style="--region-theme: ${reg.themeColor};">
           <div class="reg-card-header">
@@ -4347,7 +4317,10 @@
               </div>
               <h3 class="reg-name">${escapeHTML(reg.name)} <span class="reg-name-en">${escapeHTML(reg.nameEn)}</span></h3>
             </div>
-            <div class="reg-header-highlight">${escapeHTML(reg.highlightTitle)}</div>
+            <div class="reg-header-highlight-row">
+              <div class="reg-header-highlight">${escapeHTML(reg.highlightTitle)}</div>
+              ${viewAllMapBtnHTML}
+            </div>
           </div>
 
           <div class="reg-card-body">
@@ -4393,7 +4366,6 @@
 
     DOM.regionMapContainer.innerHTML = `
       <div class="reg-page-layout">
-        ${hubHTML}
         <div class="reg-cards-list">
           ${regionsHTML}
         </div>
@@ -4421,19 +4393,6 @@
         const img = btn.getAttribute('data-img');
         const caption = btn.getAttribute('data-caption') || '';
         if (img) openLightbox(img, caption);
-      });
-    });
-
-    // 閘門卡點擊平滑滾動
-    DOM.regionMapContainer.querySelectorAll('.reg-hub-gate-card').forEach(card => {
-      card.addEventListener('click', () => {
-        const targetId = card.getAttribute('data-target-region');
-        const targetEl = document.getElementById(`regionCard_${targetId}`);
-        if (targetEl) {
-          targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          targetEl.classList.add('reg-card-highlight-pulse');
-          setTimeout(() => targetEl.classList.remove('reg-card-highlight-pulse'), 1600);
-        }
       });
     });
 

@@ -27,7 +27,7 @@ const regData = mockWindow.POKOPIA_REGION_DATA;
 
 assert(regData, 'POKOPIA_REGION_DATA 必須成功初始化');
 assert(Array.isArray(regData.regions) && regData.regions.length === 5, '必須包含完整的 5 大世界區域');
-assert(regData.hubGuidance && regData.hubGuidance.directions.length === 4, '空空鎮必須包含四大方位閘門走向指南');
+assert(!regData.hubGuidance, '必須完全移除東西南北四大閘門走向指南卡片');
 
 const expectedRegions = ['palette_town', 'withered_wastelands', 'bleak_beach', 'rocky_ridges', 'sparkling_skylands'];
 expectedRegions.forEach(id => {
@@ -35,6 +35,7 @@ expectedRegions.forEach(id => {
   assert(reg, `必須包含區域 ${id}`);
   assert(reg.name && reg.nameEn, `區域 ${id} 必須有中英文名稱`);
   assert(reg.story && reg.mission, `區域 ${id} 必須有世界觀與核心任務描述`);
+  assert(!/[東西南北]向|[東西南北]方/.test(reg.badgeText), `區域 ${id} 徽章不得包含東西南北方位詞 (${reg.badgeText})`);
   assert(Array.isArray(reg.defaultPokemonIds) && reg.defaultPokemonIds.length > 0, `區域 ${id} 必須有預設推薦寶可夢清單`);
   
   if (reg.mapImage) {
@@ -44,7 +45,7 @@ expectedRegions.forEach(id => {
     assert(stat.size > 1000, `地圖圖片 ${reg.mapImage} 大小必須大於 1KB`);
   }
 });
-console.log('✅ [PASS] 2. region_data.js 5 大區域資料、本地圖片保全 (6張本地離線圖檔) 與四大閘門連通指南驗證通過');
+console.log('✅ [PASS] 2. region_data.js 5 大區域資料、本地圖片保全 (6張本地離線圖檔) 與「無方位詞」驗證通過');
 
 // 3. 驗證 index.css 樣式完備性
 const cssPath = path.join(__dirname, 'index.css');
