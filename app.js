@@ -3705,14 +3705,14 @@
     const curPkmRegion = getPokemonCurrentRegion(pkm.id);
     const regOptionsHTML = ((window.POKOPIA_REGION_DATA && window.POKOPIA_REGION_DATA.regions) || []).map(r => `
       <option value="${r.id}" ${curPkmRegion && curPkmRegion.regionId === r.id ? 'selected' : ''}>
-        📍 ${escapeHTML(r.name)} (${escapeHTML(r.badgeText)})
+        📍 ${escapeHTML(r.name)}
       </option>
     `).join('');
 
     const locationControlHTML = `
       <div class="pkm-detail-location-bar">
         <div class="pkm-detail-loc-left">
-          <span class="pkm-detail-loc-title">📍 目前位置：</span>
+          <span class="pkm-detail-loc-title">目前位置：</span>
           <select class="pkm-detail-region-select" id="pkmDetailRegionSelect" data-pkm-id="${pkm.id}" title="直接更換此寶可夢安置的地區">
             <option value="unassigned" ${!curPkmRegion ? 'selected' : ''}>⚪ 未安置</option>
             ${regOptionsHTML}
