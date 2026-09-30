@@ -616,6 +616,11 @@ if (!elements['floatingBackBtn']) process.exit(29);
     assert res_pkm_sync.returncode == 0, f"verify_pkm_region_sync.js 驗證失敗:\n{res_pkm_sync.stderr or res_pkm_sync.stdout}"
     print("✅ [PASS] 獨立模組 verify_pkm_region_sync.js 目前位置顯示、圖鑑同步連動與單一歸屬互斥驗證 100% 通過！")
 
+    # 執行獨立模組 verify_mid_responsive.js 驗證中型螢幕 (641px ~ 1120px) 流體響應式幾何與零裁切
+    res_mid_resp = subprocess.run(["node", "verify_mid_responsive.js"], capture_output=True, text=True)
+    assert res_mid_resp.returncode == 0, f"verify_mid_responsive.js 驗證失敗:\n{res_mid_resp.stderr or res_mid_resp.stdout}"
+    print("✅ [PASS] 獨立模組 verify_mid_responsive.js 中型螢幕 (641px ~ 1120px) 流體幾何與零裁切驗證 100% 通過！")
+
     print("\n🎉 全部驗收項目 100% 通過 (100% PASS)！")
 
 if __name__ == "__main__":
