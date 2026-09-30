@@ -1151,6 +1151,30 @@
       DOM.pkmDetailBackdrop.addEventListener('click', closePkmDetailModal);
     }
 
+    // 點擊百科彈窗頭像跳轉至寶可夢圖鑑並平滑高亮聚焦
+    const detailAvatarWrap = document.querySelector('.pkm-detail-avatar-wrap');
+    if (detailAvatarWrap) {
+      detailAvatarWrap.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const pkmId = detailAvatarWrap.dataset.pkmId || (DOM.pkmDetailAvatar ? DOM.pkmDetailAvatar.dataset.pkmId : null);
+        if (pkmId) {
+          const fromTab = state.currentTab;
+          closePkmDetailModal();
+          jumpToPokemon(pkmId, true);
+          if (fromTab && fromTab !== 'habitat') {
+            const tabNameMap = {
+              regionMap: '地區地圖',
+              autofarm: '終局農場',
+              customStorage: '我的收納盒',
+              habitatCatalog: '棲息地總覽',
+              storage: '儲存庫'
+            };
+            showFloatingBackBtn(tabNameMap[fromTab] || '上一頁');
+          }
+        }
+      });
+    }
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         closeLightbox();
@@ -3502,6 +3526,13 @@
     if (DOM.pkmDetailAvatar) {
       DOM.pkmDetailAvatar.src = pkm.sprite || FALLBACK_SPRITE;
       DOM.pkmDetailAvatar.alt = pkm.name;
+      DOM.pkmDetailAvatar.dataset.pkmId = pkm.id;
+      DOM.pkmDetailAvatar.title = `點擊前往 ${pkm.name} 的圖鑑百科 ↗`;
+    }
+    const avatarWrap = document.querySelector('.pkm-detail-avatar-wrap');
+    if (avatarWrap) {
+      avatarWrap.dataset.pkmId = pkm.id;
+      avatarWrap.title = `點擊前往 ${pkm.name} 的圖鑑百科 ↗`;
     }
     if (DOM.pkmDetailNumber) {
       DOM.pkmDetailNumber.textContent = pkm.number;

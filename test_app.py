@@ -621,6 +621,11 @@ if (!elements['floatingBackBtn']) process.exit(29);
     assert res_mid_resp.returncode == 0, f"verify_mid_responsive.js 驗證失敗:\n{res_mid_resp.stderr or res_mid_resp.stdout}"
     print("✅ [PASS] 獨立模組 verify_mid_responsive.js 中型螢幕 (641px ~ 1120px) 流體幾何與零裁切驗證 100% 通過！")
 
+    # 執行獨立模組 verify_modal_jump_and_3char_region.js 驗證彈窗頭像點擊跳轉與全站地區 3 字標準化
+    res_modal_jump = subprocess.run(["node", "verify_modal_jump_and_3char_region.js"], capture_output=True, text=True)
+    assert res_modal_jump.returncode == 0, f"verify_modal_jump_and_3char_region.js 驗證失敗:\n{res_modal_jump.stderr or res_modal_jump.stdout}"
+    print("✅ [PASS] 獨立模組 verify_modal_jump_and_3char_region.js 彈窗頭像點擊跳轉與全站地區 3 字標準化驗證 100% 通過！")
+
     print("\n🎉 全部驗收項目 100% 通過 (100% PASS)！")
 
 if __name__ == "__main__":

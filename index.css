@@ -5135,6 +5135,15 @@ body {
   justify-content: center;
   flex-shrink: 0;
   box-shadow: 0 0.2500rem 0.6250rem rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  user-select: none;
+}
+
+.pkm-detail-avatar-wrap:hover {
+  transform: scale(1.08);
+  border-color: var(--primary);
+  box-shadow: 0 0.3750rem 0.8750rem rgba(99, 102, 241, 0.25);
 }
 
 .pkm-detail-avatar {

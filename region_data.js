@@ -26,7 +26,7 @@ window.POKOPIA_REGION_DATA = {
     },
     {
       id: "withered_wastelands",
-      name: "乾巴巴荒野",
+      name: "乾巴巴",
       nameEn: "Withered Wastelands",
       kantoOrigin: "對應關都過去的「淺紅市」（Fuchsia City）及周邊乾涸海岸",
       themeColor: "#f59e0b",
@@ -45,7 +45,7 @@ window.POKOPIA_REGION_DATA = {
     },
     {
       id: "bleak_beach",
-      name: "暗沉沉海邊",
+      name: "暗沉沉",
       nameEn: "Bleak Beach",
       kantoOrigin: "對應關都過去的「枯葉市」（Vermilion City）與傳奇豪華郵輪「聖安奴號」",
       themeColor: "#0ea5e9",
@@ -65,7 +65,7 @@ window.POKOPIA_REGION_DATA = {
     },
     {
       id: "rocky_ridges",
-      name: "凸隆隆山地",
+      name: "凸隆隆",
       nameEn: "Rocky Ridges",
       kantoOrigin: "對應關都過去的「深灰市」（Pewter City）與神秘洞窟「月見山」（Mt. Moon）",
       themeColor: "#8b5cf6",
@@ -84,7 +84,7 @@ window.POKOPIA_REGION_DATA = {
     },
     {
       id: "sparkling_skylands",
-      name: "亮晶晶空島",
+      name: "亮晶晶",
       nameEn: "Sparkling Skylands",
       kantoOrigin: "對應關都過去的「玉虹市」（Celadon City）與「金黃市」（Saffron City）",
       themeColor: "#ec4899",
