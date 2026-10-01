@@ -626,6 +626,11 @@ if (!elements['floatingBackBtn']) process.exit(29);
     assert res_modal_jump.returncode == 0, f"verify_modal_jump_and_3char_region.js 驗證失敗:\n{res_modal_jump.stderr or res_modal_jump.stdout}"
     print("✅ [PASS] 獨立模組 verify_modal_jump_and_3char_region.js 彈窗頭像點擊跳轉與全站地區 3 字標準化驗證 100% 通過！")
 
+    # 執行獨立模組 verify_smart_dynamic_header.js 驗證智能雙態吸頂工具列
+    res_smart_header = subprocess.run(["node", "verify_smart_dynamic_header.js"], capture_output=True, text=True)
+    assert res_smart_header.returncode == 0, f"verify_smart_dynamic_header.js 驗證失敗:\n{res_smart_header.stderr or res_smart_header.stdout}"
+    print("✅ [PASS] 獨立模組 verify_smart_dynamic_header.js 智能雙態吸頂工具列驗證 100% 通過！")
+
     print("\n🎉 全部驗收項目 100% 通過 (100% PASS)！")
 
 if __name__ == "__main__":
