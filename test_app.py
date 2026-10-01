@@ -631,6 +631,11 @@ if (!elements['floatingBackBtn']) process.exit(29);
     assert res_skel.returncode == 0, f"verify_skeleton_and_scroll_top.js 驗證失敗:\n{res_skel.stderr or res_skel.stdout}"
     print("✅ [PASS] 獨立模組 verify_skeleton_and_scroll_top.js 骨架屏、微瀑布動效與回頂部按鈕驗證 100% 通過！")
 
+    # 執行獨立模組 verify_eyecare_palette.js 驗證亮色模式溫潤護眼調與表格層次優化
+    res_eyecare = subprocess.run(["node", "verify_eyecare_palette.js"], capture_output=True, text=True)
+    assert res_eyecare.returncode == 0, f"verify_eyecare_palette.js 驗證失敗:\n{res_eyecare.stderr or res_eyecare.stdout}"
+    print("✅ [PASS] 獨立模組 verify_eyecare_palette.js 亮色模式護眼調與表格層次驗證 100% 通過！")
+
     print("\n🎉 全部驗收項目 100% 通過 (100% PASS)！")
 
 if __name__ == "__main__":

@@ -7,13 +7,14 @@
   --font-primary: 'Noto Sans TC', 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: clamp(0.85rem, 2.5vw, 1.2rem) !important;
   
-  /* Harmony Light Theme Palette (52poke Sky Blue + Modern Console Soft White) */
-  --bg-dark: #f6f8fc;
-  --bg-body-radial-1: rgba(56, 189, 248, 0.12);
-  --bg-body-radial-2: rgba(16, 185, 129, 0.08);
-  --bg-body-radial-3: rgba(99, 102, 241, 0.07);
+  /* Harmony Light Theme Palette (Apple/Linear Eye-Care Soft Warm Gray) */
+  --bg-dark: #eef2f6;
+  --bg-body-radial-1: rgba(56, 189, 248, 0.08);
+  --bg-body-radial-2: rgba(16, 185, 129, 0.06);
+  --bg-body-radial-3: rgba(99, 102, 241, 0.05);
 
-  --bg-header: rgba(255, 255, 255, 0.88);
+  --bg-header: rgba(255, 255, 255, 0.90);
+  --bg-header-sticky: rgba(255, 255, 255, 0.96);
   --bg-card: #ffffff;
   --bg-card-hover: #fafcff;
   --glass-border: rgba(226, 232, 240, 0.9);
@@ -48,7 +49,8 @@
   --table-th-bg: #f1f5f9;
   --table-th-text: #1e293b;
   --table-td-border: #f1f5f9;
-  --table-tr-hover: #f8fafc;
+  --table-tr-alt: #f8fafc;
+  --table-tr-hover: #edf2f7;
   --table-tr-completed: transparent;
 
   --storage-th-bg: #f3f0ff;
@@ -123,7 +125,8 @@
   --table-th-bg: rgba(15, 23, 42, 0.9);
   --table-th-text: var(--text-sub);
   --table-td-border: rgba(255, 255, 255, 0.05);
-  --table-tr-hover: rgba(255, 255, 255, 0.04);
+  --table-tr-alt: rgba(255, 255, 255, 0.02);
+  --table-tr-hover: rgba(255, 255, 255, 0.06);
   --table-tr-completed: transparent;
 
   --storage-th-bg: rgba(76, 29, 149, 0.5);
@@ -2234,7 +2237,7 @@ body {
   border: 0.0625rem solid var(--glass-border);
   border-radius: var(--radius-lg);
   overflow-x: auto;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
 }
 
 .data-table {
@@ -2256,12 +2259,20 @@ body {
 
 .data-table td {
   padding: 0.8750rem 1.0000rem;
-  border-bottom: 0.0625rem solid rgba(255, 255, 255, 0.05);
+  border-bottom: 0.0625rem solid var(--table-td-border);
   vertical-align: top;
 }
 
+.data-table tbody tr {
+  transition: background-color var(--transition-fast);
+}
+
+.data-table tbody tr:nth-child(even) {
+  background-color: var(--table-tr-alt);
+}
+
 .data-table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background-color: var(--table-tr-hover) !important;
 }
 
 .data-table tbody tr.completed {
