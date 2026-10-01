@@ -646,6 +646,11 @@ if (!elements['floatingBackBtn']) process.exit(29);
     assert res_8col.returncode == 0, f"verify_8col_responsive_table.js 驗證失敗:\n{res_8col.stderr or res_8col.stdout}"
     print("✅ [PASS] 獨立模組 verify_8col_responsive_table.js 寬螢幕 8 欄與中窄螢幕 7 欄雙態智能互斥排版驗證 100% 通過！")
 
+    # 執行獨立模組 verify_fav_pill_typography.js 驗證喜好標籤字體排版與精緻幾何規格
+    res_fav = subprocess.run(["node", "verify_fav_pill_typography.js"], capture_output=True, text=True)
+    assert res_fav.returncode == 0, f"verify_fav_pill_typography.js 驗證失敗:\n{res_fav.stderr or res_fav.stdout}"
+    print("✅ [PASS] 獨立模組 verify_fav_pill_typography.js 喜好標籤字體排版與精緻幾何規格驗證 100% 通過！")
+
     print("\n🎉 全部驗收項目 100% 通過 (100% PASS)！")
 
 if __name__ == "__main__":
