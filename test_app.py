@@ -666,6 +666,11 @@ if (!elements['floatingBackBtn']) process.exit(29);
     assert res_caps.returncode == 0, f"verify_fluid_typography_and_capsules.js 驗證失敗:\n{res_caps.stderr or res_caps.stdout}"
     print("✅ [PASS] 獨立模組 verify_fluid_typography_and_capsules.js 棲息地圖上限硬約束、全表格流體文字與全域膠囊等高驗證 100% 通過！")
 
+    # 執行獨立模組 verify_mobile_avatar_scale.js 驗證手機端 (<= 640px) 寶可夢頭像微縮與桌機大圖隔離
+    res_mob_scale = subprocess.run(["node", "verify_mobile_avatar_scale.js"], capture_output=True, text=True)
+    assert res_mob_scale.returncode == 0, f"verify_mobile_avatar_scale.js 驗證失敗:\n{res_mob_scale.stderr or res_mob_scale.stdout}"
+    print("✅ [PASS] 獨立模組 verify_mobile_avatar_scale.js 手機端寶可夢頭像微縮與桌機大圖樣式隔離驗證 100% 通過！")
+
     print("\n🎉 全部驗收項目 100% 通過 (100% PASS)！")
 
 if __name__ == "__main__":

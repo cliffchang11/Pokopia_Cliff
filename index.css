@@ -9157,9 +9157,11 @@ body.has-floating-back .scroll-top-btn {
 }
 
 /* 2. 主角視覺放大、縮圖尺寸硬約束與文字微縮 */
-.pokemon-table .pkm-avatar-table-large {
-  width: clamp(4.5000rem, 6.5vw, 6.0000rem) !important;
-  height: clamp(4.5000rem, 6.5vw, 6.0000rem) !important;
+@media (min-width: 1280px) {
+  .pokemon-table .pkm-avatar-table-large {
+    width: clamp(4.5000rem, 6.5vw, 6.0000rem) !important;
+    height: clamp(4.5000rem, 6.5vw, 6.0000rem) !important;
+  }
 }
 
 .pokemon-table .pkm-table-hab-single-wrap,
@@ -9253,6 +9255,23 @@ body.has-floating-back .scroll-top-btn {
     width: 17.0% !important;
   }
 }
+
+/* 4. 手機端 (<= 640px) 寶可夢頭像微縮與行高緊緻化 */
+@media (max-width: 640px) {
+  .pokemon-table .pkm-avatar-table-large,
+  .pokemon-table td:nth-child(3) .pkm-avatar-table-large {
+    width: clamp(2.2000rem, 11vw, 2.7500rem) !important;
+    max-width: clamp(2.2000rem, 11vw, 2.7500rem) !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1 !important;
+    object-fit: contain !important;
+  }
+
+  .pokemon-table td:nth-child(3) {
+    padding: 0.2500rem 0.0625rem !important;
+  }
+}
+
 
 
 
