@@ -9078,16 +9078,45 @@ body.has-floating-back .scroll-top-btn {
 }
 
 /* ==========================================================================
-   寬螢幕 8 欄與中窄螢幕 7 欄雙態智能互斥排版 (1280px 斷點)
+   寬螢幕 8 欄與中窄螢幕 7 欄雙態智能互斥排版與流體百分比系統
    ========================================================================== */
 
-/* 寬螢幕預設 (>= 1280px)：開啟第 6 欄「目前位置」為獨立單元格 */
+/* 1. 寬螢幕預設 (>= 1280px)：8 欄流體百分比系統 (總和 100%) */
+.pokemon-table th:first-child,
+.pokemon-table td:first-child {
+  width: 3.5% !important;
+  min-width: 0 !important;
+}
+
+.pokemon-table th:nth-child(2),
+.pokemon-table td:nth-child(2) {
+  width: 7.0% !important;
+  min-width: 0 !important;
+}
+
+.pokemon-table th:nth-child(3),
+.pokemon-table td:nth-child(3) {
+  width: 16.0% !important;
+  min-width: 0 !important;
+}
+
+.pokemon-table th:nth-child(4),
+.pokemon-table td:nth-child(4) {
+  width: 6.5% !important;
+  min-width: 0 !important;
+}
+
+.pokemon-table th:nth-child(5),
+.pokemon-table td:nth-child(5) {
+  width: 7.0% !important;
+  min-width: 0 !important;
+}
+
 .pokemon-table .col-th-region,
 .pokemon-table .col-td-region {
   display: table-cell;
-  width: 115px;
-  min-width: 105px;
-  max-width: 125px;
+  width: 8.5% !important;
+  min-width: 0 !important;
   text-align: center;
   vertical-align: middle;
   padding: 0.3750rem 0.2500rem;
@@ -9102,10 +9131,24 @@ body.has-floating-back .scroll-top-btn {
 
 .pokemon-table .col-td-region .pkm-table-region-select {
   margin-top: 0;
-  width: 105px;
-  max-width: 100%;
+  width: 95%;
+  max-width: 105px;
   font-size: 0.70rem;
   padding: 0.15rem 0.35rem;
+}
+
+.pokemon-table th.col-th-habitat,
+.pokemon-table td.pkm-col-hab {
+  width: 36.5% !important;
+  min-width: 0 !important;
+}
+
+.pokemon-table th.col-favorites,
+.pokemon-table td.col-favorites,
+.pokemon-table th:last-child,
+.pokemon-table td:last-child {
+  width: 15.0% !important;
+  min-width: 0 !important;
 }
 
 /* 寬螢幕下，第 2 欄「寶可夢」內部的位置選單隱藏，避免重複 */
@@ -9113,7 +9156,35 @@ body.has-floating-back .scroll-top-btn {
   display: none !important;
 }
 
-/* 中窄螢幕 (< 1280px)：第 6 欄獨立單元格隱藏，第 2 欄內嵌選單復現，退回 7 欄緊湊排版 */
+/* 2. 主角視覺放大與棲息地文字微縮 */
+.pokemon-table .pkm-avatar-table-large {
+  width: clamp(4.5000rem, 6.5vw, 6.0000rem) !important;
+  height: clamp(4.5000rem, 6.5vw, 6.0000rem) !important;
+}
+
+.pokemon-table .pkm-table-hab-single-wrap,
+.pokemon-table .pkm-table-hab-carousel {
+  width: 95% !important;
+  max-width: 95% !important;
+  margin: 0 auto !important;
+}
+
+.pokemon-table .pkm-table-hab-thumb {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 3 / 2 !important;
+}
+
+.pokemon-table .pkm-hab-name-text {
+  font-size: 0.68rem !important;
+}
+
+.pokemon-table .pkm-hab-bottom-bar {
+  padding: 0.08rem 0.20rem !important;
+}
+
+/* 3. 中窄螢幕 (< 1280px)：第 6 欄獨立單元格隱藏，7 欄流體百分比系統 (總和 100%) */
 @media (max-width: 1279px) {
   .pokemon-table .col-th-region,
   .pokemon-table .col-td-region {
@@ -9121,6 +9192,43 @@ body.has-floating-back .scroll-top-btn {
   }
   .pokemon-table .pkm-name-region-wrap {
     display: block !important;
+  }
+
+  .pokemon-table th:first-child,
+  .pokemon-table td:first-child {
+    width: 4.0% !important;
+  }
+
+  .pokemon-table th:nth-child(2),
+  .pokemon-table td:nth-child(2) {
+    width: 9.5% !important;
+  }
+
+  .pokemon-table th:nth-child(3),
+  .pokemon-table td:nth-child(3) {
+    width: 16.5% !important;
+  }
+
+  .pokemon-table th:nth-child(4),
+  .pokemon-table td:nth-child(4) {
+    width: 7.5% !important;
+  }
+
+  .pokemon-table th:nth-child(5),
+  .pokemon-table td:nth-child(5) {
+    width: 8.0% !important;
+  }
+
+  .pokemon-table th.col-th-habitat,
+  .pokemon-table td.pkm-col-hab {
+    width: 37.5% !important;
+  }
+
+  .pokemon-table th.col-favorites,
+  .pokemon-table td.col-favorites,
+  .pokemon-table th:last-child,
+  .pokemon-table td:last-child {
+    width: 17.0% !important;
   }
 }
 

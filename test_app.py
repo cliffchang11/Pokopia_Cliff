@@ -656,6 +656,11 @@ if (!elements['floatingBackBtn']) process.exit(29);
     assert res_pref.returncode == 0, f"verify_pref_pill_refinement.js 驗證失敗:\n{res_pref.stderr or res_pref.stdout}"
     print("✅ [PASS] 獨立模組 verify_pref_pill_refinement.js 真實喜好膠囊 (.pref-pill) 微型化與排版精緻驗證 100% 通過！")
 
+    # 執行獨立模組 verify_fluid_table_proportions.js 驗證 8 欄與 7 欄流體百分比、主角放大與棲息地字級微縮
+    res_prop = subprocess.run(["node", "verify_fluid_table_proportions.js"], capture_output=True, text=True)
+    assert res_prop.returncode == 0, f"verify_fluid_table_proportions.js 驗證失敗:\n{res_prop.stderr or res_prop.stdout}"
+    print("✅ [PASS] 獨立模組 verify_fluid_table_proportions.js 8 欄與 7 欄流體百分比、主角放大與棲息地字級微縮驗證 100% 通過！")
+
     print("\n🎉 全部驗收項目 100% 通過 (100% PASS)！")
 
 if __name__ == "__main__":
