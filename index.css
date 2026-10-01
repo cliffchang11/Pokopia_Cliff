@@ -653,21 +653,22 @@ body {
 
 .search-icon {
   position: absolute;
-  left: 1.0000rem;
+  left: 0.8500rem;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   opacity: 0.6;
 }
 
 .search-box input {
   width: 100%;
-  padding: 0.7500rem 2.6250rem 0.7500rem 3.0000rem;
+  padding: 0.4500rem 2.2000rem 0.4500rem 2.4000rem;
+  min-height: 2.3750rem;
   background: var(--input-bg);
   border: 0.0625rem solid var(--input-border);
   border-radius: var(--radius-md);
   color: var(--input-text);
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   font-family: inherit;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s var(--ease-smooth);
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.03);
@@ -766,8 +767,8 @@ body {
   background: none;
   border: none;
   color: var(--tab-btn-text);
-  padding: 0.5000rem 0.7500rem;
-  font-size: 0.85rem;
+  padding: 0.3500rem 0.7000rem;
+  font-size: 0.82rem;
   font-weight: 600;
   border-radius: var(--radius-sm);
   cursor: pointer;
@@ -823,7 +824,7 @@ body {
   justify-content: space-between;
   width: 100%;
   max-width: 87.5000rem;
-  margin: 0 auto 0.5000rem auto;
+  margin: 0 auto 0.3500rem auto;
   box-sizing: border-box;
 }
 
@@ -857,11 +858,11 @@ body {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.5000rem 0.6250rem;
+  gap: 0.3000rem 0.4500rem;
   width: 100%;
   max-width: 87.5000rem;
-  margin: 0.5000rem auto 0;
-  padding: 0.1250rem 0;
+  margin: 0.3000rem auto 0;
+  padding: 0.0500rem 0;
   box-sizing: border-box;
   overflow: visible;
 }
@@ -873,7 +874,7 @@ body {
 .filter-select-item {
   display: inline-flex;
   align-items: center;
-  gap: 0.3125rem;
+  gap: 0.2000rem;
   flex-shrink: 0;
 }
 
@@ -882,7 +883,7 @@ body {
 }
 
 .filter-select-item .chip-label {
-  font-size: 0.82rem;
+  font-size: 0.80rem;
   color: var(--text-sub);
   white-space: nowrap;
   font-weight: 500;
@@ -894,9 +895,9 @@ body {
   background: var(--input-bg);
   border: 0.0625rem solid var(--input-border);
   color: var(--primary-indigo);
-  padding: 0.2500rem 0.6250rem;
+  padding: 0.1500rem 0.4800rem;
   border-radius: 1.2500rem;
-  font-size: 0.82rem;
+  font-size: 0.80rem;
   font-weight: 600;
   cursor: pointer;
   outline: none;
@@ -906,7 +907,7 @@ body {
   white-space: nowrap;
   flex-shrink: 0;
   min-width: 4.8000rem;
-  height: 2.1250rem;
+  height: 1.8500rem;
   line-height: 1.5;
 }
 
@@ -1142,6 +1143,60 @@ body {
   transition: transform var(--transition-fast), filter var(--transition-fast);
   flex-shrink: 0;
   cursor: pointer;
+}
+
+/* 局部圖片呼吸骨架屏 (Shimmer Skeleton Placeholder) */
+.pkm-avatar-box.is-loading,
+.pkm-card-hab-thumb.is-loading {
+  position: relative;
+  background: linear-gradient(90deg, rgba(226, 232, 240, 0.4) 0%, rgba(241, 245, 249, 0.8) 50%, rgba(226, 232, 240, 0.4) 100%) !important;
+  background-size: 200% 100% !important;
+  animation: skeletonShimmer 1.8s infinite ease-in-out !important;
+}
+
+:root[data-theme="dark"] .pkm-avatar-box.is-loading,
+:root[data-theme="dark"] .pkm-card-hab-thumb.is-loading {
+  background: linear-gradient(90deg, rgba(30, 41, 59, 0.4) 0%, rgba(51, 65, 85, 0.7) 50%, rgba(30, 41, 59, 0.4) 100%) !important;
+  background-size: 200% 100% !important;
+}
+
+@keyframes skeletonShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* 圖片平滑淡入 */
+.pkm-avatar-box img.img-fade-in,
+.pkm-card-hab-thumb img.img-fade-in {
+  animation: imgFadeIn 0.25s ease-out forwards;
+}
+
+@keyframes imgFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 卡片進場微瀑布動效 (前 16 張卡片階梯進場) */
+.item-card.stagger-in {
+  animation: cardFadeInUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--stagger-i, 0) * 0.016s);
+}
+
+@keyframes cardFadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .pkm-avatar-table:hover {
@@ -4194,6 +4249,77 @@ body {
 }
 
 :root[data-theme="dark"] .floating-back-btn:hover {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+  box-shadow: 0 0.6250rem 1.7500rem rgba(2, 132, 199, 0.5);
+}
+
+/* Scroll to Top Button (回頂部快捷懸浮按鈕) */
+.scroll-top-btn {
+  position: fixed;
+  bottom: 1.7500rem;
+  right: 1.7500rem;
+  z-index: 99;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.8750rem;
+  height: 2.8750rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--primary-indigo);
+  border: 0.0938rem solid var(--primary-indigo);
+  box-shadow: 0 0.5000rem 1.5000rem rgba(2, 132, 199, 0.25), 0 0.1250rem 0.3750rem rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: transform 0.25s var(--ease-spring), opacity 0.25s ease, background 0.2s ease, bottom 0.25s ease;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.scroll-top-btn.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(16px) scale(0.85);
+}
+
+.scroll-top-btn:hover {
+  background: var(--primary-indigo);
+  color: #ffffff;
+  box-shadow: 0 0.6250rem 1.7500rem rgba(2, 132, 199, 0.4);
+  transform: translateY(-0.1875rem) scale(1.08);
+}
+
+.scroll-top-btn:active {
+  transform: translateY(0) scale(0.94);
+}
+
+.scroll-top-icon {
+  font-size: 1.25rem;
+  font-weight: 900;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.scroll-top-btn:hover .scroll-top-icon {
+  transform: translateY(-2px);
+}
+
+/* 當同時存在返回上一頁按鈕時，回頂部按鈕自動往上平移至其上方 */
+body.has-floating-back .scroll-top-btn {
+  bottom: 4.8750rem;
+}
+
+:root[data-theme="dark"] .scroll-top-btn {
+  background: rgba(30, 41, 59, 0.92);
+  border-color: #38bdf8;
+  color: #38bdf8;
+  box-shadow: 0 0.5000rem 1.5000rem rgba(0, 0, 0, 0.5), 0 0.1250rem 0.5000rem rgba(56, 189, 248, 0.2);
+}
+
+:root[data-theme="dark"] .scroll-top-btn:hover {
   background: #0284c7;
   color: #ffffff;
   border-color: #0284c7;

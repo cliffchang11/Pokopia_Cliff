@@ -131,11 +131,14 @@
       });
       return initial;
     })(),
-    activeAssignRegionId: null
+    activeAssignRegionId: null,
+    isStaggerAnim: true
   };
 
   // DOM Elements Cache
   const DOM = {
+    btnScrollTop: document.getElementById('btnScrollTop'),
+    floatingBackBtn: document.getElementById('floatingBackBtn'),
     btnTocMenu: document.getElementById('btnTocMenu'),
     tocDropdown: document.getElementById('tocDropdown'),
     tabStorage: document.getElementById('tabStorage'),
@@ -398,11 +401,17 @@
       DOM.floatingBackText.textContent = label ? `返回 ${label}` : '返回上一頁';
     }
     DOM.floatingBackBtn.classList.remove('hidden');
+    if (typeof document !== 'undefined' && document.body) {
+      document.body.classList.add('has-floating-back');
+    }
   }
 
   function hideFloatingBackBtn() {
     if (!DOM.floatingBackBtn) return;
     DOM.floatingBackBtn.classList.add('hidden');
+    if (typeof document !== 'undefined' && document.body) {
+      document.body.classList.remove('has-floating-back');
+    }
   }
 
   // Helper: LocalStorage Loader & Saver
@@ -580,6 +589,7 @@
     state.selectedSpecialtyFilter = 'all';
     state.selectedPkmCategory = 'all';
     state.searchQuery = '';
+    state.isStaggerAnim = false; // 定向跳轉保護：零延遲立即顯現
     if (DOM.searchInput) DOM.searchInput.value = '';
     if (DOM.specialtyFilter) DOM.specialtyFilter.value = 'all';
     if (DOM.envFilter) DOM.envFilter.value = 'env-all';
@@ -600,6 +610,33 @@
     }
   }
 
+  // 右下角「回頂部」懸浮按鈕監聽 (一鍵滑順回頂端，不強奪焦點)
+  function initScrollTopButton() {
+    if (!DOM.btnScrollTop) return;
+
+    function checkScrollTopVisibility() {
+      const scrollY = window.scrollY || 0;
+      if (scrollY > 300) {
+        DOM.btnScrollTop.classList.remove('hidden');
+      } else {
+        DOM.btnScrollTop.classList.add('hidden');
+      }
+
+      // 檢查是否同時存在浮動返回按鈕，動態調整層疊位置
+      if (DOM.floatingBackBtn && !DOM.floatingBackBtn.classList.contains('hidden')) {
+        document.body.classList.add('has-floating-back');
+      } else {
+        document.body.classList.remove('has-floating-back');
+      }
+    }
+
+    window.addEventListener('scroll', checkScrollTopVisibility, { passive: true });
+
+    DOM.btnScrollTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
   // Initialize App
   function init() {
     applyTheme(state.currentTheme);
@@ -608,6 +645,7 @@
     initRegionMapEvents();
     renderStats();
     updateAutoFarmAuthUI();
+    initScrollTopButton();
 
     // Restore saved navigation state (tab & view mode)
     switchTab(state.currentTab, true);
@@ -1014,21 +1052,24 @@
       });
     }
 
-    // Search Input
+    // Search Input (打字即時回饋，零階梯延遲)
     DOM.searchInput.addEventListener('input', (e) => {
+      state.isStaggerAnim = false;
       state.searchQuery = e.target.value.trim().toLowerCase();
       renderAll();
     });
 
     DOM.clearSearchBtn.addEventListener('click', () => {
+      state.isStaggerAnim = true;
       DOM.searchInput.value = '';
       state.searchQuery = '';
       renderAll();
     });
 
-    // Unified Single-Row Select Dropdowns (Category, Environment, Specialty)
+    // Unified Single-Row Select Dropdowns (選單切換時套用微瀑布進場動效)
     if (DOM.categoryFilter) {
       DOM.categoryFilter.addEventListener('change', (e) => {
+        state.isStaggerAnim = true;
         if (state.currentTab === 'habitat') {
           state.selectedPkmCategory = e.target.value;
         } else if (state.currentTab === 'habitatCatalog') {
@@ -1040,6 +1081,7 @@
 
     if (DOM.envFilter) {
       DOM.envFilter.addEventListener('change', (e) => {
+        state.isStaggerAnim = true;
         state.selectedEnvFilter = e.target.value;
         renderAll();
       });
@@ -1047,6 +1089,7 @@
 
     if (DOM.specialtyFilter) {
       DOM.specialtyFilter.addEventListener('change', (e) => {
+        state.isStaggerAnim = true;
         state.selectedSpecialtyFilter = e.target.value;
         renderAll();
       });
@@ -1054,6 +1097,7 @@
 
     if (DOM.unlockFilter) {
       DOM.unlockFilter.addEventListener('change', (e) => {
+        state.isStaggerAnim = true;
         state.selectedUnlockFilter = e.target.value;
         renderAll();
       });
@@ -1061,6 +1105,7 @@
 
     if (DOM.regionFilter) {
       DOM.regionFilter.addEventListener('change', (e) => {
+        state.isStaggerAnim = true;
         state.selectedRegionFilter = e.target.value;
         renderAll();
       });
@@ -1260,6 +1305,7 @@
   // Switch Tab
   function switchTab(tab, skipSync = false) {
     state.currentTab = tab;
+    state.isStaggerAnim = true;
     closeTocDropdown();
 
     // Reset Tabs
@@ -1654,7 +1700,7 @@
     let hasResults = pokemons.length > 0;
 
     // Render Cards
-    DOM.habitatCardGrid.innerHTML = pokemons.map(pkm => {
+    DOM.habitatCardGrid.innerHTML = pokemons.map((pkm, index) => {
       const isChecked = !!state.pkmChecked[pkm.id];
       const specs = pkm.specialties || pkm.abilities || [];
       const specialtiesHTML = specs.map(s => {
@@ -1668,8 +1714,8 @@
         const hab1Name = pkm.habitat1.split(' - ')[0] || '棲息地 1';
         if (pkm.habitat1_img) {
           habThumbs.push(`
-            <div class="pkm-card-hab-thumb" data-hab-id="${pkm.habitat1_id || ''}" data-img="${escapeHTML(pkm.habitat1_img)}" data-caption="<strong>${escapeHTML(pkm.name)}</strong> - ${escapeHTML(hab1Name)}" title="${escapeHTML(hab1Name)}（點擊查看 52poke 官方實機全景）">
-              <img src="${pkm.habitat1_img}" alt="${escapeHTML(hab1Name)}" loading="lazy">
+            <div class="pkm-card-hab-thumb is-loading" data-hab-id="${pkm.habitat1_id || ''}" data-img="${escapeHTML(pkm.habitat1_img)}" data-caption="<strong>${escapeHTML(pkm.name)}</strong> - ${escapeHTML(hab1Name)}" title="${escapeHTML(hab1Name)}（點擊查看 52poke 官方實機全景）">
+              <img src="${pkm.habitat1_img}" alt="${escapeHTML(hab1Name)}" class="img-fade-in" loading="lazy" onload="this.parentElement.classList.remove('is-loading');" onerror="this.parentElement.classList.remove('is-loading');">
             </div>
           `);
         } else {
@@ -1684,8 +1730,8 @@
         const hab2Name = pkm.habitat2.split(' - ')[0] || '棲息地 2';
         if (pkm.habitat2_img) {
           habThumbs.push(`
-            <div class="pkm-card-hab-thumb" data-hab-id="${pkm.habitat2_id || ''}" data-img="${escapeHTML(pkm.habitat2_img)}" data-caption="<strong>${escapeHTML(pkm.name)}</strong> - ${escapeHTML(hab2Name)}" title="${escapeHTML(hab2Name)}（點擊跳轉棲息地圖鑑）">
-              <img src="${pkm.habitat2_img}" alt="${escapeHTML(hab2Name)}" loading="lazy">
+            <div class="pkm-card-hab-thumb is-loading" data-hab-id="${pkm.habitat2_id || ''}" data-img="${escapeHTML(pkm.habitat2_img)}" data-caption="<strong>${escapeHTML(pkm.name)}</strong> - ${escapeHTML(hab2Name)}" title="${escapeHTML(hab2Name)}（點擊跳轉棲息地圖鑑）">
+              <img src="${pkm.habitat2_img}" alt="${escapeHTML(hab2Name)}" class="img-fade-in" loading="lazy" onload="this.parentElement.classList.remove('is-loading');" onerror="this.parentElement.classList.remove('is-loading');">
             </div>
           `);
         } else {
@@ -1717,12 +1763,16 @@
         </span>
       `;
 
+      const isStagger = state.isStaggerAnim && index < 16;
+      const staggerClass = isStagger ? 'stagger-in' : '';
+      const staggerStyle = isStagger ? `style="--stagger-i: ${index};"` : '';
+
       return `
-        <div class="item-card ${isChecked ? 'completed' : ''}" data-id="${pkm.id}">
+        <div class="item-card ${staggerClass} ${isChecked ? 'completed' : ''}" ${staggerStyle} data-id="${pkm.id}">
           <div class="card-header">
             <div class="card-title-group">
-              <div class="pkm-avatar-box">
-                <img src="${pkm.sprite}" alt="${escapeHTML(pkm.name)}" onerror="this.src='${FALLBACK_SPRITE}'">
+              <div class="pkm-avatar-box is-loading">
+                <img src="${pkm.sprite}" alt="${escapeHTML(pkm.name)}" class="img-fade-in" loading="lazy" onload="this.parentElement.classList.remove('is-loading');" onerror="this.src='${FALLBACK_SPRITE}'; this.parentElement.classList.remove('is-loading');">
               </div>
               <div>
                 <div class="card-number-group">
