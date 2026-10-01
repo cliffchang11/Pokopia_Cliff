@@ -1030,9 +1030,9 @@ body {
   gap: 0.3750rem;
 }
 
-/* Main Content Area */
+/* Main Content Area (統一版心對齊：87.5rem 內容寬 + 左右各 1.5rem 內距，與上方工具列 100% 垂直對齊) */
 .main-content {
-  max-width: 87.5000rem;
+  max-width: 90.5000rem;
   margin: 0.7500rem auto 1.5000rem auto;
   padding: 0 1.5000rem;
   flex: 1;

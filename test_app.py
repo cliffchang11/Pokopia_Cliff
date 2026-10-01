@@ -636,6 +636,11 @@ if (!elements['floatingBackBtn']) process.exit(29);
     assert res_eyecare.returncode == 0, f"verify_eyecare_palette.js 驗證失敗:\n{res_eyecare.stderr or res_eyecare.stdout}"
     print("✅ [PASS] 獨立模組 verify_eyecare_palette.js 亮色模式護眼調與表格層次驗證 100% 通過！")
 
+    # 執行獨立模組 verify_container_grid_alignment.js 驗證上方工具列與下方表格版心垂直對齊
+    res_align = subprocess.run(["node", "verify_container_grid_alignment.js"], capture_output=True, text=True)
+    assert res_align.returncode == 0, f"verify_container_grid_alignment.js 驗證失敗:\n{res_align.stderr or res_align.stdout}"
+    print("✅ [PASS] 獨立模組 verify_container_grid_alignment.js 上方工具列與下方表格版心垂直對齊驗證 100% 通過！")
+
     print("\n🎉 全部驗收項目 100% 通過 (100% PASS)！")
 
 if __name__ == "__main__":
