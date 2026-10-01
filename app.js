@@ -136,7 +136,6 @@
 
   // DOM Elements Cache
   const DOM = {
-    appHeader: document.querySelector('.app-header'),
     btnTocMenu: document.getElementById('btnTocMenu'),
     tocDropdown: document.getElementById('tocDropdown'),
     tabStorage: document.getElementById('tabStorage'),
@@ -601,53 +600,6 @@
     }
   }
 
-  // 智能雙態吸頂工具列 (Smart Dynamic Header) 滾動監聽
-  function initSmartDynamicHeader() {
-    if (!DOM.appHeader) return;
-
-    let lastScrollY = window.scrollY || 0;
-    let ticking = false;
-
-    function onScroll() {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const currentScrollY = window.scrollY || 0;
-          const isInputFocused = DOM.searchInput && document.activeElement === DOM.searchInput;
-
-          // 頁面靠近頂端（<= 30px）：完全恢復原狀
-          if (currentScrollY <= 30) {
-            DOM.appHeader.classList.remove('is-sticky', 'is-compact');
-          } else {
-            // 已滾動離開頂端：啟用吸頂基礎狀態
-            DOM.appHeader.classList.add('is-sticky');
-
-            // 滾動超過 160px，判斷滾動方向
-            if (currentScrollY > 160) {
-              const delta = currentScrollY - lastScrollY;
-              // 向下顯著滾動且未在打字：進入精簡模式（收合大標題，釋放 80% 垂直空間）
-              if (delta > 8 && !isInputFocused) {
-                DOM.appHeader.classList.add('is-compact');
-              } 
-              // 向上顯著滾動：退出精簡模式，展開完整導航與篩選
-              else if (delta < -12) {
-                DOM.appHeader.classList.remove('is-compact');
-              }
-            } else {
-              // 160px 以內不收合
-              DOM.appHeader.classList.remove('is-compact');
-            }
-          }
-
-          lastScrollY = currentScrollY;
-          ticking = false;
-        });
-        ticking = true;
-      }
-    }
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-  }
-
   // Initialize App
   function init() {
     applyTheme(state.currentTheme);
@@ -656,7 +608,6 @@
     initRegionMapEvents();
     renderStats();
     updateAutoFarmAuthUI();
-    initSmartDynamicHeader();
 
     // Restore saved navigation state (tab & view mode)
     switchTab(state.currentTab, true);

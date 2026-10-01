@@ -14,7 +14,6 @@
   --bg-body-radial-3: rgba(99, 102, 241, 0.07);
 
   --bg-header: rgba(255, 255, 255, 0.88);
-  --bg-header-sticky: rgba(255, 255, 255, 0.94);
   --bg-card: #ffffff;
   --bg-card-hover: #fafcff;
   --glass-border: rgba(226, 232, 240, 0.9);
@@ -90,7 +89,6 @@
   --bg-body-radial-3: rgba(236, 72, 153, 0.09);
 
   --bg-header: rgba(10, 17, 36, 0.88);
-  --bg-header-sticky: rgba(10, 17, 36, 0.94);
   --bg-card: rgba(22, 34, 62, 0.78);
   --bg-card-hover: rgba(30, 47, 86, 0.88);
   --glass-border: rgba(255, 255, 255, 0.12);
@@ -186,68 +184,6 @@ body {
   box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.04);
   padding: 1.0000rem 1.5000rem;
   transition: background-color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
-}
-
-/* 智能雙態吸頂 (Smart Dynamic Header) */
-.app-header.is-sticky {
-  position: sticky;
-  top: 0;
-  z-index: 950;
-  background: var(--bg-header-sticky);
-  backdrop-filter: blur(1.25rem) saturate(180%);
-  -webkit-backdrop-filter: blur(1.25rem) saturate(180%);
-  box-shadow: 0 8px 30px -6px rgba(0, 0, 0, 0.16), 0 1px 0 rgba(255, 255, 255, 0.08);
-  padding: 0.6500rem 1.5000rem;
-  transition: padding 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              background-color 0.3s ease,
-              box-shadow 0.3s ease,
-              border-color 0.3s ease;
-}
-
-/* 雙態精簡模式 (向下滾動 Compact Mode) */
-.app-header.is-compact {
-  padding: 0.3500rem 1.2500rem 0.4000rem 1.2500rem;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.22), 0 1px 0 rgba(255, 255, 255, 0.08);
-}
-
-.app-header.is-compact .header-container {
-  max-height: 0;
-  opacity: 0;
-  margin-bottom: 0;
-  pointer-events: none;
-  overflow: hidden;
-  transform: translateY(-8px);
-}
-
-.app-header.is-compact .toolbar-header-row {
-  max-height: 0;
-  opacity: 0;
-  margin-bottom: 0;
-  pointer-events: none;
-  overflow: hidden;
-  transform: translateY(-6px);
-}
-
-.app-header.is-compact .search-row {
-  margin-bottom: 0;
-}
-
-.app-header.is-compact .filter-toolbar-row {
-  max-height: 0;
-  opacity: 0;
-  margin-top: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-/* 平滑過渡動畫屬性保全 */
-.header-container,
-.toolbar-header-row,
-.filter-toolbar-row {
-  transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 0.25s ease,
-              margin 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.25s ease;
 }
 
 .header-container {
@@ -2544,18 +2480,11 @@ body {
 
 /* Mobile Responsive Adjustments (<= 640px / <= 40.0000rem) */
 @media (max-width: 640px), (max-width: 40.0000rem) {
-  /* Header & Top Bar: 平時隨頁面滑動自然滾出，滾動時觸發智能吸頂 */
+  /* Header & Top Bar: 解除 Sticky 固定，隨頁面滑動自然滾出視窗 */
   .app-header {
     position: relative !important;
     top: unset !important;
     padding: 0.6250rem 0.7500rem 0.2000rem 0.7500rem;
-  }
-
-  .app-header.is-sticky {
-    position: sticky !important;
-    top: 0 !important;
-    padding: 0.3500rem 0.5000rem !important;
-    z-index: 950 !important;
   }
 
   .header-container {
