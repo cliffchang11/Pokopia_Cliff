@@ -661,6 +661,11 @@ if (!elements['floatingBackBtn']) process.exit(29);
     assert res_prop.returncode == 0, f"verify_fluid_table_proportions.js 驗證失敗:\n{res_prop.stderr or res_prop.stdout}"
     print("✅ [PASS] 獨立模組 verify_fluid_table_proportions.js 8 欄與 7 欄流體百分比、主角放大與棲息地字級微縮驗證 100% 通過！")
 
+    # 執行獨立模組 verify_fluid_typography_and_capsules.js 驗證棲息地圖上限硬約束、全表格流體文字與全域膠囊等高
+    res_caps = subprocess.run(["node", "verify_fluid_typography_and_capsules.js"], capture_output=True, text=True)
+    assert res_caps.returncode == 0, f"verify_fluid_typography_and_capsules.js 驗證失敗:\n{res_caps.stderr or res_caps.stdout}"
+    print("✅ [PASS] 獨立模組 verify_fluid_typography_and_capsules.js 棲息地圖上限硬約束、全表格流體文字與全域膠囊等高驗證 100% 通過！")
+
     print("\n🎉 全部驗收項目 100% 通過 (100% PASS)！")
 
 if __name__ == "__main__":

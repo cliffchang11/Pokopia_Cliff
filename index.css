@@ -9156,7 +9156,7 @@ body.has-floating-back .scroll-top-btn {
   display: none !important;
 }
 
-/* 2. 主角視覺放大與棲息地文字微縮 */
+/* 2. 主角視覺放大、縮圖尺寸硬約束與文字微縮 */
 .pokemon-table .pkm-avatar-table-large {
   width: clamp(4.5000rem, 6.5vw, 6.0000rem) !important;
   height: clamp(4.5000rem, 6.5vw, 6.0000rem) !important;
@@ -9165,23 +9165,45 @@ body.has-floating-back .scroll-top-btn {
 .pokemon-table .pkm-table-hab-single-wrap,
 .pokemon-table .pkm-table-hab-carousel {
   width: 95% !important;
-  max-width: 95% !important;
+  max-width: 14.3750rem !important;
   margin: 0 auto !important;
 }
 
 .pokemon-table .pkm-table-hab-thumb {
   width: 100% !important;
-  max-width: 100% !important;
+  max-width: 14.3750rem !important;
   height: auto !important;
   aspect-ratio: 3 / 2 !important;
 }
 
+.pokemon-table th {
+  font-size: clamp(0.72rem, 0.90vw, 0.84rem) !important;
+}
+
 .pokemon-table .pkm-hab-name-text {
-  font-size: 0.68rem !important;
+  font-size: clamp(0.68rem, 0.82vw, 0.78rem) !important;
 }
 
 .pokemon-table .pkm-hab-bottom-bar {
   padding: 0.08rem 0.20rem !important;
+}
+
+/* 3. 全域三大膠囊（環境、專長、喜好）100% 同軌字級與等高圓角排版 */
+.pokemon-table td .tag-env,
+.pokemon-table td .tag-specialty,
+.pokemon-table td .pref-pill,
+.pref-pill {
+  font-size: clamp(0.68rem, 0.82vw, 0.78rem) !important;
+  font-weight: 600 !important;
+  padding: 0.18em 0.60em !important;
+  border-radius: 9999px !important;
+  min-height: 1.45rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1.2 !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
 }
 
 /* 3. 中窄螢幕 (< 1280px)：第 6 欄獨立單元格隱藏，7 欄流體百分比系統 (總和 100%) */
