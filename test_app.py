@@ -651,6 +651,11 @@ if (!elements['floatingBackBtn']) process.exit(29);
     assert res_fav.returncode == 0, f"verify_fav_pill_typography.js 驗證失敗:\n{res_fav.stderr or res_fav.stdout}"
     print("✅ [PASS] 獨立模組 verify_fav_pill_typography.js 喜好標籤字體排版與精緻幾何規格驗證 100% 通過！")
 
+    # 執行獨立模組 verify_pref_pill_refinement.js 驗證真實喜好膠囊 (.pref-pill) 微型化與排版精緻
+    res_pref = subprocess.run(["node", "verify_pref_pill_refinement.js"], capture_output=True, text=True)
+    assert res_pref.returncode == 0, f"verify_pref_pill_refinement.js 驗證失敗:\n{res_pref.stderr or res_pref.stdout}"
+    print("✅ [PASS] 獨立模組 verify_pref_pill_refinement.js 真實喜好膠囊 (.pref-pill) 微型化與排版精緻驗證 100% 通過！")
+
     print("\n🎉 全部驗收項目 100% 通過 (100% PASS)！")
 
 if __name__ == "__main__":
