@@ -61,7 +61,7 @@ testResolutions.forEach(w => {
 
 // 4. 驗證手機端 (<= 640px) 規則依然完好
 assert(css.includes('.pokemon-table th:nth-child(7),') && css.includes('display: none !important;'), '手機端隱藏第 7 欄喜好規則必須完好存在');
-assert(css.includes('.pokemon-table th:nth-child(6),') && css.includes('width: 28% !important;'), '手機端第 6 欄棲息地 28% 規則必須完好存在');
+assert(css.includes('.pokemon-table th:nth-child(6),') && (css.includes('width: 24.0% !important;') || css.includes('width: 24% !important;')), '手機端第 6 欄棲息地 24% 規則必須完好存在');
 console.log('✅ [Check 4] PASS: 手機端 (<= 640px) 既有前 6 欄滿版規則保全無損');
 
 console.log('\n🎉 中型螢幕 (641px ~ 1120px) 流體響應式幾何檢驗 100% PASS！');

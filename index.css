@@ -5818,12 +5818,12 @@ body.has-floating-back .scroll-top-btn {
     font-weight: 700 !important;
   }
 
-  /* ===== 手機端 6 欄百分比分配（等比縮放） ===== */
+  /* ===== 手機端 6 欄百分比分配（等比縮放，總和 100%） ===== */
 
-  /* 欄位 1：勾選框 8% */
+  /* 欄位 1：勾選框 6.5% */
   .pokemon-table th:nth-child(1),
   .pokemon-table td:nth-child(1) {
-    width: 8% !important;
+    width: 6.5% !important;
     min-width: 0 !important;
     max-width: none !important;
     padding: 0.2500rem 0.0625rem !important;
@@ -5833,13 +5833,13 @@ body.has-floating-back .scroll-top-btn {
     margin: 0 auto !important;
   }
 
-  /* 欄位 2：編號名稱 20% */
+  /* 欄位 2：編號名稱 24% (左側留白防擠) */
   .pokemon-table th:nth-child(2),
   .pokemon-table td:nth-child(2) {
-    width: 20% !important;
+    width: 24.0% !important;
     min-width: 0 !important;
     max-width: none !important;
-    padding: 0.2500rem 0.1250rem !important;
+    padding: 0.2500rem 0.1250rem 0.2500rem 0.3750rem !important;
   }
   .pokemon-table td:nth-child(2) .pkm-cell-identity {
     display: flex !important;
@@ -5864,10 +5864,10 @@ body.has-floating-back .scroll-top-btn {
     align-self: flex-start !important;
   }
 
-  /* 欄位 3：外觀頭像 18%（70% 填滿） */
+  /* 欄位 3：外觀頭像 16.5% */
   .pokemon-table th:nth-child(3),
   .pokemon-table td:nth-child(3) {
-    width: 18% !important;
+    width: 16.5% !important;
     min-width: 0 !important;
     max-width: none !important;
     padding: 0.2500rem 0.0625rem !important;
@@ -5886,10 +5886,10 @@ body.has-floating-back .scroll-top-btn {
     object-fit: contain !important;
   }
 
-  /* 欄位 4：環境 13% */
+  /* 欄位 4：環境 14.5% */
   .pokemon-table th:nth-child(4),
   .pokemon-table td:nth-child(4) {
-    width: 13% !important;
+    width: 14.5% !important;
     min-width: 0 !important;
     max-width: none !important;
     padding: 0.2500rem 0.0625rem !important;
@@ -5906,10 +5906,10 @@ body.has-floating-back .scroll-top-btn {
     box-sizing: border-box !important;
   }
 
-  /* 欄位 5：專長 13% */
+  /* 欄位 5：專長 14.5% */
   .pokemon-table th:nth-child(5),
   .pokemon-table td:nth-child(5) {
-    width: 13% !important;
+    width: 14.5% !important;
     min-width: 0 !important;
     max-width: none !important;
     padding: 0.2500rem 0.0625rem !important;
@@ -5932,12 +5932,12 @@ body.has-floating-back .scroll-top-btn {
     box-sizing: border-box !important;
   }
 
-  /* 欄位 6：棲息地 28%（剩餘空間） */
+  /* 欄位 6：棲息地 24% */
   .pokemon-table th.col-th-habitat,
   .pokemon-table td.pkm-col-hab,
   .pokemon-table th:nth-child(6),
   .pokemon-table td:nth-child(6) {
-    width: 28% !important;
+    width: 24.0% !important;
     min-width: 0 !important;
     max-width: none !important;
     padding: 0.2500rem 0.1250rem !important;
@@ -9256,12 +9256,12 @@ body.has-floating-back .scroll-top-btn {
   }
 }
 
-/* 4. 手機端 (<= 640px) 寶可夢頭像微縮與行高緊緻化 */
+/* 4. 手機端 (<= 640px) 寶可夢頭像微調放大、膠囊防貼邊與行高緊緻化 */
 @media (max-width: 640px) {
   .pokemon-table .pkm-avatar-table-large,
   .pokemon-table td:nth-child(3) .pkm-avatar-table-large {
-    width: clamp(2.2000rem, 11vw, 2.7500rem) !important;
-    max-width: clamp(2.2000rem, 11vw, 2.7500rem) !important;
+    width: clamp(2.6000rem, 12.5vw, 3.2000rem) !important;
+    max-width: clamp(2.6000rem, 12.5vw, 3.2000rem) !important;
     height: auto !important;
     aspect-ratio: 1 / 1 !important;
     object-fit: contain !important;
@@ -9269,6 +9269,15 @@ body.has-floating-back .scroll-top-btn {
 
   .pokemon-table td:nth-child(3) {
     padding: 0.2500rem 0.0625rem !important;
+  }
+
+  /* 手機端膠囊微調：字級與 padding 輕量化，防貼邊緊擠 */
+  .pokemon-table td .tag-env,
+  .pokemon-table td .tag-specialty {
+    font-size: clamp(0.6000rem, 2.5vw, 0.6800rem) !important;
+    padding: 0.1500em 0.4500em !important;
+    min-height: 1.2500rem !important;
+    max-width: 95% !important;
   }
 }
 
