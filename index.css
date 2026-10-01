@@ -5791,6 +5791,15 @@ body.has-floating-back .scroll-top-btn {
     display: none !important;
   }
 
+  .pokemon-table th.col-th-region,
+  .pokemon-table td.col-td-region {
+    display: none !important;
+  }
+  .pokemon-table th.col-th-habitat,
+  .pokemon-table td.pkm-col-hab {
+    display: table-cell !important;
+  }
+
   /* 手機端簡化表頭文字：環境屬性 -> 環境，工作專長 -> 專長 */
   .pokemon-table th:nth-child(4) {
     font-size: 0 !important;
@@ -9067,5 +9076,53 @@ body.has-floating-back .scroll-top-btn {
     grid-column: 1 / -1 !important;
   }
 }
+
+/* ==========================================================================
+   寬螢幕 8 欄與中窄螢幕 7 欄雙態智能互斥排版 (1280px 斷點)
+   ========================================================================== */
+
+/* 寬螢幕預設 (>= 1280px)：開啟第 6 欄「目前位置」為獨立單元格 */
+.pokemon-table .col-th-region,
+.pokemon-table .col-td-region {
+  display: table-cell;
+  width: 115px;
+  min-width: 105px;
+  max-width: 125px;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0.3750rem 0.2500rem;
+}
+
+.pokemon-table .col-td-region .pkm-standalone-region-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.pokemon-table .col-td-region .pkm-table-region-select {
+  margin-top: 0;
+  width: 105px;
+  max-width: 100%;
+  font-size: 0.70rem;
+  padding: 0.15rem 0.35rem;
+}
+
+/* 寬螢幕下，第 2 欄「寶可夢」內部的位置選單隱藏，避免重複 */
+.pokemon-table .pkm-name-region-wrap {
+  display: none !important;
+}
+
+/* 中窄螢幕 (< 1280px)：第 6 欄獨立單元格隱藏，第 2 欄內嵌選單復現，退回 7 欄緊湊排版 */
+@media (max-width: 1279px) {
+  .pokemon-table .col-th-region,
+  .pokemon-table .col-td-region {
+    display: none !important;
+  }
+  .pokemon-table .pkm-name-region-wrap {
+    display: block !important;
+  }
+}
+
 
 

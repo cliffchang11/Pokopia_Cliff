@@ -1895,7 +1895,9 @@
               <strong class="pkm-table-name">${escapeHTML(baseName)}</strong>
               ${formName ? `<span class="pkm-form-badge">${escapeHTML(formName)}</span>` : ''}
               <span class="tag-badge tag-cat-${escapeHTML(pkm.category || 'main')}">${escapeHTML(pkm.categoryName || '主圖鑑')}</span>
-              ${tableLocationSelectHTML}
+              <div class="pkm-name-region-wrap">
+                ${tableLocationSelectHTML}
+              </div>
             </div>
           </td>
           <td class="pkm-col-avatar" title="點擊查看 ${escapeHTML(pkm.name)} 完整百科與喜好">
@@ -1910,6 +1912,11 @@
                 const icon = SPECIALTY_ICONS[s] || '⚡';
                 return `<span class="tag-specialty" data-spec="${escapeHTML(s)}" title="點擊篩選專長：${escapeHTML(s)}">${icon} ${escapeHTML(s)}</span>`;
               }).join('')}
+            </div>
+          </td>
+          <td class="col-td-region">
+            <div class="pkm-standalone-region-wrap">
+              ${tableLocationSelectHTML}
             </div>
           </td>
           <td class="pkm-col-hab">${habsCell}</td>

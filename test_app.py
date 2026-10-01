@@ -641,6 +641,11 @@ if (!elements['floatingBackBtn']) process.exit(29);
     assert res_align.returncode == 0, f"verify_container_grid_alignment.js 驗證失敗:\n{res_align.stderr or res_align.stdout}"
     print("✅ [PASS] 獨立模組 verify_container_grid_alignment.js 上方工具列與下方表格版心垂直對齊驗證 100% 通過！")
 
+    # 執行獨立模組 verify_8col_responsive_table.js 驗證寬螢幕 8 欄與中窄螢幕 7 欄雙態智能互斥排版
+    res_8col = subprocess.run(["node", "verify_8col_responsive_table.js"], capture_output=True, text=True)
+    assert res_8col.returncode == 0, f"verify_8col_responsive_table.js 驗證失敗:\n{res_8col.stderr or res_8col.stdout}"
+    print("✅ [PASS] 獨立模組 verify_8col_responsive_table.js 寬螢幕 8 欄與中窄螢幕 7 欄雙態智能互斥排版驗證 100% 通過！")
+
     print("\n🎉 全部驗收項目 100% 通過 (100% PASS)！")
 
 if __name__ == "__main__":
