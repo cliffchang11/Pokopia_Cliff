@@ -12813,16 +12813,16 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0004.webp"
         },
         {
+          "id": "pkm_s1_6",
+          "number": "No. 006",
+          "name": "噴火龍",
+          "sprite": "assets/pkm_sprites/pkm_icon_0006.webp"
+        },
+        {
           "id": "pkm_s1_7",
           "number": "No. 007",
           "name": "傑尼龜",
           "sprite": "assets/pkm_sprites/pkm_icon_0007.webp"
-        },
-        {
-          "id": "pkm_s1_166",
-          "number": "No. 159",
-          "name": "小拳石",
-          "sprite": "assets/pkm_sprites/pkm_icon_0074.webp"
         },
         {
           "id": "pkm_s1_13",
@@ -12831,10 +12831,10 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0043.webp"
         },
         {
-          "id": "pkm_s1_6",
-          "number": "No. 006",
-          "name": "噴火龍",
-          "sprite": "assets/pkm_sprites/pkm_icon_0006.webp"
+          "id": "pkm_s1_166",
+          "number": "No. 159",
+          "name": "小拳石",
+          "sprite": "assets/pkm_sprites/pkm_icon_0074.webp"
         }
       ],
       "category": "main",
@@ -12851,6 +12851,12 @@ window.POKOPIA_DATA = {
       "image": "assets/habitats/hab_002.webp",
       "environment": "💧 潮濕",
       "pokemons": [
+        {
+          "id": "pkm_s1_21",
+          "number": "No. 021",
+          "name": "喇叭芽",
+          "sprite": "assets/pkm_sprites/pkm_icon_0069.webp"
+        },
         {
           "id": "pkm_s1_43",
           "number": "No. 042",
@@ -12870,22 +12876,16 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0127.webp"
         },
         {
-          "id": "pkm_s1_21",
-          "number": "No. 021",
-          "name": "喇叭芽",
-          "sprite": "assets/pkm_sprites/pkm_icon_0069.webp"
+          "id": "pkm_s1_51",
+          "number": "No. 050",
+          "name": "赫拉克羅斯",
+          "sprite": "assets/pkm_sprites/pkm_icon_0214.webp"
         },
         {
           "id": "pkm_s1_198",
           "number": "No. 191",
           "name": "貪心栗鼠",
           "sprite": "assets/pkm_sprites/pkm_icon_0819.webp"
-        },
-        {
-          "id": "pkm_s1_51",
-          "number": "No. 050",
-          "name": "赫拉克羅斯",
-          "sprite": "assets/pkm_sprites/pkm_icon_0214.webp"
         }
       ],
       "category": "main",
@@ -12909,16 +12909,16 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0532.webp"
         },
         {
-          "id": "pkm_s1_163",
-          "number": "No. 156",
-          "name": "腕力",
-          "sprite": "assets/pkm_sprites/pkm_icon_0066.webp"
-        },
-        {
           "id": "pkm_s1_69",
           "number": "No. 066",
           "name": "鐵骨土人",
           "sprite": "assets/pkm_sprites/pkm_icon_0533.webp"
+        },
+        {
+          "id": "pkm_s1_163",
+          "number": "No. 156",
+          "name": "腕力",
+          "sprite": "assets/pkm_sprites/pkm_icon_0066.webp"
         }
       ],
       "category": "main",
@@ -12942,10 +12942,10 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0007.webp"
         },
         {
-          "id": "pkm_s1_78",
-          "number": "No. 075",
-          "name": "黏美兒",
-          "sprite": "assets/pkm_sprites/pkm_icon_0705.webp"
+          "id": "pkm_s1_8",
+          "number": "No. 008",
+          "name": "卡咪龜",
+          "sprite": "assets/pkm_sprites/pkm_icon_0008.webp"
         },
         {
           "id": "pkm_s1_9",
@@ -12954,16 +12954,16 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0009.webp"
         },
         {
+          "id": "pkm_s1_78",
+          "number": "No. 075",
+          "name": "黏美兒",
+          "sprite": "assets/pkm_sprites/pkm_icon_0705.webp"
+        },
+        {
           "id": "pkm_s1_80",
           "number": "No. 077",
           "name": "古月鳥",
           "sprite": "assets/pkm_sprites/pkm_icon_0845.webp"
-        },
-        {
-          "id": "pkm_s1_8",
-          "number": "No. 008",
-          "name": "卡咪龜",
-          "sprite": "assets/pkm_sprites/pkm_icon_0008.webp"
         }
       ],
       "category": "main",
@@ -12985,18 +12985,6 @@ window.POKOPIA_DATA = {
           "number": "No. 024",
           "name": "呆呆獸",
           "sprite": "assets/pkm_sprites/pkm_icon_0079.webp"
-        },
-        {
-          "id": "pkm_s1_25",
-          "number": "No. 025",
-          "name": "呆殼獸",
-          "sprite": "assets/pkm_sprites/pkm_icon_0080.webp"
-        },
-        {
-          "id": "pkm_s1_26",
-          "number": "No. 026",
-          "name": "呆呆王",
-          "sprite": "assets/pkm_sprites/pkm_icon_0199.webp"
         }
       ],
       "category": "main",
@@ -13086,16 +13074,10 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0016.webp"
         },
         {
-          "id": "pkm_s1_58",
-          "number": "No. 057",
-          "name": "三蜜蜂",
-          "sprite": "assets/pkm_sprites/pkm_icon_0415F.webp"
-        },
-        {
-          "id": "pkm_s1_288",
-          "number": "No. 280",
-          "name": "伊布",
-          "sprite": "assets/pkm_sprites/pkm_icon_0133.webp"
+          "id": "pkm_s1_11",
+          "number": "No. 011",
+          "name": "比比鳥",
+          "sprite": "assets/pkm_sprites/pkm_icon_0017.webp"
         },
         {
           "id": "pkm_s1_49",
@@ -13104,16 +13086,22 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0163.webp"
         },
         {
+          "id": "pkm_s1_58",
+          "number": "No. 057",
+          "name": "三蜜蜂",
+          "sprite": "assets/pkm_sprites/pkm_icon_0415F.webp"
+        },
+        {
           "id": "pkm_s1_169",
           "number": "No. 162",
           "name": "鴨嘴寶寶",
           "sprite": "assets/pkm_sprites/pkm_icon_0240.webp"
         },
         {
-          "id": "pkm_s1_11",
-          "number": "No. 011",
-          "name": "比比鳥",
-          "sprite": "assets/pkm_sprites/pkm_icon_0017.webp"
+          "id": "pkm_s1_288",
+          "number": "No. 280",
+          "name": "伊布",
+          "sprite": "assets/pkm_sprites/pkm_icon_0133.webp"
         }
       ],
       "category": "main",
@@ -13131,16 +13119,16 @@ window.POKOPIA_DATA = {
       "environment": "💧 潮濕",
       "pokemons": [
         {
-          "id": "pkm_s1_77",
-          "number": "No. 074",
-          "name": "黏黏寶",
-          "sprite": "assets/pkm_sprites/pkm_icon_0704.webp"
-        },
-        {
           "id": "pkm_s1_57",
           "number": "No. 056",
           "name": "夢歌仙人掌",
           "sprite": "assets/pkm_sprites/pkm_icon_0332.webp"
+        },
+        {
+          "id": "pkm_s1_77",
+          "number": "No. 074",
+          "name": "黏黏寶",
+          "sprite": "assets/pkm_sprites/pkm_icon_0704.webp"
         },
         {
           "id": "pkm_s1_145",
@@ -13191,12 +13179,6 @@ window.POKOPIA_DATA = {
       "environment": "☀️ 明亮",
       "pokemons": [
         {
-          "id": "pkm_s1_59",
-          "number": "No. 058",
-          "name": "蜂女王",
-          "sprite": "assets/pkm_sprites/pkm_icon_0416.webp"
-        },
-        {
           "id": "pkm_s1_2",
           "number": "No. 002",
           "name": "妙蛙草",
@@ -13207,6 +13189,12 @@ window.POKOPIA_DATA = {
           "number": "No. 003",
           "name": "妙蛙花",
           "sprite": "assets/pkm_sprites/pkm_icon_0003.webp"
+        },
+        {
+          "id": "pkm_s1_59",
+          "number": "No. 058",
+          "name": "蜂女王",
+          "sprite": "assets/pkm_sprites/pkm_icon_0416.webp"
         }
       ],
       "category": "main",
@@ -13311,16 +13299,16 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0529.webp"
         },
         {
-          "id": "pkm_s1_192",
-          "number": "No. 185",
-          "name": "木木梟",
-          "sprite": "assets/pkm_sprites/pkm_icon_0722.webp"
-        },
-        {
           "id": "pkm_s1_67",
           "number": "No. 064",
           "name": "龍頭地鼠",
           "sprite": "assets/pkm_sprites/pkm_icon_0530.webp"
+        },
+        {
+          "id": "pkm_s1_192",
+          "number": "No. 185",
+          "name": "木木梟",
+          "sprite": "assets/pkm_sprites/pkm_icon_0722.webp"
         }
       ],
       "category": "main",
@@ -13428,10 +13416,10 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0172.webp"
         },
         {
-          "id": "pkm_s1_82",
+          "id": "pkm_s1_83",
           "number": "No. 079",
-          "name": "皮卡丘（淺色）",
-          "sprite": "assets/pkm_sprites/pkm_icon_0025Pe.webp"
+          "name": "皮卡丘",
+          "sprite": "assets/pkm_sprites/pkm_icon_0025.webp"
         }
       ],
       "category": "main",
@@ -13626,16 +13614,16 @@ window.POKOPIA_DATA = {
       "environment": "☀️ 明亮",
       "pokemons": [
         {
+          "id": "pkm_s1_69",
+          "number": "No. 066",
+          "name": "鐵骨土人",
+          "sprite": "assets/pkm_sprites/pkm_icon_0533.webp"
+        },
+        {
           "id": "pkm_s1_276",
           "number": "No. 268",
           "name": "小鍛匠",
           "sprite": "assets/pkm_sprites/pkm_icon_0957.webp"
-        },
-        {
-          "id": "pkm_s1_201",
-          "number": "No. 201",
-          "name": "鐵骨土人",
-          "sprite": "assets/pkm_sprites/pkm_icon_0533.webp"
         },
         {
           "id": "pkm_s1_277",
@@ -13692,28 +13680,22 @@ window.POKOPIA_DATA = {
       "environment": "💧 潮濕",
       "pokemons": [
         {
-          "id": "pkm_s1_64",
-          "number": "No. 061",
-          "name": "飄飄球",
-          "sprite": "assets/pkm_sprites/pkm_icon_0425.webp"
-        },
-        {
           "id": "pkm_s1_25",
           "number": "No. 025",
           "name": "呆殼獸",
           "sprite": "assets/pkm_sprites/pkm_icon_0080.webp"
         },
         {
-          "id": "pkm_s1_111",
-          "number": "No. 107",
-          "name": "小卡比獸",
-          "sprite": "assets/pkm_sprites/pkm_icon_0446.webp"
-        },
-        {
           "id": "pkm_s1_26",
           "number": "No. 026",
           "name": "呆呆王",
           "sprite": "assets/pkm_sprites/pkm_icon_0199.webp"
+        },
+        {
+          "id": "pkm_s1_111",
+          "number": "No. 107",
+          "name": "小卡比獸",
+          "sprite": "assets/pkm_sprites/pkm_icon_0446.webp"
         }
       ],
       "category": "main",
@@ -13730,12 +13712,6 @@ window.POKOPIA_DATA = {
       "image": "assets/habitats/hab_031.webp",
       "environment": "☀️ 明亮",
       "pokemons": [
-        {
-          "id": "pkm_s1_49",
-          "number": "No. 048",
-          "name": "咕咕",
-          "sprite": "assets/pkm_sprites/pkm_icon_0163.webp"
-        },
         {
           "id": "pkm_s1_50",
           "number": "No. 049",
@@ -14019,10 +13995,10 @@ window.POKOPIA_DATA = {
       "environment": "☀️ 明亮",
       "pokemons": [
         {
-          "id": "pkm_s1_209",
+          "id": "pkm_s1_42",
           "number": "No. 041",
-          "name": "巨蔓藤",
-          "sprite": "assets/pkm_sprites/pkm_icon_0465.webp"
+          "name": "巨蔓藤（博士）",
+          "sprite": "assets/pkm_sprites/pkm_icon_0465P.webp"
         }
       ],
       "category": "main",
@@ -14116,13 +14092,13 @@ window.POKOPIA_DATA = {
       "pokemons": [
         {
           "id": "pkm_s1_111",
-          "number": "No. 106",
+          "number": "No. 107",
           "name": "小卡比獸",
           "sprite": "assets/pkm_sprites/pkm_icon_0446.webp"
         },
         {
           "id": "pkm_s1_113",
-          "number": "No. 107",
+          "number": "No. 108",
           "name": "卡比獸",
           "sprite": "assets/pkm_sprites/pkm_icon_0143.webp"
         }
@@ -14142,14 +14118,14 @@ window.POKOPIA_DATA = {
       "environment": "🌙 黑暗",
       "pokemons": [
         {
-          "id": "pkm_s1_78",
-          "number": "No. 076",
+          "id": "pkm_s1_39",
+          "number": "No. 039",
           "name": "雙彈瓦斯",
           "sprite": "assets/pkm_sprites/pkm_icon_0110.webp"
         },
         {
           "id": "pkm_s1_113",
-          "number": "No. 107",
+          "number": "No. 108",
           "name": "卡比獸",
           "sprite": "assets/pkm_sprites/pkm_icon_0143.webp"
         }
@@ -14196,16 +14172,16 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0167.webp"
         },
         {
-          "id": "pkm_s1_143",
-          "number": "No. 138",
-          "name": "強顎雞母蟲",
-          "sprite": "assets/pkm_sprites/pkm_icon_0736.webp"
-        },
-        {
           "id": "pkm_s1_115",
           "number": "No. 110",
           "name": "阿利多斯",
           "sprite": "assets/pkm_sprites/pkm_icon_0168.webp"
+        },
+        {
+          "id": "pkm_s1_143",
+          "number": "No. 138",
+          "name": "強顎雞母蟲",
+          "sprite": "assets/pkm_sprites/pkm_icon_0736.webp"
         }
       ],
       "category": "main",
@@ -14262,6 +14238,12 @@ window.POKOPIA_DATA = {
       "environment": "🌙 黑暗",
       "pokemons": [
         {
+          "id": "pkm_s1_87",
+          "number": "No. 083",
+          "name": "叉字蝠",
+          "sprite": "assets/pkm_sprites/pkm_icon_0169.webp"
+        },
+        {
           "id": "pkm_s1_128",
           "number": "No. 123",
           "name": "長翅鷗",
@@ -14272,12 +14254,6 @@ window.POKOPIA_DATA = {
           "number": "No. 124",
           "name": "大嘴鷗",
           "sprite": "assets/pkm_sprites/pkm_icon_0279.webp"
-        },
-        {
-          "id": "pkm_s1_87",
-          "number": "No. 083",
-          "name": "叉字蝠",
-          "sprite": "assets/pkm_sprites/pkm_icon_0169.webp"
         }
       ],
       "category": "main",
@@ -14334,10 +14310,10 @@ window.POKOPIA_DATA = {
       "environment": "💧 潮濕",
       "pokemons": [
         {
-          "id": "pkm_s1_84",
-          "number": "No. 080",
-          "name": "雷丘",
-          "sprite": "assets/pkm_sprites/pkm_icon_0026.webp"
+          "id": "pkm_s1_122",
+          "number": "No. 117",
+          "name": "烏波（帕底亞的樣子）",
+          "sprite": "assets/pkm_sprites/pkm_icon_0194P.webp"
         },
         {
           "id": "pkm_s1_123",
@@ -14382,12 +14358,6 @@ window.POKOPIA_DATA = {
       "environment": "🌙 黑暗",
       "pokemons": [
         {
-          "id": "pkm_s1_147",
-          "number": "No. 142",
-          "name": "布撥",
-          "sprite": "assets/pkm_sprites/pkm_icon_0921.webp"
-        },
-        {
           "id": "pkm_s1_139",
           "number": "No. 134",
           "name": "索羅亞",
@@ -14398,6 +14368,12 @@ window.POKOPIA_DATA = {
           "number": "No. 135",
           "name": "索羅亞克",
           "sprite": "assets/pkm_sprites/pkm_icon_0571.webp"
+        },
+        {
+          "id": "pkm_s1_147",
+          "number": "No. 142",
+          "name": "布撥",
+          "sprite": "assets/pkm_sprites/pkm_icon_0921.webp"
         }
       ],
       "category": "main",
@@ -14571,12 +14547,6 @@ window.POKOPIA_DATA = {
       "environment": "🌙 黑暗",
       "pokemons": [
         {
-          "id": "pkm_s1_137",
-          "number": "No. 132",
-          "name": "破破袋",
-          "sprite": "assets/pkm_sprites/pkm_icon_0568.webp"
-        },
-        {
           "id": "pkm_s1_38",
           "number": "No. 038",
           "name": "瓦斯彈",
@@ -14587,6 +14557,12 @@ window.POKOPIA_DATA = {
           "number": "No. 039",
           "name": "雙彈瓦斯",
           "sprite": "assets/pkm_sprites/pkm_icon_0110.webp"
+        },
+        {
+          "id": "pkm_s1_137",
+          "number": "No. 132",
+          "name": "破破袋",
+          "sprite": "assets/pkm_sprites/pkm_icon_0568.webp"
         },
         {
           "id": "pkm_s1_138",
@@ -14616,16 +14592,16 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0082.webp"
         },
         {
-          "id": "pkm_s1_108",
-          "number": "No. 104",
-          "name": "電擊獸",
-          "sprite": "assets/pkm_sprites/pkm_icon_0125.webp"
-        },
-        {
           "id": "pkm_s1_29",
           "number": "No. 029",
           "name": "自爆磁怪",
           "sprite": "assets/pkm_sprites/pkm_icon_0462.webp"
+        },
+        {
+          "id": "pkm_s1_108",
+          "number": "No. 104",
+          "name": "電擊獸",
+          "sprite": "assets/pkm_sprites/pkm_icon_0125.webp"
         }
       ],
       "category": "main",
@@ -14697,16 +14673,16 @@ window.POKOPIA_DATA = {
       "environment": "☀️ 明亮",
       "pokemons": [
         {
-          "id": "pkm_s1_148",
-          "number": "No. 143",
-          "name": "布土撥",
-          "sprite": "assets/pkm_sprites/pkm_icon_0922.webp"
-        },
-        {
           "id": "pkm_s1_147",
           "number": "No. 142",
           "name": "布撥",
           "sprite": "assets/pkm_sprites/pkm_icon_0921.webp"
+        },
+        {
+          "id": "pkm_s1_148",
+          "number": "No. 143",
+          "name": "布土撥",
+          "sprite": "assets/pkm_sprites/pkm_icon_0922.webp"
         }
       ],
       "category": "main",
@@ -14865,16 +14841,16 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0093.webp"
         },
         {
-          "id": "pkm_s1_140",
-          "number": "No. 135",
-          "name": "索羅亞克",
-          "sprite": "assets/pkm_sprites/pkm_icon_0571.webp"
-        },
-        {
           "id": "pkm_s1_99",
           "number": "No. 095",
           "name": "耿鬼",
           "sprite": "assets/pkm_sprites/pkm_icon_0094.webp"
+        },
+        {
+          "id": "pkm_s1_140",
+          "number": "No. 135",
+          "name": "索羅亞克",
+          "sprite": "assets/pkm_sprites/pkm_icon_0571.webp"
         }
       ],
       "category": "main",
@@ -15021,12 +14997,6 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0058.webp"
         },
         {
-          "id": "pkm_s1_125",
-          "number": "No. 120",
-          "name": "火稚雞",
-          "sprite": "assets/pkm_sprites/pkm_icon_0255.webp"
-        },
-        {
           "id": "pkm_s1_126",
           "number": "No. 121",
           "name": "力壯雞",
@@ -15081,16 +15051,16 @@ window.POKOPIA_DATA = {
       "environment": "☀️ 明亮",
       "pokemons": [
         {
+          "id": "pkm_s1_82",
+          "number": "No. 079",
+          "name": "皮卡丘（淺色）",
+          "sprite": "assets/pkm_sprites/pkm_icon_0025Pe.webp"
+        },
+        {
           "id": "pkm_s1_105",
           "number": "No. 101",
           "name": "吉利蛋",
           "sprite": "assets/pkm_sprites/pkm_icon_0113.webp"
-        },
-        {
-          "id": "pkm_s1_22",
-          "number": "No. 022",
-          "name": "口呆花",
-          "sprite": "assets/pkm_sprites/pkm_icon_0070.webp"
         }
       ],
       "category": "main",
@@ -15351,16 +15321,16 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0052.webp"
         },
         {
-          "id": "pkm_s1_136",
-          "number": "No. 131",
-          "name": "差不多娃娃",
-          "sprite": "assets/pkm_sprites/pkm_icon_0531.webp"
-        },
-        {
           "id": "pkm_s1_104",
           "number": "No. 100",
           "name": "小福蛋",
           "sprite": "assets/pkm_sprites/pkm_icon_0440.webp"
+        },
+        {
+          "id": "pkm_s1_136",
+          "number": "No. 131",
+          "name": "差不多娃娃",
+          "sprite": "assets/pkm_sprites/pkm_icon_0531.webp"
         },
         {
           "id": "pkm_s1_182",
@@ -15384,10 +15354,10 @@ window.POKOPIA_DATA = {
       "environment": "☀️ 明亮",
       "pokemons": [
         {
-          "id": "pkm_s1_106",
-          "number": "No. 102",
-          "name": "幸福蛋",
-          "sprite": "assets/pkm_sprites/pkm_icon_0242.webp"
+          "id": "pkm_s1_124",
+          "number": "No. 119",
+          "name": "圖圖犬",
+          "sprite": "assets/pkm_sprites/pkm_icon_0235S.webp"
         }
       ],
       "category": "main",
@@ -15510,24 +15480,6 @@ window.POKOPIA_DATA = {
       "environment": "🌙 黑暗",
       "pokemons": [
         {
-          "id": "pkm_s1_195",
-          "number": "No. 188",
-          "name": "炎兔兒",
-          "sprite": "assets/pkm_sprites/pkm_icon_0813.webp"
-        },
-        {
-          "id": "pkm_s1_187",
-          "number": "No. 180",
-          "name": "利歐路",
-          "sprite": "assets/pkm_sprites/pkm_icon_0447.webp"
-        },
-        {
-          "id": "pkm_s1_197",
-          "number": "No. 190",
-          "name": "閃焰王牌",
-          "sprite": "assets/pkm_sprites/pkm_icon_0815.webp"
-        },
-        {
           "id": "pkm_s1_184",
           "number": "No. 177",
           "name": "圓法師",
@@ -15538,6 +15490,24 @@ window.POKOPIA_DATA = {
           "number": "No. 178",
           "name": "音箱蟀",
           "sprite": "assets/pkm_sprites/pkm_icon_0402.webp"
+        },
+        {
+          "id": "pkm_s1_187",
+          "number": "No. 180",
+          "name": "利歐路",
+          "sprite": "assets/pkm_sprites/pkm_icon_0447.webp"
+        },
+        {
+          "id": "pkm_s1_195",
+          "number": "No. 188",
+          "name": "炎兔兒",
+          "sprite": "assets/pkm_sprites/pkm_icon_0813.webp"
+        },
+        {
+          "id": "pkm_s1_197",
+          "number": "No. 190",
+          "name": "閃焰王牌",
+          "sprite": "assets/pkm_sprites/pkm_icon_0815.webp"
         }
       ],
       "category": "main",
@@ -15621,12 +15591,6 @@ window.POKOPIA_DATA = {
       "environment": "💧 潮濕",
       "pokemons": [
         {
-          "id": "pkm_s1_179",
-          "number": "No. 172",
-          "name": "蓮葉童子",
-          "sprite": "assets/pkm_sprites/pkm_icon_0270.webp"
-        },
-        {
           "id": "pkm_s1_180",
           "number": "No. 173",
           "name": "蓮帽小童",
@@ -15654,16 +15618,16 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0198.webp"
         },
         {
-          "id": "pkm_s1_186",
-          "number": "No. 179",
-          "name": "聒噪鳥",
-          "sprite": "assets/pkm_sprites/pkm_icon_0441.webp"
-        },
-        {
           "id": "pkm_s1_175",
           "number": "No. 168",
           "name": "烏鴉頭頭",
           "sprite": "assets/pkm_sprites/pkm_icon_0430.webp"
+        },
+        {
+          "id": "pkm_s1_186",
+          "number": "No. 179",
+          "name": "聒噪鳥",
+          "sprite": "assets/pkm_sprites/pkm_icon_0441.webp"
         }
       ],
       "category": "main",
@@ -15714,10 +15678,10 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0173.webp"
         },
         {
-          "id": "pkm_s1_206",
-          "number": "No. 198",
-          "name": "狗仔包",
-          "sprite": "assets/pkm_sprites/pkm_icon_0926.webp"
+          "id": "pkm_s1_156",
+          "number": "No. 149",
+          "name": "皮皮",
+          "sprite": "assets/pkm_sprites/pkm_icon_0035.webp"
         },
         {
           "id": "pkm_s1_157",
@@ -15726,13 +15690,13 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0036.webp"
         },
         {
-          "id": "pkm_s1_156",
-          "number": "No. 148",
-          "name": "皮寶寶",
-          "sprite": "assets/pkm_sprites/pkm_icon_0173.webp"
+          "id": "pkm_s1_206",
+          "number": "No. 198",
+          "name": "狗仔包",
+          "sprite": "assets/pkm_sprites/pkm_icon_0926.webp"
         },
         {
-          "id": "pkm_s1_332",
+          "id": "pkm_s1_207",
           "number": "No. 199",
           "name": "麻花犬",
           "sprite": "assets/pkm_sprites/pkm_icon_0927.webp"
@@ -15796,12 +15760,6 @@ window.POKOPIA_DATA = {
           "number": "No. 147",
           "name": "阿柏怪",
           "sprite": "assets/pkm_sprites/pkm_icon_0024.webp"
-        },
-        {
-          "id": "pkm_s1_220",
-          "number": "No. 212",
-          "name": "蚊香蛙皇",
-          "sprite": "assets/pkm_sprites/pkm_icon_0186.webp"
         }
       ],
       "category": "main",
@@ -16017,16 +15975,16 @@ window.POKOPIA_DATA = {
       "environment": "🌵 乾燥",
       "pokemons": [
         {
-          "id": "pkm_s1_208",
-          "number": "No. 200",
-          "name": "炭小侍",
-          "sprite": "assets/pkm_sprites/pkm_icon_0935.webp"
-        },
-        {
           "id": "pkm_s1_191",
           "number": "No. 184",
           "name": "火神蛾",
           "sprite": "assets/pkm_sprites/pkm_icon_0637.webp"
+        },
+        {
+          "id": "pkm_s1_208",
+          "number": "No. 200",
+          "name": "炭小侍",
+          "sprite": "assets/pkm_sprites/pkm_icon_0935.webp"
         }
       ],
       "category": "main",
@@ -16179,7 +16137,7 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0926.webp"
         },
         {
-          "id": "pkm_s1_332",
+          "id": "pkm_s1_207",
           "number": "No. 199",
           "name": "麻花犬",
           "sprite": "assets/pkm_sprites/pkm_icon_0927.webp"
@@ -16269,16 +16227,16 @@ window.POKOPIA_DATA = {
       "environment": "🌙 黑暗",
       "pokemons": [
         {
-          "id": "pkm_s1_186",
-          "number": "No. 179",
-          "name": "聒噪鳥",
-          "sprite": "assets/pkm_sprites/pkm_icon_0441.webp"
-        },
-        {
           "id": "pkm_s1_175",
           "number": "No. 168",
           "name": "烏鴉頭頭",
           "sprite": "assets/pkm_sprites/pkm_icon_0430.webp"
+        },
+        {
+          "id": "pkm_s1_186",
+          "number": "No. 179",
+          "name": "聒噪鳥",
+          "sprite": "assets/pkm_sprites/pkm_icon_0441.webp"
         }
       ],
       "category": "main",
@@ -16368,10 +16326,10 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0402.webp"
         },
         {
-          "id": "pkm_s1_218",
-          "number": "No. 210",
-          "name": "蚊香君",
-          "sprite": "assets/pkm_sprites/pkm_icon_0061.webp"
+          "id": "pkm_s1_189",
+          "number": "No. 182",
+          "name": "洛托姆",
+          "sprite": "assets/pkm_sprites/pkm_icon_0479D.webp"
         }
       ],
       "category": "main",
@@ -16389,16 +16347,16 @@ window.POKOPIA_DATA = {
       "environment": "🔥 溫暖",
       "pokemons": [
         {
-          "id": "pkm_s1_213",
-          "number": "No. 205",
-          "name": "索財靈",
-          "sprite": "assets/pkm_sprites/pkm_icon_0999.webp"
-        },
-        {
           "id": "pkm_s1_93",
           "number": "No. 089",
           "name": "風速狗",
           "sprite": "assets/pkm_sprites/pkm_icon_0059.webp"
+        },
+        {
+          "id": "pkm_s1_213",
+          "number": "No. 205",
+          "name": "索財靈",
+          "sprite": "assets/pkm_sprites/pkm_icon_0999.webp"
         }
       ],
       "category": "main",
@@ -16444,9 +16402,9 @@ window.POKOPIA_DATA = {
       "pokemons": [
         {
           "id": "pkm_s1_156",
-          "number": "No. 148",
-          "name": "皮寶寶",
-          "sprite": "assets/pkm_sprites/pkm_icon_0173.webp"
+          "number": "No. 149",
+          "name": "皮皮",
+          "sprite": "assets/pkm_sprites/pkm_icon_0035.webp"
         },
         {
           "id": "pkm_s1_157",
@@ -16470,16 +16428,16 @@ window.POKOPIA_DATA = {
       "environment": "🔥 溫暖",
       "pokemons": [
         {
-          "id": "pkm_s1_201",
-          "number": "No. 194",
-          "name": "大炭車",
-          "sprite": "assets/pkm_sprites/pkm_icon_0838.webp"
-        },
-        {
           "id": "pkm_s1_200",
           "number": "No. 193",
           "name": "小炭仔",
           "sprite": "assets/pkm_sprites/pkm_icon_0837.webp"
+        },
+        {
+          "id": "pkm_s1_201",
+          "number": "No. 194",
+          "name": "大炭車",
+          "sprite": "assets/pkm_sprites/pkm_icon_0838.webp"
         },
         {
           "id": "pkm_s1_202",
@@ -16503,7 +16461,7 @@ window.POKOPIA_DATA = {
       "environment": "🔥 溫暖",
       "pokemons": [
         {
-          "id": "pkm_s1_253",
+          "id": "pkm_s1_199",
           "number": "No. 192",
           "name": "藏飽栗鼠",
           "sprite": "assets/pkm_sprites/pkm_icon_0820C.webp"
@@ -16593,16 +16551,16 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0328.webp"
         },
         {
-          "id": "pkm_s1_250",
-          "number": "No. 242",
-          "name": "夜巡靈",
-          "sprite": "assets/pkm_sprites/pkm_icon_0355.webp"
-        },
-        {
           "id": "pkm_s1_246",
           "number": "No. 238",
           "name": "超音波幼蟲",
           "sprite": "assets/pkm_sprites/pkm_icon_0329.webp"
+        },
+        {
+          "id": "pkm_s1_247",
+          "number": "No. 239",
+          "name": "沙漠蜻蜓",
+          "sprite": "assets/pkm_sprites/pkm_icon_0330.webp"
         },
         {
           "id": "pkm_s1_248",
@@ -16611,10 +16569,10 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0333.webp"
         },
         {
-          "id": "pkm_s1_247",
-          "number": "No. 239",
-          "name": "沙漠蜻蜓",
-          "sprite": "assets/pkm_sprites/pkm_icon_0330.webp"
+          "id": "pkm_s1_250",
+          "number": "No. 242",
+          "name": "夜巡靈",
+          "sprite": "assets/pkm_sprites/pkm_icon_0355.webp"
         }
       ],
       "category": "main",
@@ -16632,10 +16590,10 @@ window.POKOPIA_DATA = {
       "environment": "🌙 黑暗",
       "pokemons": [
         {
-          "id": "pkm_s1_271",
-          "number": "No. 263",
-          "name": "新葉喵",
-          "sprite": "assets/pkm_sprites/pkm_icon_0906.webp"
+          "id": "pkm_s1_177",
+          "number": "No. 170",
+          "name": "沙基拉斯",
+          "sprite": "assets/pkm_sprites/pkm_icon_0247.webp"
         },
         {
           "id": "pkm_s1_268",
@@ -16644,16 +16602,16 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0885.webp"
         },
         {
-          "id": "pkm_s1_177",
-          "number": "No. 170",
-          "name": "沙基拉斯",
-          "sprite": "assets/pkm_sprites/pkm_icon_0247.webp"
-        },
-        {
           "id": "pkm_s1_269",
           "number": "No. 261",
           "name": "多龍奇",
           "sprite": "assets/pkm_sprites/pkm_icon_0886.webp"
+        },
+        {
+          "id": "pkm_s1_271",
+          "number": "No. 263",
+          "name": "新葉喵",
+          "sprite": "assets/pkm_sprites/pkm_icon_0906.webp"
         }
       ],
       "category": "main",
@@ -16710,10 +16668,10 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0822.webp"
         },
         {
-          "id": "pkm_s1_275",
-          "number": "No. 267",
-          "name": "大電海燕",
-          "sprite": "assets/pkm_sprites/pkm_icon_0941.webp"
+          "id": "pkm_s1_267",
+          "number": "No. 259",
+          "name": "鋼鎧鴉",
+          "sprite": "assets/pkm_sprites/pkm_icon_0823.webp"
         },
         {
           "id": "pkm_s1_274",
@@ -16722,10 +16680,10 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0940.webp"
         },
         {
-          "id": "pkm_s1_267",
-          "number": "No. 259",
-          "name": "鋼鎧鴉",
-          "sprite": "assets/pkm_sprites/pkm_icon_0823.webp"
+          "id": "pkm_s1_275",
+          "number": "No. 267",
+          "name": "大電海燕",
+          "sprite": "assets/pkm_sprites/pkm_icon_0941.webp"
         }
       ],
       "category": "main",
@@ -16776,16 +16734,10 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0037.webp"
         },
         {
-          "id": "pkm_s1_265",
-          "number": "No. 257",
-          "name": "稚山雀",
-          "sprite": "assets/pkm_sprites/pkm_icon_0821.webp"
-        },
-        {
-          "id": "pkm_s1_236",
-          "number": "No. 228",
-          "name": "夢妖魔",
-          "sprite": "assets/pkm_sprites/pkm_icon_0429.webp"
+          "id": "pkm_s1_216",
+          "number": "No. 208",
+          "name": "九尾",
+          "sprite": "assets/pkm_sprites/pkm_icon_0038.webp"
         },
         {
           "id": "pkm_s1_235",
@@ -16794,10 +16746,10 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0200.webp"
         },
         {
-          "id": "pkm_s1_216",
-          "number": "No. 208",
-          "name": "九尾",
-          "sprite": "assets/pkm_sprites/pkm_icon_0038.webp"
+          "id": "pkm_s1_265",
+          "number": "No. 257",
+          "name": "稚山雀",
+          "sprite": "assets/pkm_sprites/pkm_icon_0821.webp"
         }
       ],
       "category": "main",
@@ -16821,16 +16773,16 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0203.webp"
         },
         {
-          "id": "pkm_s1_257",
-          "number": "No. 249",
-          "name": "青藤蛇",
-          "sprite": "assets/pkm_sprites/pkm_icon_0496.webp"
-        },
-        {
           "id": "pkm_s1_238",
           "number": "No. 230",
           "name": "奇麒麟",
           "sprite": "assets/pkm_sprites/pkm_icon_0981.webp"
+        },
+        {
+          "id": "pkm_s1_257",
+          "number": "No. 249",
+          "name": "青藤蛇",
+          "sprite": "assets/pkm_sprites/pkm_icon_0496.webp"
         },
         {
           "id": "pkm_s1_258",
@@ -16854,16 +16806,16 @@ window.POKOPIA_DATA = {
       "environment": "💧 潮濕",
       "pokemons": [
         {
-          "id": "pkm_s1_229",
-          "number": "No. 221",
-          "name": "迷你龍",
-          "sprite": "assets/pkm_sprites/pkm_icon_0147.webp"
-        },
-        {
           "id": "pkm_s1_218",
           "number": "No. 210",
           "name": "蚊香君",
           "sprite": "assets/pkm_sprites/pkm_icon_0061.webp"
+        },
+        {
+          "id": "pkm_s1_229",
+          "number": "No. 221",
+          "name": "迷你龍",
+          "sprite": "assets/pkm_sprites/pkm_icon_0147.webp"
         },
         {
           "id": "pkm_s1_230",
@@ -17160,10 +17112,10 @@ window.POKOPIA_DATA = {
       "environment": "💧 潮濕",
       "pokemons": [
         {
-          "id": "pkm_s1_277",
-          "number": "No. 269",
-          "name": "巧鍛匠",
-          "sprite": "assets/pkm_sprites/pkm_icon_0958.webp"
+          "id": "pkm_s1_219",
+          "number": "No. 211",
+          "name": "蚊香泳士",
+          "sprite": "assets/pkm_sprites/pkm_icon_0062.webp"
         },
         {
           "id": "pkm_s1_267",
@@ -17172,10 +17124,10 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0823.webp"
         },
         {
-          "id": "pkm_s1_219",
-          "number": "No. 211",
-          "name": "蚊香泳士",
-          "sprite": "assets/pkm_sprites/pkm_icon_0062.webp"
+          "id": "pkm_s1_277",
+          "number": "No. 269",
+          "name": "巧鍛匠",
+          "sprite": "assets/pkm_sprites/pkm_icon_0958.webp"
         }
       ],
       "category": "main",
@@ -18531,7 +18483,7 @@ window.POKOPIA_DATA = {
       "environment": "🌲 一般",
       "pokemons": [
         {
-          "id": "pkm_s1_349",
+          "id": "pkm_s1_314",
           "number": "No. 006",
           "name": "醜醜魚",
           "sprite": "assets/pkm_sprites/pkm_icon_0349.webp"
@@ -18552,7 +18504,7 @@ window.POKOPIA_DATA = {
       "environment": "🌲 一般",
       "pokemons": [
         {
-          "id": "pkm_s1_350",
+          "id": "pkm_s1_315",
           "number": "No. 007",
           "name": "美納斯",
           "sprite": "assets/pkm_sprites/pkm_icon_0350.webp"
@@ -18573,18 +18525,6 @@ window.POKOPIA_DATA = {
       "environment": "🌊 水域",
       "pokemons": [
         {
-          "id": "pkm_s2_14",
-          "number": "No. 014",
-          "name": "水躍魚",
-          "sprite": "assets/pkm_sprites/pkm_icon_0258.webp"
-        },
-        {
-          "id": "pkm_s2_24",
-          "number": "No. 024",
-          "name": "泳圈鼬",
-          "sprite": "assets/pkm_sprites/pkm_icon_0418.webp"
-        },
-        {
           "id": "pkm_s2_8",
           "number": "No. 008",
           "name": "小鋸鱷",
@@ -18595,6 +18535,18 @@ window.POKOPIA_DATA = {
           "number": "No. 010",
           "name": "大力鱷",
           "sprite": "assets/pkm_sprites/pkm_icon_0160.webp"
+        },
+        {
+          "id": "pkm_s2_14",
+          "number": "No. 014",
+          "name": "水躍魚",
+          "sprite": "assets/pkm_sprites/pkm_icon_0258.webp"
+        },
+        {
+          "id": "pkm_s2_24",
+          "number": "No. 024",
+          "name": "泳圈鼬",
+          "sprite": "assets/pkm_sprites/pkm_icon_0418.webp"
         }
       ],
       "category": "underwater",
@@ -18618,10 +18570,10 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0090.webp"
         },
         {
-          "id": "pkm_s2_2",
-          "number": "No. 002",
-          "name": "刺甲貝",
-          "sprite": "assets/pkm_sprites/pkm_icon_0091.webp"
+          "id": "pkm_s2_13",
+          "number": "No. 013",
+          "name": "太陽珊瑚",
+          "sprite": "assets/pkm_sprites/pkm_icon_0222.webp"
         },
         {
           "id": "pkm_s2_16",
@@ -18645,18 +18597,6 @@ window.POKOPIA_DATA = {
       "environment": "🌊 水域",
       "pokemons": [
         {
-          "id": "pkm_s2_33",
-          "number": "No. 031",
-          "name": "泥巴魚",
-          "sprite": "assets/pkm_sprites/pkm_icon_0618.webp"
-        },
-        {
-          "id": "pkm_s2_36",
-          "number": "No. 034",
-          "name": "球球海獅",
-          "sprite": "assets/pkm_sprites/pkm_icon_0728.webp"
-        },
-        {
           "id": "pkm_s2_6",
           "number": "No. 006",
           "name": "海星星",
@@ -18667,6 +18607,18 @@ window.POKOPIA_DATA = {
           "number": "No. 026",
           "name": "螢光魚",
           "sprite": "assets/pkm_sprites/pkm_icon_0456.webp"
+        },
+        {
+          "id": "pkm_s2_33",
+          "number": "No. 031",
+          "name": "泥巴魚",
+          "sprite": "assets/pkm_sprites/pkm_icon_0618.webp"
+        },
+        {
+          "id": "pkm_s2_36",
+          "number": "No. 034",
+          "name": "球球海獅",
+          "sprite": "assets/pkm_sprites/pkm_icon_0728.webp"
         }
       ],
       "category": "underwater",
@@ -18684,16 +18636,16 @@ window.POKOPIA_DATA = {
       "environment": "🌊 水域",
       "pokemons": [
         {
-          "id": "pkm_s2_39",
-          "number": "No. 037",
-          "name": "好壞星",
-          "sprite": "assets/pkm_sprites/pkm_icon_0747.webp"
-        },
-        {
           "id": "pkm_s2_23",
           "number": "No. 023",
           "name": "愛心魚",
           "sprite": "assets/pkm_sprites/pkm_icon_0370.webp"
+        },
+        {
+          "id": "pkm_s2_39",
+          "number": "No. 037",
+          "name": "好壞星",
+          "sprite": "assets/pkm_sprites/pkm_icon_0747.webp"
         },
         {
           "id": "pkm_s2_42",
@@ -18777,12 +18729,6 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0116.webp"
         },
         {
-          "id": "pkm_s2_13",
-          "number": "No. 013",
-          "name": "太陽珊瑚",
-          "sprite": "assets/pkm_sprites/pkm_icon_0222.webp"
-        },
-        {
           "id": "pkm_s2_4",
           "number": "No. 004",
           "name": "海刺龍",
@@ -18793,6 +18739,12 @@ window.POKOPIA_DATA = {
           "number": "No. 005",
           "name": "刺龍王",
           "sprite": "assets/pkm_sprites/pkm_icon_0230.webp"
+        },
+        {
+          "id": "pkm_s2_13",
+          "number": "No. 013",
+          "name": "太陽珊瑚",
+          "sprite": "assets/pkm_sprites/pkm_icon_0222.webp"
         }
       ],
       "category": "underwater",
@@ -18918,16 +18870,16 @@ window.POKOPIA_DATA = {
           "sprite": "assets/pkm_sprites/pkm_icon_0456.webp"
         },
         {
-          "id": "pkm_s2_50",
-          "number": "No. 048",
-          "name": "輕身鱈",
-          "sprite": "assets/pkm_sprites/pkm_icon_0976.webp"
-        },
-        {
           "id": "pkm_s2_27",
           "number": "No. 027",
           "name": "霓虹魚",
           "sprite": "assets/pkm_sprites/pkm_icon_0457.webp"
+        },
+        {
+          "id": "pkm_s2_50",
+          "number": "No. 048",
+          "name": "輕身鱈",
+          "sprite": "assets/pkm_sprites/pkm_icon_0976.webp"
         }
       ],
       "category": "underwater",
@@ -18966,16 +18918,16 @@ window.POKOPIA_DATA = {
       "environment": "🌊 水域",
       "pokemons": [
         {
-          "id": "pkm_s2_47",
-          "number": "No. 045",
-          "name": "啪嚓海膽",
-          "sprite": "assets/pkm_sprites/pkm_icon_0871.webp"
-        },
-        {
           "id": "pkm_s2_15",
           "number": "No. 015",
           "name": "沼躍魚",
           "sprite": "assets/pkm_sprites/pkm_icon_0259.webp"
+        },
+        {
+          "id": "pkm_s2_47",
+          "number": "No. 045",
+          "name": "啪嚓海膽",
+          "sprite": "assets/pkm_sprites/pkm_icon_0871.webp"
         }
       ],
       "category": "underwater",
@@ -18993,16 +18945,16 @@ window.POKOPIA_DATA = {
       "environment": "🌊 水域",
       "pokemons": [
         {
-          "id": "pkm_s2_18",
-          "number": "No. 018",
-          "name": "巨牙鯊",
-          "sprite": "assets/pkm_sprites/pkm_icon_0319.webp"
-        },
-        {
           "id": "pkm_s2_9",
           "number": "No. 009",
           "name": "藍鱷",
           "sprite": "assets/pkm_sprites/pkm_icon_0159.webp"
+        },
+        {
+          "id": "pkm_s2_18",
+          "number": "No. 018",
+          "name": "巨牙鯊",
+          "sprite": "assets/pkm_sprites/pkm_icon_0319.webp"
         }
       ],
       "category": "underwater",
@@ -19046,6 +18998,12 @@ window.POKOPIA_DATA = {
       "image": "assets/habitats/hab_b017.webp",
       "environment": "🌊 水域",
       "pokemons": [
+        {
+          "id": "pkm_s2_28",
+          "number": "No. 028",
+          "name": "輕飄飄（雄性）",
+          "sprite": "assets/pkm_sprites/pkm_icon_0592.webp"
+        },
         {
           "id": "pkm_s2_29",
           "number": "No. 028",
@@ -19143,6 +19101,12 @@ window.POKOPIA_DATA = {
       "environment": "🌊 水域",
       "pokemons": [
         {
+          "id": "pkm_s2_28",
+          "number": "No. 028",
+          "name": "輕飄飄（雄性）",
+          "sprite": "assets/pkm_sprites/pkm_icon_0592.webp"
+        },
+        {
           "id": "pkm_s2_29",
           "number": "No. 028",
           "name": "輕飄飄（雌性）",
@@ -19207,12 +19171,6 @@ window.POKOPIA_DATA = {
           "number": "No. 014",
           "name": "水躍魚",
           "sprite": "assets/pkm_sprites/pkm_icon_0258.webp"
-        },
-        {
-          "id": "pkm_s2_23",
-          "number": "No. 023",
-          "name": "愛心魚",
-          "sprite": "assets/pkm_sprites/pkm_icon_0370.webp"
         }
       ],
       "category": "underwater",
@@ -19267,12 +19225,6 @@ window.POKOPIA_DATA = {
           "number": "No. 015",
           "name": "沼躍魚",
           "sprite": "assets/pkm_sprites/pkm_icon_0259.webp"
-        },
-        {
-          "id": "pkm_s2_19",
-          "number": "No. 019",
-          "name": "泥泥鰍",
-          "sprite": "assets/pkm_sprites/pkm_icon_0339.webp"
         },
         {
           "id": "pkm_s2_34",
@@ -19336,14 +19288,7 @@ window.POKOPIA_DATA = {
       "details": "浴缸 x 1 泡泡機 x 1",
       "image": "assets/habitats/hab_b028.webp",
       "environment": "🌊 水域",
-      "pokemons": [
-        {
-          "id": "pkm_s2_8",
-          "number": "No. 008",
-          "name": "小鋸鱷",
-          "sprite": "assets/pkm_sprites/pkm_icon_0158.webp"
-        }
-      ],
+      "pokemons": [],
       "category": "underwater",
       "categoryName": "海底棲息地"
     },
@@ -19427,6 +19372,12 @@ window.POKOPIA_DATA = {
       "image": "assets/habitats/hab_b032.webp",
       "environment": "🌊 水域",
       "pokemons": [
+        {
+          "id": "pkm_s2_30",
+          "number": "No. 029",
+          "name": "胖嘟嘟（雄性）",
+          "sprite": "assets/pkm_sprites/pkm_icon_0593.webp"
+        },
         {
           "id": "pkm_s2_31",
           "number": "No. 029",

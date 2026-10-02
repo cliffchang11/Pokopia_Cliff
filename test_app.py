@@ -671,6 +671,11 @@ if (!elements['floatingBackBtn']) process.exit(29);
     assert res_mob_scale.returncode == 0, f"verify_mobile_avatar_scale.js 驗證失敗:\n{res_mob_scale.stderr or res_mob_scale.stdout}"
     print("✅ [PASS] 獨立模組 verify_mobile_avatar_scale.js 手機端寶可夢頭像微縮與桌機大圖樣式隔離驗證 100% 通過！")
 
+    # 執行獨立模組 verify_habitat_pokemon_sync.js 驗證全站 252 處棲息地與 367 隻寶可夢雙向對齊 (092 圖圖犬校正)
+    res_hab_sync = subprocess.run(["node", "verify_habitat_pokemon_sync.js"], capture_output=True, text=True)
+    assert res_hab_sync.returncode == 0, f"verify_habitat_pokemon_sync.js 驗證失敗:\n{res_hab_sync.stderr or res_hab_sync.stdout}"
+    print("✅ [PASS] 獨立模組 verify_habitat_pokemon_sync.js 全站 252 處棲息地與 367 隻寶可夢雙向鏡像對齊驗證 100% 通過！")
+
     print("\n🎉 全部驗收項目 100% 通過 (100% PASS)！")
 
 if __name__ == "__main__":
