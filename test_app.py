@@ -676,6 +676,11 @@ if (!elements['floatingBackBtn']) process.exit(29);
     assert res_hab_sync.returncode == 0, f"verify_habitat_pokemon_sync.js 驗證失敗:\n{res_hab_sync.stderr or res_hab_sync.stdout}"
     print("✅ [PASS] 獨立模組 verify_habitat_pokemon_sync.js 全站 252 處棲息地與 367 隻寶可夢雙向鏡像對齊驗證 100% 通過！")
 
+    # 執行獨立模組 verify_dark_mode_eyecare.js 驗證暗色模式暖炭板岩護眼調 (Dark Dimmed Eyecare)
+    res_dark_eye = subprocess.run(["node", "verify_dark_mode_eyecare.js"], capture_output=True, text=True)
+    assert res_dark_eye.returncode == 0, f"verify_dark_mode_eyecare.js 驗證失敗:\n{res_dark_eye.stderr or res_dark_eye.stdout}"
+    print("✅ [PASS] 獨立模組 verify_dark_mode_eyecare.js 暗色模式暖炭板岩護眼調驗證 100% 通過！")
+
     print("\n🎉 全部驗收項目 100% 通過 (100% PASS)！")
 
 if __name__ == "__main__":

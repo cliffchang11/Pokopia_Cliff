@@ -85,63 +85,63 @@
 }
 
 :root[data-theme="dark"] {
-  --bg-dark: #0a1124;
-  --bg-body-radial-1: rgba(99, 102, 241, 0.15);
-  --bg-body-radial-2: rgba(16, 185, 129, 0.11);
-  --bg-body-radial-3: rgba(236, 72, 153, 0.09);
+  --bg-dark: #151822;
+  --bg-body-radial-1: rgba(99, 102, 241, 0.08);
+  --bg-body-radial-2: rgba(16, 185, 129, 0.06);
+  --bg-body-radial-3: rgba(236, 72, 153, 0.05);
 
-  --bg-header: rgba(10, 17, 36, 0.88);
-  --bg-card: rgba(22, 34, 62, 0.78);
-  --bg-card-hover: rgba(30, 47, 86, 0.88);
-  --glass-border: rgba(255, 255, 255, 0.12);
+  --bg-header: rgba(21, 24, 34, 0.92);
+  --bg-card: rgba(28, 33, 44, 0.78);
+  --bg-card-hover: rgba(36, 43, 58, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.10);
   --glass-border-focus: rgba(99, 102, 241, 0.6);
-  --card-edge-glow: inset 0 1px 0 rgba(255, 255, 255, 0.14), inset 0 -1px 0 rgba(0, 0, 0, 0.35);
+  --card-edge-glow: inset 0 1px 0 rgba(255, 255, 255, 0.10), inset 0 -1px 0 rgba(0, 0, 0, 0.35);
   
   --primary-indigo: #6366f1;
-  --primary-indigo-glow: rgba(99, 102, 241, 0.35);
+  --primary-indigo-glow: rgba(99, 102, 241, 0.30);
   --accent-emerald: #10b981;
   --accent-amber: #f59e0b;
   --accent-pink: #ec4899;
   --accent-sky: #06b6d4;
 
-  --text-main: #f8fafc;
+  --text-main: #e2e8f0;
   --text-sub: #94a3b8;
   --text-muted: #64748b;
 
-  --stat-bg: rgba(30, 41, 59, 0.8);
+  --stat-bg: rgba(28, 33, 44, 0.85);
   --stat-border: var(--glass-border);
-  --stat-text: #f8fafc;
+  --stat-text: #e2e8f0;
 
-  --input-bg: rgba(15, 23, 42, 0.8);
+  --input-bg: rgba(24, 28, 40, 0.85);
   --input-border: var(--glass-border);
-  --input-text: #f8fafc;
+  --input-text: #e2e8f0;
 
-  --tab-btn-bg: rgba(15, 23, 42, 0.8);
+  --tab-btn-bg: rgba(24, 28, 40, 0.85);
   --tab-btn-text: var(--text-sub);
   --tab-btn-active-bg: var(--primary-indigo);
   --tab-btn-active-text: #ffffff;
 
-  --table-bg: rgba(15, 23, 42, 0.4);
-  --table-th-bg: rgba(15, 23, 42, 0.9);
+  --table-bg: rgba(21, 26, 38, 0.45);
+  --table-th-bg: rgba(21, 26, 38, 0.96);
   --table-th-text: var(--text-sub);
-  --table-td-border: rgba(255, 255, 255, 0.05);
+  --table-td-border: rgba(255, 255, 255, 0.06);
   --table-tr-alt: rgba(255, 255, 255, 0.02);
   --table-tr-hover: rgba(255, 255, 255, 0.06);
   --table-tr-completed: transparent;
 
-  --storage-th-bg: rgba(76, 29, 149, 0.5);
+  --storage-th-bg: rgba(76, 29, 149, 0.45);
   --storage-th-text: #c4b5fd;
-  --storage-th-border: rgba(196, 181, 253, 0.3);
+  --storage-th-border: rgba(196, 181, 253, 0.25);
 
-  --pokemon-th-bg: rgba(6, 78, 59, 0.5);
+  --pokemon-th-bg: rgba(6, 78, 59, 0.45);
   --pokemon-th-text: #6ee7b7;
-  --pokemon-th-border: rgba(110, 231, 183, 0.3);
+  --pokemon-th-border: rgba(110, 231, 183, 0.25);
 
-  --hab-th-bg: rgba(30, 41, 59, 0.95);
+  --hab-th-bg: rgba(28, 33, 44, 0.96);
   --hab-th-text: #38bdf8;
-  --hab-th-border: rgba(56, 189, 248, 0.3);
+  --hab-th-border: rgba(56, 189, 248, 0.25);
 
-  --pill-bg: rgba(255, 255, 255, 0.06);
+  --pill-bg: rgba(255, 255, 255, 0.05);
   --pill-text: var(--text-main);
   --pill-border: var(--glass-border);
 
@@ -9279,6 +9279,27 @@ body.has-floating-back .scroll-top-btn {
     min-height: 1.2500rem !important;
     max-width: 95% !important;
   }
+}
+
+/* 5. 暗色模式高亮縮圖防雪盲柔光調校與 Hover 原色即時還原 */
+:root[data-theme="dark"] .pkm-table-hab-thumb,
+:root[data-theme="dark"] .pkm-card-hab-thumb,
+:root[data-theme="dark"] .hab-view-card-img,
+:root[data-theme="dark"] .hab-thumb-img,
+:root[data-theme="dark"] .hab-table-img {
+  filter: brightness(0.90) contrast(0.98);
+  border: 0.0625rem solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.5000rem;
+  transition: filter 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s ease;
+}
+
+:root[data-theme="dark"] .pkm-table-hab-thumb:hover,
+:root[data-theme="dark"] .pkm-card-hab-thumb:hover,
+:root[data-theme="dark"] .hab-view-card-img:hover,
+:root[data-theme="dark"] .hab-thumb-img:hover,
+:root[data-theme="dark"] .hab-table-img:hover {
+  filter: brightness(1) contrast(1);
+  border-color: rgba(255, 255, 255, 0.24);
 }
 
 
