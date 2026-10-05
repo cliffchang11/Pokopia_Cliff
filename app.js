@@ -19,6 +19,7 @@
   const STORAGE_KEY_CUSTOM_STORAGE = 'pokopia_custom_boxes_v1';
   const STORAGE_KEY_CUSTOM_VIDEOS = 'pokopia_custom_videos_v1';
   const STORAGE_KEY_CUSTOM_VIDEO_TAGS = 'pokopia_custom_video_tags_v1';
+  const STORAGE_KEY_DELETED_VIDEO_TAGS = 'pokopia_deleted_video_tags_v1';
 
   // 我的收納盒預設初始箱號配置 (6 個預設收納盒，使用者可自由增刪與修改)
   const DEFAULT_CUSTOM_BOXES = [
@@ -142,6 +143,12 @@
     })(),
     customVideoTags: (function() {
       const saved = loadProgress(STORAGE_KEY_CUSTOM_VIDEO_TAGS, null);
+      if (Array.isArray(saved)) return saved;
+      const defaultTags = (window.POKOPIA_DEFAULT_TAGS || ['終局農場', '環境等級', '自動化', '資源收集', '傢俱攻略']);
+      return defaultTags.filter(t => t !== '全部' && t !== '我的自訂');
+    })(),
+    deletedVideoTags: (function() {
+      const saved = loadProgress(STORAGE_KEY_DELETED_VIDEO_TAGS, null);
       return (Array.isArray(saved)) ? saved : [];
     })(),
     currentVideoId: null,
@@ -810,6 +817,11 @@
           if (merged.customVideoTags && Array.isArray(merged.customVideoTags)) {
             state.customVideoTags = merged.customVideoTags;
           }
+          if (merged.deletedVideoTags && Array.isArray(merged.deletedVideoTags)) {
+            const currentDels = new Set(state.deletedVideoTags || []);
+            merged.deletedVideoTags.forEach(t => currentDels.add(t));
+            state.deletedVideoTags = Array.from(currentDels);
+          }
           saveProgress(STORAGE_KEY_CAT,            state.catChecked);
           saveProgress(STORAGE_KEY_PKM,            state.pkmChecked);
           saveProgress(STORAGE_KEY_HAB,            state.habChecked);
@@ -818,6 +830,7 @@
           saveProgress(STORAGE_KEY_CUSTOM_STORAGE, state.customBoxes);
           saveProgress(STORAGE_KEY_CUSTOM_VIDEOS,  state.customVideos);
           saveProgress(STORAGE_KEY_CUSTOM_VIDEO_TAGS, state.customVideoTags);
+          saveProgress(STORAGE_KEY_DELETED_VIDEO_TAGS, state.deletedVideoTags);
 
           await fb.saveCloudProgress(user.uid, merged);
           if (elSync) elSync.classList.add('hidden');
@@ -840,6 +853,7 @@
               customBoxes:       state.customBoxes       || [],
               customVideos:      state.customVideos      || [],
               customVideoTags:   state.customVideoTags   || [],
+              deletedVideoTags:  state.deletedVideoTags  || [],
               regionAssignments: state.regionAssignments || (typeof getRegionAssignments === 'function' ? getRegionAssignments() : {})
             };
             const updated = fb.mergeProgressUnion(currentSnap, remoteData);
@@ -850,6 +864,7 @@
                               JSON.stringify(state.customBoxes) !== JSON.stringify(updated.customBoxes) ||
                               JSON.stringify(state.customVideos) !== JSON.stringify(updated.customVideos) ||
                               JSON.stringify(state.customVideoTags) !== JSON.stringify(updated.customVideoTags) ||
+                              JSON.stringify(state.deletedVideoTags) !== JSON.stringify(updated.deletedVideoTags) ||
                               JSON.stringify(state.regionAssignments) !== JSON.stringify(updated.regionAssignments);
             if (isChanged) {
               state.catChecked      = updated.catChecked      || {};
@@ -866,6 +881,9 @@
               if (updated.customVideoTags && Array.isArray(updated.customVideoTags)) {
                 state.customVideoTags = updated.customVideoTags;
               }
+              if (updated.deletedVideoTags && Array.isArray(updated.deletedVideoTags)) {
+                state.deletedVideoTags = updated.deletedVideoTags;
+              }
               if (updated.regionAssignments && typeof updated.regionAssignments === 'object') {
                 state.regionAssignments = updated.regionAssignments;
                 try {
@@ -881,6 +899,7 @@
                 localStorage.setItem(STORAGE_KEY_CUSTOM_STORAGE, JSON.stringify(state.customBoxes));
                 localStorage.setItem(STORAGE_KEY_CUSTOM_VIDEOS,  JSON.stringify(state.customVideos));
                 localStorage.setItem(STORAGE_KEY_CUSTOM_VIDEO_TAGS, JSON.stringify(state.customVideoTags));
+                localStorage.setItem(STORAGE_KEY_DELETED_VIDEO_TAGS, JSON.stringify(state.deletedVideoTags));
               } catch (e) {}
               renderAll();
               renderStats();
@@ -5024,19 +5043,40 @@
   }
 
   function getAllVideoTags() {
+    const deleted = new Set(state.deletedVideoTags || []);
     const defaultTags = (window.POKOPIA_DEFAULT_TAGS || ['全部', '終局農場', '環境等級', '自動化', '資源收集', '傢俱攻略']);
-    const customTags = (state.customVideoTags || []).filter(t => t !== '我的自訂');
+    
+    // 優先以 state.customVideoTags 為準，若尚未有 customVideoTags 則使用 defaultTags
+    let baseList = [];
+    if (Array.isArray(state.customVideoTags) && state.customVideoTags.length > 0) {
+      baseList = state.customVideoTags;
+    } else {
+      baseList = defaultTags.filter(t => t !== '全部' && t !== '我的自訂');
+    }
+
+    const tagSet = new Set();
+    tagSet.add('全部');
+    baseList.forEach(t => {
+      if (t && t !== '我的自訂' && !deleted.has(t)) {
+        tagSet.add(t);
+      }
+    });
+
+    // 從所有現存影片補充使用者新增在個別影片上的標籤（但排除已刪除黑名單）
     const videoList = getAllVideos();
-    const tagSet = new Set(defaultTags);
-    customTags.forEach(t => tagSet.add(t));
     videoList.forEach(v => {
       if (Array.isArray(v.tags)) {
         v.tags.forEach(t => {
-          if (t !== '我的自訂') tagSet.add(t);
+          if (t && t !== '我的自訂' && !deleted.has(t)) {
+            tagSet.add(t);
+          }
         });
       }
     });
+
     tagSet.delete('我的自訂');
+    deleted.forEach(d => tagSet.delete(d));
+
     // 保證 '全部' 在第一位
     const result = Array.from(tagSet);
     const allIdx = result.indexOf('全部');
@@ -5050,13 +5090,15 @@
   function saveCustomVideosAndSync() {
     saveProgress(STORAGE_KEY_CUSTOM_VIDEOS, state.customVideos);
     saveProgress(STORAGE_KEY_CUSTOM_VIDEO_TAGS, state.customVideoTags);
+    saveProgress(STORAGE_KEY_DELETED_VIDEO_TAGS, state.deletedVideoTags);
     const fb = window.PokopiaFirebase;
     if (fb && typeof fb.getCurrentUser === 'function') {
       const user = fb.getCurrentUser();
       if (user && user.uid && isAutoFarmAuthorized(user)) {
         fb.debouncedSave(user.uid, {
           customVideos: state.customVideos,
-          customVideoTags: state.customVideoTags
+          customVideoTags: state.customVideoTags,
+          deletedVideoTags: state.deletedVideoTags
         });
       }
     }
@@ -5318,6 +5360,17 @@
       return;
     }
 
+    // 若新標籤曾在黑名單中，將其解禁
+    if (!Array.isArray(state.deletedVideoTags)) {
+      state.deletedVideoTags = [];
+    }
+    state.deletedVideoTags = state.deletedVideoTags.filter(t => t !== newTag);
+    // 將舊標籤加入黑名單，防範未來從預設標籤復活
+    if (!state.deletedVideoTags.includes(oldTag)) {
+      state.deletedVideoTags.push(oldTag);
+    }
+    saveProgress(STORAGE_KEY_DELETED_VIDEO_TAGS, state.deletedVideoTags);
+
     // 1. 更新 state.customVideoTags
     if (!Array.isArray(state.customVideoTags) || state.customVideoTags.length === 0) {
       state.customVideoTags = getAllVideoTags().filter(t => t !== '全部');
@@ -5346,8 +5399,8 @@
     }
 
     // 4. 若當前檢視篩選正是舊標籤，切換為新標籤
-    if (state.activeVideoTag === oldTag) {
-      state.activeVideoTag = newTag;
+    if (state.selectedVideoTag === oldTag) {
+      state.selectedVideoTag = newTag;
     }
 
     saveCustomVideosAndSync();
@@ -5369,6 +5422,15 @@
       return;
     }
 
+    // 0. 將被刪除標籤加入黑名單，保證任何地方都不會復活
+    if (!Array.isArray(state.deletedVideoTags)) {
+      state.deletedVideoTags = [];
+    }
+    if (!state.deletedVideoTags.includes(tagToDelete)) {
+      state.deletedVideoTags.push(tagToDelete);
+    }
+    saveProgress(STORAGE_KEY_DELETED_VIDEO_TAGS, state.deletedVideoTags);
+
     // 1. 從 state.customVideoTags 移除
     if (!Array.isArray(state.customVideoTags) || state.customVideoTags.length === 0) {
       state.customVideoTags = getAllVideoTags().filter(t => t !== '全部');
@@ -5388,8 +5450,8 @@
     _activeFormSelectedTags.delete(tagToDelete);
 
     // 4. 若當前檢視篩選正是此標籤，重置回「全部」
-    if (state.activeVideoTag === tagToDelete) {
-      state.activeVideoTag = '全部';
+    if (state.selectedVideoTag === tagToDelete) {
+      state.selectedVideoTag = '全部';
     }
 
     saveCustomVideosAndSync();
@@ -5459,13 +5521,39 @@
     const trimmed = text.trim();
     if (!trimmed) return trimmed;
 
-    const apiUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=zh-TW&dt=t&q=${encodeURIComponent(trimmed)}`;
+    // 1. 優先使用 Google Chrome 擴充專用端點 (支援 CORS、帶有 #shorts 多重井字標籤不觸發 WAF 阻擋)
+    const chromeApiUrl = `https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl=auto&tl=zh-TW&q=${encodeURIComponent(trimmed)}`;
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
 
     try {
-      const resp = await fetch(apiUrl, { signal: controller.signal });
+      const resp = await fetch(chromeApiUrl, { signal: controller.signal });
       clearTimeout(timeoutId);
+      if (resp.ok) {
+        const data = await resp.json();
+        // Chrome 端點格式為 [["譯文", "原始語系"]] 或 ["譯文"]
+        if (Array.isArray(data) && data.length > 0) {
+          if (Array.isArray(data[0]) && data[0][0]) {
+            return data[0][0];
+          }
+          if (typeof data[0] === 'string') {
+            return data[0];
+          }
+        }
+      }
+    } catch (err) {
+      clearTimeout(timeoutId);
+      console.warn('[Translate] Chrome endpoint failed, trying fallback:', err);
+    }
+
+    // 2. 備援端點 (gtx)
+    const fallbackUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=zh-TW&dt=t&q=${encodeURIComponent(trimmed)}`;
+    const fbController = new AbortController();
+    const fbTimeoutId = setTimeout(() => fbController.abort(), 4000);
+
+    try {
+      const resp = await fetch(fallbackUrl, { signal: fbController.signal });
+      clearTimeout(fbTimeoutId);
       if (!resp.ok) return trimmed;
       const data = await resp.json();
       if (Array.isArray(data) && Array.isArray(data[0])) {
@@ -5474,8 +5562,8 @@
       }
       return trimmed;
     } catch (err) {
-      clearTimeout(timeoutId);
-      console.warn('[Translate] Title translation fallback to original:', err);
+      clearTimeout(fbTimeoutId);
+      console.warn('[Translate] All translation endpoints failed, fallback to original:', err);
       return trimmed;
     }
   }
@@ -5672,6 +5760,15 @@
       if (!DOM.videoFormNewTagInput) return;
       const newTag = DOM.videoFormNewTagInput.value.trim();
       if (!newTag) return;
+      if (newTag === '全部') {
+        alert('「全部」為系統保留標籤名稱，請使用其他名稱！');
+        return;
+      }
+      // 若曾被刪除過，從 deletedVideoTags 移除（解除黑名單）
+      if (Array.isArray(state.deletedVideoTags) && state.deletedVideoTags.includes(newTag)) {
+        state.deletedVideoTags = state.deletedVideoTags.filter(t => t !== newTag);
+        saveProgress(STORAGE_KEY_DELETED_VIDEO_TAGS, state.deletedVideoTags);
+      }
       if (!state.customVideoTags.includes(newTag)) {
         state.customVideoTags.push(newTag);
       }

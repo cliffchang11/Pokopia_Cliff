@@ -104,6 +104,15 @@
     } else if (local && local.customVideoTags && Array.isArray(local.customVideoTags)) {
       merged.customVideoTags = local.customVideoTags;
     }
+    if (cloud && cloud.deletedVideoTags && Array.isArray(cloud.deletedVideoTags)) {
+      const delSet = new Set(cloud.deletedVideoTags);
+      if (local && local.deletedVideoTags && Array.isArray(local.deletedVideoTags)) {
+        local.deletedVideoTags.forEach(t => delSet.add(t));
+      }
+      merged.deletedVideoTags = Array.from(delSet);
+    } else if (local && local.deletedVideoTags && Array.isArray(local.deletedVideoTags)) {
+      merged.deletedVideoTags = local.deletedVideoTags;
+    }
     return merged;
   }
 
