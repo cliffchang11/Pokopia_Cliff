@@ -136,7 +136,9 @@
     activeAssignRegionId: null,
     customVideos: (function() {
       const saved = loadProgress(STORAGE_KEY_CUSTOM_VIDEOS, null);
-      return (Array.isArray(saved)) ? saved : [];
+      if (Array.isArray(saved) && saved.length > 0) return saved;
+      const defaults = (window.POKOPIA_DEFAULT_VIDEOS || []);
+      return JSON.parse(JSON.stringify(defaults));
     })(),
     customVideoTags: (function() {
       const saved = loadProgress(STORAGE_KEY_CUSTOM_VIDEO_TAGS, null);
@@ -5015,9 +5017,7 @@
   }
 
   function getAllVideos() {
-    const defaultVids = (window.POKOPIA_DEFAULT_VIDEOS || []);
-    const customVids = (state.customVideos || []);
-    return [...defaultVids, ...customVids];
+    return (state.customVideos && Array.isArray(state.customVideos)) ? state.customVideos : [];
   }
 
   function getAllVideoTags() {
@@ -5091,9 +5091,11 @@
       return;
     }
 
-    // 播放器 iframe
+    // 播放器 iframe (修復錯誤 153: 明確設定 referrerpolicy 與 youtube-nocookie.com 內嵌)
     if (DOM.videoPlayerIframe) {
-      const embedUrl = `https://www.youtube.com/embed/${encodeURIComponent(video.videoId)}?rel=0`;
+      DOM.videoPlayerIframe.referrerPolicy = 'strict-origin-when-cross-origin';
+      const origin = (typeof window !== 'undefined' && window.location && window.location.origin) ? encodeURIComponent(window.location.origin) : '';
+      const embedUrl = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(video.videoId)}?rel=0&enablejsapi=1${origin ? '&origin=' + origin : ''}`;
       if (DOM.videoPlayerIframe.src !== embedUrl) {
         DOM.videoPlayerIframe.src = embedUrl;
       }
@@ -5103,7 +5105,7 @@
     if (DOM.videoCurrentNote) DOM.videoCurrentNote.textContent = video.note || '暫無詳細說明。';
     if (DOM.videoCurrentAuthor) DOM.videoCurrentAuthor.textContent = video.author || '攻略作者';
     if (DOM.videoCurrentDate) {
-      DOM.videoCurrentDate.textContent = video.isDefault ? '精選攻略' : '我的自訂';
+      DOM.videoCurrentDate.textContent = '自選攻略';
     }
 
     // 外部連結
@@ -5112,14 +5114,10 @@
       DOM.videoExternalLink.href = video.url || `https://www.youtube.com/watch?v=${video.videoId}`;
     }
 
-    // 編輯按鈕：若是自訂影片則顯示
+    // 編輯按鈕：全清單影片皆可自由編輯
     if (DOM.btnEditCurrentVideo) {
-      if (!video.isDefault) {
-        DOM.btnEditCurrentVideo.classList.remove('hidden');
-        DOM.btnEditCurrentVideo.onclick = () => openVideoModal(video);
-      } else {
-        DOM.btnEditCurrentVideo.classList.add('hidden');
-      }
+      DOM.btnEditCurrentVideo.classList.remove('hidden');
+      DOM.btnEditCurrentVideo.onclick = () => openVideoModal(video);
     }
 
     // 雲端碼
@@ -5149,8 +5147,6 @@
       let count = 0;
       if (tag === '全部') {
         count = allVideos.length;
-      } else if (tag === '我的自訂') {
-        count = allVideos.filter(v => !v.isDefault).length;
       } else {
         count = allVideos.filter(v => Array.isArray(v.tags) && v.tags.includes(tag)).length;
       }
@@ -5184,7 +5180,6 @@
 
     const filtered = allVideos.filter(v => {
       if (selectedTag === '全部') return true;
-      if (selectedTag === '我的自訂') return !v.isDefault;
       return Array.isArray(v.tags) && v.tags.includes(selectedTag);
     });
 
@@ -5214,7 +5209,7 @@
           <div class="video-card-body">
             <div class="video-card-top-row">
               <span class="video-card-author">${escapeHTML(v.author || '攻略作者')}</span>
-              ${!v.isDefault ? `<button class="video-card-edit-btn" data-edit-id="${escapeHTML(v.id)}" title="編輯此影片">✏️</button>` : ''}
+              <button class="video-card-edit-btn" data-edit-id="${escapeHTML(v.id)}" title="編輯此影片">✏️</button>
             </div>
             <h3 class="video-card-title" title="${escapeHTML(v.title)}">${escapeHTML(v.title)}</h3>
             <p class="video-card-note">${escapeHTML(v.note || '')}</p>
@@ -5266,7 +5261,7 @@
 
     if (videoToEdit) {
       if (DOM.videoModalBadge) DOM.videoModalBadge.textContent = '編輯影片';
-      if (DOM.videoModalTitle) DOM.videoModalTitle.textContent = '編輯自訂影片';
+      if (DOM.videoModalTitle) DOM.videoModalTitle.textContent = '編輯影片內容';
       if (DOM.videoFormId) DOM.videoFormId.value = videoToEdit.id;
       if (DOM.videoFormUrl) DOM.videoFormUrl.value = videoToEdit.url || videoToEdit.videoId;
       if (DOM.videoFormTitle) DOM.videoFormTitle.value = videoToEdit.title || '';
