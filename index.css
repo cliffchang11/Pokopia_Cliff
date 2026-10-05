@@ -9911,9 +9911,12 @@ body.has-floating-back .scroll-top-btn {
 }
 
 .video-tag-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3750rem;
   font-size: 0.75rem;
   font-weight: 600;
-  padding: 0.2500rem 0.6250rem;
+  padding: 0.2500rem 0.5000rem 0.2500rem 0.6250rem;
   border-radius: 9999px;
   background: var(--bg-card-hover);
   color: var(--text-secondary);
@@ -9931,6 +9934,44 @@ body.has-floating-back .scroll-top-btn {
   background: var(--primary-indigo);
   color: #fff;
   border-color: var(--primary-indigo);
+}
+
+.video-tag-choice-label {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.video-tag-choice-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.1250rem;
+  margin-left: 0.1250rem;
+}
+
+.btn-tag-edit,
+.btn-tag-del {
+  background: transparent;
+  border: none;
+  font-size: 0.68rem;
+  line-height: 1;
+  padding: 0.1250rem;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: all var(--transition-fast);
+  color: inherit;
+}
+
+.btn-tag-edit:hover {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+.btn-tag-del:hover {
+  opacity: 1;
+  color: #ef4444;
+  transform: scale(1.15);
 }
 
 .video-form-add-tag-row {

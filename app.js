@@ -5308,6 +5308,97 @@
     }
   }
 
+  function renameVideoTag(oldTag, newTag) {
+    if (!oldTag || !newTag) return;
+    oldTag = oldTag.trim();
+    newTag = newTag.trim();
+    if (!newTag || oldTag === newTag) return;
+    if (newTag === '全部') {
+      alert('「全部」為系統保留標籤名稱，請使用其他名稱！');
+      return;
+    }
+
+    // 1. 更新 state.customVideoTags
+    if (!Array.isArray(state.customVideoTags) || state.customVideoTags.length === 0) {
+      state.customVideoTags = getAllVideoTags().filter(t => t !== '全部');
+    }
+    const tagIdx = state.customVideoTags.indexOf(oldTag);
+    if (tagIdx > -1) {
+      state.customVideoTags[tagIdx] = newTag;
+    } else {
+      state.customVideoTags.push(newTag);
+    }
+    state.customVideoTags = Array.from(new Set(state.customVideoTags.filter(t => t !== oldTag)));
+
+    // 2. 批次更新所有包含舊標籤的影片
+    let affectedCount = 0;
+    (state.customVideos || []).forEach(v => {
+      if (Array.isArray(v.tags) && v.tags.includes(oldTag)) {
+        v.tags = v.tags.map(t => (t === oldTag ? newTag : t));
+        affectedCount++;
+      }
+    });
+
+    // 3. 更新當前表單已選中的 Set
+    if (_activeFormSelectedTags.has(oldTag)) {
+      _activeFormSelectedTags.delete(oldTag);
+      _activeFormSelectedTags.add(newTag);
+    }
+
+    // 4. 若當前檢視篩選正是舊標籤，切換為新標籤
+    if (state.activeVideoTag === oldTag) {
+      state.activeVideoTag = newTag;
+    }
+
+    saveCustomVideosAndSync();
+    renderModalTagPool();
+    renderVideoTags();
+    renderVideoCards();
+    showCsToast(`✅ 已將「${oldTag}」重新命名為「${newTag}」${affectedCount > 0 ? `（同步更新 ${affectedCount} 部影片）` : ''}`);
+  }
+
+  function deleteVideoTag(tagToDelete) {
+    if (!tagToDelete) return;
+    tagToDelete = tagToDelete.trim();
+    if (tagToDelete === '全部') {
+      alert('「全部」為系統保留標籤，無法刪除！');
+      return;
+    }
+
+    if (!confirm(`確定要刪除標籤「${tagToDelete}」嗎？\n已套用此標籤的影片將自動移除此標籤。`)) {
+      return;
+    }
+
+    // 1. 從 state.customVideoTags 移除
+    if (!Array.isArray(state.customVideoTags) || state.customVideoTags.length === 0) {
+      state.customVideoTags = getAllVideoTags().filter(t => t !== '全部');
+    }
+    state.customVideoTags = state.customVideoTags.filter(t => t !== tagToDelete);
+
+    // 2. 批次自所有影片移除該標籤
+    let affectedCount = 0;
+    (state.customVideos || []).forEach(v => {
+      if (Array.isArray(v.tags) && v.tags.includes(tagToDelete)) {
+        v.tags = v.tags.filter(t => t !== tagToDelete);
+        affectedCount++;
+      }
+    });
+
+    // 3. 從當前表單已選集合移除
+    _activeFormSelectedTags.delete(tagToDelete);
+
+    // 4. 若當前檢視篩選正是此標籤，重置回「全部」
+    if (state.activeVideoTag === tagToDelete) {
+      state.activeVideoTag = '全部';
+    }
+
+    saveCustomVideosAndSync();
+    renderModalTagPool();
+    renderVideoTags();
+    renderVideoCards();
+    showCsToast(`🗑️ 已刪除標籤「${tagToDelete}」${affectedCount > 0 ? `（已自 ${affectedCount} 部影片移除）` : ''}`);
+  }
+
   function renderModalTagPool() {
     if (!DOM.videoFormTagsPool) return;
     const allTags = getAllVideoTags().filter(t => t !== '全部');
@@ -5315,21 +5406,50 @@
       const isSelected = _activeFormSelectedTags.has(tag);
       return `
         <span class="video-tag-choice ${isSelected ? 'selected' : ''}" data-choice-tag="${escapeHTML(tag)}">
-          ${isSelected ? '✔ ' : '＋ '}${escapeHTML(tag)}
+          <span class="video-tag-choice-label" data-action="toggle">
+            ${isSelected ? '✔ ' : '＋ '}${escapeHTML(tag)}
+          </span>
+          <span class="video-tag-choice-actions">
+            <button type="button" class="btn-tag-edit" data-action="edit" data-tag="${escapeHTML(tag)}" title="重新命名標籤">✏️</button>
+            <button type="button" class="btn-tag-del" data-action="del" data-tag="${escapeHTML(tag)}" title="刪除標籤">✕</button>
+          </span>
         </span>
       `;
     }).join('');
 
     DOM.videoFormTagsPool.querySelectorAll('.video-tag-choice').forEach(choice => {
-      choice.addEventListener('click', () => {
-        const tag = choice.getAttribute('data-choice-tag');
-        if (_activeFormSelectedTags.has(tag)) {
-          _activeFormSelectedTags.delete(tag);
-        } else {
-          _activeFormSelectedTags.add(tag);
-        }
-        renderModalTagPool();
-      });
+      const tag = choice.getAttribute('data-choice-tag');
+      const toggleLabel = choice.querySelector('[data-action="toggle"]');
+      const btnEdit = choice.querySelector('[data-action="edit"]');
+      const btnDel = choice.querySelector('[data-action="del"]');
+
+      if (toggleLabel) {
+        toggleLabel.addEventListener('click', () => {
+          if (_activeFormSelectedTags.has(tag)) {
+            _activeFormSelectedTags.delete(tag);
+          } else {
+            _activeFormSelectedTags.add(tag);
+          }
+          renderModalTagPool();
+        });
+      }
+
+      if (btnEdit) {
+        btnEdit.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const newName = prompt(`請輸入標籤「${tag}」的新名稱：`, tag);
+          if (newName && newName.trim() && newName.trim() !== tag) {
+            renameVideoTag(tag, newName.trim());
+          }
+        });
+      }
+
+      if (btnDel) {
+        btnDel.addEventListener('click', (e) => {
+          e.stopPropagation();
+          deleteVideoTag(tag);
+        });
+      }
     });
   }
 

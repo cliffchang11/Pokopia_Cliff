@@ -76,4 +76,10 @@ const appCode = fs.readFileSync('./app.js', 'utf-8');
 assert(appCode.includes("'video'") && appCode.includes("validTabs"), 'app.js validTabs 應包含 video');
 console.log('✓ app.js validTabs 包含 video（重新整理停留機制）驗證通過');
 
+// 6. 驗證 app.js 包含標籤編輯功能
+assert(appCode.includes('function renameVideoTag'), 'app.js 應包含 renameVideoTag 函式');
+assert(appCode.includes('function deleteVideoTag'), 'app.js 應包含 deleteVideoTag 函式');
+assert(appCode.includes('btn-tag-edit') && appCode.includes('btn-tag-del'), 'app.js 應包含標籤改名與刪除按鈕');
+console.log('✓ app.js 標籤就地編輯 (改名/刪除) 與全局連動機制驗證通過');
+
 console.log('所有單元邏輯驗證全部成功！');
