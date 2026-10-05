@@ -73,8 +73,7 @@
     '環境等級',
     '自動化',
     '資源收集',
-    '傢俱攻略',
-    '我的自訂'
+    '傢俱攻略'
   ];
 
   global.POKOPIA_DEFAULT_VIDEOS = DEFAULT_REFERENCE_VIDEOS;

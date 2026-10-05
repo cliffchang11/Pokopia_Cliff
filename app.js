@@ -350,25 +350,25 @@
 
   // Navigation State Persistence (URL Hash 絕對第一優先權 + LocalStorage 回退)
   function getInitialNavState() {
-    const validTabs = ['storage', 'habitat', 'habitatCatalog', 'autofarm', 'customStorage', 'regionMap'];
+    const validTabs = ['storage', 'habitat', 'habitatCatalog', 'autofarm', 'customStorage', 'regionMap', 'video'];
     const validViews = ['card', 'table'];
 
     let tab = null;
     let view = null;
     let targetId = null;
 
-    // 1. 嚴格優先讀取 URL Hash (如 #habitatCatalog-table 或 #customStorage-card)
+    // 1. 嚴格優先讀取 URL Hash (如 #habitatCatalog-table 或 #customStorage-card 或 #video-card)
     try {
       const hash = (window.location.hash || '').replace(/^#/, '');
       if (hash) {
         const parts = hash.split('-');
         if (validTabs.includes(parts[0])) {
           tab = parts[0];
-          // 專屬安全攔截：未授權使用者直接輸入 #autofarm 或 #customStorage 時強制跳轉回首頁
-          if ((tab === 'autofarm' || tab === 'customStorage') && !isAutoFarmAuthorized()) {
+          // 專屬安全攔截：未授權使用者直接輸入 #autofarm, #customStorage 或 #video 時強制跳轉回首頁
+          if ((tab === 'autofarm' || tab === 'customStorage' || tab === 'video') && !isAutoFarmAuthorized()) {
             tab = 'habitat';
             try {
-              if (window.location.hash.includes('autofarm') || window.location.hash.includes('customStorage')) {
+              if (window.location.hash.includes('autofarm') || window.location.hash.includes('customStorage') || window.location.hash.includes('video')) {
                 history.replaceState(null, '', '#habitat-table');
               }
             } catch (e) {}
@@ -5024,16 +5024,19 @@
   }
 
   function getAllVideoTags() {
-    const defaultTags = (window.POKOPIA_DEFAULT_TAGS || ['全部', '終局農場', '環境等級', '自動化', '資源收集', '傢俱攻略', '我的自訂']);
-    const customTags = (state.customVideoTags || []);
+    const defaultTags = (window.POKOPIA_DEFAULT_TAGS || ['全部', '終局農場', '環境等級', '自動化', '資源收集', '傢俱攻略']);
+    const customTags = (state.customVideoTags || []).filter(t => t !== '我的自訂');
     const videoList = getAllVideos();
     const tagSet = new Set(defaultTags);
     customTags.forEach(t => tagSet.add(t));
     videoList.forEach(v => {
       if (Array.isArray(v.tags)) {
-        v.tags.forEach(t => tagSet.add(t));
+        v.tags.forEach(t => {
+          if (t !== '我的自訂') tagSet.add(t);
+        });
       }
     });
+    tagSet.delete('我的自訂');
     // 保證 '全部' 在第一位
     const result = Array.from(tagSet);
     const allIdx = result.indexOf('全部');
@@ -5286,8 +5289,6 @@
       if (DOM.videoFormNote) DOM.videoFormNote.value = '';
       if (DOM.videoFormCloudCode) DOM.videoFormCloudCode.value = '';
       if (DOM.btnVideoDelete) DOM.btnVideoDelete.classList.add('hidden');
-
-      _activeFormSelectedTags.add('我的自訂');
     }
 
     _videoOriginalTitle = '';
@@ -5625,14 +5626,13 @@
         }
 
         const editId = DOM.videoFormId.value;
-        const tags = Array.from(_activeFormSelectedTags);
-        if (tags.length === 0) tags.push('我的自訂');
+        const tags = Array.from(_activeFormSelectedTags).filter(t => t !== '我的自訂');
 
         const videoData = {
           id: editId || 'video_custom_' + Date.now(),
           videoId: videoId,
           title: titleInput,
-          author: (DOM.videoFormAuthor && DOM.videoFormAuthor.value.trim()) || '我的自訂',
+          author: (DOM.videoFormAuthor && DOM.videoFormAuthor.value.trim()) || '精選創作者',
           url: urlInput.startsWith('http') ? urlInput : `https://www.youtube.com/watch?v=${videoId}`,
           tags: tags,
           note: (DOM.videoFormNote && DOM.videoFormNote.value.trim()) || '',
