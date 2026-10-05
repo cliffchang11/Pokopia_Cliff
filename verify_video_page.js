@@ -29,6 +29,8 @@ const requiredIds = [
   'videoFormTagsPool',
   'btnVideoAddTag',
   'btnAutoFetchVideoInfo',
+  'btnToggleTitleLang',
+  'toggleLangText',
   'btnVideoSave'
 ];
 

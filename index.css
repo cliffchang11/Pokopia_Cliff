@@ -10105,6 +10105,49 @@ body.has-floating-back .scroll-top-btn {
   }
 }
 
+/* 標題欄語言切換按鈕樣式 (Title Language Toggle) */
+.video-title-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5000rem;
+  width: 100%;
+}
+
+.video-title-input-wrap .form-input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.btn-toggle-title-lang {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2500rem;
+  padding: 0.5000rem 0.7500rem;
+  background: var(--bg-card-hover);
+  border: 0.0625rem solid var(--glass-border);
+  border-radius: 0.6250rem;
+  color: var(--text-secondary);
+  font-size: 0.80rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.btn-toggle-title-lang:hover {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: var(--primary-indigo);
+  color: var(--primary-indigo);
+  transform: translateY(-0.0625rem);
+}
+
+.btn-toggle-title-lang:active {
+  transform: translateY(0);
+}
+
 
 
 

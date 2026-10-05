@@ -190,6 +190,8 @@
     videoFormUrl: document.getElementById('videoFormUrl'),
     btnAutoFetchVideoInfo: document.getElementById('btnAutoFetchVideoInfo'),
     videoFormTitle: document.getElementById('videoFormTitle'),
+    btnToggleTitleLang: document.getElementById('btnToggleTitleLang'),
+    toggleLangText: document.getElementById('toggleLangText'),
     videoFormAuthor: document.getElementById('videoFormAuthor'),
     videoFormNote: document.getElementById('videoFormNote'),
     videoFormCloudCode: document.getElementById('videoFormCloudCode'),
@@ -5288,6 +5290,12 @@
       _activeFormSelectedTags.add('我的自訂');
     }
 
+    _videoOriginalTitle = '';
+    _videoTranslatedTitle = '';
+    _isShowingOriginalTitle = false;
+    if (DOM.btnToggleTitleLang) DOM.btnToggleTitleLang.classList.add('hidden');
+    if (DOM.toggleLangText) DOM.toggleLangText.textContent = '原文';
+
     renderModalTagPool();
     DOM.videoModal.classList.remove('hidden');
     if (DOM.videoFormUrl) DOM.videoFormUrl.focus();
@@ -5324,7 +5332,38 @@
     });
   }
 
-  // ─── YouTube 資訊自動擷取 ──────────────────────────────────────────
+  // ─── 免金鑰 Google 翻譯為繁體中文 (支援多國語言與簡轉繁) ──────────────
+  async function translateToTraditionalChinese(text) {
+    if (!text || typeof text !== 'string') return text;
+    const trimmed = text.trim();
+    if (!trimmed) return trimmed;
+
+    const apiUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=zh-TW&dt=t&q=${encodeURIComponent(trimmed)}`;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+    try {
+      const resp = await fetch(apiUrl, { signal: controller.signal });
+      clearTimeout(timeoutId);
+      if (!resp.ok) return trimmed;
+      const data = await resp.json();
+      if (Array.isArray(data) && Array.isArray(data[0])) {
+        const translated = data[0].map(item => item[0]).filter(Boolean).join('');
+        return translated || trimmed;
+      }
+      return trimmed;
+    } catch (err) {
+      clearTimeout(timeoutId);
+      console.warn('[Translate] Title translation fallback to original:', err);
+      return trimmed;
+    }
+  }
+
+  // ─── YouTube 資訊自動擷取與雙語快取 ───────────────────────────────
+  let _videoOriginalTitle = '';
+  let _videoTranslatedTitle = '';
+  let _isShowingOriginalTitle = false;
+
   async function fetchYouTubeVideoDetails(videoIdOrUrl) {
     const videoId = parseYouTubeId(videoIdOrUrl);
     if (!videoId) return null;
@@ -5382,12 +5421,29 @@
     try {
       const info = await fetchYouTubeVideoDetails(videoId);
       if (info && info.title) {
+        const rawTitle = info.title;
+        // 自動翻譯為繁體中文
+        const zhTitle = await translateToTraditionalChinese(rawTitle);
+
+        _videoOriginalTitle = rawTitle;
+        _videoTranslatedTitle = zhTitle;
+        _isShowingOriginalTitle = false;
+
+        // 若翻譯與原文有差異，顯示切換原文/繁中按鈕
+        if (DOM.btnToggleTitleLang && _videoOriginalTitle && _videoTranslatedTitle && _videoOriginalTitle !== _videoTranslatedTitle) {
+          DOM.btnToggleTitleLang.classList.remove('hidden');
+          if (DOM.toggleLangText) DOM.toggleLangText.textContent = '原文';
+        } else if (DOM.btnToggleTitleLang) {
+          DOM.btnToggleTitleLang.classList.add('hidden');
+        }
+
         let titleUpdated = false;
         let authorUpdated = false;
+        const titleToApply = _videoTranslatedTitle || _videoOriginalTitle;
 
         // 手動點擊強制覆蓋；失焦自動帶入僅在欄位為空時填入
         if (isManualClick || !DOM.videoFormTitle.value.trim()) {
-          DOM.videoFormTitle.value = info.title;
+          DOM.videoFormTitle.value = titleToApply;
           titleUpdated = true;
         }
 
@@ -5412,7 +5468,8 @@
         }
 
         if (isManualClick) {
-          showCsToast('✅ 已自動帶入影片資訊');
+          const hasTranslation = _videoOriginalTitle !== _videoTranslatedTitle;
+          showCsToast(hasTranslation ? '✅ 已自動帶入繁體中文標題' : '✅ 已自動帶入影片資訊');
         }
       } else {
         if (isManualClick) {
@@ -5461,6 +5518,31 @@
             handleAutoFetchVideoInfo(false);
           }
         }, 100);
+      });
+    }
+
+    // 標題語言切換（繁中譯文 / 原始標題）
+    if (DOM.btnToggleTitleLang) {
+      DOM.btnToggleTitleLang.addEventListener('click', () => {
+        if (!DOM.videoFormTitle) return;
+        if (!_videoOriginalTitle || !_videoTranslatedTitle) return;
+
+        if (!_isShowingOriginalTitle) {
+          DOM.videoFormTitle.value = _videoOriginalTitle;
+          _isShowingOriginalTitle = true;
+          if (DOM.toggleLangText) DOM.toggleLangText.textContent = '繁中';
+          showCsToast('已切換為原始標題', 'info');
+        } else {
+          DOM.videoFormTitle.value = _videoTranslatedTitle;
+          _isShowingOriginalTitle = false;
+          if (DOM.toggleLangText) DOM.toggleLangText.textContent = '原文';
+          showCsToast('已切換為繁體中文譯文', 'info');
+        }
+
+        DOM.videoFormTitle.classList.remove('field-auto-highlight');
+        void DOM.videoFormTitle.offsetWidth;
+        DOM.videoFormTitle.classList.add('field-auto-highlight');
+        setTimeout(() => DOM.videoFormTitle && DOM.videoFormTitle.classList.remove('field-auto-highlight'), 1000);
       });
     }
 
