@@ -28,6 +28,7 @@ const requiredIds = [
   'videoFormTitle',
   'videoFormTagsPool',
   'btnVideoAddTag',
+  'btnAutoFetchVideoInfo',
   'btnVideoSave'
 ];
 

@@ -188,6 +188,7 @@
     videoForm: document.getElementById('videoForm'),
     videoFormId: document.getElementById('videoFormId'),
     videoFormUrl: document.getElementById('videoFormUrl'),
+    btnAutoFetchVideoInfo: document.getElementById('btnAutoFetchVideoInfo'),
     videoFormTitle: document.getElementById('videoFormTitle'),
     videoFormAuthor: document.getElementById('videoFormAuthor'),
     videoFormNote: document.getElementById('videoFormNote'),
@@ -5323,6 +5324,113 @@
     });
   }
 
+  // ─── YouTube 資訊自動擷取 ──────────────────────────────────────────
+  async function fetchYouTubeVideoDetails(videoIdOrUrl) {
+    const videoId = parseYouTubeId(videoIdOrUrl);
+    if (!videoId) return null;
+
+    const targetUrl = `https://www.youtube.com/watch?v=${videoId}`;
+    const apiUrl = `https://noembed.com/embed?url=${encodeURIComponent(targetUrl)}`;
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
+
+    try {
+      const resp = await fetch(apiUrl, { signal: controller.signal });
+      clearTimeout(timeoutId);
+      if (!resp.ok) return null;
+      const data = await resp.json();
+      if (data && data.title) {
+        return {
+          title: data.title || '',
+          author: data.author_name || '',
+          videoId: videoId
+        };
+      }
+      return null;
+    } catch (err) {
+      clearTimeout(timeoutId);
+      console.warn('[Video AutoFetch] Failed to fetch oEmbed details:', err);
+      return null;
+    }
+  }
+
+  async function handleAutoFetchVideoInfo(isManualClick = false) {
+    if (!DOM.videoFormUrl) return;
+    const rawVal = DOM.videoFormUrl.value.trim();
+    if (!rawVal) {
+      if (isManualClick) {
+        showCsToast('請先輸入 YouTube 網址或影片 ID', 'info');
+      }
+      return;
+    }
+
+    const videoId = parseYouTubeId(rawVal);
+    if (!videoId) {
+      if (isManualClick) {
+        showCsToast('⚠️ 無法解析有效 YouTube 影片 ID', 'error');
+      }
+      return;
+    }
+
+    const fetchBtn = DOM.btnAutoFetchVideoInfo;
+    if (fetchBtn) {
+      fetchBtn.classList.add('is-loading');
+      fetchBtn.disabled = true;
+    }
+
+    try {
+      const info = await fetchYouTubeVideoDetails(videoId);
+      if (info && info.title) {
+        let titleUpdated = false;
+        let authorUpdated = false;
+
+        // 手動點擊強制覆蓋；失焦自動帶入僅在欄位為空時填入
+        if (isManualClick || !DOM.videoFormTitle.value.trim()) {
+          DOM.videoFormTitle.value = info.title;
+          titleUpdated = true;
+        }
+
+        if (info.author && (isManualClick || !DOM.videoFormAuthor.value.trim())) {
+          DOM.videoFormAuthor.value = info.author;
+          authorUpdated = true;
+        }
+
+        // 柔和高亮視覺回饋
+        if (titleUpdated && DOM.videoFormTitle) {
+          DOM.videoFormTitle.classList.remove('field-auto-highlight');
+          void DOM.videoFormTitle.offsetWidth; // 觸發重繪 (reflow)
+          DOM.videoFormTitle.classList.add('field-auto-highlight');
+          setTimeout(() => DOM.videoFormTitle && DOM.videoFormTitle.classList.remove('field-auto-highlight'), 1300);
+        }
+
+        if (authorUpdated && DOM.videoFormAuthor) {
+          DOM.videoFormAuthor.classList.remove('field-auto-highlight');
+          void DOM.videoFormAuthor.offsetWidth;
+          DOM.videoFormAuthor.classList.add('field-auto-highlight');
+          setTimeout(() => DOM.videoFormAuthor && DOM.videoFormAuthor.classList.remove('field-auto-highlight'), 1300);
+        }
+
+        if (isManualClick) {
+          showCsToast('✅ 已自動帶入影片資訊');
+        }
+      } else {
+        if (isManualClick) {
+          showCsToast('⚠️ 無法自動取得影片資訊，請手動填寫', 'error');
+        }
+      }
+    } catch (err) {
+      if (isManualClick) {
+        showCsToast('⚠️ 取得影片資訊失敗，請手動填寫', 'error');
+      }
+    } finally {
+      if (fetchBtn) {
+        fetchBtn.classList.remove('is-loading');
+        fetchBtn.disabled = false;
+      }
+    }
+  }
+
   function initVideoEvents() {
     if (DOM.btnAddVideoBtn) {
       DOM.btnAddVideoBtn.addEventListener('click', () => openVideoModal(null));
@@ -5335,6 +5443,25 @@
     }
     if (DOM.btnVideoCancel) {
       DOM.btnVideoCancel.addEventListener('click', closeVideoModal);
+    }
+
+    // 自動帶入影片資訊
+    if (DOM.btnAutoFetchVideoInfo) {
+      DOM.btnAutoFetchVideoInfo.addEventListener('click', () => handleAutoFetchVideoInfo(true));
+    }
+    if (DOM.videoFormUrl) {
+      DOM.videoFormUrl.addEventListener('blur', () => {
+        if (DOM.videoFormUrl.value.trim()) {
+          handleAutoFetchVideoInfo(false);
+        }
+      });
+      DOM.videoFormUrl.addEventListener('paste', () => {
+        setTimeout(() => {
+          if (DOM.videoFormUrl && DOM.videoFormUrl.value.trim()) {
+            handleAutoFetchVideoInfo(false);
+          }
+        }, 100);
+      });
     }
 
     // 加入新標籤

@@ -10022,6 +10022,89 @@ body.has-floating-back .scroll-top-btn {
   color: #fff;
 }
 
+/* 自動帶入影片資訊功能樣式 (Auto-fetch Video Info) */
+.video-url-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5000rem;
+  width: 100%;
+}
+
+.video-url-input-wrap .form-input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.btn-auto-fetch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3750rem;
+  padding: 0.5000rem 0.8750rem;
+  background: rgba(99, 102, 241, 0.12);
+  border: 0.0625rem solid rgba(99, 102, 241, 0.35);
+  border-radius: 0.6250rem;
+  color: var(--primary-indigo);
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.btn-auto-fetch:hover:not(:disabled) {
+  background: var(--primary-indigo);
+  color: #ffffff;
+  border-color: var(--primary-indigo);
+  box-shadow: 0 0.1250rem 0.5000rem rgba(99, 102, 241, 0.25);
+  transform: translateY(-0.0625rem);
+}
+
+.btn-auto-fetch:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-auto-fetch:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-auto-fetch.is-loading .auto-fetch-icon {
+  display: inline-block;
+  animation: autoFetchSpin 0.8s linear infinite;
+}
+
+@keyframes autoFetchSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 欄位自動填入成功柔和高亮特效 */
+.field-auto-highlight {
+  animation: fieldAutoHighlightAnim 1.2s ease-out;
+}
+
+@keyframes fieldAutoHighlightAnim {
+  0% {
+    background-color: rgba(99, 102, 241, 0.2);
+    border-color: var(--primary-indigo);
+    box-shadow: 0 0 0.5000rem rgba(99, 102, 241, 0.4);
+  }
+  70% {
+    background-color: rgba(99, 102, 241, 0.08);
+    border-color: var(--primary-indigo);
+    box-shadow: 0 0 0.2500rem rgba(99, 102, 241, 0.2);
+  }
+  100% {
+    background-color: var(--bg-card-hover);
+    border-color: var(--glass-border);
+    box-shadow: none;
+  }
+}
+
 
 
 
