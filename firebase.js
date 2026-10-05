@@ -94,6 +94,16 @@
     } else if (local && local.regionAssignments && typeof local.regionAssignments === 'object') {
       merged.regionAssignments = local.regionAssignments;
     }
+    if (cloud && cloud.customVideos && Array.isArray(cloud.customVideos)) {
+      merged.customVideos = cloud.customVideos;
+    } else if (local && local.customVideos && Array.isArray(local.customVideos)) {
+      merged.customVideos = local.customVideos;
+    }
+    if (cloud && cloud.customVideoTags && Array.isArray(cloud.customVideoTags)) {
+      merged.customVideoTags = cloud.customVideoTags;
+    } else if (local && local.customVideoTags && Array.isArray(local.customVideoTags)) {
+      merged.customVideoTags = local.customVideoTags;
+    }
     return merged;
   }
 

@@ -17,6 +17,8 @@
   const STORAGE_KEY_THEME = 'pokopia_theme_v1';
   const STORAGE_KEY_AUTOFARM_AUTHED = 'pokopia_autofarm_authed_v1';
   const STORAGE_KEY_CUSTOM_STORAGE = 'pokopia_custom_boxes_v1';
+  const STORAGE_KEY_CUSTOM_VIDEOS = 'pokopia_custom_videos_v1';
+  const STORAGE_KEY_CUSTOM_VIDEO_TAGS = 'pokopia_custom_video_tags_v1';
 
   // 我的收納盒預設初始箱號配置 (6 個預設收納盒，使用者可自由增刪與修改)
   const DEFAULT_CUSTOM_BOXES = [
@@ -132,6 +134,16 @@
       return initial;
     })(),
     activeAssignRegionId: null,
+    customVideos: (function() {
+      const saved = loadProgress(STORAGE_KEY_CUSTOM_VIDEOS, null);
+      return (Array.isArray(saved)) ? saved : [];
+    })(),
+    customVideoTags: (function() {
+      const saved = loadProgress(STORAGE_KEY_CUSTOM_VIDEO_TAGS, null);
+      return (Array.isArray(saved)) ? saved : [];
+    })(),
+    currentVideoId: null,
+    selectedVideoTag: '全部',
     isStaggerAnim: true
   };
 
@@ -146,10 +158,44 @@
     tabHabitatCatalog: document.getElementById('tabHabitatCatalog'),
     tabAutoFarm: document.getElementById('tabAutoFarm'),
     tabCustomStorage: document.getElementById('tabCustomStorage'),
+    tabVideo: document.getElementById('tabVideo'),
     btnAutoFarmNav: document.getElementById('btnAutoFarmNav'),
     btnCustomStorageNav: document.getElementById('btnCustomStorageNav'),
     autoFarmSection: document.getElementById('autoFarmSection'),
     customStorageSection: document.getElementById('customStorageSection'),
+    videoSection: document.getElementById('videoSection'),
+    videoPlayerIframe: document.getElementById('videoPlayerIframe'),
+    videoCurrentAuthor: document.getElementById('videoCurrentAuthor'),
+    videoCurrentDate: document.getElementById('videoCurrentDate'),
+    videoExternalLink: document.getElementById('videoExternalLink'),
+    btnEditCurrentVideo: document.getElementById('btnEditCurrentVideo'),
+    videoCurrentTitle: document.getElementById('videoCurrentTitle'),
+    videoCurrentNote: document.getElementById('videoCurrentNote'),
+    videoCurrentCloudCodeWrap: document.getElementById('videoCurrentCloudCodeWrap'),
+    videoCurrentCloudCode: document.getElementById('videoCurrentCloudCode'),
+    btnCopyCloudCode: document.getElementById('btnCopyCloudCode'),
+    videoCurrentTags: document.getElementById('videoCurrentTags'),
+    videoTagsContainer: document.getElementById('videoTagsContainer'),
+    btnAddVideoBtn: document.getElementById('btnAddVideoBtn'),
+    videoCardsGrid: document.getElementById('videoCardsGrid'),
+    videoModal: document.getElementById('videoModal'),
+    videoModalBackdrop: document.getElementById('videoModalBackdrop'),
+    videoModalCloseBtn: document.getElementById('videoModalCloseBtn'),
+    videoModalBadge: document.getElementById('videoModalBadge'),
+    videoModalTitle: document.getElementById('videoModalTitle'),
+    videoForm: document.getElementById('videoForm'),
+    videoFormId: document.getElementById('videoFormId'),
+    videoFormUrl: document.getElementById('videoFormUrl'),
+    videoFormTitle: document.getElementById('videoFormTitle'),
+    videoFormAuthor: document.getElementById('videoFormAuthor'),
+    videoFormNote: document.getElementById('videoFormNote'),
+    videoFormCloudCode: document.getElementById('videoFormCloudCode'),
+    videoFormTagsPool: document.getElementById('videoFormTagsPool'),
+    videoFormNewTagInput: document.getElementById('videoFormNewTagInput'),
+    btnVideoAddTag: document.getElementById('btnVideoAddTag'),
+    btnVideoDelete: document.getElementById('btnVideoDelete'),
+    btnVideoCancel: document.getElementById('btnVideoCancel'),
+    btnVideoSave: document.getElementById('btnVideoSave'),
     csBoxesContainer: document.getElementById('csBoxesContainer'),
     csReverseSearchInput: document.getElementById('csReverseSearchInput'),
     csClearSearchBtn: document.getElementById('csClearSearchBtn'),
@@ -643,6 +689,7 @@
     initSpecialtyDropdown();
     bindEvents();
     initRegionMapEvents();
+    initVideoEvents();
     renderStats();
     updateAutoFarmAuthUI();
     initScrollTopButton();
@@ -752,12 +799,20 @@
               localStorage.setItem('pokopia_region_assignments', JSON.stringify(state.regionAssignments));
             } catch (e) {}
           }
+          if (merged.customVideos && Array.isArray(merged.customVideos)) {
+            state.customVideos = merged.customVideos;
+          }
+          if (merged.customVideoTags && Array.isArray(merged.customVideoTags)) {
+            state.customVideoTags = merged.customVideoTags;
+          }
           saveProgress(STORAGE_KEY_CAT,            state.catChecked);
           saveProgress(STORAGE_KEY_PKM,            state.pkmChecked);
           saveProgress(STORAGE_KEY_HAB,            state.habChecked);
           saveProgress(STORAGE_KEY_BENCH,          state.benchOverrides);
           saveProgress(STORAGE_KEY_AUTOFARM,       state.autoFarmChecked);
           saveProgress(STORAGE_KEY_CUSTOM_STORAGE, state.customBoxes);
+          saveProgress(STORAGE_KEY_CUSTOM_VIDEOS,  state.customVideos);
+          saveProgress(STORAGE_KEY_CUSTOM_VIDEO_TAGS, state.customVideoTags);
 
           await fb.saveCloudProgress(user.uid, merged);
           if (elSync) elSync.classList.add('hidden');
@@ -766,6 +821,7 @@
           renderStats();
           if (state.currentTab === 'customStorage') renderCustomStorage();
           if (state.currentTab === 'regionMap') renderRegionMap();
+          if (state.currentTab === 'video') renderVideoSection();
 
           // ─── 多裝置實時雙向監聽 (Real-time Sync) ─────────────────
           fb.subscribeCloudProgress(user.uid, function (remoteData, hasPendingWrites) {
@@ -777,6 +833,8 @@
               benchOverrides:    state.benchOverrides    || {},
               autoFarmChecked:   state.autoFarmChecked   || {},
               customBoxes:       state.customBoxes       || [],
+              customVideos:      state.customVideos      || [],
+              customVideoTags:   state.customVideoTags   || [],
               regionAssignments: state.regionAssignments || (typeof getRegionAssignments === 'function' ? getRegionAssignments() : {})
             };
             const updated = fb.mergeProgressUnion(currentSnap, remoteData);
@@ -785,6 +843,8 @@
                               JSON.stringify(state.habChecked) !== JSON.stringify(updated.habChecked) ||
                               JSON.stringify(state.autoFarmChecked) !== JSON.stringify(updated.autoFarmChecked) ||
                               JSON.stringify(state.customBoxes) !== JSON.stringify(updated.customBoxes) ||
+                              JSON.stringify(state.customVideos) !== JSON.stringify(updated.customVideos) ||
+                              JSON.stringify(state.customVideoTags) !== JSON.stringify(updated.customVideoTags) ||
                               JSON.stringify(state.regionAssignments) !== JSON.stringify(updated.regionAssignments);
             if (isChanged) {
               state.catChecked      = updated.catChecked      || {};
@@ -794,6 +854,12 @@
               state.autoFarmChecked = updated.autoFarmChecked || {};
               if (updated.customBoxes && Array.isArray(updated.customBoxes)) {
                 state.customBoxes   = updated.customBoxes;
+              }
+              if (updated.customVideos && Array.isArray(updated.customVideos)) {
+                state.customVideos  = updated.customVideos;
+              }
+              if (updated.customVideoTags && Array.isArray(updated.customVideoTags)) {
+                state.customVideoTags = updated.customVideoTags;
               }
               if (updated.regionAssignments && typeof updated.regionAssignments === 'object') {
                 state.regionAssignments = updated.regionAssignments;
@@ -808,11 +874,14 @@
                 localStorage.setItem(STORAGE_KEY_BENCH,          JSON.stringify(state.benchOverrides));
                 localStorage.setItem(STORAGE_KEY_AUTOFARM,       JSON.stringify(state.autoFarmChecked));
                 localStorage.setItem(STORAGE_KEY_CUSTOM_STORAGE, JSON.stringify(state.customBoxes));
+                localStorage.setItem(STORAGE_KEY_CUSTOM_VIDEOS,  JSON.stringify(state.customVideos));
+                localStorage.setItem(STORAGE_KEY_CUSTOM_VIDEO_TAGS, JSON.stringify(state.customVideoTags));
               } catch (e) {}
               renderAll();
               renderStats();
               if (state.currentTab === 'customStorage') renderCustomStorage();
               if (state.currentTab === 'regionMap') renderRegionMap();
+              if (state.currentTab === 'video') renderVideoSection();
             }
           });
 
@@ -1007,6 +1076,15 @@
         closeTocDropdown();
         switchTab('regionMap', true);
         pushNavHistory({ tab: 'regionMap' });
+        hideFloatingBackBtn();
+      });
+    }
+
+    if (DOM.tabVideo) {
+      DOM.tabVideo.addEventListener('click', () => {
+        closeTocDropdown();
+        switchTab('video', true);
+        pushNavHistory({ tab: 'video' });
         hideFloatingBackBtn();
       });
     }
@@ -1317,6 +1395,7 @@
     if (DOM.tabCustomStorage) DOM.tabCustomStorage.classList.remove('active');
     if (DOM.btnCustomStorageNav) DOM.btnCustomStorageNav.classList.remove('active');
     if (DOM.tabRegionMap) DOM.tabRegionMap.classList.remove('active');
+    if (DOM.tabVideo) DOM.tabVideo.classList.remove('active');
 
     DOM.storageSection.classList.add('hidden-section');
     DOM.storageSection.classList.remove('active-section');
@@ -1335,6 +1414,10 @@
     if (DOM.regionMapSection) {
       DOM.regionMapSection.classList.add('hidden-section');
       DOM.regionMapSection.classList.remove('active-section');
+    }
+    if (DOM.videoSection) {
+      DOM.videoSection.classList.add('hidden-section');
+      DOM.videoSection.classList.remove('active-section');
     }
 
     if (tab === 'storage') {
@@ -1454,6 +1537,30 @@
       if (DOM.filterToolbar) DOM.filterToolbar.classList.add('hidden');
       if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.add('hidden');
       renderRegionMap();
+    } else if (tab === 'video') {
+      if (!isAutoFarmAuthorized()) {
+        switchTab('habitat', skipSync);
+        return;
+      }
+      if (DOM.tabVideo) DOM.tabVideo.classList.add('active');
+      if (DOM.videoSection) {
+        DOM.videoSection.classList.remove('hidden-section');
+        DOM.videoSection.classList.add('active-section');
+      }
+      if (DOM.toolbarContainer) DOM.toolbarContainer.classList.remove('hidden');
+      if (DOM.toolbarHeaderRow) DOM.toolbarHeaderRow.classList.remove('hidden');
+      if (DOM.toolbarTitle) DOM.toolbarTitle.textContent = '參考影片';
+      if (DOM.catalogProgressBadge) DOM.catalogProgressBadge.classList.remove('hidden');
+      if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🎬';
+      const totalVids = (typeof getAllVideos === 'function') ? getAllVideos().length : 0;
+      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = totalVids > 0 ? '<strong>' + totalVids + '</strong> 部精選攻略影音' : '攻略影音';
+      if (DOM.searchRow) DOM.searchRow.classList.add('hidden');
+      if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.add('hidden');
+      if (DOM.filterToolbar) DOM.filterToolbar.classList.add('hidden');
+      if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.add('hidden');
+      if (typeof renderVideoSection === 'function') {
+        renderVideoSection();
+      }
     }
 
     if (!skipSync) {
@@ -2409,9 +2516,16 @@
         DOM.tabCustomStorage.classList.add('hidden');
       }
     }
+    if (DOM.tabVideo) {
+      if (isAuth) {
+        DOM.tabVideo.classList.remove('hidden');
+      } else {
+        DOM.tabVideo.classList.add('hidden');
+      }
+    }
 
-    // 若未授權但當前在 autofarm 或 customStorage 分頁，立即跳轉回首頁
-    if (!isAuth && (state.currentTab === 'autofarm' || state.currentTab === 'customStorage')) {
+    // 若未授權但當前在 autofarm, customStorage 或 video 分頁，立即跳轉回首頁
+    if (!isAuth && (state.currentTab === 'autofarm' || state.currentTab === 'customStorage' || state.currentTab === 'video')) {
       switchTab('habitat', true);
       pushNavHistory({ tab: 'habitat', view: state.currentView || 'table' });
     }
@@ -4878,6 +4992,487 @@
       }
     });
   }
+
+  // ==========================================================================
+  // 參考影片影廳模式與自訂管理控制器 (Video Theater & Management)
+  // ==========================================================================
+
+  // 解析多種 YouTube 網址或純 ID 格式
+  function parseYouTubeId(input) {
+    if (!input || typeof input !== 'string') return '';
+    const trimmed = input.trim();
+    // 1. 純 11 碼 ID
+    if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) {
+      return trimmed;
+    }
+    // 2. 匹配 youtu.be/xxxx
+    const shortMatch = trimmed.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+    if (shortMatch) return shortMatch[1];
+    // 3. 匹配 youtube.com/watch?v=xxxx 或 /embed/xxxx
+    const fullMatch = trimmed.match(/(?:youtube\.com\/(?:watch\?.*v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    if (fullMatch) return fullMatch[1];
+    return trimmed;
+  }
+
+  function getAllVideos() {
+    const defaultVids = (window.POKOPIA_DEFAULT_VIDEOS || []);
+    const customVids = (state.customVideos || []);
+    return [...defaultVids, ...customVids];
+  }
+
+  function getAllVideoTags() {
+    const defaultTags = (window.POKOPIA_DEFAULT_TAGS || ['全部', '終局農場', '環境等級', '自動化', '資源收集', '傢俱攻略', '我的自訂']);
+    const customTags = (state.customVideoTags || []);
+    const videoList = getAllVideos();
+    const tagSet = new Set(defaultTags);
+    customTags.forEach(t => tagSet.add(t));
+    videoList.forEach(v => {
+      if (Array.isArray(v.tags)) {
+        v.tags.forEach(t => tagSet.add(t));
+      }
+    });
+    // 保證 '全部' 在第一位
+    const result = Array.from(tagSet);
+    const allIdx = result.indexOf('全部');
+    if (allIdx > -1) {
+      result.splice(allIdx, 1);
+      result.unshift('全部');
+    }
+    return result;
+  }
+
+  function saveCustomVideosAndSync() {
+    saveProgress(STORAGE_KEY_CUSTOM_VIDEOS, state.customVideos);
+    saveProgress(STORAGE_KEY_CUSTOM_VIDEO_TAGS, state.customVideoTags);
+    const fb = window.PokopiaFirebase;
+    if (fb && typeof fb.getCurrentUser === 'function') {
+      const user = fb.getCurrentUser();
+      if (user && user.uid && isAutoFarmAuthorized(user)) {
+        fb.debouncedSave(user.uid, {
+          customVideos: state.customVideos,
+          customVideoTags: state.customVideoTags
+        });
+      }
+    }
+  }
+
+  function getActiveVideo() {
+    const all = getAllVideos();
+    if (all.length === 0) return null;
+    if (state.currentVideoId) {
+      const found = all.find(v => v.id === state.currentVideoId);
+      if (found) return found;
+    }
+    return all[0];
+  }
+
+  function renderVideoSection() {
+    if (!DOM.videoSection) return;
+    const activeVideo = getActiveVideo();
+    if (activeVideo && !state.currentVideoId) {
+      state.currentVideoId = activeVideo.id;
+    }
+    renderTheaterPlayer(activeVideo);
+    renderVideoTags();
+    renderVideoCards();
+  }
+
+  function renderTheaterPlayer(video) {
+    if (!video) {
+      if (DOM.videoPlayerIframe) DOM.videoPlayerIframe.src = '';
+      if (DOM.videoCurrentTitle) DOM.videoCurrentTitle.textContent = '尚無參考影片';
+      if (DOM.videoCurrentNote) DOM.videoCurrentNote.textContent = '請點擊下方「新增影片」按鈕添加您的第一部影片。';
+      if (DOM.videoCurrentAuthor) DOM.videoCurrentAuthor.textContent = '-';
+      if (DOM.videoCurrentDate) DOM.videoCurrentDate.textContent = '';
+      if (DOM.videoExternalLink) DOM.videoExternalLink.style.display = 'none';
+      if (DOM.btnEditCurrentVideo) DOM.btnEditCurrentVideo.classList.add('hidden');
+      if (DOM.videoCurrentCloudCodeWrap) DOM.videoCurrentCloudCodeWrap.classList.add('hidden');
+      if (DOM.videoCurrentTags) DOM.videoCurrentTags.innerHTML = '';
+      return;
+    }
+
+    // 播放器 iframe
+    if (DOM.videoPlayerIframe) {
+      const embedUrl = `https://www.youtube.com/embed/${encodeURIComponent(video.videoId)}?rel=0`;
+      if (DOM.videoPlayerIframe.src !== embedUrl) {
+        DOM.videoPlayerIframe.src = embedUrl;
+      }
+    }
+
+    if (DOM.videoCurrentTitle) DOM.videoCurrentTitle.textContent = video.title || '未命名影片';
+    if (DOM.videoCurrentNote) DOM.videoCurrentNote.textContent = video.note || '暫無詳細說明。';
+    if (DOM.videoCurrentAuthor) DOM.videoCurrentAuthor.textContent = video.author || '攻略作者';
+    if (DOM.videoCurrentDate) {
+      DOM.videoCurrentDate.textContent = video.isDefault ? '精選攻略' : '我的自訂';
+    }
+
+    // 外部連結
+    if (DOM.videoExternalLink) {
+      DOM.videoExternalLink.style.display = 'inline-flex';
+      DOM.videoExternalLink.href = video.url || `https://www.youtube.com/watch?v=${video.videoId}`;
+    }
+
+    // 編輯按鈕：若是自訂影片則顯示
+    if (DOM.btnEditCurrentVideo) {
+      if (!video.isDefault) {
+        DOM.btnEditCurrentVideo.classList.remove('hidden');
+        DOM.btnEditCurrentVideo.onclick = () => openVideoModal(video);
+      } else {
+        DOM.btnEditCurrentVideo.classList.add('hidden');
+      }
+    }
+
+    // 雲端碼
+    if (DOM.videoCurrentCloudCodeWrap && DOM.videoCurrentCloudCode) {
+      if (video.cloudCode && video.cloudCode.trim()) {
+        DOM.videoCurrentCloudCodeWrap.classList.remove('hidden');
+        DOM.videoCurrentCloudCode.textContent = video.cloudCode.trim();
+      } else {
+        DOM.videoCurrentCloudCodeWrap.classList.add('hidden');
+      }
+    }
+
+    // 標籤清單
+    if (DOM.videoCurrentTags) {
+      const tags = Array.isArray(video.tags) ? video.tags : [];
+      DOM.videoCurrentTags.innerHTML = tags.map(t => `<span class="video-card-tag-pill">#${escapeHTML(t)}</span>`).join('');
+    }
+  }
+
+  function renderVideoTags() {
+    if (!DOM.videoTagsContainer) return;
+    const allTags = getAllVideoTags();
+    const allVideos = getAllVideos();
+
+    let html = '';
+    allTags.forEach(tag => {
+      let count = 0;
+      if (tag === '全部') {
+        count = allVideos.length;
+      } else if (tag === '我的自訂') {
+        count = allVideos.filter(v => !v.isDefault).length;
+      } else {
+        count = allVideos.filter(v => Array.isArray(v.tags) && v.tags.includes(tag)).length;
+      }
+
+      const isActive = (state.selectedVideoTag === tag);
+      html += `
+        <button class="video-tag-pill ${isActive ? 'active' : ''}" data-tag="${escapeHTML(tag)}">
+          <span>${escapeHTML(tag)}</span>
+          <span class="video-tag-count">${count}</span>
+        </button>
+      `;
+    });
+
+    DOM.videoTagsContainer.innerHTML = html;
+
+    // 綁定標籤切換事件
+    DOM.videoTagsContainer.querySelectorAll('.video-tag-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tag = btn.getAttribute('data-tag');
+        state.selectedVideoTag = tag;
+        renderVideoTags();
+        renderVideoCards();
+      });
+    });
+  }
+
+  function renderVideoCards() {
+    if (!DOM.videoCardsGrid) return;
+    const allVideos = getAllVideos();
+    const selectedTag = state.selectedVideoTag || '全部';
+
+    const filtered = allVideos.filter(v => {
+      if (selectedTag === '全部') return true;
+      if (selectedTag === '我的自訂') return !v.isDefault;
+      return Array.isArray(v.tags) && v.tags.includes(selectedTag);
+    });
+
+    if (filtered.length === 0) {
+      DOM.videoCardsGrid.innerHTML = `
+        <div style="grid-column: 1 / -1; padding: 3rem 1rem; text-align: center; color: var(--text-muted);">
+          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎬</div>
+          <p style="font-size: 0.95rem; margin: 0;">目前標籤「${escapeHTML(selectedTag)}」沒有任何影片</p>
+        </div>
+      `;
+      return;
+    }
+
+    DOM.videoCardsGrid.innerHTML = filtered.map(v => {
+      const isPlaying = (state.currentVideoId === v.id);
+      const thumbUrl = `https://img.youtube.com/vi/${encodeURIComponent(v.videoId)}/hqdefault.jpg`;
+      const tags = Array.isArray(v.tags) ? v.tags : [];
+      return `
+        <div class="video-card ${isPlaying ? 'playing' : ''}" data-video-id="${escapeHTML(v.id)}">
+          <div class="video-card-thumb-wrap">
+            <img class="video-card-thumb-img" src="${thumbUrl}" alt="${escapeHTML(v.title)}" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'320\\' height=\\'180\\' viewBox=\\'0 0 320 180\\' fill=\\'%23222\\'><rect width=\\'320\\' height=\\'180\\'/><text x=\\'160\\' y=\\'95\\' fill=\\'%23666\\' font-size=\\'14\\' text-anchor=\\'middle\\'>🎬 暫無縮圖</text></svg>'">
+            <div class="video-card-play-overlay">
+              <span class="video-card-play-icon">▶</span>
+            </div>
+            ${isPlaying ? '<div class="video-card-playing-badge"><span>▶ 播放中</span></div>' : ''}
+          </div>
+          <div class="video-card-body">
+            <div class="video-card-top-row">
+              <span class="video-card-author">${escapeHTML(v.author || '攻略作者')}</span>
+              ${!v.isDefault ? `<button class="video-card-edit-btn" data-edit-id="${escapeHTML(v.id)}" title="編輯此影片">✏️</button>` : ''}
+            </div>
+            <h3 class="video-card-title" title="${escapeHTML(v.title)}">${escapeHTML(v.title)}</h3>
+            <p class="video-card-note">${escapeHTML(v.note || '')}</p>
+            <div class="video-card-tags-row">
+              ${tags.map(t => `<span class="video-card-tag-pill">#${escapeHTML(t)}</span>`).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // 點擊卡片切換上方影廳主播放器
+    DOM.videoCardsGrid.querySelectorAll('.video-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.video-card-edit-btn')) return; // 防止觸發編輯按鈕冒泡
+        const vidId = card.getAttribute('data-video-id');
+        const targetVid = allVideos.find(v => v.id === vidId);
+        if (targetVid) {
+          state.currentVideoId = targetVid.id;
+          renderTheaterPlayer(targetVid);
+          renderVideoCards();
+          // 平滑滾動至影廳主播放器
+          if (DOM.videoSection) {
+            DOM.videoSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      });
+    });
+
+    // 卡片內編輯按鈕
+    DOM.videoCardsGrid.querySelectorAll('.video-card-edit-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const editId = btn.getAttribute('data-edit-id');
+        const targetVid = allVideos.find(v => v.id === editId);
+        if (targetVid) {
+          openVideoModal(targetVid);
+        }
+      });
+    });
+  }
+
+  // ─── Modal 與自訂影片管理 ──────────────────────────────────────────
+  let _activeFormSelectedTags = new Set();
+
+  function openVideoModal(videoToEdit = null) {
+    if (!DOM.videoModal) return;
+    _activeFormSelectedTags.clear();
+
+    if (videoToEdit) {
+      if (DOM.videoModalBadge) DOM.videoModalBadge.textContent = '編輯影片';
+      if (DOM.videoModalTitle) DOM.videoModalTitle.textContent = '編輯自訂影片';
+      if (DOM.videoFormId) DOM.videoFormId.value = videoToEdit.id;
+      if (DOM.videoFormUrl) DOM.videoFormUrl.value = videoToEdit.url || videoToEdit.videoId;
+      if (DOM.videoFormTitle) DOM.videoFormTitle.value = videoToEdit.title || '';
+      if (DOM.videoFormAuthor) DOM.videoFormAuthor.value = videoToEdit.author || '';
+      if (DOM.videoFormNote) DOM.videoFormNote.value = videoToEdit.note || '';
+      if (DOM.videoFormCloudCode) DOM.videoFormCloudCode.value = videoToEdit.cloudCode || '';
+      if (DOM.btnVideoDelete) DOM.btnVideoDelete.classList.remove('hidden');
+
+      if (Array.isArray(videoToEdit.tags)) {
+        videoToEdit.tags.forEach(t => _activeFormSelectedTags.add(t));
+      }
+    } else {
+      if (DOM.videoModalBadge) DOM.videoModalBadge.textContent = '新增影片';
+      if (DOM.videoModalTitle) DOM.videoModalTitle.textContent = '新增參考影片';
+      if (DOM.videoFormId) DOM.videoFormId.value = '';
+      if (DOM.videoFormUrl) DOM.videoFormUrl.value = '';
+      if (DOM.videoFormTitle) DOM.videoFormTitle.value = '';
+      if (DOM.videoFormAuthor) DOM.videoFormAuthor.value = '';
+      if (DOM.videoFormNote) DOM.videoFormNote.value = '';
+      if (DOM.videoFormCloudCode) DOM.videoFormCloudCode.value = '';
+      if (DOM.btnVideoDelete) DOM.btnVideoDelete.classList.add('hidden');
+
+      _activeFormSelectedTags.add('我的自訂');
+    }
+
+    renderModalTagPool();
+    DOM.videoModal.classList.remove('hidden');
+    if (DOM.videoFormUrl) DOM.videoFormUrl.focus();
+  }
+
+  function closeVideoModal() {
+    if (DOM.videoModal) {
+      DOM.videoModal.classList.add('hidden');
+    }
+  }
+
+  function renderModalTagPool() {
+    if (!DOM.videoFormTagsPool) return;
+    const allTags = getAllVideoTags().filter(t => t !== '全部');
+    DOM.videoFormTagsPool.innerHTML = allTags.map(tag => {
+      const isSelected = _activeFormSelectedTags.has(tag);
+      return `
+        <span class="video-tag-choice ${isSelected ? 'selected' : ''}" data-choice-tag="${escapeHTML(tag)}">
+          ${isSelected ? '✔ ' : '＋ '}${escapeHTML(tag)}
+        </span>
+      `;
+    }).join('');
+
+    DOM.videoFormTagsPool.querySelectorAll('.video-tag-choice').forEach(choice => {
+      choice.addEventListener('click', () => {
+        const tag = choice.getAttribute('data-choice-tag');
+        if (_activeFormSelectedTags.has(tag)) {
+          _activeFormSelectedTags.delete(tag);
+        } else {
+          _activeFormSelectedTags.add(tag);
+        }
+        renderModalTagPool();
+      });
+    });
+  }
+
+  function initVideoEvents() {
+    if (DOM.btnAddVideoBtn) {
+      DOM.btnAddVideoBtn.addEventListener('click', () => openVideoModal(null));
+    }
+    if (DOM.videoModalCloseBtn) {
+      DOM.videoModalCloseBtn.addEventListener('click', closeVideoModal);
+    }
+    if (DOM.videoModalBackdrop) {
+      DOM.videoModalBackdrop.addEventListener('click', closeVideoModal);
+    }
+    if (DOM.btnVideoCancel) {
+      DOM.btnVideoCancel.addEventListener('click', closeVideoModal);
+    }
+
+    // 加入新標籤
+    const handleAddNewTag = () => {
+      if (!DOM.videoFormNewTagInput) return;
+      const newTag = DOM.videoFormNewTagInput.value.trim();
+      if (!newTag) return;
+      if (!state.customVideoTags.includes(newTag)) {
+        state.customVideoTags.push(newTag);
+      }
+      _activeFormSelectedTags.add(newTag);
+      DOM.videoFormNewTagInput.value = '';
+      renderModalTagPool();
+      saveCustomVideosAndSync();
+    };
+
+    if (DOM.btnVideoAddTag) {
+      DOM.btnVideoAddTag.addEventListener('click', handleAddNewTag);
+    }
+    if (DOM.videoFormNewTagInput) {
+      DOM.videoFormNewTagInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleAddNewTag();
+        }
+      });
+    }
+
+    // 複製雲端代碼
+    if (DOM.btnCopyCloudCode && DOM.videoCurrentCloudCode) {
+      DOM.btnCopyCloudCode.addEventListener('click', () => {
+        const code = DOM.videoCurrentCloudCode.textContent.trim();
+        if (code) {
+          navigator.clipboard.writeText(code).then(() => {
+            const originalText = DOM.btnCopyCloudCode.textContent;
+            DOM.btnCopyCloudCode.textContent = '已複製！';
+            setTimeout(() => {
+              DOM.btnCopyCloudCode.textContent = originalText;
+            }, 1800);
+          }).catch(err => {
+            alert('複製失敗，代碼為：' + code);
+          });
+        }
+      });
+    }
+
+    // 刪除自訂影片
+    if (DOM.btnVideoDelete) {
+      DOM.btnVideoDelete.addEventListener('click', () => {
+        const idToDelete = DOM.videoFormId.value;
+        if (!idToDelete) return;
+        if (confirm('確定要刪除這部自訂參考影片嗎？')) {
+          state.customVideos = state.customVideos.filter(v => v.id !== idToDelete);
+          if (state.currentVideoId === idToDelete) {
+            state.currentVideoId = null;
+          }
+          saveCustomVideosAndSync();
+          closeVideoModal();
+          renderVideoSection();
+        }
+      });
+    }
+
+    // 儲存影片（表單提交）
+    if (DOM.videoForm) {
+      DOM.videoForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const urlInput = DOM.videoFormUrl.value.trim();
+        const titleInput = DOM.videoFormTitle.value.trim();
+        if (!urlInput || !titleInput) {
+          alert('請填寫影片網址與標題！');
+          return;
+        }
+
+        const videoId = parseYouTubeId(urlInput);
+        if (!videoId) {
+          alert('無法解析有效的 YouTube 影片 ID，請檢查網址！');
+          return;
+        }
+
+        const editId = DOM.videoFormId.value;
+        const tags = Array.from(_activeFormSelectedTags);
+        if (tags.length === 0) tags.push('我的自訂');
+
+        const videoData = {
+          id: editId || 'video_custom_' + Date.now(),
+          videoId: videoId,
+          title: titleInput,
+          author: (DOM.videoFormAuthor && DOM.videoFormAuthor.value.trim()) || '我的自訂',
+          url: urlInput.startsWith('http') ? urlInput : `https://www.youtube.com/watch?v=${videoId}`,
+          tags: tags,
+          note: (DOM.videoFormNote && DOM.videoFormNote.value.trim()) || '',
+          cloudCode: (DOM.videoFormCloudCode && DOM.videoFormCloudCode.value.trim()) || '',
+          isDefault: false,
+          updatedAt: new Date().toISOString()
+        };
+
+        if (editId) {
+          const idx = state.customVideos.findIndex(v => v.id === editId);
+          if (idx > -1) {
+            state.customVideos[idx] = { ...state.customVideos[idx], ...videoData };
+          } else {
+            state.customVideos.push(videoData);
+          }
+        } else {
+          videoData.createdAt = new Date().toISOString();
+          state.customVideos.unshift(videoData);
+        }
+
+        state.currentVideoId = videoData.id;
+        saveCustomVideosAndSync();
+        closeVideoModal();
+        renderVideoSection();
+      });
+    }
+
+    // ESC 鍵關閉 Modal
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && DOM.videoModal && !DOM.videoModal.classList.contains('hidden')) {
+        closeVideoModal();
+      }
+    });
+  }
+
+  // 暴露參考影片管理器 API
+  window.PokopiaVideoManager = {
+    getAllVideos,
+    getAllVideoTags,
+    renderVideoSection,
+    openVideoModal,
+    closeVideoModal,
+    parseYouTubeId
+  };
 
   // 暴露地區地圖 API
   window.PokopiaRegionMap = {
