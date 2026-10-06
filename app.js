@@ -871,7 +871,6 @@
               customVideos:      state.customVideos      || [],
               customVideoTags:   state.customVideoTags   || [],
               deletedVideoTags:  state.deletedVideoTags  || [],
-              videoProgress:     state.videoProgress     || {},
               regionAssignments: state.regionAssignments || (typeof getRegionAssignments === 'function' ? getRegionAssignments() : {})
             };
             const updated = fb.mergeProgressUnion(currentSnap, remoteData);
@@ -883,7 +882,6 @@
                               JSON.stringify(state.customVideos) !== JSON.stringify(updated.customVideos) ||
                               JSON.stringify(state.customVideoTags) !== JSON.stringify(updated.customVideoTags) ||
                               JSON.stringify(state.deletedVideoTags) !== JSON.stringify(updated.deletedVideoTags) ||
-                              JSON.stringify(state.videoProgress) !== JSON.stringify(updated.videoProgress) ||
                               JSON.stringify(state.regionAssignments) !== JSON.stringify(updated.regionAssignments);
             if (isChanged) {
               state.catChecked      = updated.catChecked      || {};
@@ -903,9 +901,6 @@
               if (updated.deletedVideoTags && Array.isArray(updated.deletedVideoTags)) {
                 state.deletedVideoTags = updated.deletedVideoTags;
               }
-              if (updated.videoProgress && typeof updated.videoProgress === 'object') {
-                state.videoProgress = updated.videoProgress;
-              }
               if (updated.regionAssignments && typeof updated.regionAssignments === 'object') {
                 state.regionAssignments = updated.regionAssignments;
                 try {
@@ -922,7 +917,6 @@
                 localStorage.setItem(STORAGE_KEY_CUSTOM_VIDEOS,  JSON.stringify(state.customVideos));
                 localStorage.setItem(STORAGE_KEY_CUSTOM_VIDEO_TAGS, JSON.stringify(state.customVideoTags));
                 localStorage.setItem(STORAGE_KEY_DELETED_VIDEO_TAGS, JSON.stringify(state.deletedVideoTags));
-                localStorage.setItem(STORAGE_KEY_VIDEO_PLAYBACK_PROGRESS, JSON.stringify(state.videoProgress));
               } catch (e) {}
               renderAll();
               renderStats();
@@ -5150,7 +5144,7 @@
   }
 
   // ─── 影片播放進度記憶與續播控制器 (Video Playback Progress & Resume) ──────
-  let _saveVideoProgressTimer = null;
+  let _currentLoadedVideoId = null;
   let _ytPlayer = null;
   let _ytProgressInterval = null;
   let _ytApiLoading = false;
@@ -5165,18 +5159,6 @@
 
   function saveVideoProgressAndSync() {
     saveProgress(STORAGE_KEY_VIDEO_PLAYBACK_PROGRESS, state.videoProgress);
-    clearTimeout(_saveVideoProgressTimer);
-    _saveVideoProgressTimer = setTimeout(() => {
-      const fb = window.PokopiaFirebase;
-      if (fb && typeof fb.getCurrentUser === 'function') {
-        const user = fb.getCurrentUser();
-        if (user && user.uid && isAutoFarmAuthorized(user)) {
-          fb.debouncedSave(user.uid, {
-            videoProgress: state.videoProgress
-          });
-        }
-      }
-    }, 2000);
   }
 
   function recordCurrentVideoProgress(videoId, currentTime, duration) {
@@ -5383,10 +5365,10 @@
   }
 
   function renderTheaterPlayer(video) {
-    stopProgressSampling();
-    hideResumeBanner();
-
     if (!video) {
+      _currentLoadedVideoId = null;
+      stopProgressSampling();
+      hideResumeBanner();
       if (DOM.videoPlayerIframe) DOM.videoPlayerIframe.src = '';
       if (DOM.videoCurrentTitle) DOM.videoCurrentTitle.textContent = '尚無參考影片';
       if (DOM.videoCurrentNote) DOM.videoCurrentNote.textContent = '請點擊下方「新增影片」按鈕添加您的第一部影片。';
@@ -5399,32 +5381,40 @@
       return;
     }
 
-    // 啟動 YouTube Iframe API 載入 (如未載入)
-    initYouTubeIframeApi();
+    // 檢查是否已在播放同一部影片，若是，絕對不更動 iframe 與播放狀態，避免中斷播放
+    const isSameVideo = (_currentLoadedVideoId === video.videoId) && DOM.videoPlayerIframe && DOM.videoPlayerIframe.src;
+    if (!isSameVideo) {
+      _currentLoadedVideoId = video.videoId;
+      stopProgressSampling();
+      hideResumeBanner();
 
-    // 取得該影片上次儲存之播放進度 (秒數)
-    const savedTime = (state.videoProgress && typeof state.videoProgress[video.videoId] === 'number')
-      ? state.videoProgress[video.videoId]
-      : 0;
+      // 啟動 YouTube Iframe API 載入 (如未載入)
+      initYouTubeIframeApi();
 
-    // 播放器 iframe (支援從上次秒數續播 start 參數)
-    if (DOM.videoPlayerIframe) {
-      DOM.videoPlayerIframe.referrerPolicy = 'strict-origin-when-cross-origin';
-      const origin = (typeof window !== 'undefined' && window.location && window.location.origin) ? encodeURIComponent(window.location.origin) : '';
-      const startParam = (savedTime >= 5) ? `&start=${Math.floor(savedTime)}` : '';
-      const embedUrl = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(video.videoId)}?rel=0&enablejsapi=1${startParam}${origin ? '&origin=' + origin : ''}`;
-      if (DOM.videoPlayerIframe.src !== embedUrl) {
-        DOM.videoPlayerIframe.src = embedUrl;
+      // 取得該影片上次儲存之播放進度 (秒數)
+      const savedTime = (state.videoProgress && typeof state.videoProgress[video.videoId] === 'number')
+        ? state.videoProgress[video.videoId]
+        : 0;
+
+      // 播放器 iframe (支援從上次秒數續播 start 參數)
+      if (DOM.videoPlayerIframe) {
+        DOM.videoPlayerIframe.referrerPolicy = 'strict-origin-when-cross-origin';
+        const origin = (typeof window !== 'undefined' && window.location && window.location.origin) ? encodeURIComponent(window.location.origin) : '';
+        const startParam = (savedTime >= 5) ? `&start=${Math.floor(savedTime)}` : '';
+        const embedUrl = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(video.videoId)}?rel=0&enablejsapi=1${startParam}${origin ? '&origin=' + origin : ''}`;
+        if (DOM.videoPlayerIframe.src !== embedUrl) {
+          DOM.videoPlayerIframe.src = embedUrl;
+        }
       }
-    }
 
-    // 若有上次紀錄（>= 5 秒），跳出續播提示膠囊
-    if (savedTime >= 5) {
-      showResumeBanner(video, savedTime);
-    }
+      // 若有上次紀錄（>= 5 秒），跳出續播提示膠囊
+      if (savedTime >= 5) {
+        showResumeBanner(video, savedTime);
+      }
 
-    // 若 API 已就緒，嘗試掛載實例
-    setupYouTubePlayerInstance();
+      // 若 API 已就緒，嘗試掛載實例
+      setupYouTubePlayerInstance();
+    }
 
     if (DOM.videoCurrentTitle) DOM.videoCurrentTitle.textContent = video.title || '未命名影片';
     if (DOM.videoCurrentNote) DOM.videoCurrentNote.textContent = video.note || '暫無詳細說明。';
