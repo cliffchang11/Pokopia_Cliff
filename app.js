@@ -20,6 +20,7 @@
   const STORAGE_KEY_CUSTOM_VIDEOS = 'pokopia_custom_videos_v1';
   const STORAGE_KEY_CUSTOM_VIDEO_TAGS = 'pokopia_custom_video_tags_v1';
   const STORAGE_KEY_DELETED_VIDEO_TAGS = 'pokopia_deleted_video_tags_v1';
+  const STORAGE_KEY_VIDEO_PLAYBACK_PROGRESS = 'pokopia_video_progress_v1';
 
   // 我的收納盒預設初始箱號配置 (6 個預設收納盒，使用者可自由增刪與修改)
   const DEFAULT_CUSTOM_BOXES = [
@@ -151,6 +152,10 @@
       const saved = loadProgress(STORAGE_KEY_DELETED_VIDEO_TAGS, null);
       return (Array.isArray(saved)) ? saved : [];
     })(),
+    videoProgress: (function() {
+      const saved = loadProgress(STORAGE_KEY_VIDEO_PLAYBACK_PROGRESS, null);
+      return (saved && typeof saved === 'object' && !Array.isArray(saved)) ? saved : {};
+    })(),
     currentVideoId: null,
     selectedVideoTag: '全部',
     isStaggerAnim: true
@@ -174,6 +179,10 @@
     customStorageSection: document.getElementById('customStorageSection'),
     videoSection: document.getElementById('videoSection'),
     videoPlayerIframe: document.getElementById('videoPlayerIframe'),
+    videoResumeBanner: document.getElementById('videoResumeBanner'),
+    videoResumeText: document.getElementById('videoResumeText'),
+    btnVideoRestart: document.getElementById('btnVideoRestart'),
+    btnVideoResumeDismiss: document.getElementById('btnVideoResumeDismiss'),
     videoCurrentAuthor: document.getElementById('videoCurrentAuthor'),
     videoCurrentDate: document.getElementById('videoCurrentDate'),
     videoExternalLink: document.getElementById('videoExternalLink'),
@@ -822,6 +831,9 @@
             merged.deletedVideoTags.forEach(t => currentDels.add(t));
             state.deletedVideoTags = Array.from(currentDels);
           }
+          if (merged.videoProgress && typeof merged.videoProgress === 'object') {
+            state.videoProgress = Object.assign({}, state.videoProgress || {}, merged.videoProgress);
+          }
           saveProgress(STORAGE_KEY_CAT,            state.catChecked);
           saveProgress(STORAGE_KEY_PKM,            state.pkmChecked);
           saveProgress(STORAGE_KEY_HAB,            state.habChecked);
@@ -831,6 +843,7 @@
           saveProgress(STORAGE_KEY_CUSTOM_VIDEOS,  state.customVideos);
           saveProgress(STORAGE_KEY_CUSTOM_VIDEO_TAGS, state.customVideoTags);
           saveProgress(STORAGE_KEY_DELETED_VIDEO_TAGS, state.deletedVideoTags);
+          saveProgress(STORAGE_KEY_VIDEO_PLAYBACK_PROGRESS, state.videoProgress);
 
           await fb.saveCloudProgress(user.uid, merged);
           if (elSync) elSync.classList.add('hidden');
@@ -854,6 +867,7 @@
               customVideos:      state.customVideos      || [],
               customVideoTags:   state.customVideoTags   || [],
               deletedVideoTags:  state.deletedVideoTags  || [],
+              videoProgress:     state.videoProgress     || {},
               regionAssignments: state.regionAssignments || (typeof getRegionAssignments === 'function' ? getRegionAssignments() : {})
             };
             const updated = fb.mergeProgressUnion(currentSnap, remoteData);
@@ -865,6 +879,7 @@
                               JSON.stringify(state.customVideos) !== JSON.stringify(updated.customVideos) ||
                               JSON.stringify(state.customVideoTags) !== JSON.stringify(updated.customVideoTags) ||
                               JSON.stringify(state.deletedVideoTags) !== JSON.stringify(updated.deletedVideoTags) ||
+                              JSON.stringify(state.videoProgress) !== JSON.stringify(updated.videoProgress) ||
                               JSON.stringify(state.regionAssignments) !== JSON.stringify(updated.regionAssignments);
             if (isChanged) {
               state.catChecked      = updated.catChecked      || {};
@@ -884,6 +899,9 @@
               if (updated.deletedVideoTags && Array.isArray(updated.deletedVideoTags)) {
                 state.deletedVideoTags = updated.deletedVideoTags;
               }
+              if (updated.videoProgress && typeof updated.videoProgress === 'object') {
+                state.videoProgress = updated.videoProgress;
+              }
               if (updated.regionAssignments && typeof updated.regionAssignments === 'object') {
                 state.regionAssignments = updated.regionAssignments;
                 try {
@@ -900,6 +918,7 @@
                 localStorage.setItem(STORAGE_KEY_CUSTOM_VIDEOS,  JSON.stringify(state.customVideos));
                 localStorage.setItem(STORAGE_KEY_CUSTOM_VIDEO_TAGS, JSON.stringify(state.customVideoTags));
                 localStorage.setItem(STORAGE_KEY_DELETED_VIDEO_TAGS, JSON.stringify(state.deletedVideoTags));
+                localStorage.setItem(STORAGE_KEY_VIDEO_PLAYBACK_PROGRESS, JSON.stringify(state.videoProgress));
               } catch (e) {}
               renderAll();
               renderStats();
@@ -5125,7 +5144,202 @@
     renderVideoCards();
   }
 
+  // ─── 影片播放進度記憶與續播控制器 (Video Playback Progress & Resume) ──────
+  let _saveVideoProgressTimer = null;
+  let _ytPlayer = null;
+  let _ytProgressInterval = null;
+  let _ytApiLoading = false;
+  let _resumeBannerDismissTimer = null;
+
+  function formatPlaybackTime(seconds) {
+    const total = Math.max(0, Math.floor(seconds || 0));
+    const m = Math.floor(total / 60);
+    const s = total % 60;
+    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  }
+
+  function saveVideoProgressAndSync() {
+    saveProgress(STORAGE_KEY_VIDEO_PLAYBACK_PROGRESS, state.videoProgress);
+    clearTimeout(_saveVideoProgressTimer);
+    _saveVideoProgressTimer = setTimeout(() => {
+      const fb = window.PokopiaFirebase;
+      if (fb && typeof fb.getCurrentUser === 'function') {
+        const user = fb.getCurrentUser();
+        if (user && user.uid && isAutoFarmAuthorized(user)) {
+          fb.debouncedSave(user.uid, {
+            videoProgress: state.videoProgress
+          });
+        }
+      }
+    }, 2000);
+  }
+
+  function recordCurrentVideoProgress(videoId, currentTime, duration) {
+    if (!videoId) return;
+    if (!state.videoProgress) state.videoProgress = {};
+
+    // 完播（ENDED）或離片尾 <= 10 秒：自動歸零重置
+    if (duration > 0 && (duration - currentTime) <= 10) {
+      if (state.videoProgress[videoId]) {
+        delete state.videoProgress[videoId];
+        saveVideoProgressAndSync();
+      }
+      return;
+    }
+
+    // 未滿 5 秒不予紀錄 (重置/清除)
+    if (currentTime < 5) {
+      if (state.videoProgress[videoId]) {
+        delete state.videoProgress[videoId];
+        saveVideoProgressAndSync();
+      }
+      return;
+    }
+
+    const rounded = Math.floor(currentTime);
+    if (state.videoProgress[videoId] !== rounded) {
+      state.videoProgress[videoId] = rounded;
+      saveVideoProgressAndSync();
+    }
+  }
+
+  function initYouTubeIframeApi() {
+    if (typeof window === 'undefined') return;
+    if (window.YT && window.YT.Player) return;
+    if (_ytApiLoading) return;
+    _ytApiLoading = true;
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    const firstScript = document.getElementsByTagName('script')[0];
+    if (firstScript && firstScript.parentNode) {
+      firstScript.parentNode.insertBefore(tag, firstScript);
+    } else {
+      document.head.appendChild(tag);
+    }
+  }
+
+  function setupYouTubePlayerInstance() {
+    if (typeof window === 'undefined' || !window.YT || !window.YT.Player || !DOM.videoPlayerIframe) return;
+    try {
+      if (_ytPlayer) return;
+      _ytPlayer = new window.YT.Player('videoPlayerIframe', {
+        events: {
+          onStateChange: (event) => {
+            // 1: PLAYING, 2: PAUSED, 0: ENDED
+            if (event.data === 1) {
+              startProgressSampling();
+            } else {
+              stopProgressSampling();
+              const active = getActiveVideo();
+              if (event.data === 0) {
+                if (active) recordCurrentVideoProgress(active.videoId, 0, 0);
+              } else if (event.data === 2) {
+                sampleCurrentProgress();
+              }
+            }
+          }
+        }
+      });
+    } catch (e) {
+      console.warn('[YT.Player] Init warning:', e);
+    }
+  }
+
+  if (typeof window !== 'undefined') {
+    window.onYouTubeIframeAPIReady = function() {
+      setupYouTubePlayerInstance();
+    };
+  }
+
+  function startProgressSampling() {
+    stopProgressSampling();
+    _ytProgressInterval = setInterval(() => {
+      sampleCurrentProgress();
+    }, 1000);
+  }
+
+  function stopProgressSampling() {
+    if (_ytProgressInterval) {
+      clearInterval(_ytProgressInterval);
+      _ytProgressInterval = null;
+    }
+  }
+
+  function sampleCurrentProgress() {
+    if (!_ytPlayer) return;
+    try {
+      const active = getActiveVideo();
+      if (!active) return;
+      if (typeof _ytPlayer.getCurrentTime === 'function') {
+        const cur = _ytPlayer.getCurrentTime() || 0;
+        const dur = (typeof _ytPlayer.getDuration === 'function') ? (_ytPlayer.getDuration() || 0) : 0;
+        recordCurrentVideoProgress(active.videoId, cur, dur);
+      }
+    } catch (e) {}
+  }
+
+  function showResumeBanner(video, savedSeconds) {
+    if (!DOM.videoResumeBanner) return;
+    clearTimeout(_resumeBannerDismissTimer);
+    DOM.videoResumeBanner.classList.remove('fade-out', 'hidden');
+    if (DOM.videoResumeText) {
+      DOM.videoResumeText.textContent = `已自動從 ${formatPlaybackTime(savedSeconds)} 接續播放`;
+    }
+
+    if (DOM.btnVideoRestart) {
+      DOM.btnVideoRestart.onclick = () => {
+        restartCurrentVideoFromBeginning(video);
+      };
+    }
+
+    if (DOM.btnVideoResumeDismiss) {
+      DOM.btnVideoResumeDismiss.onclick = () => {
+        hideResumeBanner();
+      };
+    }
+
+    _resumeBannerDismissTimer = setTimeout(() => {
+      hideResumeBanner();
+    }, 5000);
+  }
+
+  function hideResumeBanner() {
+    clearTimeout(_resumeBannerDismissTimer);
+    if (!DOM.videoResumeBanner) return;
+    DOM.videoResumeBanner.classList.add('fade-out');
+    setTimeout(() => {
+      if (DOM.videoResumeBanner && DOM.videoResumeBanner.classList.contains('fade-out')) {
+        DOM.videoResumeBanner.classList.add('hidden');
+        DOM.videoResumeBanner.classList.remove('fade-out');
+      }
+    }, 350);
+  }
+
+  function restartCurrentVideoFromBeginning(video) {
+    if (!video) return;
+    hideResumeBanner();
+    if (state.videoProgress && state.videoProgress[video.videoId]) {
+      delete state.videoProgress[video.videoId];
+      saveVideoProgressAndSync();
+    }
+    if (_ytPlayer && typeof _ytPlayer.seekTo === 'function') {
+      try {
+        _ytPlayer.seekTo(0, true);
+        if (typeof _ytPlayer.playVideo === 'function') _ytPlayer.playVideo();
+        return;
+      } catch (e) {}
+    }
+    if (DOM.videoPlayerIframe) {
+      const origin = (typeof window !== 'undefined' && window.location && window.location.origin) ? encodeURIComponent(window.location.origin) : '';
+      const embedUrl = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(video.videoId)}?rel=0&enablejsapi=1&autoplay=1${origin ? '&origin=' + origin : ''}`;
+      DOM.videoPlayerIframe.src = embedUrl;
+    }
+  }
+
   function renderTheaterPlayer(video) {
+    stopProgressSampling();
+    hideResumeBanner();
+
     if (!video) {
       if (DOM.videoPlayerIframe) DOM.videoPlayerIframe.src = '';
       if (DOM.videoCurrentTitle) DOM.videoCurrentTitle.textContent = '尚無參考影片';
@@ -5139,15 +5353,32 @@
       return;
     }
 
-    // 播放器 iframe (修復錯誤 153: 明確設定 referrerpolicy 與 youtube-nocookie.com 內嵌)
+    // 啟動 YouTube Iframe API 載入 (如未載入)
+    initYouTubeIframeApi();
+
+    // 取得該影片上次儲存之播放進度 (秒數)
+    const savedTime = (state.videoProgress && typeof state.videoProgress[video.videoId] === 'number')
+      ? state.videoProgress[video.videoId]
+      : 0;
+
+    // 播放器 iframe (支援從上次秒數續播 start 參數)
     if (DOM.videoPlayerIframe) {
       DOM.videoPlayerIframe.referrerPolicy = 'strict-origin-when-cross-origin';
       const origin = (typeof window !== 'undefined' && window.location && window.location.origin) ? encodeURIComponent(window.location.origin) : '';
-      const embedUrl = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(video.videoId)}?rel=0&enablejsapi=1${origin ? '&origin=' + origin : ''}`;
+      const startParam = (savedTime >= 5) ? `&start=${Math.floor(savedTime)}` : '';
+      const embedUrl = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(video.videoId)}?rel=0&enablejsapi=1${startParam}${origin ? '&origin=' + origin : ''}`;
       if (DOM.videoPlayerIframe.src !== embedUrl) {
         DOM.videoPlayerIframe.src = embedUrl;
       }
     }
+
+    // 若有上次紀錄（>= 5 秒），跳出續播提示膠囊
+    if (savedTime >= 5) {
+      showResumeBanner(video, savedTime);
+    }
+
+    // 若 API 已就緒，嘗試掛載實例
+    setupYouTubePlayerInstance();
 
     if (DOM.videoCurrentTitle) DOM.videoCurrentTitle.textContent = video.title || '未命名影片';
     if (DOM.videoCurrentNote) DOM.videoCurrentNote.textContent = video.note || '暫無詳細說明。';
@@ -5818,6 +6049,10 @@
           if (state.currentVideoId === idToDelete) {
             state.currentVideoId = null;
           }
+          if (state.videoProgress && state.videoProgress[idToDelete]) {
+            delete state.videoProgress[idToDelete];
+            saveVideoProgressAndSync();
+          }
           saveCustomVideosAndSync();
           closeVideoModal();
           renderVideoSection();
@@ -5892,7 +6127,11 @@
     renderVideoSection,
     openVideoModal,
     closeVideoModal,
-    parseYouTubeId
+    parseYouTubeId,
+    formatPlaybackTime,
+    recordCurrentVideoProgress,
+    restartCurrentVideoFromBeginning,
+    getVideoProgress: () => state.videoProgress
   };
 
   // 暴露地區地圖 API
