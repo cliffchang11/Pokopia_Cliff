@@ -806,6 +806,9 @@
             benchOverrides:    state.benchOverrides    || {},
             autoFarmChecked:   state.autoFarmChecked   || {},
             customBoxes:       state.customBoxes       || [],
+            customVideos:      state.customVideos      || [],
+            customVideoTags:   state.customVideoTags   || [],
+            deletedVideoTags:  state.deletedVideoTags  || [],
             regionAssignments: state.regionAssignments || (typeof getRegionAssignments === 'function' ? getRegionAssignments() : {})
           };
           const merged = fb.mergeProgressUnion(localSnapshot, cloudData);
@@ -879,7 +882,7 @@
                               JSON.stringify(state.habChecked) !== JSON.stringify(updated.habChecked) ||
                               JSON.stringify(state.autoFarmChecked) !== JSON.stringify(updated.autoFarmChecked) ||
                               JSON.stringify(state.customBoxes) !== JSON.stringify(updated.customBoxes) ||
-                              JSON.stringify(state.customVideos) !== JSON.stringify(updated.customVideos) ||
+                              !areVideoListsEqual(state.customVideos, updated.customVideos) ||
                               JSON.stringify(state.customVideoTags) !== JSON.stringify(updated.customVideoTags) ||
                               JSON.stringify(state.deletedVideoTags) !== JSON.stringify(updated.deletedVideoTags) ||
                               JSON.stringify(state.regionAssignments) !== JSON.stringify(updated.regionAssignments);
@@ -5073,6 +5076,21 @@
     return '';
   }
 
+  function areVideoListsEqual(listA, listB) {
+    if (!Array.isArray(listA) || !Array.isArray(listB)) return listA === listB;
+    if (listA.length !== listB.length) return false;
+    for (let i = 0; i < listA.length; i++) {
+      const a = listA[i], b = listB[i];
+      if (!a || !b) return false;
+      if (a.id !== b.id || a.videoId !== b.videoId || a.title !== b.title || a.author !== b.author) return false;
+      if (a.note !== b.note || a.cloudCode !== b.cloudCode) return false;
+      const tagsA = (a.tags || []).join(',');
+      const tagsB = (b.tags || []).join(',');
+      if (tagsA !== tagsB) return false;
+    }
+    return true;
+  }
+
   function getAllVideos() {
     return (state.customVideos && Array.isArray(state.customVideos)) ? state.customVideos : [];
   }
@@ -5506,6 +5524,8 @@
     });
   }
 
+  let _lastRenderedCardsFingerprint = '';
+
   function renderVideoCards() {
     if (!DOM.videoCardsGrid) return;
     const allVideos = getAllVideos();
@@ -5517,6 +5537,7 @@
     });
 
     if (filtered.length === 0) {
+      _lastRenderedCardsFingerprint = `${selectedTag}::empty`;
       DOM.videoCardsGrid.innerHTML = `
         <div style="grid-column: 1 / -1; padding: 3rem 1rem; text-align: center; color: var(--text-muted);">
           <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎬</div>
@@ -5525,6 +5546,13 @@
       `;
       return;
     }
+
+    // 渲染指紋守衛：若當前標籤、播放中影片與卡片內容均未實質變更，絕不重新清空 DOM，徹底消除縮圖閃爍
+    const currentFingerprint = `${selectedTag}::${state.currentVideoId}::` + filtered.map(v => `${v.id}_${v.title}_${v.videoId}`).join('|');
+    if (_lastRenderedCardsFingerprint === currentFingerprint && DOM.videoCardsGrid.children.length > 0) {
+      return;
+    }
+    _lastRenderedCardsFingerprint = currentFingerprint;
 
     DOM.videoCardsGrid.innerHTML = filtered.map(v => {
       const isPlaying = (state.currentVideoId === v.id);

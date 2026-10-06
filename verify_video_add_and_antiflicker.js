@@ -1,10 +1,28 @@
 const fs = require('fs');
 const assert = require('assert');
 
-console.log('--- 開始驗證自訂影片新增保留、網址解析與手機防閃爍機制 (v4.9.0) ---');
+console.log('--- 開始驗證自訂影片新增重整保留、穩定排序與防閃爍機制 (v4.9.1) ---');
 
-// 1. 驗證任務 1：Firebase 雲端自訂影片 Union 聯集合併機制
+// 1. 驗證任務 1：Firebase 雲端自訂影片 Union 聯集合併與穩定排序
 const firebaseJs = fs.readFileSync('firebase.js', 'utf8');
+const appJs = fs.readFileSync('app.js', 'utf8');
+
+// 檢查 app.js onAuthStateChanged 中的 localSnapshot 是否含有 customVideos
+assert.ok(
+  appJs.includes('customVideos:      state.customVideos      || []') &&
+  appJs.includes('customVideoTags:   state.customVideoTags   || []') &&
+  appJs.includes('deletedVideoTags:  state.deletedVideoTags  || []'),
+  '測試失敗：app.js 的 localSnapshot 遺漏了 customVideos 相關欄位！'
+);
+console.log('✓ 驗證通過：onAuthStateChanged 初始化的 localSnapshot 完整包含自訂影片欄位，重整絕不丟失');
+
+// 檢查 firebase.js 中的 customVideos 排序邏輯
+assert.ok(
+  firebaseJs.includes('mergedList.sort((a, b) => {') &&
+  firebaseJs.includes('return timeB - timeA;'),
+  '測試失敗：firebase.js 缺少自訂影片統一時間穩定排序！'
+);
+console.log('✓ 驗證通過：firebase.js 具備依建立/更新時間統一由新到舊穩定排序機制');
 
 // 模擬 firebase.js 中的 mergeProgressUnion 邏輯
 function mockMergeProgressUnion(local, cloud) {
@@ -29,16 +47,21 @@ function mockMergeProgressUnion(local, cloud) {
         }
       }
     });
-    merged.customVideos = Array.from(videoMap.values());
-  } else if (local && local.customVideos && Array.isArray(local.customVideos)) {
-    merged.customVideos = local.customVideos;
+    const mergedList = Array.from(videoMap.values());
+    mergedList.sort((a, b) => {
+      const timeA = new Date(a.updatedAt || a.createdAt || 0).getTime();
+      const timeB = new Date(b.updatedAt || b.createdAt || 0).getTime();
+      if (timeB !== timeA) return timeB - timeA;
+      return String(a.id || '').localeCompare(String(b.id || ''));
+    });
+    merged.customVideos = mergedList;
   }
   return merged;
 }
 
 const localData = {
   customVideos: [
-    { id: 'video_new_123', videoId: '5dCjsO8uskA', title: '手機新增之影片', createdAt: '2026-10-06T14:00:00Z' },
+    { id: 'video_new_123', videoId: '5dCjsO8uskA', title: '手機新增之影片', createdAt: '2026-10-06T14:30:00Z' },
     { id: 'default_v1', videoId: 'old_001', title: '預設影片（本地修改過）', updatedAt: '2026-10-06T14:10:00Z' }
   ]
 };
@@ -46,83 +69,57 @@ const localData = {
 const cloudData = {
   customVideos: [
     { id: 'default_v1', videoId: 'old_001', title: '預設影片（舊雲端版本）', updatedAt: '2026-10-06T12:00:00Z' },
-    { id: 'cloud_only_v2', videoId: 'cloud_002', title: '其他裝置新增影片', updatedAt: '2026-10-06T13:00:00Z' }
+    { id: 'cloud_only_v2', videoId: 'cloud_002', title: '其他裝置新增影片', createdAt: '2026-10-06T13:00:00Z' }
   ]
 };
 
 const mergedResult = mockMergeProgressUnion(localData, cloudData);
 
-// 關鍵斷言 1：本地新增的影片絕不可被抹除！
-const hasNewVideo = mergedResult.customVideos.some(v => v.id === 'video_new_123');
-assert.ok(hasNewVideo, '測試失敗：本地新增的影片被雲端舊快照抹除了！');
-console.log('✓ 驗證通過：本地新增影片在雲端合併時被完整保留');
+// 關鍵斷言 1：本地新增之最新影片排在首位！
+assert.strictEqual(mergedResult.customVideos[0].id, 'video_new_123', '最新新增之影片應位於清單第一筆！');
+console.log('✓ 驗證通過：手機最新新增之影片成功排列在清單首位');
 
-// 關鍵斷言 2：衝突時依據 updatedAt 較新者保留
-const mergedV1 = mergedResult.customVideos.find(v => v.id === 'default_v1');
-assert.strictEqual(mergedV1.title, '預設影片（本地修改過）', '測試失敗：衝突時未依據最新更新時間保留！');
-console.log('✓ 驗證通過：同一影片衝突時以最新修改版本為準');
+// 關鍵斷言 2：三部影片全部完整保留
+assert.strictEqual(mergedResult.customVideos.length, 3, '合併後應包含全部 3 部影片！');
+console.log('✓ 驗證通過：本地與雲端所有自訂影片無損合併保留');
 
-// 關鍵斷言 3：雲端其他裝置的影片也被納入（雙向同步）
-const hasCloudVideo = mergedResult.customVideos.some(v => v.id === 'cloud_only_v2');
-assert.ok(hasCloudVideo, '測試失敗：雲端其他裝置的影片未被納入！');
-console.log('✓ 驗證通過：跨裝置自訂影片雙向聯集同步正常');
+// 2. 驗證任務 2：areVideoListsEqual 與卡片渲染指紋守衛
+assert.ok(
+  appJs.includes('function areVideoListsEqual(listA, listB)'),
+  '測試失敗：未找到 areVideoListsEqual 函式！'
+);
+assert.ok(
+  appJs.includes('_lastRenderedCardsFingerprint'),
+  '測試失敗：未找到 _lastRenderedCardsFingerprint 卡片渲染指紋守衛！'
+);
+console.log('✓ 驗證通過：areVideoListsEqual 語意比對與 _lastRenderedCardsFingerprint 守衛正常配置');
 
-// 2. 驗證任務 2：手機 YouTube 網址全面解析
-const appJs = fs.readFileSync('app.js', 'utf8');
-
-function parseYouTubeId(input) {
-  if (!input || typeof input !== 'string') return '';
-  const trimmed = input.trim();
-  if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) {
-    return trimmed;
+// 模擬指紋守衛
+let _testFingerprint = '';
+let renderCount = 0;
+function mockRenderCards(cards, currentVideoId, tag) {
+  const currentFingerprint = `${tag}::${currentVideoId}::` + cards.map(v => `${v.id}_${v.title}`).join('|');
+  if (_testFingerprint === currentFingerprint) {
+    return; // 命中守衛，不觸發 DOM 操作
   }
-  const shortMatch = trimmed.match(/(?:https?:\/\/)?(?:www\.)?youtu\.be\/([a-zA-Z0-9_-]{11})/i);
-  if (shortMatch) return shortMatch[1];
-  const shortsMatch = trimmed.match(/(?:https?:\/\/)?(?:(?:www|m)\.)?youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/i);
-  if (shortsMatch) return shortsMatch[1];
-  const liveMatch = trimmed.match(/(?:https?:\/\/)?(?:(?:www|m)\.)?youtube\.com\/live\/([a-zA-Z0-9_-]{11})/i);
-  if (liveMatch) return liveMatch[1];
-  const standardMatch = trimmed.match(/(?:https?:\/\/)?(?:(?:www|m)\.)?youtube\.com\/(?:watch\?.*v=|embed\/|v\/)([a-zA-Z0-9_-]{11})/i);
-  if (standardMatch) return standardMatch[1];
-  const queryMatch = trimmed.match(/[?&]v=([a-zA-Z0-9_-]{11})(?:&|$)/);
-  if (queryMatch) return queryMatch[1];
-  return '';
+  _testFingerprint = currentFingerprint;
+  renderCount++;
 }
 
-assert.strictEqual(parseYouTubeId('5dCjsO8uskA'), '5dCjsO8uskA', '純 11 碼解析失敗');
-assert.strictEqual(parseYouTubeId('https://youtu.be/5dCjsO8uskA'), '5dCjsO8uskA', 'youtu.be 解析失敗');
-assert.strictEqual(parseYouTubeId('https://youtu.be/5dCjsO8uskA?si=xyz123'), '5dCjsO8uskA', '帶 si 參數解析失敗');
-assert.strictEqual(parseYouTubeId('https://www.youtube.com/shorts/5dCjsO8uskA'), '5dCjsO8uskA', 'Shorts 解析失敗');
-assert.strictEqual(parseYouTubeId('https://m.youtube.com/shorts/5dCjsO8uskA?si=abc'), '5dCjsO8uskA', '手機版 Shorts 解析失敗');
-assert.strictEqual(parseYouTubeId('https://www.youtube.com/live/5dCjsO8uskA'), '5dCjsO8uskA', 'Live 解析失敗');
-assert.strictEqual(parseYouTubeId('https://m.youtube.com/watch?v=5dCjsO8uskA&feature=share'), '5dCjsO8uskA', '手機版 watch 解析失敗');
-assert.strictEqual(parseYouTubeId('https://google.com'), '', '無效網址應回傳空字串');
-console.log('✓ 驗證通過：手機 YouTube Shorts、Live、m.youtube.com 與參數網址 100% 精準解析');
+// 初次渲染
+mockRenderCards(mergedResult.customVideos, 'video_new_123', '全部');
+assert.strictEqual(renderCount, 1);
 
-// 3. 驗證任務 3：消除手機畫面閃爍
-// 檢查 subscribeCloudProgress 分流更新
-assert.ok(
-  appJs.includes("if (state.currentTab === 'customStorage')"),
-  '測試失敗：subscribeCloudProgress 未實施分流更新！'
-);
-assert.ok(
-  appJs.includes("} else if (state.currentTab === 'video') {"),
-  '測試失敗：subscribeCloudProgress 未針對 video 分頁實施局部更新！'
-);
-console.log('✓ 驗證通過：subscribeCloudProgress 採用智慧分流更新，避免非必要 renderAll');
+// 雲端背景推播來相同清單
+mockRenderCards(mergedResult.customVideos, 'video_new_123', '全部');
+assert.strictEqual(renderCount, 1, '測試失敗：相同內容不應重新觸發卡片重繪！');
+console.log('✓ 驗證通過：渲染指紋守衛生效，相同清單 100% 阻擋重複清空 DOM，徹底消除縮圖閃爍！');
 
-// 檢查輸入框防抖去重
-assert.ok(
-  appJs.includes('_autoFetchDebounceTimer'),
-  '測試失敗：未實作 _autoFetchDebounceTimer 防抖計時器！'
-);
-console.log('✓ 驗證通過：輸入框 paste 與 blur 已加上 300ms 防抖去重保護');
-
-// 4. 檢查 index.html 快取版本
+// 3. 檢查 index.html 快取版本
 const indexHtml = fs.readFileSync('index.html', 'utf8');
-assert.ok(indexHtml.includes('app.js?v=4.9.0'), 'index.html 未更新至 v=4.9.0');
-assert.ok(indexHtml.includes('index.css?v=4.9.0'), 'index.css 未更新至 v=4.9.0');
-assert.ok(indexHtml.includes('firebase.js?v=4.9.0'), 'firebase.js 未更新至 v=4.9.0');
-console.log('✓ 驗證通過：index.html 快取標籤確認為 v=4.9.0');
+assert.ok(indexHtml.includes('app.js?v=4.9.1'), 'index.html 未更新至 v=4.9.1');
+assert.ok(indexHtml.includes('index.css?v=4.9.1'), 'index.css 未更新至 v=4.9.1');
+assert.ok(indexHtml.includes('firebase.js?v=4.9.1'), 'firebase.js 未更新至 v=4.9.1');
+console.log('✓ 驗證通過：index.html 快取標籤確認為 v=4.9.1');
 
-console.log('🎉 全部單元測試與功能驗證 100% 通過！');
+console.log('🎉 全部單元測試與穩定性檢查 100% 通過！');

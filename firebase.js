@@ -114,9 +114,23 @@
           }
         }
       });
-      merged.customVideos = Array.from(videoMap.values());
+      const mergedList = Array.from(videoMap.values());
+      mergedList.sort((a, b) => {
+        const timeA = new Date(a.updatedAt || a.createdAt || 0).getTime();
+        const timeB = new Date(b.updatedAt || b.createdAt || 0).getTime();
+        if (timeB !== timeA) return timeB - timeA;
+        return String(a.id || '').localeCompare(String(b.id || ''));
+      });
+      merged.customVideos = mergedList;
     } else if (local && local.customVideos && Array.isArray(local.customVideos)) {
-      merged.customVideos = local.customVideos;
+      const sortedLocal = [...local.customVideos];
+      sortedLocal.sort((a, b) => {
+        const timeA = new Date(a.updatedAt || a.createdAt || 0).getTime();
+        const timeB = new Date(b.updatedAt || b.createdAt || 0).getTime();
+        if (timeB !== timeA) return timeB - timeA;
+        return String(a.id || '').localeCompare(String(b.id || ''));
+      });
+      merged.customVideos = sortedLocal;
     }
     if (cloud && cloud.customVideoTags && Array.isArray(cloud.customVideoTags)) {
       const tagSet = new Set(cloud.customVideoTags);
