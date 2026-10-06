@@ -3488,30 +3488,30 @@ body {
 
 /* Pokemon Table Merged Habitat Thumbs (大縮圖自適應視窗縮放：3:2 高清比例 + 下方精緻切換列) */
 .col-th-habitat {
-  min-width: 13.7500rem;
-  width: clamp(13.7500rem, 22vw, 20.0000rem);
+  min-width: 11.5000rem;
+  width: clamp(11.5000rem, 18.5vw, 17.0000rem);
 }
 
-/* Table Habitat Cell: Single Large Thumbnail (clamp 11.2500rem~16.2500rem) + Bottom Bar Controls */
+/* Table Habitat Cell: Single Large Thumbnail (clamp 9.5000rem~13.7500rem, 依比例微縮 15% 緊湊化列高) + Bottom Bar Controls */
 .pkm-table-hab-single-wrap,
 .pkm-table-hab-carousel {
   position: relative;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  width: clamp(11.2500rem, 18vw, 16.2500rem);
+  width: clamp(9.5000rem, 15vw, 13.7500rem);
   max-width: 100%;
-  gap: 0.3750rem;
+  gap: 0.3500rem;
   user-select: none;
   margin: 0 auto;
 }
 
 .pkm-table-hab-thumb {
   position: relative;
-  width: clamp(11.2500rem, 18vw, 16.2500rem);
+  width: clamp(9.5000rem, 15vw, 13.7500rem);
   height: auto;
   aspect-ratio: 3 / 2;
-  border-radius: 0.5000rem;
+  border-radius: 0.4500rem;
   overflow: hidden;
   background: var(--bg-card);
   border: 0.0938rem solid var(--glass-border);
@@ -3911,6 +3911,7 @@ body {
   text-align: center !important;
   white-space: nowrap !important;
   word-break: keep-all !important;
+  padding: 0.6000rem 0.6250rem !important;
 }
 
 .pokemon-table td .checkbox-container {
@@ -4011,8 +4012,8 @@ body {
 }
 
 .pkm-avatar-table-large {
-  width: clamp(4.0000rem, 5.5vw, 5.3125rem);
-  height: clamp(4.0000rem, 5.5vw, 5.3125rem);
+  width: clamp(3.7500rem, 5.0vw, 4.8500rem);
+  height: clamp(3.7500rem, 5.0vw, 4.8500rem);
   object-fit: contain;
   display: block;
   margin: 0 auto;
@@ -5561,7 +5562,7 @@ body.has-floating-back .scroll-top-btn {
     padding: 0.3750rem 0.1250rem !important;
   }
   .pokemon-table td:nth-child(3) .pkm-avatar-table-large {
-    width: clamp(3.2000rem, 5.2vw, 4.2500rem) !important;
+    width: clamp(3.0000rem, 4.8vw, 3.9500rem) !important;
     height: auto !important;
     aspect-ratio: 1 / 1 !important;
   }
@@ -5599,9 +5600,9 @@ body.has-floating-back .scroll-top-btn {
   .pokemon-table td.pkm-col-hab,
   .pokemon-table th:nth-child(6),
   .pokemon-table td:nth-child(6) {
-    width: clamp(10.5000rem, 20vw, 15.5000rem) !important;
-    min-width: 10.5000rem !important;
-    max-width: 15.5000rem !important;
+    width: clamp(9.0000rem, 17vw, 13.2500rem) !important;
+    min-width: 9.0000rem !important;
+    max-width: 13.2500rem !important;
     padding: 0.3750rem 0.2500rem !important;
   }
   .pokemon-table td.pkm-col-hab .pkm-table-hab-single-wrap,
@@ -5609,7 +5610,7 @@ body.has-floating-back .scroll-top-btn {
   .pokemon-table td:nth-child(6) .pkm-table-hab-single-wrap,
   .pokemon-table td:nth-child(6) .pkm-table-hab-carousel {
     width: 100% !important;
-    max-width: clamp(9.5000rem, 18vw, 14.2500rem) !important;
+    max-width: clamp(8.0000rem, 15vw, 12.0000rem) !important;
     margin: 0 auto !important;
   }
   .pokemon-table td.pkm-col-hab .pkm-table-hab-thumb,
