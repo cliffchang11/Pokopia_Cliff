@@ -150,17 +150,6 @@
     } else if (local && local.deletedVideoTags && Array.isArray(local.deletedVideoTags)) {
       merged.deletedVideoTags = local.deletedVideoTags;
     }
-    if (cloud && cloud.videoProgress && typeof cloud.videoProgress === 'object') {
-      const mergedProgress = Object.assign({}, (local && local.videoProgress && typeof local.videoProgress === 'object') ? local.videoProgress : {});
-      Object.entries(cloud.videoProgress).forEach(([vid, time]) => {
-        if (typeof time === 'number') {
-          mergedProgress[vid] = Math.max(mergedProgress[vid] || 0, time);
-        }
-      });
-      merged.videoProgress = mergedProgress;
-    } else if (local && local.videoProgress && typeof local.videoProgress === 'object') {
-      merged.videoProgress = local.videoProgress;
-    }
     return merged;
   }
 

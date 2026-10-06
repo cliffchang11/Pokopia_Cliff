@@ -838,9 +838,6 @@
             merged.deletedVideoTags.forEach(t => currentDels.add(t));
             state.deletedVideoTags = Array.from(currentDels);
           }
-          if (merged.videoProgress && typeof merged.videoProgress === 'object') {
-            state.videoProgress = Object.assign({}, state.videoProgress || {}, merged.videoProgress);
-          }
           saveProgress(STORAGE_KEY_CAT,            state.catChecked);
           saveProgress(STORAGE_KEY_PKM,            state.pkmChecked);
           saveProgress(STORAGE_KEY_HAB,            state.habChecked);
@@ -850,7 +847,6 @@
           saveProgress(STORAGE_KEY_CUSTOM_VIDEOS,  state.customVideos);
           saveProgress(STORAGE_KEY_CUSTOM_VIDEO_TAGS, state.customVideoTags);
           saveProgress(STORAGE_KEY_DELETED_VIDEO_TAGS, state.deletedVideoTags);
-          saveProgress(STORAGE_KEY_VIDEO_PLAYBACK_PROGRESS, state.videoProgress);
 
           await fb.saveCloudProgress(user.uid, merged);
           if (elSync) elSync.classList.add('hidden');

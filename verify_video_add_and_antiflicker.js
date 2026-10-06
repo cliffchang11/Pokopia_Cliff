@@ -1,7 +1,7 @@
 const fs = require('fs');
 const assert = require('assert');
 
-console.log('--- 開始驗證自訂影片新增重整保留、穩定排序與防閃爍機制 (v4.9.1) ---');
+console.log('--- 開始驗證自訂影片新增重整保留、穩定排序與防閃爍機制 (v4.9.2) ---');
 
 // 1. 驗證任務 1：Firebase 雲端自訂影片 Union 聯集合併與穩定排序
 const firebaseJs = fs.readFileSync('firebase.js', 'utf8');
@@ -117,9 +117,20 @@ console.log('✓ 驗證通過：渲染指紋守衛生效，相同清單 100% 阻
 
 // 3. 檢查 index.html 快取版本
 const indexHtml = fs.readFileSync('index.html', 'utf8');
-assert.ok(indexHtml.includes('app.js?v=4.9.1'), 'index.html 未更新至 v=4.9.1');
-assert.ok(indexHtml.includes('index.css?v=4.9.1'), 'index.css 未更新至 v=4.9.1');
-assert.ok(indexHtml.includes('firebase.js?v=4.9.1'), 'firebase.js 未更新至 v=4.9.1');
-console.log('✓ 驗證通過：index.html 快取標籤確認為 v=4.9.1');
+assert.ok(indexHtml.includes('app.js?v=4.9.2'), 'index.html 未更新至 v=4.9.2');
+assert.ok(indexHtml.includes('index.css?v=4.9.2'), 'index.css 未更新至 v=4.9.2');
+assert.ok(indexHtml.includes('firebase.js?v=4.9.2'), 'firebase.js 未更新至 v=4.9.2');
+console.log('✓ 驗證通過：index.html 快取標籤確認為 v=4.9.2');
+
+// 4. 驗證任務 3：videoProgress 徹底脫鉤雲端，各裝置各自獨立儲存
+assert.ok(
+  !firebaseJs.includes('merged.videoProgress ='),
+  '測試失敗：firebase.js 的 mergeProgressUnion 仍包含 videoProgress 雲端合併邏輯！'
+);
+assert.ok(
+  !appJs.includes('state.videoProgress = { ...(cloudData.videoProgress'),
+  '測試失敗：app.js 的 onAuthStateChanged 仍在覆蓋 state.videoProgress！'
+);
+console.log('✓ 驗證通過：videoProgress 100% 脫鉤雲端 Firestore，各裝置進度完全獨立儲存於本地');
 
 console.log('🎉 全部單元測試與穩定性檢查 100% 通過！');
