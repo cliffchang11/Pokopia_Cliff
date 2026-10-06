@@ -21,6 +21,7 @@
   const STORAGE_KEY_CUSTOM_VIDEO_TAGS = 'pokopia_custom_video_tags_v1';
   const STORAGE_KEY_DELETED_VIDEO_TAGS = 'pokopia_deleted_video_tags_v1';
   const STORAGE_KEY_VIDEO_PLAYBACK_PROGRESS = 'pokopia_video_progress_v1';
+  const STORAGE_KEY_ACTIVE_VIDEO = 'pokopia_active_video_id_v1';
 
   // 我的收納盒預設初始箱號配置 (6 個預設收納盒，使用者可自由增刪與修改)
   const DEFAULT_CUSTOM_BOXES = [
@@ -156,7 +157,10 @@
       const saved = loadProgress(STORAGE_KEY_VIDEO_PLAYBACK_PROGRESS, null);
       return (saved && typeof saved === 'object' && !Array.isArray(saved)) ? saved : {};
     })(),
-    currentVideoId: null,
+    currentVideoId: (function() {
+      const saved = loadProgress(STORAGE_KEY_ACTIVE_VIDEO, null);
+      return (typeof saved === 'string' && saved.trim()) ? saved.trim() : null;
+    })(),
     selectedVideoTag: '全部',
     isStaggerAnim: true
   };
@@ -5136,8 +5140,9 @@
   function renderVideoSection() {
     if (!DOM.videoSection) return;
     const activeVideo = getActiveVideo();
-    if (activeVideo && !state.currentVideoId) {
+    if (activeVideo) {
       state.currentVideoId = activeVideo.id;
+      saveProgress(STORAGE_KEY_ACTIVE_VIDEO, state.currentVideoId);
     }
     renderTheaterPlayer(activeVideo);
     renderVideoTags();
@@ -5249,6 +5254,47 @@
     window.onYouTubeIframeAPIReady = function() {
       setupYouTubePlayerInstance();
     };
+
+    // ─── 雙軌監聽：YouTube 原生 postMessage 事件通道 (無延遲零阻擋) ───
+    window.addEventListener('message', (event) => {
+      if (!event || !event.data) return;
+      let data = event.data;
+      if (typeof data === 'string') {
+        try {
+          data = JSON.parse(data);
+        } catch (e) {
+          return;
+        }
+      }
+      if (data && data.event === 'infoDelivery' && data.info) {
+        const info = data.info;
+        const active = getActiveVideo();
+        if (active) {
+          if (typeof info.currentTime === 'number') {
+            const cur = info.currentTime;
+            const dur = (typeof info.duration === 'number') ? info.duration : (active.duration || 0);
+            recordCurrentVideoProgress(active.videoId, cur, dur);
+          }
+          if (typeof info.playerState === 'number') {
+            // 0: ENDED, 1: PLAYING, 2: PAUSED
+            if (info.playerState === 0) {
+              recordCurrentVideoProgress(active.videoId, 0, 0);
+            }
+          }
+        }
+      }
+    });
+
+    // 重新整理或關閉分頁瞬間 (beforeunload) 立即 Flush 當前進度
+    window.addEventListener('beforeunload', () => {
+      sampleCurrentProgress();
+      try {
+        localStorage.setItem(STORAGE_KEY_VIDEO_PLAYBACK_PROGRESS, JSON.stringify(state.videoProgress));
+        if (state.currentVideoId) {
+          localStorage.setItem(STORAGE_KEY_ACTIVE_VIDEO, JSON.stringify(state.currentVideoId));
+        }
+      } catch (e) {}
+    });
   }
 
   function startProgressSampling() {
@@ -5283,7 +5329,7 @@
     clearTimeout(_resumeBannerDismissTimer);
     DOM.videoResumeBanner.classList.remove('fade-out', 'hidden');
     if (DOM.videoResumeText) {
-      DOM.videoResumeText.textContent = `已自動從 ${formatPlaybackTime(savedSeconds)} 接續播放`;
+      DOM.videoResumeText.textContent = `已定位至上次觀看進度 ${formatPlaybackTime(savedSeconds)}`;
     }
 
     if (DOM.btnVideoRestart) {
@@ -5508,6 +5554,7 @@
         const targetVid = allVideos.find(v => v.id === vidId);
         if (targetVid) {
           state.currentVideoId = targetVid.id;
+          saveProgress(STORAGE_KEY_ACTIVE_VIDEO, state.currentVideoId);
           renderTheaterPlayer(targetVid);
           renderVideoCards();
           // 平滑滾動至影廳主播放器
@@ -6048,6 +6095,7 @@
           state.customVideos = state.customVideos.filter(v => v.id !== idToDelete);
           if (state.currentVideoId === idToDelete) {
             state.currentVideoId = null;
+            try { localStorage.removeItem(STORAGE_KEY_ACTIVE_VIDEO); } catch (e) {}
           }
           if (state.videoProgress && state.videoProgress[idToDelete]) {
             delete state.videoProgress[idToDelete];
@@ -6106,6 +6154,7 @@
         }
 
         state.currentVideoId = videoData.id;
+        saveProgress(STORAGE_KEY_ACTIVE_VIDEO, state.currentVideoId);
         saveCustomVideosAndSync();
         closeVideoModal();
         renderVideoSection();

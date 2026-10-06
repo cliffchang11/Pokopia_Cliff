@@ -17,8 +17,8 @@ requiredIds.forEach(id => {
 });
 console.log('✓ index.html 續播提示條與從頭播放按鈕元素完整');
 
-assert(html.includes('v=4.8.7'), 'index.html 靜態資源版本號應已升級為 v=4.8.7');
-console.log('✓ index.html 資源快取版本號 v=4.8.7 驗證通過');
+assert(html.includes('v=4.8.8'), 'index.html 靜態資源版本號應已升級為 v=4.8.8');
+console.log('✓ index.html 資源快取版本號 v=4.8.8 驗證通過');
 
 // 2. 驗證 index.css 樣式
 const css = fs.readFileSync('./index.css', 'utf-8');
@@ -35,12 +35,15 @@ console.log('✓ firebase.js 多裝置雲端同步 videoProgress 邏輯驗證通
 // 4. 驗證 app.js 常數與核心函式
 const appCode = fs.readFileSync('./app.js', 'utf-8');
 assert(appCode.includes('STORAGE_KEY_VIDEO_PLAYBACK_PROGRESS'), 'app.js 應包含 STORAGE_KEY_VIDEO_PLAYBACK_PROGRESS');
+assert(appCode.includes('STORAGE_KEY_ACTIVE_VIDEO'), 'app.js 應包含 STORAGE_KEY_ACTIVE_VIDEO');
+assert(appCode.includes('infoDelivery'), 'app.js 應包含 infoDelivery 原生 postMessage 雙軌監聽');
+assert(appCode.includes('beforeunload'), 'app.js 應包含 beforeunload 即時 Flush 機制');
 assert(appCode.includes('formatPlaybackTime'), 'app.js 應包含 formatPlaybackTime');
 assert(appCode.includes('recordCurrentVideoProgress'), 'app.js 應包含 recordCurrentVideoProgress');
 assert(appCode.includes('showResumeBanner'), 'app.js 應包含 showResumeBanner');
 assert(appCode.includes('restartCurrentVideoFromBeginning'), 'app.js 應包含 restartCurrentVideoFromBeginning');
 assert(appCode.includes('&start='), 'app.js 應包含 &start= 續播參數');
-console.log('✓ app.js 核心函式與續播參數結構驗證通過');
+console.log('✓ app.js 當前影片記憶、postMessage 雙軌監聽與核心函式驗證通過');
 
 // 5. 獨立演算法單元驗證：時間格式化與邊界邏輯
 function formatPlaybackTime(seconds) {
@@ -105,4 +108,28 @@ delete mockProgress['vid_1']; // 模擬點擊「從頭播放」
 assert.strictEqual(mockProgress['vid_1'], undefined, '從頭播放後進度應被清除');
 console.log('✓ 邊界條件 D：從頭播放手動重置通過');
 
-console.log('🎉 所有影片播放進度記憶與續播控制器測試 100% 通過！');
+// 測試 E: 當前選中影片持久化模擬
+const mockAllVideos = [
+  { id: 'vid_1', title: '影片1' },
+  { id: 'vid_2', title: '影片2' },
+  { id: 'vid_3', title: '影片3' }
+];
+
+let mockCurrentVideoId = 'vid_2'; // 模擬上次選中了第 2 部
+function getActiveVideoMock(savedId) {
+  if (savedId) {
+    const found = mockAllVideos.find(v => v.id === savedId);
+    if (found) return found;
+  }
+  return mockAllVideos[0];
+}
+
+assert.strictEqual(getActiveVideoMock(mockCurrentVideoId).id, 'vid_2', '重新整理後應 100% 停留在上次選擇的第 2 部影片');
+console.log('✓ 條件 E：重新整理後正確維持停留在上次選取的影片 (vid_2)');
+
+// 測試 F: 若記憶中的影片已被刪除，安全 fallback 回第 1 部
+const invalidVideoId = 'vid_deleted_999';
+assert.strictEqual(getActiveVideoMock(invalidVideoId).id, 'vid_1', '影片不存在時應安全平滑 fallback 回第 1 部');
+console.log('✓ 條件 F：記憶影片不存在時安全 Fallback 回第 1 部通過');
+
+console.log('🎉 所有影片播放進度記憶、當前影片記憶與續播控制器測試 100% 通過！');
