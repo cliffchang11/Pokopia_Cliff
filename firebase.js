@@ -95,12 +95,35 @@
       merged.regionAssignments = local.regionAssignments;
     }
     if (cloud && cloud.customVideos && Array.isArray(cloud.customVideos)) {
-      merged.customVideos = cloud.customVideos;
+      const localList = (local && local.customVideos && Array.isArray(local.customVideos)) ? local.customVideos : [];
+      const videoMap = new Map();
+      cloud.customVideos.forEach(v => {
+        if (v && v.id) videoMap.set(v.id, v);
+      });
+      localList.forEach(v => {
+        if (v && v.id) {
+          if (!videoMap.has(v.id)) {
+            videoMap.set(v.id, v);
+          } else {
+            const cloudV = videoMap.get(v.id);
+            const localTime = new Date(v.updatedAt || v.createdAt || 0).getTime();
+            const cloudTime = new Date(cloudV.updatedAt || cloudV.createdAt || 0).getTime();
+            if (localTime >= cloudTime) {
+              videoMap.set(v.id, v);
+            }
+          }
+        }
+      });
+      merged.customVideos = Array.from(videoMap.values());
     } else if (local && local.customVideos && Array.isArray(local.customVideos)) {
       merged.customVideos = local.customVideos;
     }
     if (cloud && cloud.customVideoTags && Array.isArray(cloud.customVideoTags)) {
-      merged.customVideoTags = cloud.customVideoTags;
+      const tagSet = new Set(cloud.customVideoTags);
+      if (local && local.customVideoTags && Array.isArray(local.customVideoTags)) {
+        local.customVideoTags.forEach(t => tagSet.add(t));
+      }
+      merged.customVideoTags = Array.from(tagSet);
     } else if (local && local.customVideoTags && Array.isArray(local.customVideoTags)) {
       merged.customVideoTags = local.customVideoTags;
     }

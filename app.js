@@ -918,11 +918,19 @@
                 localStorage.setItem(STORAGE_KEY_CUSTOM_VIDEO_TAGS, JSON.stringify(state.customVideoTags));
                 localStorage.setItem(STORAGE_KEY_DELETED_VIDEO_TAGS, JSON.stringify(state.deletedVideoTags));
               } catch (e) {}
-              renderAll();
               renderStats();
-              if (state.currentTab === 'customStorage') renderCustomStorage();
-              if (state.currentTab === 'regionMap') renderRegionMap();
-              if (state.currentTab === 'video') renderVideoSection();
+              if (state.currentTab === 'customStorage') {
+                renderCustomStorage();
+              } else if (state.currentTab === 'regionMap') {
+                renderRegionMap();
+              } else if (state.currentTab === 'video') {
+                renderVideoCards();
+                renderVideoTags();
+                const active = getActiveVideo();
+                if (active) renderTheaterPlayer(active);
+              } else {
+                renderAll();
+              }
             }
           });
 
@@ -935,32 +943,6 @@
       });
 
       fb.init();
-    }
-
-    // ─── PWA Service Worker 註冊 ──────────────────────────────────────
-    registerServiceWorker();
-  }
-
-  function registerServiceWorker() {
-    if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then((registration) => {
-            registration.onupdatefound = () => {
-              const installingWorker = registration.installing;
-              if (installingWorker) {
-                installingWorker.onstatechange = () => {
-                  if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                    console.log('Pokopia PWA 已更新至最新版本');
-                  }
-                };
-              }
-            };
-          })
-          .catch((err) => {
-            console.warn('Pokopia ServiceWorker 註冊失敗或略過:', err);
-          });
-      });
     }
   }
 
@@ -5064,7 +5046,7 @@
   // 參考影片影廳模式與自訂管理控制器 (Video Theater & Management)
   // ==========================================================================
 
-  // 解析多種 YouTube 網址或純 ID 格式
+  // 解析多種 YouTube 網址或純 ID 格式（完整支援電腦與手機分享格式）
   function parseYouTubeId(input) {
     if (!input || typeof input !== 'string') return '';
     const trimmed = input.trim();
@@ -5072,13 +5054,23 @@
     if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) {
       return trimmed;
     }
-    // 2. 匹配 youtu.be/xxxx
-    const shortMatch = trimmed.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+    // 2. 短網址 youtu.be/xxxx
+    const shortMatch = trimmed.match(/(?:https?:\/\/)?(?:www\.)?youtu\.be\/([a-zA-Z0-9_-]{11})/i);
     if (shortMatch) return shortMatch[1];
-    // 3. 匹配 youtube.com/watch?v=xxxx 或 /embed/xxxx
-    const fullMatch = trimmed.match(/(?:youtube\.com\/(?:watch\?.*v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-    if (fullMatch) return fullMatch[1];
-    return trimmed;
+    // 3. YouTube Shorts 格式 (手機 App 常用分享)
+    const shortsMatch = trimmed.match(/(?:https?:\/\/)?(?:(?:www|m)\.)?youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/i);
+    if (shortsMatch) return shortsMatch[1];
+    // 4. YouTube Live 直播格式
+    const liveMatch = trimmed.match(/(?:https?:\/\/)?(?:(?:www|m)\.)?youtube\.com\/live\/([a-zA-Z0-9_-]{11})/i);
+    if (liveMatch) return liveMatch[1];
+    // 5. 標準 watch / embed / v 格式
+    const standardMatch = trimmed.match(/(?:https?:\/\/)?(?:(?:www|m)\.)?youtube\.com\/(?:watch\?.*v=|embed\/|v\/)([a-zA-Z0-9_-]{11})/i);
+    if (standardMatch) return standardMatch[1];
+    // 6. 通用參數提取 (例如 v=xxxx 在任何 query 參數中)
+    const queryMatch = trimmed.match(/[?&]v=([a-zA-Z0-9_-]{11})(?:&|$)/);
+    if (queryMatch) return queryMatch[1];
+
+    return '';
   }
 
   function getAllVideos() {
@@ -6005,23 +5997,26 @@
       DOM.btnVideoCancel.addEventListener('click', closeVideoModal);
     }
 
-    // 自動帶入影片資訊
-    if (DOM.btnAutoFetchVideoInfo) {
-      DOM.btnAutoFetchVideoInfo.addEventListener('click', () => handleAutoFetchVideoInfo(true));
-    }
-    if (DOM.videoFormUrl) {
-      DOM.videoFormUrl.addEventListener('blur', () => {
-        if (DOM.videoFormUrl.value.trim()) {
+    // 自動帶入影片資訊 (加入 300ms 防抖去重，避免手機貼上與失焦連續重複觸發造成閃爍)
+    let _autoFetchDebounceTimer = null;
+    function triggerDebouncedAutoFetch() {
+      clearTimeout(_autoFetchDebounceTimer);
+      _autoFetchDebounceTimer = setTimeout(() => {
+        if (DOM.videoFormUrl && DOM.videoFormUrl.value.trim()) {
           handleAutoFetchVideoInfo(false);
         }
+      }, 300);
+    }
+
+    if (DOM.btnAutoFetchVideoInfo) {
+      DOM.btnAutoFetchVideoInfo.addEventListener('click', () => {
+        clearTimeout(_autoFetchDebounceTimer);
+        handleAutoFetchVideoInfo(true);
       });
-      DOM.videoFormUrl.addEventListener('paste', () => {
-        setTimeout(() => {
-          if (DOM.videoFormUrl && DOM.videoFormUrl.value.trim()) {
-            handleAutoFetchVideoInfo(false);
-          }
-        }, 100);
-      });
+    }
+    if (DOM.videoFormUrl) {
+      DOM.videoFormUrl.addEventListener('blur', triggerDebouncedAutoFetch);
+      DOM.videoFormUrl.addEventListener('paste', triggerDebouncedAutoFetch);
     }
 
     // 標題語言切換（繁中譯文 / 原始標題）
