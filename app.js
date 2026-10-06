@@ -936,6 +936,32 @@
 
       fb.init();
     }
+
+    // ─── PWA Service Worker 註冊 ──────────────────────────────────────
+    registerServiceWorker();
+  }
+
+  function registerServiceWorker() {
+    if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((registration) => {
+            registration.onupdatefound = () => {
+              const installingWorker = registration.installing;
+              if (installingWorker) {
+                installingWorker.onstatechange = () => {
+                  if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    console.log('Pokopia PWA 已更新至最新版本');
+                  }
+                };
+              }
+            };
+          })
+          .catch((err) => {
+            console.warn('Pokopia ServiceWorker 註冊失敗或略過:', err);
+          });
+      });
+    }
   }
 
   function handlePopState(e) {

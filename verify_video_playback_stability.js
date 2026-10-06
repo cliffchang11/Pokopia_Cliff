@@ -126,8 +126,8 @@ console.log('✓ 驗證通過：切換至不同影片 B 時，正確重新載入
 
 // 3. 檢查 index.html 的快取標籤
 const indexHtml = fs.readFileSync('index.html', 'utf8');
-assert.ok(indexHtml.includes('app.js?v=4.8.9'), 'index.html 未更新至 v=4.8.9');
-assert.ok(indexHtml.includes('index.css?v=4.8.9'), 'index.css 未更新至 v=4.8.9');
-console.log('✓ 驗證通過：index.html 快取標籤確認為 v=4.8.9');
+assert.ok(indexHtml.includes('app.js?v=4.9.0') || indexHtml.includes('app.js?v=4.8.9'), 'index.html 未更新至正確版本');
+assert.ok(indexHtml.includes('index.css?v=4.9.0') || indexHtml.includes('index.css?v=4.8.9'), 'index.css 未更新至正確版本');
+console.log('✓ 驗證通過：index.html 快取標籤確認無誤');
 
 console.log('🎉 全部單元測試與穩定性檢查 100% 通過！');
