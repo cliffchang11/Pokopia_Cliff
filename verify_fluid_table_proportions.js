@@ -36,7 +36,7 @@ assert.strictEqual(Math.round(sum7Col * 10) / 10, 100.0, `7 欄百分比總和�
 console.log(`✅ [Check 2] PASS: 7 欄中窄螢幕流體百分比配置完備 (外觀 16.5% : 棲息地 37.5% : 喜好 17%，總和 100%)`);
 
 // [Check 3] 主角視覺等比微縮 15% 驗證 (外觀頭像與棲息地縮圖)
-assert(css.includes('clamp(3.1875rem, 4.25vw, 4.1225rem)'), '外觀頭像必須微縮 15% 至 clamp(3.1875rem, 4.25vw, 4.1225rem)');
+assert(css.includes('clamp(3.8250rem, 5.525vw, 5.1000rem)'), '外觀頭像必須微縮 15% 至 clamp(3.8250rem, 5.525vw, 5.1000rem)');
 assert(css.includes('width: 95% !important;') && css.includes('aspect-ratio: 3 / 2 !important;'), '棲息地縮圖必須吃滿欄位 95% 寬度且維持 3:2');
 console.log('✅ [Check 3] PASS: 外觀點陣頭像微調收斂 15%，精緻不壓迫，棲息地縮圖吃滿 95% 滿版開展');
 

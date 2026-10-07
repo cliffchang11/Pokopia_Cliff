@@ -13,7 +13,7 @@ const css = fs.readFileSync(cssPath, 'utf8');
 const wideRuleIdx = css.indexOf('@media (min-width: 1280px)');
 assert(wideRuleIdx !== -1, 'index.css 必須宣告 @media (min-width: 1280px) 媒體查詢');
 const wideChunk = css.substring(wideRuleIdx, wideRuleIdx + 300);
-assert(wideChunk.includes('clamp(3.1875rem, 4.25vw, 4.1225rem)'), '桌機頭像 clamp(3.1875rem, 4.25vw, 4.1225rem) 必須被嚴格隔離在 @media (min-width: 1280px) 內');
+assert(wideChunk.includes('clamp(3.8250rem, 5.525vw, 5.1000rem)'), '桌機頭像 clamp(3.8250rem, 5.525vw, 5.1000rem) 必須被嚴格隔離在 @media (min-width: 1280px) 內');
 console.log('✅ [Check 1] PASS: 桌機大圖規則成功隔離在 min-width: 1280px，微縮 15% 阻斷向下滲透');
 
 // [Check 2] 手機端 (<= 640px) 6 欄寬度流體百分比系統 (總和 100%)

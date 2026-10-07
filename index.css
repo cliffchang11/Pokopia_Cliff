@@ -4104,8 +4104,8 @@ body {
 }
 
 .pkm-avatar-table-large {
-  width: clamp(3.1875rem, 4.25vw, 4.1225rem);
-  height: clamp(3.1875rem, 4.25vw, 4.1225rem);
+  width: clamp(3.7500rem, 5.0vw, 4.8500rem);
+  height: clamp(3.7500rem, 5.0vw, 4.8500rem);
   object-fit: contain;
   display: block;
   margin: 0 auto;
@@ -9255,8 +9255,8 @@ body.has-floating-back .scroll-top-btn {
 /* 2. 主角視覺微調收斂 15%、縮圖尺寸硬約束與文字微縮 */
 @media (min-width: 1280px) {
   .pokemon-table .pkm-avatar-table-large {
-    width: clamp(3.1875rem, 4.25vw, 4.1225rem) !important;
-    height: clamp(3.1875rem, 4.25vw, 4.1225rem) !important;
+    width: clamp(3.8250rem, 5.525vw, 5.1000rem) !important;
+    height: clamp(3.8250rem, 5.525vw, 5.1000rem) !important;
   }
 }
 
