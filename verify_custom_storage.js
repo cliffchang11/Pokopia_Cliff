@@ -22,9 +22,9 @@ const autoFarmDataContent = fs.readFileSync('autofarm_data.js', 'utf8');
 const appContent = fs.readFileSync('app.js', 'utf8');
 const htmlContent = fs.readFileSync('index.html', 'utf8');
 
-// 驗證 HTML 中收納盒重要元素存在
-assert(htmlContent.includes('id="btnCustomStorageNav"'), 'HTML 缺少 #btnCustomStorageNav');
+// 驗證 HTML 中收納盒重要元素存在（頂部快捷鈕已由參考影片替代，收納盒由目次抽屜 tabCustomStorage 進入）
 assert(htmlContent.includes('id="tabCustomStorage"'), 'HTML 缺少 #tabCustomStorage');
+assert(htmlContent.includes('id="btnVideoNav"'), 'HTML 缺少 #btnVideoNav');
 assert(htmlContent.includes('id="customStorageSection"'), 'HTML 缺少 #customStorageSection');
 assert(htmlContent.includes('id="csReverseSearchInput"'), 'HTML 缺少 #csReverseSearchInput');
 assert(htmlContent.includes('id="csSearchResultBanner"'), 'HTML 缺少 #csSearchResultBanner');
@@ -173,21 +173,19 @@ console.log('✅ [PASS] 2. app.js 在沙盒中順利初始化執行');
 
 // 3. 驗證權限隔離
 // 訪客（未授權）時：
-assert(elements.btnCustomStorageNav.classList.contains('hidden'), '未登入訪客時，自訂收納盒導航按鈕必須隱藏');
 assert(elements.tabCustomStorage.classList.contains('hidden'), '未登入訪客時，自訂收納盒目次選項必須隱藏');
 console.log('✅ [PASS] 3.1 未登入狀態：收納盒入口嚴格隱藏');
 
 // 授權登入（模擬授權信箱 cliff210689cliff@gmail.com）
 mockLocalStorage.setItem('pokopia_autofarm_authed_v1', '1');
 
-// 3.2 驗證點擊入口按鈕能順暢觸發頁面跳轉
-assert(listeners['btnCustomStorageNav'] && listeners['btnCustomStorageNav']['click'], 'btnCustomStorageNav 必須註冊 click 事件');
+// 3.2 驗證點擊目次入口按鈕能順暢觸發頁面跳轉
 assert(listeners['tabCustomStorage'] && listeners['tabCustomStorage']['click'], 'tabCustomStorage 必須註冊 click 事件');
 
-elements.btnCustomStorageNav.dispatchEvent('click');
-assert(!elements.customStorageSection.classList.contains('hidden-section'), '點擊 btnCustomStorageNav 後 customStorageSection 必須顯示');
+elements.tabCustomStorage.dispatchEvent('click');
+assert(!elements.customStorageSection.classList.contains('hidden-section'), '點擊 tabCustomStorage 後 customStorageSection 必須顯示');
 assert(sandbox.window.PokopiaCustomStorage.getState().currentTab === 'customStorage', '點擊後 currentTab 應切換為 customStorage');
-console.log('✅ [PASS] 3.2 點擊導航與目次按鈕跳轉功能驗證通過');
+console.log('✅ [PASS] 3.2 點擊目次抽屜按鈕跳轉功能驗證通過');
 
 // 驗證公開 API 已成功掛載
 const csApi = sandbox.window.PokopiaCustomStorage;

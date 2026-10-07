@@ -179,6 +179,7 @@
     tabVideo: document.getElementById('tabVideo'),
     btnAutoFarmNav: document.getElementById('btnAutoFarmNav'),
     btnCustomStorageNav: document.getElementById('btnCustomStorageNav'),
+    btnVideoNav: document.getElementById('btnVideoNav'),
     autoFarmSection: document.getElementById('autoFarmSection'),
     customStorageSection: document.getElementById('customStorageSection'),
     videoSection: document.getElementById('videoSection'),
@@ -1151,6 +1152,15 @@
       });
     }
 
+    if (DOM.btnVideoNav) {
+      DOM.btnVideoNav.addEventListener('click', () => {
+        closeTocDropdown();
+        switchTab('video', true);
+        pushNavHistory({ tab: 'video' });
+        hideFloatingBackBtn();
+      });
+    }
+
     // View mode switching
     DOM.btnCardView.addEventListener('click', () => {
       switchView('card', true);
@@ -1453,6 +1463,7 @@
     if (DOM.btnCustomStorageNav) DOM.btnCustomStorageNav.classList.remove('active');
     if (DOM.tabRegionMap) DOM.tabRegionMap.classList.remove('active');
     if (DOM.tabVideo) DOM.tabVideo.classList.remove('active');
+    if (DOM.btnVideoNav) DOM.btnVideoNav.classList.remove('active');
 
     DOM.storageSection.classList.add('hidden-section');
     DOM.storageSection.classList.remove('active-section');
@@ -1602,6 +1613,7 @@
         return;
       }
       if (DOM.tabVideo) DOM.tabVideo.classList.add('active');
+      if (DOM.btnVideoNav) DOM.btnVideoNav.classList.add('active');
       if (DOM.videoSection) {
         DOM.videoSection.classList.remove('hidden-section');
         DOM.videoSection.classList.add('active-section');
@@ -2634,6 +2646,13 @@
         DOM.tabVideo.classList.remove('hidden');
       } else {
         DOM.tabVideo.classList.add('hidden');
+      }
+    }
+    if (DOM.btnVideoNav) {
+      if (isAuth) {
+        DOM.btnVideoNav.classList.remove('hidden');
+      } else {
+        DOM.btnVideoNav.classList.add('hidden');
       }
     }
 
