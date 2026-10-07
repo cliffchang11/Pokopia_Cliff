@@ -19,22 +19,42 @@ assert.ok(html.includes('<span class="video-nav-btn-text">參考影片</span>'),
 assert.ok(html.includes('id="tabCustomStorage"'), 'FAIL: 左側目次抽屜中必須保留 tabCustomStorage「我的收納盒」');
 console.log('✅ [Check 1] PASS: index.html 頂部結構替換完備，且目次抽屜無損保留「我的收納盒」');
 
-// 2. 檢驗全站資源快取標籤更新為 v=4.9.8
-assert.ok(html.includes('index.css?v=4.9.8'), 'index.css 快取標籤未更新至 v=4.9.8');
-assert.ok(html.includes('app.js?v=4.9.8'), 'app.js 快取標籤未更新至 v=4.9.8');
-assert.ok(html.includes('firebase.js?v=4.9.8'), 'firebase.js 快取標籤未更新至 v=4.9.8');
-assert.ok(html.includes('logo.png?v=4.9.8'), 'logo 快取標籤未更新至 v=4.9.8');
-assert.ok(html.includes('data.js?v=4.9.8'), 'data.js 快取標籤未更新至 v=4.9.8');
-console.log('✅ [Check 2] PASS: index.html 全站快取標籤全數升級至 v=4.9.8');
+// 2. 檢驗全站資源快取標籤更新為 v=4.9.9
+assert.ok(html.includes('index.css?v=4.9.9'), 'index.css 快取標籤未更新至 v=4.9.9');
+assert.ok(html.includes('app.js?v=4.9.9'), 'app.js 快取標籤未更新至 v=4.9.9');
+assert.ok(html.includes('firebase.js?v=4.9.9'), 'firebase.js 快取標籤未更新至 v=4.9.9');
+assert.ok(html.includes('logo.png?v=4.9.9'), 'logo 快取標籤未更新至 v=4.9.9');
+assert.ok(html.includes('data.js?v=4.9.9'), 'data.js 快取標籤未更新至 v=4.9.9');
+console.log('✅ [Check 2] PASS: index.html 全站快取標籤全數升級至 v=4.9.9');
 
-// 3. 檢驗 index.css 樣式與響應式規則
+// 3. 檢驗 index.css 樣式、括號平衡性與響應式規則
 const css = fs.readFileSync('index.css', 'utf8');
 
+// 3.1 括號平衡性檢驗（防範孤立大括號破壞樣式解析）
+let balance = 0;
+for (let i = 0; i < css.length; i++) {
+  if (css[i] === '{') balance++;
+  else if (css[i] === '}') {
+    balance--;
+    assert.ok(balance >= 0, `FAIL: index.css 存在孤立的多餘閉合大括號 (位移: ${i})`);
+  }
+}
+assert.strictEqual(balance, 0, 'FAIL: index.css 大括號未完全閉合');
+console.log('✅ [Check 3.1] PASS: index.css 大括號 100% 嚴格配對無孤立語法錯誤');
+
+// 3.2 基礎樣式與主題色
 assert.ok(css.includes('.video-nav-btn {'), 'FAIL: index.css 缺少 .video-nav-btn 基礎樣式');
 assert.ok(css.includes('#e11d48') && css.includes('#be123c'), 'FAIL: .video-nav-btn 缺少劇院深邃紅主題配色');
 assert.ok(css.includes('.video-nav-btn.active {'), 'FAIL: index.css 缺少 .video-nav-btn.active 高亮樣式');
 
-// 檢驗平板/手機 RWD (<= 768px)
+// 3.3 電腦版純文字膠囊（隱藏圖示）
+assert.ok(
+  css.includes('.autofarm-nav-btn-icon,\n.custom-storage-nav-btn-icon,\n.video-nav-btn-icon {\n  display: none;') ||
+  css.includes('.video-nav-btn-icon {\n  display: none;'),
+  'FAIL: 電腦版 .video-nav-btn-icon 必須預設為 display: none 隱藏圖示'
+);
+
+// 3.4 檢驗平板/手機 RWD (<= 768px)
 const rwdIdx = css.indexOf('@media (max-width: 768px)');
 assert.ok(rwdIdx !== -1, 'FAIL: 缺少 @media (max-width: 768px) 媒體查詢');
 const rwdChunk = css.substring(rwdIdx, rwdIdx + 800);
@@ -44,7 +64,7 @@ assert.ok(
   rwdChunk.includes('.video-nav-btn-icon'),
   'FAIL: @media (max-width: 768px) 缺少 .video-nav-btn 圓形自適應圖示化樣式'
 );
-console.log('✅ [Check 3] PASS: index.css 劇院深紅配色、Active 高亮與 <= 768px 圓形圖示化 RWD 檢驗完備');
+console.log('✅ [Check 3.2] PASS: index.css 劇院深紅配色、Active 高亮、電腦版純文字與手機端圖示化檢驗完備');
 
 // 4. 檢驗 app.js 邏輯
 const js = fs.readFileSync('app.js', 'utf8');

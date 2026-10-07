@@ -6421,7 +6421,8 @@ body.has-floating-back .scroll-top-btn {
 }
 
 .autofarm-nav-btn-icon,
-.custom-storage-nav-btn-icon {
+.custom-storage-nav-btn-icon,
+.video-nav-btn-icon {
   display: none;
 }
 
@@ -7157,8 +7158,6 @@ body.has-floating-back .scroll-top-btn {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-}
-
 /* ==========================================================================
    參考影片頂部快捷按鈕 (劇院深邃紅影音風)
    ========================================================================== */
@@ -7207,7 +7206,7 @@ body.has-floating-back .scroll-top-btn {
 }
 
 .video-nav-btn-icon {
-  display: inline-flex;
+  display: none;
   align-items: center;
   justify-content: center;
   font-size: 0.95rem;
