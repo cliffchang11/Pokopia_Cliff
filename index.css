@@ -947,6 +947,77 @@ body {
   white-space: nowrap;
 }
 
+/* 即時篩選結果計數膠囊與一鍵重設按鈕樣式 */
+.filter-result-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2500rem;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.filter-result-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2500rem;
+  background: var(--input-bg);
+  border: 0.0625rem solid var(--input-border);
+  border-radius: 1.2500rem;
+  padding: 0.1500rem 0.5500rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--primary-indigo);
+  box-shadow: var(--shadow-main), var(--card-edge-glow);
+  white-space: nowrap;
+  user-select: none;
+  transition: all 0.2s var(--ease-spring);
+  height: 1.8500rem;
+  box-sizing: border-box;
+}
+
+.filter-result-badge.is-filtered {
+  background: rgba(99, 102, 241, 0.12);
+  border-color: var(--primary-indigo);
+  color: var(--primary-indigo);
+  box-shadow: var(--shadow-main), 0 0 6px var(--primary-indigo-glow);
+}
+
+.filter-result-badge.is-empty {
+  background: rgba(239, 68, 68, 0.10);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+}
+
+.filter-reset-btn {
+  width: 1.5000rem;
+  height: 1.5000rem;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.12);
+  border: 0.0625rem solid rgba(239, 68, 68, 0.35);
+  color: #ef4444;
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.filter-reset-btn:hover {
+  background: #ef4444;
+  color: #ffffff;
+  transform: scale(1.12);
+  box-shadow: 0 0.1250rem 0.3750rem rgba(239, 68, 68, 0.4);
+}
+
+.filter-reset-btn.hidden {
+  display: none !important;
+}
+
 
 .subchapter-btn {
   background: var(--pill-bg);
@@ -2741,6 +2812,23 @@ body {
     font-weight: 500;
     white-space: nowrap;
     flex-shrink: 0;
+  }
+
+  .filter-result-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.2500rem !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .filter-result-badge {
+    width: 100% !important;
+    justify-content: center !important;
+    font-size: 0.74rem !important;
+    padding: 0.1200rem 0.3500rem !important;
+    height: 1.8500rem !important;
   }
 
   .capsule-select,

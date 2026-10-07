@@ -269,6 +269,11 @@
     unlockFilter: document.getElementById('unlockFilter'),
     regionFilterGroup: document.getElementById('regionFilterGroup'),
     regionFilter: document.getElementById('regionFilter'),
+    filterResultGroup: document.getElementById('filterResultGroup'),
+    filterResultBadge: document.getElementById('filterResultBadge'),
+    filterResultIcon: document.getElementById('filterResultIcon'),
+    filterResultText: document.getElementById('filterResultText'),
+    btnResetFilters: document.getElementById('btnResetFilters'),
     catalogProgressBadge: document.getElementById('catalogProgressBadge'),
     catalogBadgeIcon: document.getElementById('catalogBadgeIcon'),
     catalogBadgeText: document.getElementById('catalogBadgeText'),
@@ -1237,6 +1242,10 @@
       });
     }
 
+    if (DOM.btnResetFilters) {
+      DOM.btnResetFilters.addEventListener('click', resetPokemonFilters);
+    }
+
     // 喜好百科抽屜開關事件
     if (DOM.btnPrefDrawer) {
       DOM.btnPrefDrawer.addEventListener('click', () => openPrefDrawer());
@@ -1499,6 +1508,7 @@
       if (DOM.searchRow) DOM.searchRow.classList.remove('hidden');
       if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.remove('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.remove('hidden');
+      if (DOM.filterResultGroup) DOM.filterResultGroup.classList.remove('hidden');
       if (DOM.specialtyFilterGroup) DOM.specialtyFilterGroup.classList.remove('hidden');
       if (DOM.regionFilterGroup) DOM.regionFilterGroup.classList.remove('hidden');
       if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.remove('hidden');
@@ -1521,6 +1531,7 @@
       if (DOM.searchRow) DOM.searchRow.classList.remove('hidden');
       if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.remove('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.remove('hidden');
+      if (DOM.filterResultGroup) DOM.filterResultGroup.classList.add('hidden');
       if (DOM.specialtyFilterGroup) DOM.specialtyFilterGroup.classList.add('hidden');
       if (DOM.regionFilterGroup) DOM.regionFilterGroup.classList.add('hidden');
       if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.remove('hidden');
@@ -1797,6 +1808,45 @@
     return hasResults;
   }
 
+  // 更新即時結果計數膠囊 (如: 🎯 24 / 308 隻 或 全部 308 隻)
+  function updateFilterResultBadge(filteredCount, categoryTotalCount, isFiltered) {
+    if (!DOM.filterResultBadge || !DOM.filterResultText) return;
+    
+    if (isFiltered) {
+      if (filteredCount === 0) {
+        DOM.filterResultBadge.className = 'filter-result-badge is-empty';
+        if (DOM.filterResultIcon) DOM.filterResultIcon.textContent = '⚠️';
+        DOM.filterResultText.textContent = `0 / ${categoryTotalCount} 隻`;
+      } else {
+        DOM.filterResultBadge.className = 'filter-result-badge is-filtered';
+        if (DOM.filterResultIcon) DOM.filterResultIcon.textContent = '🎯';
+        DOM.filterResultText.textContent = `${filteredCount} / ${categoryTotalCount} 隻`;
+      }
+      if (DOM.btnResetFilters) DOM.btnResetFilters.classList.remove('hidden');
+    } else {
+      DOM.filterResultBadge.className = 'filter-result-badge';
+      if (DOM.filterResultIcon) DOM.filterResultIcon.textContent = '🎯';
+      DOM.filterResultText.textContent = `全部 ${categoryTotalCount} 隻`;
+      if (DOM.btnResetFilters) DOM.btnResetFilters.classList.add('hidden');
+    }
+  }
+
+  // 一鍵重設所有篩選為全部
+  function resetPokemonFilters() {
+    state.selectedEnvFilter = 'env-all';
+    state.selectedSpecialtyFilter = 'all';
+    state.selectedUnlockFilter = 'all';
+    state.selectedRegionFilter = 'all';
+    state.searchQuery = '';
+    if (DOM.envFilter) DOM.envFilter.value = 'env-all';
+    if (DOM.specialtyFilter) DOM.specialtyFilter.value = 'all';
+    if (DOM.unlockFilter) DOM.unlockFilter.value = 'all';
+    if (DOM.regionFilter) DOM.regionFilter.value = 'all';
+    if (DOM.searchInput) DOM.searchInput.value = '';
+    if (DOM.clearSearchBtn) DOM.clearSearchBtn.classList.add('hidden');
+    renderAll();
+  }
+
   // Render Pokemon Habitats (Card View & Table View with Sprite Avatars + Habitat Screenshots)
   function renderHabitat() {
     const query = state.searchQuery;
@@ -1851,6 +1901,21 @@
       ).toLowerCase();
       return pkmText.includes(query);
     });
+
+    // 計算當前大分類下的全部寶可夢總數 (分母)
+    const allCategoryPokemons = (window.POKOPIA_DATA && window.POKOPIA_DATA.pokemons || []).filter(pkm => {
+      if (state.selectedPkmCategory !== 'all' && pkm.category !== state.selectedPkmCategory) return false;
+      return true;
+    });
+    const categoryTotalCount = allCategoryPokemons.length;
+    const isFiltered = !!(
+      query ||
+      filterEnv !== 'env-all' ||
+      filterSpec !== 'all' ||
+      state.selectedUnlockFilter !== 'all' ||
+      (state.selectedRegionFilter && state.selectedRegionFilter !== 'all')
+    );
+    updateFilterResultBadge(pokemons.length, categoryTotalCount, isFiltered);
 
     let hasResults = pokemons.length > 0;
 
