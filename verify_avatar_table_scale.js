@@ -50,12 +50,12 @@ assert.ok(
 );
 console.log('✅ [Check 4] PASS: 中螢幕與手機端比例 100% 維持原樣，未受任何干擾');
 
-// 6. 檢驗全站資源快取標籤更新為 v=4.9.9
-assert.ok(html.includes('index.css?v=4.9.9'), 'index.css 快取標籤未更新至 v=4.9.9');
-assert.ok(html.includes('app.js?v=4.9.9'), 'app.js 快取標籤未更新至 v=4.9.9');
-assert.ok(html.includes('firebase.js?v=4.9.9'), 'firebase.js 快取標籤未更新至 v=4.9.9');
-assert.ok(html.includes('logo.png?v=4.9.9'), 'logo 快取標籤未更新至 v=4.9.9');
-assert.ok(html.includes('data.js?v=4.9.9'), 'data.js 快取標籤未更新至 v=4.9.9');
-console.log('✅ [Check 5] PASS: 全站資源快取標籤確認全數升級至 v=4.9.9');
+// 6. 檢驗全站資源快取標籤更新為 v=4.10.0
+assert.ok(html.includes('index.css?v=4.10.0'), 'index.css 快取標籤未更新至 v=4.10.0');
+assert.ok(html.includes('app.js?v=4.10.0'), 'app.js 快取標籤未更新至 v=4.10.0');
+assert.ok(html.includes('firebase.js?v=4.10.0'), 'firebase.js 快取標籤未更新至 v=4.10.0');
+assert.ok(html.includes('logo.png?v=4.10.0'), 'logo 快取標籤未更新至 v=4.10.0');
+assert.ok(html.includes('data.js?v=4.10.0'), 'data.js 快取標籤未更新至 v=4.10.0');
+console.log('✅ [Check 5] PASS: 全站資源快取標籤確認全數升級至 v=4.10.0');
 
 console.log('\n🎉 verify_avatar_table_scale.js 全部 5 項自動化檢驗 100% 通過！');

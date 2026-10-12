@@ -19,13 +19,13 @@ assert.ok(html.includes('<span class="video-nav-btn-text">參考影片</span>'),
 assert.ok(html.includes('id="tabCustomStorage"'), 'FAIL: 左側目次抽屜中必須保留 tabCustomStorage「我的收納盒」');
 console.log('✅ [Check 1] PASS: index.html 頂部結構替換完備，且目次抽屜無損保留「我的收納盒」');
 
-// 2. 檢驗全站資源快取標籤更新為 v=4.9.9
-assert.ok(html.includes('index.css?v=4.9.9'), 'index.css 快取標籤未更新至 v=4.9.9');
-assert.ok(html.includes('app.js?v=4.9.9'), 'app.js 快取標籤未更新至 v=4.9.9');
-assert.ok(html.includes('firebase.js?v=4.9.9'), 'firebase.js 快取標籤未更新至 v=4.9.9');
-assert.ok(html.includes('logo.png?v=4.9.9'), 'logo 快取標籤未更新至 v=4.9.9');
-assert.ok(html.includes('data.js?v=4.9.9'), 'data.js 快取標籤未更新至 v=4.9.9');
-console.log('✅ [Check 2] PASS: index.html 全站快取標籤全數升級至 v=4.9.9');
+// 2. 檢驗全站資源快取標籤更新為 v=4.10.0
+assert.ok(html.includes('index.css?v=4.10.0'), 'index.css 快取標籤未更新至 v=4.10.0');
+assert.ok(html.includes('app.js?v=4.10.0'), 'app.js 快取標籤未更新至 v=4.10.0');
+assert.ok(html.includes('firebase.js?v=4.10.0'), 'firebase.js 快取標籤未更新至 v=4.10.0');
+assert.ok(html.includes('logo.png?v=4.10.0'), 'logo 快取標籤未更新至 v=4.10.0');
+assert.ok(html.includes('data.js?v=4.10.0'), 'data.js 快取標籤未更新至 v=4.10.0');
+console.log('✅ [Check 2] PASS: index.html 全站快取標籤全數升級至 v=4.10.0');
 
 // 3. 檢驗 index.css 樣式、括號平衡性與響應式規則
 const css = fs.readFileSync('index.css', 'utf8');

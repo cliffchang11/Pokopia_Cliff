@@ -1139,6 +1139,8 @@ body {
   overflow: hidden;
   box-shadow: var(--shadow-main), var(--card-edge-glow);
   transition: transform 0.25s var(--ease-spring), border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.2s ease;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 16rem;
 }
 
 .item-card:hover {
@@ -2336,6 +2338,8 @@ body {
 
 .data-table tbody tr {
   transition: background-color var(--transition-fast);
+  content-visibility: auto;
+  contain-intrinsic-size: 0 4.5rem;
 }
 
 .data-table tbody tr:nth-child(even) {
@@ -8082,6 +8086,8 @@ body.has-floating-back .scroll-top-btn {
   position: relative;
   user-select: none;
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 1px 3px rgba(0, 0, 0, 0.04);
+  content-visibility: auto;
+  contain-intrinsic-size: clamp(44px, 5.5vw, 56px) clamp(44px, 5.5vw, 56px);
 }
 
 .cs-tray-item img {

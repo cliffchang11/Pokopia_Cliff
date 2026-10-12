@@ -49,11 +49,11 @@ assert.ok(
 );
 console.log('✓ 驗證通過：棲息地 15% 微縮與 3:2 高清比例不受干擾');
 
-// 6. 驗證全站資源快取標籤更新為 v=4.9.9
-assert.ok(htmlContent.includes('index.css?v=4.9.9'), 'index.css 快取未更新至 v=4.9.9');
-assert.ok(htmlContent.includes('app.js?v=4.9.9'), 'app.js 快取未更新至 v=4.9.9');
-assert.ok(htmlContent.includes('firebase.js?v=4.9.9'), 'firebase.js 快取未更新至 v=4.9.9');
-assert.ok(htmlContent.includes('logo.png?v=4.9.9'), 'logo 快取未更新至 v=4.9.9');
-console.log('✓ 驗證通過：全站資源快取標籤確認升級至 v=4.9.9');
+// 6. 驗證全站資源快取標籤更新為 v=4.10.0
+assert.ok(htmlContent.includes('index.css?v=4.10.0'), 'index.css 快取未更新至 v=4.10.0');
+assert.ok(htmlContent.includes('app.js?v=4.10.0'), 'app.js 快取未更新至 v=4.10.0');
+assert.ok(htmlContent.includes('firebase.js?v=4.10.0'), 'firebase.js 快取未更新至 v=4.10.0');
+assert.ok(htmlContent.includes('logo.png?v=4.10.0'), 'logo 快取未更新至 v=4.10.0');
+console.log('✓ 驗證通過：全站資源快取標籤確認升級至 v=4.10.0');
 
 console.log('🎉 第 2 欄雙膠囊防切邊與跨視窗自適應驗證 100% 全部通過！');

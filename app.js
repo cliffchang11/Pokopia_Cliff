@@ -1947,7 +1947,7 @@
         if (pkm.habitat1_img) {
           habThumbs.push(`
             <div class="pkm-card-hab-thumb is-loading" data-hab-id="${pkm.habitat1_id || ''}" data-img="${escapeHTML(pkm.habitat1_img)}" data-caption="<strong>${escapeHTML(pkm.name)}</strong> - ${escapeHTML(hab1Name)}" title="${escapeHTML(hab1Name)}（點擊查看 52poke 官方實機全景）">
-              <img src="${pkm.habitat1_img}" alt="${escapeHTML(hab1Name)}" class="img-fade-in" loading="lazy" onload="this.parentElement.classList.remove('is-loading');" onerror="this.parentElement.classList.remove('is-loading');">
+              <img decoding="async" src="${pkm.habitat1_img}" alt="${escapeHTML(hab1Name)}" class="img-fade-in" loading="lazy" onload="this.parentElement.classList.remove('is-loading');" onerror="this.parentElement.classList.remove('is-loading');">
             </div>
           `);
         } else {
@@ -1963,7 +1963,7 @@
         if (pkm.habitat2_img) {
           habThumbs.push(`
             <div class="pkm-card-hab-thumb is-loading" data-hab-id="${pkm.habitat2_id || ''}" data-img="${escapeHTML(pkm.habitat2_img)}" data-caption="<strong>${escapeHTML(pkm.name)}</strong> - ${escapeHTML(hab2Name)}" title="${escapeHTML(hab2Name)}（點擊跳轉棲息地圖鑑）">
-              <img src="${pkm.habitat2_img}" alt="${escapeHTML(hab2Name)}" class="img-fade-in" loading="lazy" onload="this.parentElement.classList.remove('is-loading');" onerror="this.parentElement.classList.remove('is-loading');">
+              <img decoding="async" src="${pkm.habitat2_img}" alt="${escapeHTML(hab2Name)}" class="img-fade-in" loading="lazy" onload="this.parentElement.classList.remove('is-loading');" onerror="this.parentElement.classList.remove('is-loading');">
             </div>
           `);
         } else {
@@ -2004,7 +2004,7 @@
           <div class="card-header">
             <div class="card-title-group">
               <div class="pkm-avatar-box is-loading">
-                <img src="${pkm.sprite}" alt="${escapeHTML(pkm.name)}" class="img-fade-in" loading="lazy" onload="this.parentElement.classList.remove('is-loading');" onerror="this.src='${FALLBACK_SPRITE}'; this.parentElement.classList.remove('is-loading');">
+                <img decoding="async" src="${pkm.sprite}" alt="${escapeHTML(pkm.name)}" class="img-fade-in" loading="lazy" onload="this.parentElement.classList.remove('is-loading');" onerror="this.src='${FALLBACK_SPRITE}'; this.parentElement.classList.remove('is-loading');">
               </div>
               <div>
                 <div class="card-number-group">
@@ -2070,7 +2070,7 @@
         habsCell = `
           <div class="pkm-table-hab-single-wrap">
             <div class="pkm-table-hab-thumb" data-hab-id="${h.id}" data-img="${escapeHTML(h.img)}" data-caption="<strong>${escapeHTML(pkm.name)}</strong> - ${escapeHTML(h.name)}" title="${escapeHTML(h.name)}（點擊跳轉棲息地圖鑑）">
-              ${h.img ? `<img src="${h.img}" alt="${escapeHTML(h.name)}" loading="lazy">` : `<div class="hab-thumb-placeholder"><span>${escapeHTML(h.name)}</span></div>`}
+              ${h.img ? `<img decoding="async" src="${h.img}" alt="${escapeHTML(h.name)}" loading="lazy">` : `<div class="hab-thumb-placeholder"><span>${escapeHTML(h.name)}</span></div>`}
             </div>
             <div class="pkm-hab-bottom-bar">
               <span class="pkm-hab-name-text" title="${escapeHTML(h.name)}">${escapeHTML(h.name)}</span>
@@ -2083,7 +2083,7 @@
         habsCell = `
           <div class="pkm-table-hab-carousel" data-pkm-name="${escapeHTML(pkm.name)}" data-current-index="0" data-habs='${habsDataAttr}'>
             <div class="pkm-table-hab-thumb" data-hab-id="${h.id}" data-img="${escapeHTML(h.img)}" data-caption="<strong>${escapeHTML(pkm.name)}</strong> - ${escapeHTML(h.name)}" title="${escapeHTML(h.name)}（點擊跳轉棲息地圖鑑）">
-              ${h.img ? `<img class="pkm-hab-active-img" src="${h.img}" alt="${escapeHTML(h.name)}" loading="lazy">` : `<div class="hab-thumb-placeholder"><span class="pkm-hab-placeholder-text">${escapeHTML(h.name)}</span></div>`}
+              ${h.img ? `<img decoding="async" class="pkm-hab-active-img" src="${h.img}" alt="${escapeHTML(h.name)}" loading="lazy">` : `<div class="hab-thumb-placeholder"><span class="pkm-hab-placeholder-text">${escapeHTML(h.name)}</span></div>`}
             </div>
             <div class="pkm-hab-bottom-bar">
               <button type="button" class="pkm-hab-arrow-btn pkm-hab-prev" title="切換至上一個棲息地" aria-label="上一個棲息地">‹</button>
@@ -2134,7 +2134,7 @@
           </td>
           <td class="pkm-col-avatar" title="點擊查看 ${escapeHTML(pkm.name)} 完整百科與喜好">
             <div class="pkm-avatar-cell">
-              <img class="pkm-avatar-table-large" src="${pkm.sprite}" alt="${escapeHTML(pkm.name)}" onerror="this.src='${FALLBACK_SPRITE}'" loading="lazy">
+              <img decoding="async" class="pkm-avatar-table-large" src="${pkm.sprite}" alt="${escapeHTML(pkm.name)}" onerror="this.src='${FALLBACK_SPRITE}'" loading="lazy">
             </div>
           </td>
           <td><span class="tag-badge tag-env" data-env="${escapeHTML(pkm.environment)}" title="點擊在喜好百科查看「${escapeHTML(pkm.environment)}」營造家具與說明">${escapeHTML(pkm.environment)}</span></td>
@@ -2396,7 +2396,7 @@
         : `<div class="habitat-thumb-badge" title="點擊查看高清實機全景">🔍</div>`;
       const imgThumbHTML = hab.image ? `
         <div class="hab-catalog-thumb-box" data-img="${escapeHTML(hab.image)}" data-caption="<strong>${escapeHTML(hab.official_id)} ${escapeHTML(hab.name)}</strong> - ${escapeHTML(cardDetailsPlainText)}" title="點擊查看高清實機全景">
-          <img src="${hab.image}" alt="${escapeHTML(hab.name)}" loading="lazy">
+          <img decoding="async" src="${hab.image}" alt="${escapeHTML(hab.name)}" loading="lazy">
           ${thumbBadgeHTML}
         </div>
       ` : `
@@ -2411,7 +2411,7 @@
         const statusText = isPkmUnlocked ? '【已解鎖】' : '';
         return `
           <div class="hab-pkm-chip ${isPkmUnlocked ? 'is-unlocked' : ''}" data-pkm-id="${p.id}" title="${statusText}${escapeHTML(p.name)} - 點擊跳轉圖鑑">
-            <img src="${p.sprite}" alt="${escapeHTML(p.name)}" onerror="this.src='${FALLBACK_SPRITE}'">
+            <img decoding="async" src="${p.sprite}" alt="${escapeHTML(p.name)}" onerror="this.src='${FALLBACK_SPRITE}'" loading="lazy">
             <span>${escapeHTML(p.name)}</span>
             ${unlockBadge}
           </div>
@@ -2473,7 +2473,7 @@
         : `<div class="habitat-thumb-badge" title="點擊放大全景">🔍</div>`;
       const imgPreview = hab.image ? `
         <div class="table-hab-thumb-wrap" data-img="${escapeHTML(hab.image)}" data-caption="<strong>${escapeHTML(hab.official_id)} ${escapeHTML(hab.name)}</strong> - ${escapeHTML(detailItems.join('   '))}" title="點擊放大全景">
-          <img src="${hab.image}" alt="${escapeHTML(hab.name)}" class="table-hab-img" loading="lazy">
+          <img decoding="async" src="${hab.image}" alt="${escapeHTML(hab.name)}" class="table-hab-img" loading="lazy">
           ${thumbBadgeHTML}
         </div>
       ` : `
@@ -2488,7 +2488,7 @@
         const statusText = isPkmUnlocked ? '【已解鎖】' : '';
         return `
           <div class="hab-pkm-icon-btn ${isPkmUnlocked ? 'is-unlocked' : ''}" data-pkm-id="${p.id}" title="${statusText}${escapeHTML(p.name)} (${escapeHTML(p.number)}) - 點擊跳轉圖鑑">
-            <img src="${p.sprite}" alt="${escapeHTML(p.name)}" onerror="this.src='${FALLBACK_SPRITE}'">
+            <img decoding="async" src="${p.sprite}" alt="${escapeHTML(p.name)}" onerror="this.src='${FALLBACK_SPRITE}'" loading="lazy">
             ${unlockBadge}
           </div>
         `;
@@ -2680,7 +2680,7 @@
         pkmHtml = m.assignedPokemon.map(p => `
           <div class="autofarm-pkm-badge" data-pkm-id="${p.id}" title="點擊查看 No.${p.dexNo} ${escapeHTML(p.name)} 圖鑑百科">
             <div class="autofarm-pkm-avatar-wrap">
-              <img src="${p.sprite}" alt="${escapeHTML(p.name)}" class="autofarm-pkm-sprite" loading="lazy" onerror="this.src='${FALLBACK_SPRITE}'">
+              <img decoding="async" src="${p.sprite}" alt="${escapeHTML(p.name)}" class="autofarm-pkm-sprite" loading="lazy" onerror="this.src='${FALLBACK_SPRITE}'">
             </div>
             <div class="autofarm-pkm-info">
               <div class="autofarm-pkm-top">
@@ -2702,7 +2702,7 @@
       if (m.requiredItems && m.requiredItems.length > 0) {
         itemsHtml = m.requiredItems.map(item => `
           <div class="autofarm-item-chip" title="${escapeHTML(item.name)}: ${escapeHTML(item.purpose)}">
-            <img src="${item.sprite}" alt="${escapeHTML(item.name)}" class="autofarm-item-img" loading="lazy">
+            <img decoding="async" src="${item.sprite}" alt="${escapeHTML(item.name)}" class="autofarm-item-img" loading="lazy">
             <div class="autofarm-item-meta">
               <span class="autofarm-item-name">${escapeHTML(item.name)}</span>
               <span class="autofarm-item-qty">${escapeHTML(item.qty)}</span>
@@ -3176,7 +3176,7 @@
           const isItemMatch = query && itemName.toLowerCase().includes(query.toLowerCase());
           return `
             <div class="cs-box-item ${isItemMatch ? 'is-match' : ''}" data-box-id="${box.id}" data-item-name="${escapeHTML(itemName)}" title="${escapeHTML(itemName)}">
-              <img src="${iconSrc}" class="cs-box-item-img" alt="${escapeHTML(itemName)}" loading="lazy">
+              <img decoding="async" src="${iconSrc}" class="cs-box-item-img" alt="${escapeHTML(itemName)}" loading="lazy">
               <button class="cs-box-item-remove" data-box-id="${box.id}" data-item-name="${escapeHTML(itemName)}" title="從此收納盒移除">✕</button>
             </div>
           `;
@@ -3525,7 +3525,7 @@
       const unstoredClass = !isStored ? 'is-unstored' : '';
       html += `
         <div class="cs-tray-item ${unstoredClass}" draggable="true" data-item-name="${escapeHTML(item.name)}" data-base-title="${baseTitle}" title="${baseTitle}${hint}">
-          <img src="${icon}" alt="${escapeHTML(item.name)}" loading="lazy">
+          <img decoding="async" src="${icon}" alt="${escapeHTML(item.name)}" loading="lazy">
         </div>
       `;
     });
@@ -3891,7 +3891,7 @@
       habsHTML = `
         <div class="pkm-detail-hab-card" data-hab-id="${h.id}" style="cursor:pointer;" title="${escapeHTML(h.name)}（點擊跳轉棲息地圖鑑）">
           <div class="pkm-detail-hab-thumb">
-            <img src="${h.img}" alt="${escapeHTML(h.name)}" loading="lazy">
+            <img decoding="async" src="${h.img}" alt="${escapeHTML(h.name)}" loading="lazy">
           </div>
           <div style="font-size:0.88rem; font-weight:700; color:var(--text-primary); margin-top:2px;">${escapeHTML(h.name)}</div>
         </div>
@@ -3901,7 +3901,7 @@
       habsHTML = `
         <div class="pkm-detail-hab-card pkm-table-hab-carousel" data-pkm-name="${escapeHTML(pkm.name)}" data-current-index="0" data-habs='${habsJson}'>
           <div class="pkm-detail-hab-thumb pkm-table-hab-thumb" data-hab-id="${habList[0].id}" style="cursor:pointer;" title="${escapeHTML(habList[0].name)}（點擊跳轉棲息地圖鑑）">
-            <img class="pkm-hab-active-img" src="${habList[0].img}" alt="${escapeHTML(habList[0].name)}" loading="lazy">
+            <img decoding="async" class="pkm-hab-active-img" src="${habList[0].img}" alt="${escapeHTML(habList[0].name)}" loading="lazy">
           </div>
           <div class="pkm-hab-bottom-bar" style="width:100%; max-width:360px; justify-content:space-between; margin-top:4px;">
             <button type="button" class="pkm-hab-arrow-btn pkm-hab-prev" title="上一個棲息地">‹</button>
@@ -3951,7 +3951,7 @@
           const icon = (db.itemIcons && db.itemIcons[food]) || '';
           return `
             <div class="pkm-pref-item-badge" title="${escapeHTML(food)}">
-              ${icon ? `<img src="${icon}" alt="${escapeHTML(food)}">` : ''}
+              ${icon ? `<img decoding="async" src="${icon}" alt="${escapeHTML(food)}" loading="lazy">` : ''}
               <span>${escapeHTML(food)}</span>
             </div>
           `;
@@ -3980,7 +3980,7 @@
           const icon = (db.itemIcons && db.itemIcons[item]) || '';
           return `
             <div class="pkm-pref-item-badge" title="${escapeHTML(item)}">
-              ${icon ? `<img src="${icon}" alt="${escapeHTML(item)}">` : ''}
+              ${icon ? `<img decoding="async" src="${icon}" alt="${escapeHTML(item)}" loading="lazy">` : ''}
               <span>${escapeHTML(item)}</span>
             </div>
           `;
@@ -4010,7 +4010,7 @@
         const icon = (db.itemIcons && db.itemIcons[item]) || '';
         return `
           <div class="pkm-pref-item-badge" title="${escapeHTML(item)}">
-            ${icon ? `<img src="${icon}" alt="${escapeHTML(item)}">` : ''}
+            ${icon ? `<img decoding="async" src="${icon}" alt="${escapeHTML(item)}" loading="lazy">` : ''}
             <span>${escapeHTML(item)}</span>
           </div>
         `;
@@ -4265,7 +4265,7 @@
     if (iconUrl) {
       return `
         <button class="pref-item-slot" data-item-name="${safeName}" data-tooltip="${safeName}" title="${safeName}">
-          <img class="pref-item-slot-img" src="${iconUrl}" alt="${safeName}" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <img decoding="async" class="pref-item-slot-img" src="${iconUrl}" alt="${safeName}" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
           <span class="pref-item-slot-fallback" style="display:none;">${safeName.slice(0, 2)}</span>
         </button>
       `;
@@ -4284,7 +4284,7 @@
     const safeName = escapeHTML(pName);
     return `
       <button class="pref-pkm-slot" data-pkm-name="${safeName}" data-pkm-id="${info.id}" data-tooltip="${safeName}" title="${safeName}">
-        <img class="pref-pkm-slot-img" src="${info.sprite}" alt="${safeName}" loading="lazy" onerror="this.src='${FALLBACK_SPRITE}'">
+        <img decoding="async" class="pref-pkm-slot-img" src="${info.sprite}" alt="${safeName}" loading="lazy" onerror="this.src='${FALLBACK_SPRITE}'">
       </button>
     `;
   }
@@ -4570,7 +4570,7 @@
         const iconUrl = it.icon || (activeDb && activeDb.itemIcons && activeDb.itemIcons[it.name]) || '';
         const iconHTML = iconUrl ? `
           <div class="pref-item-row-icon">
-            <img src="${iconUrl}" alt="${escapeHTML(it.name)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.style.display='none';">
+            <img decoding="async" src="${iconUrl}" alt="${escapeHTML(it.name)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.style.display='none';">
           </div>
         ` : '';
 
@@ -4589,7 +4589,7 @@
         if (cleanTag && tagIconSrc) {
           tagBadgeHTML = `
             <span class="pref-card-badge pref-tag-badge" title="特徵標籤：${escapeHTML(cleanTag)}">
-              <img src="${tagIconSrc}" class="pref-tag-icon" alt="${escapeHTML(cleanTag)}" loading="lazy">
+              <img decoding="async" src="${tagIconSrc}" class="pref-tag-icon" alt="${escapeHTML(cleanTag)}" loading="lazy">
               <span>${escapeHTML(cleanTag)}</span>
             </span>
           `;
@@ -4845,7 +4845,7 @@
           <div class="reg-pkm-slot" data-pkm-id="${pkm.id}">
             <button class="reg-pkm-remove-btn" data-region-id="${reg.id}" data-pkm-id="${pkm.id}" title="從此區域移除">✕</button>
             <div class="reg-pkm-avatar-wrap" data-pkm-id="${pkm.id}" title="點擊查看 ${escapeHTML(pkm.name)} 完整百科">
-              <img src="${pkm.sprite}" alt="${escapeHTML(pkm.name)}" onerror="this.src='${FALLBACK_SPRITE}'">
+              <img decoding="async" src="${pkm.sprite}" alt="${escapeHTML(pkm.name)}" onerror="this.src='${FALLBACK_SPRITE}'" loading="lazy">
               ${isUnlocked ? '<span class="reg-pkm-unlocked-badge" title="已解鎖">✔</span>' : ''}
             </div>
             <div class="reg-pkm-name" data-pkm-id="${pkm.id}" title="點擊查看 ${escapeHTML(pkm.name)} 完整百科">${escapeHTML(pkm.name)}</div>
@@ -4859,7 +4859,7 @@
 
       const extraImageHTML = reg.extraImage ? `
         <button class="reg-map-thumb-btn" data-img="${reg.extraImage}" data-caption="<strong>${escapeHTML(reg.name)}</strong> - 遇見傳說寶可夢【蓋歐卡】深海出沒位置">
-          <img src="${reg.extraImage}" alt="${escapeHTML(reg.name)} 蓋歐卡出沒" loading="lazy">
+          <img decoding="async" src="${reg.extraImage}" alt="${escapeHTML(reg.name)} 蓋歐卡出沒" loading="lazy">
           <span class="reg-map-thumb-overlay">🌊 蓋歐卡出沒點 ↗</span>
         </button>
       ` : '';
@@ -4905,7 +4905,7 @@
 
             <div class="reg-map-preview-col">
               <button class="reg-map-thumb-btn" data-img="${reg.mapImage}" data-caption="<strong>${escapeHTML(reg.name)}</strong> - 高解析全景地圖">
-                <img src="${reg.mapImage}" alt="${escapeHTML(reg.name)} 地圖" loading="lazy">
+                <img decoding="async" src="${reg.mapImage}" alt="${escapeHTML(reg.name)} 地圖" loading="lazy">
                 <span class="reg-map-thumb-overlay">🔍 點擊查看大圖 ↗</span>
               </button>
               ${extraImageHTML}
@@ -5065,7 +5065,7 @@
       return `
         <div class="reg-candidate-card ${isAssigned ? 'is-assigned' : ''}" data-pkm-id="${pkm.id}">
           <div class="reg-candidate-avatar">
-            <img src="${pkm.sprite}" alt="${escapeHTML(pkm.name)}" onerror="this.src='${FALLBACK_SPRITE}'">
+            <img decoding="async" src="${pkm.sprite}" alt="${escapeHTML(pkm.name)}" onerror="this.src='${FALLBACK_SPRITE}'" loading="lazy">
             ${isUnlocked ? '<span class="reg-candidate-unlocked-dot" title="已吸引解鎖">✔</span>' : ''}
           </div>
           <div class="reg-candidate-info">
@@ -5641,7 +5641,7 @@
       return `
         <div class="video-card ${isPlaying ? 'playing' : ''}" data-video-id="${escapeHTML(v.id)}">
           <div class="video-card-thumb-wrap">
-            <img class="video-card-thumb-img" src="${thumbUrl}" alt="${escapeHTML(v.title)}" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'320\\' height=\\'180\\' viewBox=\\'0 0 320 180\\' fill=\\'%23222\\'><rect width=\\'320\\' height=\\'180\\'/><text x=\\'160\\' y=\\'95\\' fill=\\'%23666\\' font-size=\\'14\\' text-anchor=\\'middle\\'>🎬 暫無縮圖</text></svg>'">
+            <img decoding="async" class="video-card-thumb-img" src="${thumbUrl}" alt="${escapeHTML(v.title)}" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'320\\' height=\\'180\\' viewBox=\\'0 0 320 180\\' fill=\\'%23222\\'><rect width=\\'320\\' height=\\'180\\'/><text x=\\'160\\' y=\\'95\\' fill=\\'%23666\\' font-size=\\'14\\' text-anchor=\\'middle\\'>🎬 暫無縮圖</text></svg>'">
             <div class="video-card-play-overlay">
               <span class="video-card-play-icon">▶</span>
             </div>
