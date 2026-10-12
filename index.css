@@ -2210,7 +2210,8 @@ body {
 .pkm-card-hab-thumb img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center center;
   display: block;
   transition: transform 0.3s ease;
 }
@@ -2917,8 +2918,8 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    object-position: center bottom !important; /* 強制鎖定地貌長椅焦點，徹底告別藍天！ */
+    object-fit: contain !important;
+    object-position: center center !important;
   }
 
   .pkm-hab-bottom-bar {
@@ -3626,8 +3627,8 @@ body {
 .pkm-table-hab-thumb img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center bottom; /* 關鍵：強制鎖定下半部地貌與家具，徹底杜絕純藍天 */
+  object-fit: contain;
+  object-position: center center;
   display: block;
 }
 
@@ -3791,7 +3792,8 @@ body {
 .table-hab-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center center;
   display: block;
   transition: transform 0.3s ease;
 }
@@ -5504,8 +5506,8 @@ body.has-floating-back .scroll-top-btn {
 .pkm-detail-hab-thumb img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center bottom;
+  object-fit: contain;
+  object-position: center center;
   display: block;
 }
 
@@ -5718,6 +5720,14 @@ body.has-floating-back .scroll-top-btn {
     max-width: 100% !important;
     height: auto !important;
     aspect-ratio: 3 / 2 !important;
+  }
+  .pokemon-table td.pkm-col-hab .pkm-table-hab-thumb img,
+  .pokemon-table td:nth-child(6) .pkm-table-hab-thumb img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+    display: block !important;
   }
   .pokemon-table td:nth-child(6) .pkm-hab-name-text {
     font-size: 0.70rem !important;
@@ -6074,8 +6084,8 @@ body.has-floating-back .scroll-top-btn {
     left: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    object-fit: cover !important;
-    object-position: center bottom !important;
+    object-fit: contain !important;
+    object-position: center center !important;
     display: block !important;
   }
   .pokemon-table td.pkm-col-hab .pkm-table-hab-single-wrap .pkm-hab-bottom-bar,
@@ -6304,8 +6314,8 @@ body.has-floating-back .scroll-top-btn {
     left: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    object-fit: cover !important;
-    object-position: center bottom !important;
+    object-fit: contain !important;
+    object-position: center center !important;
   }
 
   /* 欄位 3：擺設條件 22% */

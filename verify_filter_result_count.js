@@ -15,11 +15,11 @@ assert.ok(indexHtml.includes('id="filterResultText"'), 'index.html 缺少 filter
 assert.ok(indexHtml.includes('id="btnResetFilters"'), 'index.html 缺少 btnResetFilters 一鍵重設按鈕');
 
 // 快取版本號驗證
-assert.ok(indexHtml.includes('index.css?v=4.10.0'), 'index.css 快取未更新至 v=4.10.0');
-assert.ok(indexHtml.includes('app.js?v=4.10.0'), 'app.js 快取未更新至 v=4.10.0');
-assert.ok(indexHtml.includes('firebase.js?v=4.10.0'), 'firebase.js 快取未更新至 v=4.10.0');
-assert.ok(indexHtml.includes('logo.png?v=4.10.0'), 'logo 快取未更新至 v=4.10.0');
-console.log('✓ 驗證通過：index.html 結構健全且全站快取標籤確認為 v=4.10.0');
+assert.ok(indexHtml.includes('index.css?v=4.10.1'), 'index.css 快取未更新至 v=4.10.1');
+assert.ok(indexHtml.includes('app.js?v=4.10.1'), 'app.js 快取未更新至 v=4.10.1');
+assert.ok(indexHtml.includes('firebase.js?v=4.10.1'), 'firebase.js 快取未更新至 v=4.10.1');
+assert.ok(indexHtml.includes('logo.png?v=4.10.1'), 'logo 快取未更新至 v=4.10.1');
+console.log('✓ 驗證通過：index.html 結構健全且全站快取標籤確認為 v=4.10.1');
 
 // 2. 驗證 index.css 樣式與 RWD 響應
 const indexCss = fs.readFileSync('index.css', 'utf8');

@@ -17,16 +17,16 @@ assert.ok(html.includes('<link rel="dns-prefetch" href="https://fonts.gstatic.co
 console.log('✅ [Check 1.1] PASS: index.html Google Fonts preconnect 與 dns-prefetch 網路預解析配置完備');
 
 // 1.2 靜態 Logo 圖片具備 decoding="async"
-assert.ok(html.includes('<img src="assets/logo.png?v=4.10.0" alt="Pokopia 風速狗 Logo" class="brand-logo-img" decoding="async">'), 'FAIL: 品牌 Logo 缺少 decoding="async"');
+assert.ok(html.includes('<img src="assets/logo.png?v=4.10.1" alt="Pokopia 風速狗 Logo" class="brand-logo-img" decoding="async">'), 'FAIL: 品牌 Logo 缺少 decoding="async"');
 console.log('✅ [Check 1.2] PASS: index.html 靜態 Logo 具備 decoding="async" 非同步解碼');
 
-// 1.3 全站快取標籤升級至 v=4.10.0
-assert.ok(html.includes('index.css?v=4.10.0'), 'index.css 快取標籤未更新至 v=4.10.0');
-assert.ok(html.includes('app.js?v=4.10.0'), 'app.js 快取標籤未更新至 v=4.10.0');
-assert.ok(html.includes('firebase.js?v=4.10.0'), 'firebase.js 快取標籤未更新至 v=4.10.0');
-assert.ok(html.includes('logo.png?v=4.10.0'), 'logo 快取標籤未更新至 v=4.10.0');
-assert.ok(html.includes('data.js?v=4.10.0'), 'data.js 快取標籤未更新至 v=4.10.0');
-console.log('✅ [Check 1.3] PASS: index.html 全站快取標籤全數升級至 v=4.10.0');
+// 1.3 全站快取標籤升級至 v=4.10.1
+assert.ok(html.includes('index.css?v=4.10.1'), 'index.css 快取標籤未更新至 v=4.10.1');
+assert.ok(html.includes('app.js?v=4.10.1'), 'app.js 快取標籤未更新至 v=4.10.1');
+assert.ok(html.includes('firebase.js?v=4.10.1'), 'firebase.js 快取標籤未更新至 v=4.10.1');
+assert.ok(html.includes('logo.png?v=4.10.1'), 'logo 快取標籤未更新至 v=4.10.1');
+assert.ok(html.includes('data.js?v=4.10.1'), 'data.js 快取標籤未更新至 v=4.10.1');
+console.log('✅ [Check 1.3] PASS: index.html 全站快取標籤全數升級至 v=4.10.1');
 
 // 2. 檢驗 app.js 圖片非同步解碼 (decoding="async")
 const js = fs.readFileSync('app.js', 'utf8');
