@@ -58,6 +58,10 @@
                 <span class="toc-item-text">棲息地總覽</span>
                 <span class="toc-item-badge">252 種</span>
               </button>
+              <button id="tabRecipe" class="toc-menu-item" data-tab="recipe">
+                <span class="toc-item-text">料理食譜</span>
+                <span class="toc-item-badge">全料理</span>
+              </button>
               <button id="tabAutoFarm" class="toc-menu-item hidden" data-tab="autofarm">
                 <span class="toc-item-text">終局農場</span>
                 <span class="toc-item-badge">7 大模組</span>
@@ -298,6 +302,52 @@
           </thead>
           <tbody id="habitatCatalogTableBody"></tbody>
         </table>
+      </div>
+    </section>
+
+    <!-- Recipe View Container (料理食譜全百科) -->
+    <section id="recipeSection" class="view-section hidden-section recipe-section">
+      <!-- 料理專屬頂部設施分類標籤列與反查狀態 -->
+      <div class="recipe-filter-bar">
+        <div class="recipe-tabs" id="recipeTabs">
+          <button class="recipe-tab active" data-facility="all">
+            <span class="recipe-tab-icon">🍽️</span> 全部 <span class="recipe-tab-count">(34)</span>
+          </button>
+          <button class="recipe-tab" data-facility="cutting_board">
+            <span class="recipe-tab-icon">🔪</span> 砧板（樹葉） <span class="recipe-tab-count">(7)</span>
+          </button>
+          <button class="recipe-tab" data-facility="bread_oven">
+            <span class="recipe-tab-icon">🥖</span> 麵包窯（居合斬） <span class="recipe-tab-count">(7)</span>
+          </button>
+          <button class="recipe-tab" data-facility="frying_pan">
+            <span class="recipe-tab-icon">🍳</span> 平底鍋（碎岩） <span class="recipe-tab-count">(7)</span>
+          </button>
+          <button class="recipe-tab" data-facility="pot">
+            <span class="recipe-tab-icon">🍲</span> 鍋子（水槍） <span class="recipe-tab-count">(6)</span>
+          </button>
+          <button class="recipe-tab" data-facility="party_pot">
+            <span class="recipe-tab-icon">🎉</span> 派對鍋（開派對） <span class="recipe-tab-count">(1)</span>
+          </button>
+          <button class="recipe-tab" data-facility="blender">
+            <span class="recipe-tab-icon">🍹</span> 食物攪拌機（衝浪） <span class="recipe-tab-count">(6)</span>
+          </button>
+        </div>
+
+        <!-- 食材反查啟用時的專屬過濾指示條 -->
+        <div id="recipeIngredientFilterNotice" class="recipe-active-filter-notice hidden">
+          <span class="notice-text">目前篩選食材：<strong id="activeIngredientName"></strong></span>
+          <button id="btnClearIngredientFilter" class="clear-filter-chip-btn">清除篩選 ✕</button>
+        </div>
+      </div>
+
+      <!-- 食譜卡片容器 -->
+      <div id="recipeCardGrid" class="recipe-card-grid"></div>
+
+      <!-- 空結果提示 -->
+      <div id="recipeEmptyState" class="empty-state hidden">
+        <div class="empty-state-icon">🍳</div>
+        <div class="empty-state-title">未找到相關料理食譜</div>
+        <div class="empty-state-desc">請嘗試其他料理名稱或食材關鍵字</div>
       </div>
     </section>
 
@@ -651,6 +701,8 @@
   <!-- Scripts -->
   <script src="data.js?v=4.10.1"></script>
   <script src="preferences_db.js?v=4.10.1"></script>
+  <script src="recipe_db.js?v=4.10.1"></script>
+  <script src="recipe.js?v=4.10.1"></script>
   <script src="autofarm_data.js?v=4.10.1"></script>
   <script src="region_data.js?v=4.10.1"></script>
   <script src="video_data.js?v=4.10.1"></script>

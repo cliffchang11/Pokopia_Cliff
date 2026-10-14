@@ -174,6 +174,7 @@
     tabStorage: document.getElementById('tabStorage'),
     tabHabitat: document.getElementById('tabHabitat'),
     tabHabitatCatalog: document.getElementById('tabHabitatCatalog'),
+    tabRecipe: document.getElementById('tabRecipe'),
     tabAutoFarm: document.getElementById('tabAutoFarm'),
     tabCustomStorage: document.getElementById('tabCustomStorage'),
     tabVideo: document.getElementById('tabVideo'),
@@ -283,6 +284,8 @@
     storageSection: document.getElementById('storageSection'),
     habitatSection: document.getElementById('habitatSection'),
     habitatCatalogSection: document.getElementById('habitatCatalogSection'),
+    recipeSection: document.getElementById('recipeSection'),
+    recipeCardGrid: document.getElementById('recipeCardGrid'),
     storageCardGrid: document.getElementById('storageCardGrid'),
     storageTableContainer: document.getElementById('storageTableContainer'),
     storageTableBody: document.getElementById('storageTableBody'),
@@ -376,7 +379,7 @@
 
   // Navigation State Persistence (URL Hash 絕對第一優先權 + LocalStorage 回退)
   function getInitialNavState() {
-    const validTabs = ['storage', 'habitat', 'habitatCatalog', 'autofarm', 'customStorage', 'regionMap', 'video'];
+    const validTabs = ['storage', 'habitat', 'habitatCatalog', 'recipe', 'autofarm', 'customStorage', 'regionMap', 'video'];
     const validViews = ['card', 'table'];
 
     let tab = null;
@@ -1098,6 +1101,15 @@
       hideFloatingBackBtn();
     });
 
+    if (DOM.tabRecipe) {
+      DOM.tabRecipe.addEventListener('click', () => {
+        closeTocDropdown();
+        switchTab('recipe', true);
+        pushNavHistory({ tab: 'recipe' });
+        hideFloatingBackBtn();
+      });
+    }
+
     if (DOM.tabAutoFarm) {
       DOM.tabAutoFarm.addEventListener('click', () => {
         closeTocDropdown();
@@ -1457,6 +1469,7 @@
     DOM.tabStorage.classList.remove('active');
     DOM.tabHabitat.classList.remove('active');
     DOM.tabHabitatCatalog.classList.remove('active');
+    if (DOM.tabRecipe) DOM.tabRecipe.classList.remove('active');
     if (DOM.tabAutoFarm) DOM.tabAutoFarm.classList.remove('active');
     if (DOM.btnAutoFarmNav) DOM.btnAutoFarmNav.classList.remove('active');
     if (DOM.tabCustomStorage) DOM.tabCustomStorage.classList.remove('active');
@@ -1471,6 +1484,10 @@
     DOM.habitatSection.classList.remove('active-section');
     DOM.habitatCatalogSection.classList.add('hidden-section');
     DOM.habitatCatalogSection.classList.remove('active-section');
+    if (DOM.recipeSection) {
+      DOM.recipeSection.classList.add('hidden-section');
+      DOM.recipeSection.classList.remove('active-section');
+    }
     if (DOM.autoFarmSection) {
       DOM.autoFarmSection.classList.add('hidden-section');
       DOM.autoFarmSection.classList.remove('active-section');
@@ -1548,6 +1565,33 @@
       if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.remove('hidden');
       updateCategoryFilterOptions();
       updateUnlockFilterOptions();
+    } else if (tab === 'recipe') {
+      if (DOM.tabRecipe) DOM.tabRecipe.classList.add('active');
+      if (DOM.recipeSection) {
+        DOM.recipeSection.classList.remove('hidden-section');
+        DOM.recipeSection.classList.add('active-section');
+      }
+      if (DOM.toolbarContainer) DOM.toolbarContainer.classList.remove('hidden');
+      if (DOM.toolbarHeaderRow) DOM.toolbarHeaderRow.classList.remove('hidden');
+      if (DOM.toolbarTitle) DOM.toolbarTitle.textContent = '料理食譜';
+      if (DOM.catalogProgressBadge) DOM.catalogProgressBadge.classList.remove('hidden');
+      if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🍲';
+      const recipeTotal = window.POKOPIA_RECIPES_DB ? window.POKOPIA_RECIPES_DB.length : 34;
+      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>' + recipeTotal + '</strong> 道美味料理全收錄';
+      if (DOM.searchRow) DOM.searchRow.classList.remove('hidden');
+      if (DOM.searchInput) DOM.searchInput.placeholder = '搜尋料理名稱、食材、設施、招式或口味 (如: 西瓜麵包, 小麥, 番茄)...';
+      if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.add('hidden');
+      if (DOM.filterToolbar) DOM.filterToolbar.classList.remove('hidden');
+      if (DOM.filterResultGroup) DOM.filterResultGroup.classList.remove('hidden');
+      if (DOM.categoryFilterGroup) DOM.categoryFilterGroup.classList.add('hidden');
+      if (DOM.envFilterGroup) DOM.envFilterGroup.classList.add('hidden');
+      if (DOM.specialtyFilterGroup) DOM.specialtyFilterGroup.classList.add('hidden');
+      if (DOM.regionFilterGroup) DOM.regionFilterGroup.classList.add('hidden');
+      if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.add('hidden');
+      if (window.RecipeModule) {
+        window.RecipeModule.init();
+        window.RecipeModule.render();
+      }
     } else if (tab === 'autofarm') {
       if (!isAutoFarmAuthorized()) {
         switchTab('habitat', skipSync);
@@ -1856,6 +1900,9 @@
     if (DOM.regionFilter) DOM.regionFilter.value = 'all';
     if (DOM.searchInput) DOM.searchInput.value = '';
     if (DOM.clearSearchBtn) DOM.clearSearchBtn.classList.add('hidden');
+    if (state.currentTab === 'recipe' && window.RecipeModule) {
+      window.RecipeModule.resetFilters();
+    }
     renderAll();
   }
 
@@ -2553,6 +2600,11 @@
       hasResults = renderHabitat();
     } else if (state.currentTab === 'habitatCatalog') {
       hasResults = renderHabitatCatalog();
+    } else if (state.currentTab === 'recipe') {
+      if (window.RecipeModule) {
+        window.RecipeModule.setKeyword(state.searchQuery);
+        hasResults = true;
+      }
     } else if (state.currentTab === 'autofarm') {
       hasResults = renderAutoFarm();
     }
