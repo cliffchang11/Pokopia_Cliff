@@ -1,6 +1,7 @@
 /**
- * Pokopia Recipe Encyclopedia Module (100% Traditional Chinese)
- * Handles recipe card rendering, facility filtering, ingredient reverse-lookup, and pokemon linkage
+ * Pokopia Recipe Encyclopedia Module (100% Traditional Chinese - PWA & Compact Rows)
+ * Clean, lightweight row-based encyclopedia list with native 36px sprites,
+ * touch-friendly ingredient reverse-lookup, and popover pokemon linkage.
  */
 (function() {
   'use strict';
@@ -10,7 +11,7 @@
     facility: 'all',          // 'all' | 'cutting_board' | 'bread_oven' | 'frying_pan' | 'pot' | 'party_pot' | 'blender'
     selectedIngredient: '',   // Reverse-lookup ingredient filter
     keyword: '',              // Search keyword
-    expandedPokemon: {}       // recipeId -> boolean
+    activePopoverId: null     // ID of the recipe whose pokemon popover is open
   };
 
   // Simplified to Traditional keyword map for inclusive search
@@ -96,7 +97,7 @@
     return list;
   }
 
-  // Render Recipe Cards
+  // Render Compact Recipe Rows
   function renderRecipes() {
     const grid = document.getElementById('recipeCardGrid');
     const emptyState = document.getElementById('recipeEmptyState');
@@ -124,109 +125,99 @@
     if (emptyState) emptyState.classList.add('hidden');
 
     grid.innerHTML = recipes.map(r => {
-      const isExpanded = !!recipeState.expandedPokemon[r.id];
+      const isPopoverOpen = recipeState.activePopoverId === r.id;
       const hasLikedPoke = r.likedPokemon && r.likedPokemon.length > 0;
 
-      // Ingredients HTML
+      // Ingredients HTML - Clean touch-friendly chips
       const ingredientsHtml = r.ingredients.map(ig => {
         const isSelected = recipeState.selectedIngredient === ig.name;
         const iconHtml = ig.icon 
-          ? `<img class="recipe-ing-icon" src="${ig.icon}" alt="${ig.name}" loading="lazy" onerror="this.style.display='none'">` 
-          : `<span class="recipe-ing-bullet">🌿</span>`;
+          ? `<img class="recipe-row-ing-icon" src="${ig.icon}" alt="${ig.name}" loading="lazy" onerror="this.style.display='none'">` 
+          : `<span class="recipe-row-ing-bullet">🌿</span>`;
         return `
-          <button type="button" class="recipe-ing-chip ${isSelected ? 'selected' : ''}" data-ingredient="${ig.name}" title="點擊即時反查使用此食材的料理">
+          <button type="button" class="recipe-row-ing-chip ${isSelected ? 'selected' : ''}" data-ingredient="${ig.name}" title="點擊即時反查所有使用「${ig.name}」的食譜" aria-label="篩選食材：${ig.name}">
             ${iconHtml}
-            <span class="recipe-ing-name">${ig.name}</span>
-            <span class="recipe-ing-count">× ${ig.count}</span>
+            <span class="recipe-row-ing-name">${ig.name}</span>
+            <span class="recipe-row-ing-count">×${ig.count}</span>
           </button>
         `;
       }).join('');
 
-      // Pokemon Linkage HTML
+      // Pokemon Linkage Popover HTML
       let pokemonSectionHtml = '';
       if (hasLikedPoke) {
         const pokeListHtml = r.likedPokemon.map(p => `
-          <div class="recipe-poke-badge" title="${p.number} ${p.name}">
-            <img class="recipe-poke-sprite" src="${p.sprite}" alt="${p.name}" loading="lazy" onerror="this.src='assets/pkm_sprites/pkm_icon_0001.webp'">
-            <span class="recipe-poke-name">${p.name}</span>
+          <div class="recipe-popover-poke-badge" title="${p.number} ${p.name}">
+            <img class="recipe-popover-poke-sprite" src="${p.sprite}" alt="${p.name}" loading="lazy" onerror="this.src='assets/pkm_sprites/pkm_icon_0001.webp'">
+            <span class="recipe-popover-poke-name">${p.name}</span>
           </div>
         `).join('');
 
         pokemonSectionHtml = `
-          <div class="recipe-pokemon-linkage">
-            <button type="button" class="recipe-poke-toggle-btn ${isExpanded ? 'expanded' : ''}" data-recipe-id="${r.id}">
-              <span class="poke-toggle-left">
-                <span class="poke-heart-icon">❤️</span>
-                <span class="poke-toggle-label">喜愛此口味寶可夢 <strong>(${r.likedPokemon.length} 隻)</strong></span>
-              </span>
-              <span class="poke-toggle-arrow">${isExpanded ? '▲ 收起' : '▼ 展開'}</span>
+          <div class="recipe-row-poke-wrapper">
+            <button type="button" class="recipe-row-poke-trigger ${isPopoverOpen ? 'active' : ''}" data-popover-target="${r.id}" title="點擊檢視喜愛此料理的寶可夢">
+              <span class="recipe-poke-heart">❤️</span>
+              <span class="recipe-poke-btn-text">喜愛寶可夢 <strong>(${r.likedPokemon.length})</strong></span>
             </button>
-            <div class="recipe-poke-list ${isExpanded ? '' : 'hidden'}">
-              ${pokeListHtml}
+            <div class="recipe-row-popover ${isPopoverOpen ? 'show' : 'hidden'}" id="popover-${r.id}" role="dialog" aria-label="${r.name} 喜愛寶可夢清單">
+              <div class="recipe-popover-header">
+                <span class="recipe-popover-title">喜愛「${r.name}」的寶可夢 (${r.likedPokemon.length})</span>
+                <button type="button" class="recipe-popover-close-btn" data-popover-close="${r.id}" aria-label="關閉">✕</button>
+              </div>
+              <div class="recipe-popover-body">
+                ${pokeListHtml}
+              </div>
             </div>
           </div>
         `;
       }
 
-      // Facility Badge styling
-      let facilityTagColor = 'tag-default';
-      if (r.facilityId === 'cutting_board') facilityTagColor = 'tag-leaf';
-      else if (r.facilityId === 'bread_oven') facilityTagColor = 'tag-bread';
-      else if (r.facilityId === 'frying_pan') facilityTagColor = 'tag-rock';
-      else if (r.facilityId === 'pot') facilityTagColor = 'tag-water';
-      else if (r.facilityId === 'blender') facilityTagColor = 'tag-blender';
-      else if (r.facilityId === 'party_pot') facilityTagColor = 'tag-party';
+      // Facility badge colors
+      let facClass = 'fac-default';
+      if (r.facilityId === 'cutting_board') facClass = 'fac-leaf';
+      else if (r.facilityId === 'bread_oven') facClass = 'fac-bread';
+      else if (r.facilityId === 'frying_pan') facClass = 'fac-rock';
+      else if (r.facilityId === 'pot') facClass = 'fac-water';
+      else if (r.facilityId === 'blender') facClass = 'fac-blender';
+      else if (r.facilityId === 'party_pot') facClass = 'fac-party';
 
       return `
-        <article class="recipe-card" data-recipe-id="${r.id}" data-facility="${r.facilityId}">
-          <!-- Card Header & Image -->
-          <div class="recipe-card-header">
-            <div class="recipe-img-container">
-              <img class="recipe-main-img" src="${r.icon || r.onlineIcon}" alt="${r.name}" loading="lazy" onerror="this.onerror=null; if('${r.onlineIcon}' && this.src !== '${r.onlineIcon}') { this.src='${r.onlineIcon}'; } else { this.src='assets/item_sprites/60px-Bag_原味沙拉_Pokopia_Sprite.png'; }">
+        <div class="recipe-row" data-recipe-id="${r.id}" data-facility="${r.facilityId}">
+          <!-- 1. 料理主體識別區 -->
+          <div class="recipe-row-main">
+            <div class="recipe-row-avatar-box">
+              <img class="recipe-row-avatar-img" src="${r.icon || r.onlineIcon}" alt="${r.name}" loading="lazy" onerror="this.onerror=null; if('${r.onlineIcon}' && this.src !== '${r.onlineIcon}') { this.src='${r.onlineIcon}'; } else { this.src='assets/item_sprites/60px-Bag_原味沙拉_Pokopia_Sprite.png'; }">
             </div>
-            <div class="recipe-header-info">
-              <div class="recipe-category-row">
-                <span class="recipe-category-badge">${r.category}</span>
-                <span class="recipe-taste-badge" title="料理口味">${r.taste || '普通'}</span>
+            <div class="recipe-row-text-info">
+              <div class="recipe-row-name-line">
+                <span class="recipe-row-title">${r.name}</span>
+                <span class="recipe-row-taste-badge">${r.taste || '美味'}</span>
               </div>
-              <h3 class="recipe-title">${r.name}</h3>
-              <div class="recipe-meta-row">
-                <span class="recipe-facility-tag ${facilityTagColor}">
-                  <span class="recipe-facility-icon">⚙️</span>
-                  ${r.facilityName}
-                </span>
-                <span class="recipe-move-tag" title="烹飪所需招式">
-                  <span class="recipe-move-icon">⚡</span>
-                  ${r.move}
-                </span>
+              <div class="recipe-row-meta-line">
+                <span class="recipe-row-fac-tag ${facClass}">${r.facilityName}</span>
+                <span class="recipe-row-move-tag">⚡ ${r.move}</span>
               </div>
             </div>
           </div>
 
-          <!-- Ingredients Section -->
-          <div class="recipe-section-body">
-            <div class="recipe-section-label">
-              <span>所需食材清單</span>
-              <span class="recipe-sub-hint">點擊食材可即時反查</span>
-            </div>
-            <div class="recipe-ingredients-wrap">
+          <!-- 2. 所需食材清單區 (點擊即時反查) -->
+          <div class="recipe-row-ingredients">
+            <div class="recipe-row-ing-label">所需食材</div>
+            <div class="recipe-row-ing-chips">
               ${ingredientsHtml}
             </div>
           </div>
 
-          <!-- Snorlax Offering Effect -->
-          <div class="recipe-snorlax-box">
-            <div class="snorlax-box-header">
-              <span class="snorlax-icon">💤</span>
-              <span class="snorlax-title">供奉苔卡比獸效果</span>
-              <span class="snorlax-exp-pill">${r.snorlaxExp} EXP</span>
+          <!-- 3. 卡比獸效果與寶可夢連動區 -->
+          <div class="recipe-row-extras">
+            <div class="recipe-row-snorlax-pill" title="供奉給苔卡比獸效果: ${r.snorlaxEffect || '無'}">
+              <span class="snorlax-pill-icon">💤</span>
+              <span class="snorlax-pill-text">${r.snorlaxEffect || '和寶可夢變得要好'}</span>
+              <span class="snorlax-pill-exp">${r.snorlaxExp}</span>
             </div>
-            <div class="snorlax-desc">${r.snorlaxEffect || '無特殊效果'}</div>
+            ${pokemonSectionHtml}
           </div>
-
-          <!-- Linked Pokemon Section -->
-          ${pokemonSectionHtml}
-        </article>
+        </div>
       `;
     }).join('');
 
@@ -248,11 +239,11 @@
         const fac = btn.getAttribute('data-facility');
         if (!fac) return;
 
-        // Update active class
         tabsContainer.querySelectorAll('.recipe-tab').forEach(t => t.classList.remove('active'));
         btn.classList.add('active');
 
         recipeState.facility = fac;
+        recipeState.activePopoverId = null; // Close popover
         renderRecipes();
       });
     }
@@ -266,40 +257,61 @@
       });
     }
 
-    // 3. Delegate Ingredient Click & Pokemon Toggle on Recipe Card Grid
+    // 3. Delegate on Recipe Grid
     const grid = document.getElementById('recipeCardGrid');
     if (grid) {
       grid.addEventListener('click', (e) => {
-        // Ingredient Chip clicked (Reverse lookup)
-        const ingChip = e.target.closest('.recipe-ing-chip');
+        // A. Ingredient Chip clicked (Reverse lookup)
+        const ingChip = e.target.closest('.recipe-row-ing-chip');
         if (ingChip) {
           const ingName = ingChip.getAttribute('data-ingredient');
           if (ingName && ingName !== '任意食材') {
             if (recipeState.selectedIngredient === ingName) {
-              recipeState.selectedIngredient = ''; // Toggle off
+              recipeState.selectedIngredient = '';
             } else {
-              recipeState.selectedIngredient = ingName; // Set active ingredient
+              recipeState.selectedIngredient = ingName;
             }
+            recipeState.activePopoverId = null;
             renderRecipes();
-            // Scroll smoothly to top of filter bar
             const bar = document.querySelector('.recipe-filter-bar');
             if (bar) bar.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           }
           return;
         }
 
-        // Pokemon toggle button clicked
-        const toggleBtn = e.target.closest('.recipe-poke-toggle-btn');
-        if (toggleBtn) {
-          const rId = toggleBtn.getAttribute('data-recipe-id');
-          if (rId) {
-            recipeState.expandedPokemon[rId] = !recipeState.expandedPokemon[rId];
-            renderRecipes();
+        // B. Popover Trigger Button clicked
+        const popoverBtn = e.target.closest('.recipe-row-poke-trigger');
+        if (popoverBtn) {
+          const targetId = popoverBtn.getAttribute('data-popover-target');
+          if (recipeState.activePopoverId === targetId) {
+            recipeState.activePopoverId = null; // toggle off
+          } else {
+            recipeState.activePopoverId = targetId; // open this popover
           }
+          renderRecipes();
+          return;
+        }
+
+        // C. Popover Close Button clicked
+        const closeBtn = e.target.closest('.recipe-popover-close-btn');
+        if (closeBtn) {
+          recipeState.activePopoverId = null;
+          renderRecipes();
           return;
         }
       });
     }
+
+    // 4. Global click to dismiss Popover when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!recipeState.activePopoverId) return;
+      const insidePopover = e.target.closest('.recipe-row-popover');
+      const insideTrigger = e.target.closest('.recipe-row-poke-trigger');
+      if (!insidePopover && !insideTrigger) {
+        recipeState.activePopoverId = null;
+        renderRecipes();
+      }
+    });
   }
 
   // Public Interface
@@ -313,12 +325,14 @@
     },
     setKeyword: function(kw) {
       recipeState.keyword = kw || '';
+      recipeState.activePopoverId = null;
       renderRecipes();
     },
     resetFilters: function() {
       recipeState.facility = 'all';
       recipeState.selectedIngredient = '';
       recipeState.keyword = '';
+      recipeState.activePopoverId = null;
       const tabsContainer = document.getElementById('recipeTabs');
       if (tabsContainer) {
         tabsContainer.querySelectorAll('.recipe-tab').forEach(t => {
