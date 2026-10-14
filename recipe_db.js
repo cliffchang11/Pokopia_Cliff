@@ -2395,27 +2395,12 @@ var POKOPIA_RECIPES_DB = [
         "icon": ""
       },
       {
-        "name": "Pokopia",
-        "count": 1,
-        "icon": ""
-      },
-      {
-        "name": "Sprite.png",
-        "count": 1,
-        "icon": ""
-      },
-      {
-        "name": "海葡萄",
-        "count": 1,
-        "icon": ""
-      },
-      {
         "name": "任意麵包",
         "count": 1,
         "icon": ""
       }
     ],
-    "ingredientsText": "海葡萄 × 1、 Pokopia × 1、 Sprite.png × 1、 海葡萄 × 1、 任意麵包 × 1",
+    "ingredientsText": "海葡萄 × 1、 任意麵包 × 1",
     "snorlaxEffect": "可以比較容易發現稀有物品。",
     "snorlaxExp": "500／750",
     "icon": "assets/item_sprites/60px-Bag_原味沙拉_Pokopia_Sprite.png",
@@ -5308,21 +5293,6 @@ var POKOPIA_RECIPES_DB = [
         "icon": "assets/item_sprites/60px-Bag_小麥_Pokopia_Sprite.png"
       },
       {
-        "name": "西瓜塊",
-        "count": 1,
-        "icon": ""
-      },
-      {
-        "name": "Pokopia",
-        "count": 1,
-        "icon": ""
-      },
-      {
-        "name": "Sprite.png",
-        "count": 1,
-        "icon": ""
-      },
-      {
         "name": "切塊西瓜",
         "count": 1,
         "icon": ""
@@ -5333,7 +5303,7 @@ var POKOPIA_RECIPES_DB = [
         "icon": ""
       }
     ],
-    "ingredientsText": "小麥 × 1、 西瓜塊 × 1、 Pokopia × 1、 Sprite.png × 1、 切塊西瓜 × 1、 任意食材 × 1",
+    "ingredientsText": "小麥 × 1、 切塊西瓜 × 1、 任意食材 × 1",
     "snorlaxEffect": "會變得相當容易找到遠古之物。",
     "snorlaxExp": "500／750",
     "icon": "assets/item_sprites/60px-Bag_原味麵包_Pokopia_Sprite.png",
@@ -10658,21 +10628,6 @@ var POKOPIA_RECIPES_DB = [
     "taste": "甜甜的",
     "ingredients": [
       {
-        "name": "西瓜塊",
-        "count": 1,
-        "icon": ""
-      },
-      {
-        "name": "Pokopia",
-        "count": 1,
-        "icon": ""
-      },
-      {
-        "name": "Sprite.png",
-        "count": 1,
-        "icon": ""
-      },
-      {
         "name": "切塊西瓜",
         "count": 1,
         "icon": ""
@@ -10683,7 +10638,7 @@ var POKOPIA_RECIPES_DB = [
         "icon": ""
       }
     ],
-    "ingredientsText": "西瓜塊 × 1、 Pokopia × 1、 Sprite.png × 1、 切塊西瓜 × 1、 任意食材 × 3",
+    "ingredientsText": "切塊西瓜 × 1、 任意食材 × 3",
     "snorlaxEffect": "會變得相當容易找到遠古之物。",
     "snorlaxExp": "100／150",
     "icon": "assets/item_sprites/60px-Bag_蘋野冰沙_Pokopia_Sprite.png",
@@ -11123,37 +11078,7 @@ var POKOPIA_RECIPES_DB = [
     "taste": "澀澀的",
     "ingredients": [
       {
-        "name": "西瓜塊",
-        "count": 1,
-        "icon": ""
-      },
-      {
-        "name": "Pokopia",
-        "count": 1,
-        "icon": ""
-      },
-      {
-        "name": "Sprite.png",
-        "count": 1,
-        "icon": ""
-      },
-      {
         "name": "切塊西瓜",
-        "count": 1,
-        "icon": ""
-      },
-      {
-        "name": "海葡萄",
-        "count": 1,
-        "icon": ""
-      },
-      {
-        "name": "Pokopia",
-        "count": 1,
-        "icon": ""
-      },
-      {
-        "name": "Sprite.png",
         "count": 1,
         "icon": ""
       },
@@ -11168,7 +11093,7 @@ var POKOPIA_RECIPES_DB = [
         "icon": ""
       }
     ],
-    "ingredientsText": "西瓜塊 × 1、 Pokopia × 1、 Sprite.png × 1、 切塊西瓜 × 1、 海葡萄 × 1、 Pokopia × 1、 Sprite.png × 1、 海葡萄 × 1、 任意食材 × 1",
+    "ingredientsText": "切塊西瓜 × 1、 海葡萄 × 1、 任意食材 × 1",
     "snorlaxEffect": "可以比較容易遇到帶著稀有羽毛的寶可夢。",
     "snorlaxExp": "100／150",
     "icon": "assets/item_sprites/60px-Bag_蘋野冰沙_Pokopia_Sprite.png",
@@ -11626,21 +11551,6 @@ var POKOPIA_RECIPES_DB = [
     "taste": "甜甜的",
     "ingredients": [
       {
-        "name": "西瓜塊",
-        "count": 1,
-        "icon": ""
-      },
-      {
-        "name": "Pokopia",
-        "count": 1,
-        "icon": ""
-      },
-      {
-        "name": "Sprite.png",
-        "count": 1,
-        "icon": ""
-      },
-      {
         "name": "切塊西瓜",
         "count": 1,
         "icon": ""
@@ -11656,7 +11566,7 @@ var POKOPIA_RECIPES_DB = [
         "icon": ""
       }
     ],
-    "ingredientsText": "西瓜塊 × 1、 Pokopia × 1、 Sprite.png × 1、 切塊西瓜 × 1、 蘋野果 × 1、 任意食材 × 1",
+    "ingredientsText": "切塊西瓜 × 1、 蘋野果 × 1、 任意食材 × 1",
     "snorlaxEffect": "會變得相當容易找到遠古之物。",
     "snorlaxExp": "200／300",
     "icon": "assets/item_sprites/60px-Bag_蘋野冰沙_Pokopia_Sprite.png",
@@ -12096,21 +12006,6 @@ var POKOPIA_RECIPES_DB = [
     "taste": "辣辣的",
     "ingredients": [
       {
-        "name": "西瓜塊",
-        "count": 1,
-        "icon": ""
-      },
-      {
-        "name": "Pokopia",
-        "count": 1,
-        "icon": ""
-      },
-      {
-        "name": "Sprite.png",
-        "count": 1,
-        "icon": ""
-      },
-      {
         "name": "切塊西瓜",
         "count": 1,
         "icon": ""
@@ -12126,7 +12021,7 @@ var POKOPIA_RECIPES_DB = [
         "icon": ""
       }
     ],
-    "ingredientsText": "西瓜塊 × 1、 Pokopia × 1、 Sprite.png × 1、 切塊西瓜 × 1、 成熟的紅蘿蔔 × 1、 任意食材 × 1",
+    "ingredientsText": "切塊西瓜 × 1、 成熟的紅蘿蔔 × 1、 任意食材 × 1",
     "snorlaxEffect": "棲息地會比較容易出現寶可夢。",
     "snorlaxExp": "200／300",
     "icon": "assets/item_sprites/60px-Bag_蘋野冰沙_Pokopia_Sprite.png",
@@ -12578,21 +12473,6 @@ var POKOPIA_RECIPES_DB = [
     "taste": "酸酸的",
     "ingredients": [
       {
-        "name": "西瓜塊",
-        "count": 1,
-        "icon": ""
-      },
-      {
-        "name": "Pokopia",
-        "count": 1,
-        "icon": ""
-      },
-      {
-        "name": "Sprite.png",
-        "count": 1,
-        "icon": ""
-      },
-      {
         "name": "切塊西瓜",
         "count": 1,
         "icon": ""
@@ -12608,7 +12488,7 @@ var POKOPIA_RECIPES_DB = [
         "icon": ""
       }
     ],
-    "ingredientsText": "西瓜塊 × 1、 Pokopia × 1、 Sprite.png × 1、 切塊西瓜 × 1、 勁爽汽水 × 1、 任意食材 × 1",
+    "ingredientsText": "切塊西瓜 × 1、 勁爽汽水 × 1、 任意食材 × 1",
     "snorlaxEffect": "商店會變得相當容易出現好東西。",
     "snorlaxExp": "500／750",
     "icon": "assets/item_sprites/60px-Bag_蘋野冰沙_Pokopia_Sprite.png",
@@ -13060,21 +12940,6 @@ var POKOPIA_RECIPES_DB = [
     "taste": "苦苦的",
     "ingredients": [
       {
-        "name": "西瓜塊",
-        "count": 1,
-        "icon": ""
-      },
-      {
-        "name": "Pokopia",
-        "count": 1,
-        "icon": ""
-      },
-      {
-        "name": "Sprite.png",
-        "count": 1,
-        "icon": ""
-      },
-      {
         "name": "切塊西瓜",
         "count": 1,
         "icon": ""
@@ -13090,7 +12955,7 @@ var POKOPIA_RECIPES_DB = [
         "icon": ""
       }
     ],
-    "ingredientsText": "西瓜塊 × 1、 Pokopia × 1、 Sprite.png × 1、 切塊西瓜 × 1、 哞哞鮮奶咖啡 × 1、 任意食材 × 1",
+    "ingredientsText": "切塊西瓜 × 1、 哞哞鮮奶咖啡 × 1、 任意食材 × 1",
     "snorlaxEffect": "可以比較容易發現稀有物品。",
     "snorlaxExp": "500／750",
     "icon": "assets/item_sprites/60px-Bag_蘋野冰沙_Pokopia_Sprite.png",

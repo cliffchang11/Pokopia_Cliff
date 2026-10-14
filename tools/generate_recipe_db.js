@@ -91,15 +91,24 @@ const normalizeFacility = (facStr) => {
 
 // Parse ingredients accurately
 const parseIngredients = (raw) => {
-  let cleaned = raw.replace(/File:[^\s]+/g, "").replace(/\s+/g, " ").trim();
+  let cleaned = raw
+    .replace(/File:[^.]+\.(?:png|jpg|webp)/gi, "")
+    .replace(/\[\[[^\]]+\]\]/g, "")
+    .replace(/Pokopia/gi, "")
+    .replace(/Sprite\.png/gi, "")
+    .replace(/\s+/g, " ")
+    .trim();
   cleaned = toTrad(cleaned);
   
   const re = /([^\d×x＋+]+?)(?:\s*[×x]\s*([０-９\d]+))?(?=\s+[^\d×x＋+]|$)/g;
   const result = [];
+  const seenNames = new Set();
   let match;
   while ((match = re.exec(cleaned)) !== null) {
     let name = match[1].trim();
-    if (!name || name === "食材") continue;
+    if (!name || name === "食材" || name.includes("Pokopia") || name.includes("Sprite") || name.includes(".png")) continue;
+    if (seenNames.has(name)) continue;
+    seenNames.add(name);
     let countStr = match[2] || "1";
     countStr = countStr.replace(/[０-９]/g, d => String.fromCharCode(d.charCodeAt(0) - 0xFEE0));
     const count = parseInt(countStr, 10) || 1;

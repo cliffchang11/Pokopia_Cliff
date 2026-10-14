@@ -1,7 +1,7 @@
 /**
  * Pokopia Recipe Encyclopedia Module (100% Traditional Chinese - PWA & Compact Rows)
  * Clean, lightweight row-based encyclopedia list with native 36px sprites,
- * touch-friendly ingredient reverse-lookup, and popover pokemon linkage.
+ * touch-friendly ingredient reverse-lookup, and pure avatar grid popover.
  */
 (function() {
   'use strict';
@@ -33,6 +33,15 @@
     '碎岩': '碎岩',
     '树叶': '樹葉',
     '水枪': '水槍'
+  };
+
+  const tasteClassMap = {
+    '辣辣的': 'taste-spicy',
+    '甜甜的': 'taste-sweet',
+    '酸酸的': 'taste-sour',
+    '苦苦的': 'taste-bitter',
+    '澀澀的': 'taste-astringent',
+    '平淡無奇的': 'taste-plain'
   };
 
   function normalizeKeyword(kw) {
@@ -127,6 +136,7 @@
     grid.innerHTML = recipes.map(r => {
       const isPopoverOpen = recipeState.activePopoverId === r.id;
       const hasLikedPoke = r.likedPokemon && r.likedPokemon.length > 0;
+      const tasteClass = tasteClassMap[r.taste] || 'taste-plain';
 
       // Ingredients HTML - Clean touch-friendly chips
       const ingredientsHtml = r.ingredients.map(ig => {
@@ -143,28 +153,28 @@
         `;
       }).join('');
 
-      // Pokemon Linkage Popover HTML
+      // Pokemon Linkage Popover HTML (Pure Avatar Grid)
       let pokemonSectionHtml = '';
       if (hasLikedPoke) {
         const pokeListHtml = r.likedPokemon.map(p => `
-          <div class="recipe-popover-poke-badge" title="${p.number} ${p.name}">
-            <img class="recipe-popover-poke-sprite" src="${p.sprite}" alt="${p.name}" loading="lazy" onerror="this.src='assets/pkm_sprites/pkm_icon_0001.webp'">
-            <span class="recipe-popover-poke-name">${p.name}</span>
+          <div class="recipe-popover-avatar-item" title="${p.number} ${p.name} (喜愛${r.taste})">
+            <img class="recipe-popover-avatar-img" src="${p.sprite}" alt="${p.name}" loading="lazy" onerror="this.src='assets/pkm_sprites/pkm_icon_0001.webp'">
           </div>
         `).join('');
 
         pokemonSectionHtml = `
           <div class="recipe-row-poke-wrapper">
-            <button type="button" class="recipe-row-poke-trigger ${isPopoverOpen ? 'active' : ''}" data-popover-target="${r.id}" title="點擊檢視喜愛此料理的寶可夢">
+            <button type="button" class="recipe-row-poke-trigger ${isPopoverOpen ? 'active' : ''}" data-popover-target="${r.id}" title="點擊檢視喜愛此料理的 ${r.likedPokemon.length} 隻寶可夢">
               <span class="recipe-poke-heart">❤️</span>
-              <span class="recipe-poke-btn-text">喜愛寶可夢 <strong>(${r.likedPokemon.length})</strong></span>
+              <span class="recipe-poke-btn-text"><strong>${r.likedPokemon.length}</strong> 隻</span>
             </button>
             <div class="recipe-row-popover ${isPopoverOpen ? 'show' : 'hidden'}" id="popover-${r.id}" role="dialog" aria-label="${r.name} 喜愛寶可夢清單">
               <div class="recipe-popover-header">
-                <span class="recipe-popover-title">喜愛「${r.name}」的寶可夢 (${r.likedPokemon.length})</span>
+                <span class="recipe-popover-title">喜愛寶可夢 <strong>(${r.likedPokemon.length})</strong></span>
+                <span class="recipe-popover-taste ${tasteClass}">${r.taste}</span>
                 <button type="button" class="recipe-popover-close-btn" data-popover-close="${r.id}" aria-label="關閉">✕</button>
               </div>
-              <div class="recipe-popover-body">
+              <div class="recipe-popover-avatar-grid">
                 ${pokeListHtml}
               </div>
             </div>
@@ -191,7 +201,7 @@
             <div class="recipe-row-text-info">
               <div class="recipe-row-name-line">
                 <span class="recipe-row-title">${r.name}</span>
-                <span class="recipe-row-taste-badge">${r.taste || '美味'}</span>
+                <span class="recipe-row-taste-badge ${tasteClass}">${r.taste || '美味'}</span>
               </div>
               <div class="recipe-row-meta-line">
                 <span class="recipe-row-fac-tag ${facClass}">${r.facilityName}</span>
@@ -202,15 +212,14 @@
 
           <!-- 2. 所需食材清單區 (點擊即時反查) -->
           <div class="recipe-row-ingredients">
-            <div class="recipe-row-ing-label">所需食材</div>
             <div class="recipe-row-ing-chips">
               ${ingredientsHtml}
             </div>
           </div>
 
-          <!-- 3. 卡比獸效果與寶可夢連動區 -->
+          <!-- 3. 卡比獸效果與連動區 -->
           <div class="recipe-row-extras">
-            <div class="recipe-row-snorlax-pill" title="供奉給苔卡比獸效果: ${r.snorlaxEffect || '無'}">
+            <div class="recipe-row-snorlax-pill" title="供奉苔卡比獸效果: ${r.snorlaxEffect || '無'}">
               <span class="snorlax-pill-icon">💤</span>
               <span class="snorlax-pill-text">${r.snorlaxEffect || '和寶可夢變得要好'}</span>
               <span class="snorlax-pill-exp">${r.snorlaxExp}</span>
@@ -243,7 +252,7 @@
         btn.classList.add('active');
 
         recipeState.facility = fac;
-        recipeState.activePopoverId = null; // Close popover
+        recipeState.activePopoverId = null;
         renderRecipes();
       });
     }
@@ -284,9 +293,9 @@
         if (popoverBtn) {
           const targetId = popoverBtn.getAttribute('data-popover-target');
           if (recipeState.activePopoverId === targetId) {
-            recipeState.activePopoverId = null; // toggle off
+            recipeState.activePopoverId = null;
           } else {
-            recipeState.activePopoverId = targetId; // open this popover
+            recipeState.activePopoverId = targetId;
           }
           renderRecipes();
           return;
