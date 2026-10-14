@@ -143,7 +143,7 @@
         const isSelected = recipeState.selectedIngredient === ig.name;
         const iconHtml = ig.icon 
           ? `<img class="recipe-row-ing-icon" src="${ig.icon}" alt="${ig.name}" loading="lazy" onerror="this.style.display='none'">` 
-          : `<span class="recipe-row-ing-bullet">🌿</span>`;
+          : '';
         return `
           <button type="button" class="recipe-row-ing-chip ${isSelected ? 'selected' : ''}" data-ingredient="${ig.name}" title="點擊即時反查所有使用「${ig.name}」的食譜" aria-label="篩選食材：${ig.name}">
             ${iconHtml}
@@ -192,7 +192,7 @@
       else if (r.facilityId === 'party_pot') facClass = 'fac-party';
 
       return `
-        <div class="recipe-row" data-recipe-id="${r.id}" data-facility="${r.facilityId}">
+        <div class="recipe-row" data-recipe-id="${r.id}" data-recipe-name="${r.name}" data-facility="${r.facilityId}">
           <!-- 1. 料理主體識別區 -->
           <div class="recipe-row-main">
             <div class="recipe-row-avatar-box">
@@ -350,6 +350,67 @@
         });
       }
       renderRecipes();
+    },
+    scrollToRecipe: function(recipeName) {
+      if (!recipeName) return;
+      // 1. 重設關鍵字與食材篩選，恢復全量食譜
+      recipeState.facility = 'all';
+      recipeState.selectedIngredient = '';
+      recipeState.keyword = '';
+      recipeState.activePopoverId = null;
+      const tabsContainer = document.getElementById('recipeTabs');
+      if (tabsContainer) {
+        tabsContainer.querySelectorAll('.recipe-tab').forEach(t => {
+          if (t.getAttribute('data-facility') === 'all') t.classList.add('active');
+          else t.classList.remove('active');
+        });
+      }
+      renderRecipes();
+
+      // 2. 定位到目標料理行並閃爍高亮呼吸光暈
+      setTimeout(() => {
+        const rows = document.querySelectorAll('.recipe-row');
+        let targetRow = null;
+        for (const row of rows) {
+          const name = row.getAttribute('data-recipe-name');
+          const id = row.getAttribute('data-recipe-id');
+          if (name === recipeName || id === recipeName || (name && name.includes(recipeName)) || (recipeName && recipeName.includes(name))) {
+            targetRow = row;
+            break;
+          }
+        }
+        if (targetRow) {
+          targetRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          targetRow.classList.remove('recipe-row-highlight');
+          void targetRow.offsetWidth; // 強制重繪觸發動畫
+          targetRow.classList.add('recipe-row-highlight');
+          setTimeout(() => {
+            targetRow.classList.remove('recipe-row-highlight');
+          }, 2500);
+        }
+      }, 100);
+    },
+    filterByIngredient: function(ingredientName) {
+      if (!ingredientName) return;
+      // 1. 重設設施為全部，關鍵字清空，激活該食材反查
+      recipeState.facility = 'all';
+      recipeState.selectedIngredient = ingredientName;
+      recipeState.keyword = '';
+      recipeState.activePopoverId = null;
+      const tabsContainer = document.getElementById('recipeTabs');
+      if (tabsContainer) {
+        tabsContainer.querySelectorAll('.recipe-tab').forEach(t => {
+          if (t.getAttribute('data-facility') === 'all') t.classList.add('active');
+          else t.classList.remove('active');
+        });
+      }
+      renderRecipes();
+
+      // 2. 平滑滾動至食譜區頂部
+      setTimeout(() => {
+        const sec = document.getElementById('recipeSection');
+        if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 80);
     }
   };
 

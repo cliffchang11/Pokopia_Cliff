@@ -4341,6 +4341,40 @@
     `;
   }
 
+  // 輔助函式：判斷物品是否為料理或食材，若是則智慧導向料理食譜分頁並定位/反查
+  function navigateItemToRecipe(itemName) {
+    if (!itemName) return false;
+    const cleanName = itemName.trim();
+    const recipeDb = window.POKOPIA_RECIPES_DB || [];
+    if (recipeDb.length === 0) return false;
+
+    // 1. 優先精確/包含匹配 34 道料理成品
+    const recipe = recipeDb.find(r => r.name === cleanName || r.name.includes(cleanName) || cleanName.includes(r.name));
+    if (recipe) {
+      closePrefDrawer();
+      switchTab('recipe', true);
+      pushNavHistory({ tab: 'recipe' });
+      if (window.RecipeModule && window.RecipeModule.scrollToRecipe) {
+        window.RecipeModule.scrollToRecipe(recipe.name);
+      }
+      return true;
+    }
+
+    // 2. 次要匹配食譜中所使用的原料食材 (如 蘋野果, 辣味草, 小麥 等)
+    const isIngredient = recipeDb.some(r => r.ingredients && r.ingredients.some(ig => ig.name === cleanName || ig.name.includes(cleanName) || cleanName.includes(ig.name)));
+    if (isIngredient) {
+      closePrefDrawer();
+      switchTab('recipe', true);
+      pushNavHistory({ tab: 'recipe' });
+      if (window.RecipeModule && window.RecipeModule.filterByIngredient) {
+        window.RecipeModule.filterByIngredient(cleanName);
+      }
+      return true;
+    }
+
+    return false;
+  }
+
   // 輔助函式：綁定所有純圖片道具格點擊跳轉事件
   function bindPrefDrawerItemSlots(db) {
     if (!DOM.prefDrawerBody) return;
@@ -4349,6 +4383,11 @@
         e.stopPropagation();
         const itemName = slot.dataset.itemName;
         if (!itemName) return;
+
+        // 若點擊的是料理成品或食材，智慧導向料理食譜並定位
+        if (navigateItemToRecipe(itemName)) {
+          return;
+        }
 
         // 切換至物品列表分頁
         state.prefTab = 'items';
@@ -4647,14 +4686,28 @@
           `;
         }
 
+        // 若為料理成品或食譜原料，標註可前往料理食譜
+        const isFoodOrIngredient = window.POKOPIA_RECIPES_DB && (
+          window.POKOPIA_RECIPES_DB.some(r => r.name === it.name) ||
+          window.POKOPIA_RECIPES_DB.some(r => r.ingredients && r.ingredients.some(ig => ig.name === it.name)) ||
+          cleanTag === '食物'
+        );
+        const recipeBadgeHTML = isFoodOrIngredient ? `
+          <span class="pref-card-badge" style="background:#fef3c7; color:#92400e; border:1px solid #fde68a; font-size:0.72rem; display:inline-flex; align-items:center; gap:2px;" title="點擊前往料理食譜並定位">
+            <span>🍽️</span>
+            <span>食譜</span>
+          </span>
+        ` : '';
+
         return `
-          <div class="pref-item-row ${isTarget ? 'pref-item-highlight' : ''}" data-name="${escapeHTML(it.name)}">
+          <div class="pref-item-row ${isTarget ? 'pref-item-highlight' : ''} ${isFoodOrIngredient ? 'is-recipe-link' : ''}" data-name="${escapeHTML(it.name)}" ${isFoodOrIngredient ? 'title="點擊導向料理食譜頁面"' : ''}>
             <div class="pref-item-row-header">
               <div class="pref-item-row-main">
                 ${iconHTML}
                 <span class="pref-item-name">${escapeHTML(it.name)}</span>
               </div>
               <div style="display:flex; gap:6px; align-items:center;">
+                ${recipeBadgeHTML}
                 ${tagBadgeHTML}
               </div>
             </div>
@@ -4665,6 +4718,16 @@
     }
 
     DOM.prefDrawerBody.innerHTML = catButtonsHTML + `<div style="margin-top:10px;">${itemsHTML}</div>`;
+
+    // 綁定食物/食材項目點擊導向料理食譜事件
+    DOM.prefDrawerBody.querySelectorAll('.pref-item-row.is-recipe-link').forEach(row => {
+      row.addEventListener('click', (e) => {
+        const itemName = row.dataset.name;
+        if (itemName && navigateItemToRecipe(itemName)) {
+          e.stopPropagation();
+        }
+      });
+    });
 
     // 綁定分類切換事件
     DOM.prefDrawerBody.querySelectorAll('.pref-cat-filter-btn').forEach(btn => {
