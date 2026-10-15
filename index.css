@@ -7,19 +7,19 @@
   --font-primary: 'Noto Sans TC', 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: clamp(0.85rem, 2.5vw, 1.2rem) !important;
   
-  /* Harmony Light Theme Palette (Natural Eye-Care Soft Oatmeal Warm Tone) */
-  --bg-dark: #f6f5f0;
-  --bg-body-radial-1: rgba(245, 158, 11, 0.03);
-  --bg-body-radial-2: rgba(16, 185, 129, 0.03);
-  --bg-body-radial-3: rgba(180, 160, 140, 0.03);
+  /* Harmony Light Theme Palette (Pure Soft Ivory Paper Tone - 100% Unified Color Temp) */
+  --bg-dark: #f9f9f8; /* 極淡乾淨象牙柔白，告別濃黃燕麥色 */
+  --bg-body-radial-1: rgba(245, 158, 11, 0.015);
+  --bg-body-radial-2: rgba(16, 185, 129, 0.015);
+  --bg-body-radial-3: rgba(180, 160, 140, 0.015);
 
-  --bg-header: rgba(255, 255, 255, 0.90);
-  --bg-header-sticky: rgba(255, 255, 255, 0.96);
-  --bg-card: #faf8f5; /* 低飽和亞麻淡米灰霧面紙色 */
-  --bg-card-hover: #f5f2ec;
-  --glass-border: #e6e2da; /* 極細素雅線條 */
+  --bg-header: rgba(255, 255, 255, 0.94);
+  --bg-header-sticky: rgba(255, 255, 255, 0.98);
+  --bg-card: #ffffff; /* 純淨手帳純白紙色 */
+  --bg-card-hover: #faf9f6;
+  --glass-border: #e9e8e4; /* 極細素雅線條 */
   --glass-border-focus: #38bdf8;
-  --card-edge-glow: 0 2px 8px rgba(90, 80, 70, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --card-edge-glow: 0 2px 8px rgba(90, 80, 70, 0.03), 0 1px 2px rgba(0, 0, 0, 0.02);
   
   --primary-indigo: #0284c7;
   --primary-indigo-glow: rgba(2, 132, 199, 0.18);
@@ -32,25 +32,25 @@
   --text-sub: #44403c;
   --text-muted: #78716c;
 
-  --stat-bg: #f5f3ee;
-  --stat-border: #e6e2da;
+  --stat-bg: #f2f1ed; /* 柔和自然米灰，消除死白補丁感 */
+  --stat-border: #e9e8e4;
   --stat-text: #2d2a26;
 
   --input-bg: #ffffff;
   --input-border: #e2ddd4;
   --input-text: #2d2a26;
 
-  --tab-btn-bg: #f5f3ee;
+  --tab-btn-bg: #f2f1ed;
   --tab-btn-text: #57534e;
   --tab-btn-active-bg: #0284c7;
   --tab-btn-active-text: #ffffff;
 
-  --table-bg: #faf8f5;
-  --table-th-bg: #f2efe9;
+  --table-bg: #ffffff;
+  --table-th-bg: #f5f4ef;
   --table-th-text: #2d2a26;
-  --table-td-border: #ebe6dd;
-  --table-tr-alt: #ffffff;
-  --table-tr-hover: #f5f2eb;
+  --table-td-border: #f0eee9;
+  --table-tr-alt: #faf9f6;
+  --table-tr-hover: #f5f4ef;
   --table-tr-completed: transparent;
 
   --storage-th-bg: #f3f0ff;
@@ -10652,109 +10652,177 @@ body.has-floating-back .scroll-top-btn {
    ========================================================================== */
 
 .recipe-card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
-  gap: 1.35rem; /* 擴大卡片間距，呈現充足呼吸感 */
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* 條列長條間舒適呼吸間距 */
   width: 100%;
 }
 
-/* 單張極簡日系亞麻霧面手帳卡片 */
-.recipe-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  background: #faf8f5; /* 低飽和亞麻淡米灰霧面紙色 */
-  border: 1px solid #e6e2da; /* 極細素雅邊框 */
-  border-radius: 0.875rem;
-  padding: 1.15rem; /* 寬裕舒適的留白 */
-  box-shadow: 0 2px 8px rgba(90, 80, 70, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-  position: relative;
-  overflow: visible;
-}
-
-.recipe-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(90, 80, 70, 0.08);
-  border-color: #d6d0c4;
-}
-
-:root[data-theme="dark"] .recipe-card {
-  background: #1e293b;
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
-}
-
-:root[data-theme="dark"] .recipe-card:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
-}
-
-/* 1. 卡片頂部：料理頭像 + 標題 + 標籤列 */
-.recipe-card-header {
-  display: flex;
-  gap: 0.75rem;
-  align-items: flex-start;
-  position: relative;
-}
-
-.recipe-card-avatar-box {
-  width: 52px;
-  height: 52px;
-  min-width: 52px;
-  border-radius: 0.75rem;
-  background: #ffffff;
-  border: 1px solid #eae5db;
+/* 單條日系手帳料理長條 (Horizontal Row) - 渾然一體無割裂 */
+.recipe-row {
   display: flex;
   align-items: center;
-  justify-content: center;
-  overflow: hidden;
+  justify-content: space-between;
+  gap: 1.25rem;
+  background: #ffffff;
+  border: 1px solid #e9e8e4;
+  border-radius: 0.75rem;
+  padding: 0.85rem 1.15rem;
+  box-shadow: 0 1px 3px rgba(90, 80, 70, 0.03);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.recipe-row:hover {
+  transform: translateY(-1px);
+  border-color: #d8d6ce;
+  box-shadow: 0 4px 12px rgba(90, 80, 70, 0.06);
+}
+
+:root[data-theme="dark"] .recipe-row {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+:root[data-theme="dark"] .recipe-row:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* 1. 左區：料理身份與專長 */
+.recipe-row-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 210px;
   flex-shrink: 0;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
-:root[data-theme="dark"] .recipe-card-avatar-box {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-.recipe-card-avatar-img {
-  width: 42px;
-  height: 42px;
+.recipe-row-avatar-img {
+  width: 44px;
+  height: 44px;
   object-fit: contain;
-  filter: drop-shadow(0 1px 3px rgba(90, 80, 70, 0.12));
+  flex-shrink: 0;
+  filter: drop-shadow(0 1px 3px rgba(90, 80, 70, 0.10));
 }
 
-.recipe-card-header-main {
+.recipe-row-identity-text {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
-  flex: 1;
-  min-width: 0;
-  padding-right: 4.2rem; /* 預留右上角愛心膠囊空間，文字絕不被遮擋 */
+  gap: 0.25rem;
 }
 
-.recipe-card-title {
-  font-size: 0.90rem; /* 精緻微縮字級 (約14.4px) */
+.recipe-row-title-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.recipe-row-title {
+  font-size: 0.92rem;
   font-weight: 600;
-  color: #2d2a26; /* 低調炭褐黑 */
+  color: #2d2a26;
   margin: 0;
-  line-height: 1.3;
+  line-height: 1.25;
   letter-spacing: -0.01em;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-:root[data-theme="dark"] .recipe-card-title {
+:root[data-theme="dark"] .recipe-row-title {
   color: #f8fafc;
 }
 
-.recipe-card-badges {
+/* 2. 中區：所需食材配方籤 (水平流展，點擊反查) */
+.recipe-row-ingredients {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.3rem;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  flex: 1;
+  min-width: 0;
+}
+
+/* 3. 右區：效果說明與喜愛寶可夢膠囊 */
+.recipe-row-effects-section {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-shrink: 0;
+}
+
+.recipe-row-effects-text {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.72rem;
+}
+
+.recipe-row-move-tag {
+  display: inline-flex;
+  align-items: center;
+  background: #f0f9ff;
+  color: #0284c7;
+  border: 1px solid #bae6fd;
+  border-radius: 0.3rem;
+  padding: 0.12rem 0.38rem;
+  font-size: 0.68rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+:root[data-theme="dark"] .recipe-row-move-tag {
+  background: rgba(14, 165, 233, 0.15);
+  color: #7dd3fc;
+  border-color: rgba(14, 165, 233, 0.3);
+}
+
+.recipe-row-snorlax-text {
+  color: #276749;
+  font-size: 0.70rem;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+:root[data-theme="dark"] .recipe-row-snorlax-text {
+  color: #86efac;
+}
+
+/* 4. 響應式：中窄螢幕平滑折行 (Tablet & Mobile) */
+@media (max-width: 900px) {
+  .recipe-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.65rem;
+    padding: 0.85rem;
+  }
+  .recipe-row-effects-section {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+/* 5. 定位高亮閃爍呼吸光暈 */
+.recipe-row.recipe-row-highlight {
+  animation: recipeRowPulse 2.5s ease-out forwards;
+}
+
+@keyframes recipeRowPulse {
+  0% {
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.6), 0 4px 16px rgba(2, 132, 199, 0.25);
+    border-color: #0284c7;
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(2, 132, 199, 0.4), 0 6px 20px rgba(2, 132, 199, 0.2);
+    border-color: #38bdf8;
+  }
+  100% {
+    box-shadow: 0 1px 3px rgba(90, 80, 70, 0.03);
+    border-color: #e9e8e4;
+  }
 }
 
 .recipe-badge {
@@ -10840,8 +10908,8 @@ body.has-floating-back .scroll-top-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  background: #ffffff;
-  border: 1px solid #e7e2d8;
+  background: #f5f4f0; /* 柔和自然米灰，消除死白貼紙反差 */
+  border: 1px solid #e9e7e1;
   border-radius: 0.375rem;
   padding: 0.18rem 0.42rem;
   font-size: 0.68rem; /* 微排版字級 */
@@ -10965,12 +11033,11 @@ body.has-floating-back .scroll-top-btn {
   flex-shrink: 0;
 }
 
-/* 4. 右上角：喜愛寶可夢連動膠囊 (精巧、典雅、不突兀) */
+/* 4. 喜愛寶可夢連動膠囊 (精巧、典雅、不突兀) */
 .recipe-card-poke-wrapper {
-  position: absolute;
-  top: 1.05rem;
-  right: 1.05rem;
+  position: relative;
   z-index: 10;
+  display: inline-flex;
 }
 
 .recipe-card-poke-trigger {

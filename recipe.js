@@ -247,18 +247,13 @@
       }
 
       return `
-        <div class="recipe-card" data-recipe-id="${r.id}" data-recipe-name="${r.name}" data-category="${catMeta.slug}">
-          <!-- 右上角：喜愛寶可夢連動按鈕 -->
-          ${pokemonSectionHtml}
-
-          <!-- 1. 卡片頂部：56px 圖標 + 標題 + 標籤列 -->
-          <div class="recipe-card-header">
-            <div class="recipe-card-avatar-box">
-              <img class="recipe-card-avatar-img" src="${r.icon || r.onlineIcon}" alt="${r.name}" loading="lazy" onerror="this.onerror=null; if('${r.onlineIcon}' && this.src !== '${r.onlineIcon}') { this.src='${r.onlineIcon}'; } else { this.src='assets/item_sprites/60px-Bag_原味沙拉_Pokopia_Sprite.png'; }">
-            </div>
-            <div class="recipe-card-header-main">
-              <h3 class="recipe-card-title">${r.name}</h3>
-              <div class="recipe-card-badges">
+        <div class="recipe-row" data-recipe-id="${r.id}" data-recipe-name="${r.name}" data-category="${catMeta.slug}">
+          <!-- 1. 左區：料理身份與專長 -->
+          <div class="recipe-row-identity">
+            <img class="recipe-row-avatar-img" src="${r.icon || r.onlineIcon}" alt="${r.name}" loading="lazy" onerror="this.onerror=null; if('${r.onlineIcon}' && this.src !== '${r.onlineIcon}') { this.src='${r.onlineIcon}'; } else { this.src='assets/item_sprites/60px-Bag_原味沙拉_Pokopia_Sprite.png'; }">
+            <div class="recipe-row-identity-text">
+              <div class="recipe-row-title-line">
+                <h3 class="recipe-row-title">${r.name}</h3>
                 <span class="recipe-badge recipe-badge-cat cat-${catMeta.slug}">${catMeta.label}</span>
                 <span class="recipe-badge recipe-badge-taste ${tasteClass}">${r.taste || '美味'}</span>
                 ${specialtyHtml}
@@ -266,20 +261,18 @@
             </div>
           </div>
 
-          <!-- 2. 卡片中段：精緻食材膠囊晶片 -->
-          <div class="recipe-card-ingredients">
+          <!-- 2. 中區：所需食材籤 (輕盈無框手帳流，點擊反查) -->
+          <div class="recipe-row-ingredients">
             ${ingredientsHtml}
           </div>
 
-          <!-- 3. 卡片底部：招式加成與苔卡比獸效果 (自然露營手冊雙微章) -->
-          <div class="recipe-card-footer">
-            <div class="recipe-card-effects-row">
-              ${r.move ? `<div class="recipe-move-tag">「${r.move}」威力提升</div>` : ''}
-              <div class="recipe-snorlax-tag">
-                <span class="snorlax-moss-icon">🍃</span>
-                <span class="snorlax-effect-text">${r.snorlaxEffect || '可以和寶可夢變得比較要好'}</span>
-              </div>
+          <!-- 3. 右區：效果說明與喜愛寶可夢膠囊 -->
+          <div class="recipe-row-effects-section">
+            <div class="recipe-row-effects-text">
+              ${r.move ? `<span class="recipe-row-move-tag">「${r.move}」威力提升</span>` : ''}
+              <span class="recipe-row-snorlax-text">🍃 ${r.snorlaxEffect || '可以和寶可夢變得比較要好'}</span>
             </div>
+            ${pokemonSectionHtml}
           </div>
         </div>
       `;
@@ -431,7 +424,7 @@
 
       // 2. 定位到目標卡片並閃爍呼吸光暈
       setTimeout(() => {
-        const cards = document.querySelectorAll('.recipe-card');
+        const cards = document.querySelectorAll('.recipe-row, .recipe-card');
         let targetCard = null;
         for (const card of cards) {
           const name = card.getAttribute('data-recipe-name');
@@ -443,11 +436,11 @@
         }
         if (targetCard) {
           targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          targetCard.classList.remove('recipe-card-highlight');
+          targetCard.classList.remove('recipe-card-highlight', 'recipe-row-highlight');
           void targetCard.offsetWidth; // 重繪動畫
-          targetCard.classList.add('recipe-card-highlight');
+          targetCard.classList.add('recipe-row-highlight', 'recipe-card-highlight');
           setTimeout(() => {
-            targetCard.classList.remove('recipe-card-highlight');
+            targetCard.classList.remove('recipe-card-highlight', 'recipe-row-highlight');
           }, 2500);
         }
       }, 100);
