@@ -68,17 +68,16 @@
     return res.toLowerCase();
   }
 
-  // 品項分類匹配
+  // 品項分類匹配 (100% 嚴格依照 recipe.category 官方分類欄位，徹底排除 name.includes 模糊干擾)
   function matchCategory(recipe, cat) {
     if (cat === 'all') return true;
     const c = recipe.category || '';
-    const name = recipe.name || '';
-    if (cat === 'salad') return c.includes('沙拉') || name.includes('沙拉');
-    if (cat === 'bread') return c.includes('麵包') || name.includes('麵包');
-    if (cat === 'burger') return c.includes('漢堡') || name.includes('漢堡');
-    if (cat === 'soup') return c.includes('湯') || name.includes('湯');
-    if (cat === 'smoothie') return c.includes('冰沙') || name.includes('冰沙');
-    if (cat === 'curry') return c.includes('咖喱') || c.includes('咖哩') || name.includes('咖喱') || name.includes('咖哩');
+    if (cat === 'salad') return c === '沙拉類' || c.includes('沙拉');
+    if (cat === 'bread') return c === '麵包類' || c.includes('麵包');
+    if (cat === 'burger') return c === '漢堡排類' || c.includes('漢堡');
+    if (cat === 'soup') return c === '湯類' || c === '湯品類' || c.includes('湯');
+    if (cat === 'smoothie') return c === '冰沙類' || c.includes('冰沙');
+    if (cat === 'curry') return c === '咖喱類' || c === '咖哩類' || c.includes('咖哩') || c.includes('咖喱');
     return true;
   }
 
@@ -131,24 +130,25 @@
     return list;
   }
 
-  // 取得品項顯示名與 CSS class
-  function getCategoryMeta(categoryStr, name) {
-    if ((categoryStr && categoryStr.includes('沙拉')) || name.includes('沙拉')) {
+  // 取得品項顯示名與 CSS class (100% 嚴格以 categoryStr 官方分類為準)
+  function getCategoryMeta(categoryStr) {
+    const c = categoryStr || '';
+    if (c.includes('沙拉')) {
       return { label: '🥗 沙拉', slug: 'salad' };
     }
-    if ((categoryStr && categoryStr.includes('麵包')) || name.includes('麵包')) {
+    if (c.includes('麵包')) {
       return { label: '🍞 麵包', slug: 'bread' };
     }
-    if ((categoryStr && categoryStr.includes('漢堡')) || name.includes('漢堡')) {
+    if (c.includes('漢堡')) {
       return { label: '🍔 漢堡排', slug: 'burger' };
     }
-    if ((categoryStr && categoryStr.includes('湯')) || name.includes('湯')) {
+    if (c.includes('湯')) {
       return { label: '🍲 湯', slug: 'soup' };
     }
-    if ((categoryStr && categoryStr.includes('冰沙')) || name.includes('冰沙')) {
+    if (c.includes('冰沙')) {
       return { label: '🥤 冰沙', slug: 'smoothie' };
     }
-    if ((categoryStr && categoryStr.includes('咖喱')) || (categoryStr && categoryStr.includes('咖哩')) || name.includes('咖哩') || name.includes('咖喱')) {
+    if (c.includes('咖喱') || c.includes('咖哩')) {
       return { label: '🍛 咖哩', slug: 'curry' };
     }
     return { label: categoryStr || '料理', slug: 'default' };
@@ -281,7 +281,7 @@
 
   // 設置雙層篩選與卡片互動事件
   function initRecipeEvents() {
-    // 1. 第一層：品項類別點擊
+    // 1. 第一層：品項類別點擊 (支援 Toggle 再次點擊取消)
     const catContainer = document.getElementById('recipeCategoryFilters');
     if (catContainer) {
       catContainer.addEventListener('click', (e) => {
@@ -290,16 +290,24 @@
         const cat = btn.getAttribute('data-category');
         if (!cat) return;
 
-        catContainer.querySelectorAll('.recipe-filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+        // 若點擊當前已啟用的按鈕（且非 "all"），則切換為取消 (Toggle Off 回退至 "all")
+        if (cat !== 'all' && recipeState.category === cat) {
+          recipeState.category = 'all';
+          catContainer.querySelectorAll('.recipe-filter-btn').forEach(b => b.classList.remove('active'));
+          const allBtn = catContainer.querySelector('[data-category="all"]');
+          if (allBtn) allBtn.classList.add('active');
+        } else {
+          catContainer.querySelectorAll('.recipe-filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          recipeState.category = cat;
+        }
 
-        recipeState.category = cat;
         recipeState.activePopoverId = null;
         renderRecipes();
       });
     }
 
-    // 2. 第二層：口味風味點擊
+    // 2. 第二層：口味風味點擊 (支援 Toggle 再次點擊取消)
     const tasteContainer = document.getElementById('recipeTasteFilters');
     if (tasteContainer) {
       tasteContainer.addEventListener('click', (e) => {
@@ -308,10 +316,18 @@
         const taste = btn.getAttribute('data-taste');
         if (!taste) return;
 
-        tasteContainer.querySelectorAll('.recipe-filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+        // 若點擊當前已啟用的按鈕（且非 "all"），則切換為取消 (Toggle Off 回退至 "all")
+        if (taste !== 'all' && recipeState.taste === taste) {
+          recipeState.taste = 'all';
+          tasteContainer.querySelectorAll('.recipe-filter-btn').forEach(b => b.classList.remove('active'));
+          const allBtn = tasteContainer.querySelector('[data-taste="all"]');
+          if (allBtn) allBtn.classList.add('active');
+        } else {
+          tasteContainer.querySelectorAll('.recipe-filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          recipeState.taste = taste;
+        }
 
-        recipeState.taste = taste;
         recipeState.activePopoverId = null;
         renderRecipes();
       });
