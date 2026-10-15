@@ -1576,7 +1576,7 @@
       if (DOM.toolbarTitle) DOM.toolbarTitle.textContent = '料理食譜';
       if (DOM.catalogProgressBadge) DOM.catalogProgressBadge.classList.remove('hidden');
       if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🍲';
-      const recipeTotal = window.POKOPIA_RECIPES_DB ? window.POKOPIA_RECIPES_DB.length : 34;
+      const recipeTotal = window.POKOPIA_RECIPES_DB ? window.POKOPIA_RECIPES_DB.length : 35;
       if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>' + recipeTotal + '</strong> 道美味料理全收錄';
       if (DOM.searchRow) DOM.searchRow.classList.remove('hidden');
       if (DOM.searchInput) DOM.searchInput.placeholder = '搜尋料理名稱、食材、設施、招式或口味 (如: 西瓜麵包, 小麥, 番茄)...';

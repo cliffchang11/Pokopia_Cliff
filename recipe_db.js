@@ -1,6 +1,6 @@
 /**
  * Pokopia Recipe Database (100% Traditional Chinese)
- * Auto-generated from 52poke MediaWiki & Synchronized with Pokopia Pokedex
+ * Auto-generated & Synchronized with Pokopia Pokedex and Gamertw HD Sprites
  */
 var POKOPIA_RECIPES_DB = [
   {
@@ -28,8 +28,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "葉子 × 1、 任意食材 × 1",
     "snorlaxEffect": "可以和寶可夢變得比較要好。",
     "snorlaxExp": "100／150",
-    "icon": "assets/item_sprites/60px-Bag_原味沙拉_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/7/7a/Bag_%E5%8E%9F%E5%91%B3%E6%B2%99%E6%8B%89_Pokopia_Sprite.png/40px-Bag_%E5%8E%9F%E5%91%B3%E6%B2%99%E6%8B%89_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/simple-salad.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/simple-salad.png",
     "likedPokemon": []
   },
   {
@@ -57,8 +57,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "葉子 × 1、 蘋野果 × 1",
     "snorlaxEffect": "會變得比較容易找到遠古之物。",
     "snorlaxExp": "100／150",
-    "icon": "assets/item_sprites/60px-Bag_蘋野沙拉_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/7/74/Bag_%E8%98%8B%E9%87%8E%E6%B2%99%E6%8B%89_Pokopia_Sprite.png/40px-Bag_%E8%98%8B%E9%87%8E%E6%B2%99%E6%8B%89_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/leppa-salad.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/leppa-salad.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_1",
@@ -507,8 +507,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "葉子 × 1、 海藻 × 1",
     "snorlaxEffect": "可以比較容易發現稀有物品。",
     "snorlaxExp": "200／300",
-    "icon": "assets/item_sprites/60px-Bag_海藻沙拉_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/f/f8/Bag_%E6%B5%B7%E8%97%BB%E6%B2%99%E6%8B%89_Pokopia_Sprite.png/40px-Bag_%E6%B5%B7%E8%97%BB%E6%B2%99%E6%8B%89_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/seaweed-salad.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/seaweed-salad.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_13",
@@ -1011,8 +1011,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "葉子 × 1、 任意食材 × 1",
     "snorlaxEffect": "商店會變得比較容易出現好東西。",
     "snorlaxExp": "200／300",
-    "icon": "assets/item_sprites/60px-Bag_絲絲沙拉_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/f/fb/Bag_%E7%B5%B2%E7%B5%B2%E6%B2%99%E6%8B%89_Pokopia_Sprite.png/40px-Bag_%E7%B5%B2%E7%B5%B2%E6%B2%99%E6%8B%89_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/shredded-salad.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/shredded-salad.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_2",
@@ -1473,8 +1473,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "葉子 × 1、 零餘果 × 1",
     "snorlaxEffect": "可以相當容易遇到帶著稀有羽毛的寶可夢。",
     "snorlaxExp": "500／750",
-    "icon": "assets/item_sprites/60px-Bag_搗搗沙拉_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/0/0c/Bag_%E6%90%97%E6%90%97%E6%B2%99%E6%8B%89_Pokopia_Sprite.png/40px-Bag_%E6%90%97%E6%90%97%E6%B2%99%E6%8B%89_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/crushed-berry-salad.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/crushed-berry-salad.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_14",
@@ -1941,8 +1941,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "葉子 × 1、 任意麵包 × 1",
     "snorlaxEffect": "棲息地會比較容易出現寶可夢。",
     "snorlaxExp": "500／750",
-    "icon": "assets/item_sprites/60px-Bag_麵包丁沙拉_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/8/84/Bag_%E9%BA%B5%E5%8C%85%E4%B8%81%E6%B2%99%E6%8B%89_Pokopia_Sprite.png/40px-Bag_%E9%BA%B5%E5%8C%85%E4%B8%81%E6%B2%99%E6%8B%89_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/crouton-salad.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/crouton-salad.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_4",
@@ -2380,7 +2380,7 @@ var POKOPIA_RECIPES_DB = [
   },
   {
     "id": "recipe_007",
-    "name": "粒粒沙拉",
+    "name": "啵啵沙拉",
     "category": "沙拉類",
     "facilityId": "cutting_board",
     "facilityName": "砧板",
@@ -2392,7 +2392,7 @@ var POKOPIA_RECIPES_DB = [
       {
         "name": "海葡萄",
         "count": 1,
-        "icon": ""
+        "icon": "assets/item_sprites/sea-grapes.png"
       },
       {
         "name": "任意麵包",
@@ -2403,8 +2403,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "海葡萄 × 1、 任意麵包 × 1",
     "snorlaxEffect": "可以比較容易發現稀有物品。",
     "snorlaxExp": "500／750",
-    "icon": "assets/item_sprites/60px-Bag_原味沙拉_Pokopia_Sprite.png",
-    "onlineIcon": "",
+    "icon": "assets/item_sprites/popping-salad.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/popping-salad.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_13",
@@ -2907,8 +2907,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "小麥 × 1、 任意食材 × 2",
     "snorlaxEffect": "可以和寶可夢變得比較要好。",
     "snorlaxExp": "100／150",
-    "icon": "assets/item_sprites/60px-Bag_原味麵包_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/f/f4/Bag_%E5%8E%9F%E5%91%B3%E9%BA%B5%E5%8C%85_Pokopia_Sprite.png/40px-Bag_%E5%8E%9F%E5%91%B3%E9%BA%B5%E5%8C%85_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/simple-bread.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/simple-bread.png",
     "likedPokemon": []
   },
   {
@@ -2941,8 +2941,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "小麥 × 1、 蘋野果 × 1、 任意食材 × 1",
     "snorlaxEffect": "商店會變得比較容易出現好東西。",
     "snorlaxExp": "100／150",
-    "icon": "assets/item_sprites/60px-Bag_蘋野果麵包_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/d/de/Bag_%E8%98%8B%E9%87%8E%E6%9E%9C%E9%BA%B5%E5%8C%85_Pokopia_Sprite.png/40px-Bag_%E8%98%8B%E9%87%8E%E6%9E%9C%E9%BA%B5%E5%8C%85_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/leppa-bread.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/leppa-bread.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_2",
@@ -3408,8 +3408,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "小麥 × 1、 成熟的紅蘿蔔 × 1、 任意食材 × 1",
     "snorlaxEffect": "棲息地較容易出現寶可夢。",
     "snorlaxExp": "200／300",
-    "icon": "assets/item_sprites/60px-Bag_紅蘿蔔麵包_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/6/64/Bag_%E7%B4%85%E8%98%BF%E8%94%94%E9%BA%B5%E5%8C%85_Pokopia_Sprite.png/40px-Bag_%E7%B4%85%E8%98%BF%E8%94%94%E9%BA%B5%E5%8C%85_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/carrot-bread.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/carrot-bread.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_4",
@@ -3875,8 +3875,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "小麥 × 1、 任意麵包 × 1、 任意食材 × 1",
     "snorlaxEffect": "可以比較容易發現稀有物品。",
     "snorlaxExp": "200／300",
-    "icon": "assets/item_sprites/60px-Bag_重製麵包_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/d/df/Bag_%E9%87%8D%E8%A3%BD%E9%BA%B5%E5%8C%85_Pokopia_Sprite.png/40px-Bag_%E9%87%8D%E8%A3%BD%E9%BA%B5%E5%8C%85_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/recycled-bread.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/recycled-bread.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_13",
@@ -4384,8 +4384,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "小麥 × 1、 桃桃果 × 1、 任意食材 × 1",
     "snorlaxEffect": "會變得相當容易找到遠古之物。",
     "snorlaxExp": "500／750",
-    "icon": "assets/item_sprites/60px-Bag_鬆軟麵包_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/f/fb/Bag_%E9%AC%86%E8%BB%9F%E9%BA%B5%E5%8C%85_Pokopia_Sprite.png/40px-Bag_%E9%AC%86%E8%BB%9F%E9%BA%B5%E5%8C%85_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/fluffy-bread.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/fluffy-bread.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_1",
@@ -4839,8 +4839,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "小麥 × 1、 任意湯 × 1、 任意食材 × 1",
     "snorlaxEffect": "棲息地會相當容易出現寶可夢。",
     "snorlaxExp": "500／750",
-    "icon": "assets/item_sprites/60px-Bag_熱騰騰的濃湯麵包_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/b/b5/Bag_%E7%86%B1%E9%A8%B0%E9%A8%B0%E7%9A%84%E6%BF%83%E6%B9%AF%E9%BA%B5%E5%8C%85_Pokopia_Sprite.png/40px-Bag_%E7%86%B1%E9%A8%B0%E9%A8%B0%E7%9A%84%E6%BF%83%E6%B9%AF%E9%BA%B5%E5%8C%85_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/bread-bowl.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/bread-bowl.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_4",
@@ -5295,7 +5295,7 @@ var POKOPIA_RECIPES_DB = [
       {
         "name": "切塊西瓜",
         "count": 1,
-        "icon": ""
+        "icon": "assets/item_sprites/watermelon-slice.png"
       },
       {
         "name": "任意食材",
@@ -5306,8 +5306,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "小麥 × 1、 切塊西瓜 × 1、 任意食材 × 1",
     "snorlaxEffect": "會變得相當容易找到遠古之物。",
     "snorlaxExp": "500／750",
-    "icon": "assets/item_sprites/60px-Bag_原味麵包_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/9/99/Bag_%E5%B0%8F%E9%BA%A5_Pokopia_Sprite.png/20px-Bag_%E5%B0%8F%E9%BA%A5_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/watermelon-bread.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/watermelon-bread.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_1",
@@ -5756,8 +5756,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "豆子 × 1、 任意食材 × 3",
     "snorlaxEffect": "可以和寶可夢變得比較要好。",
     "snorlaxExp": "100／150",
-    "icon": "assets/item_sprites/60px-Bag_原味漢堡排_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/a/af/Bag_%E5%8E%9F%E5%91%B3%E6%BC%A2%E5%A0%A1%E6%8E%92_Pokopia_Sprite.png/40px-Bag_%E5%8E%9F%E5%91%B3%E6%BC%A2%E5%A0%A1%E6%8E%92_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/simple-hamburger-steak.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/simple-hamburger-steak.png",
     "likedPokemon": []
   },
   {
@@ -5790,8 +5790,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "豆子 × 1、 成熟的蘑菇 × 1、 任意食材 × 2",
     "snorlaxEffect": "可以比較容易遇到帶著稀有羽毛的寶可夢。",
     "snorlaxExp": "100／150",
-    "icon": "assets/item_sprites/60px-Bag_蘑菇漢堡排_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/e/e4/Bag_%E8%98%91%E8%8F%87%E6%BC%A2%E5%A0%A1%E6%8E%92_Pokopia_Sprite.png/40px-Bag_%E8%98%91%E8%8F%87%E6%BC%A2%E5%A0%A1%E6%8E%92_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/mushroom-hamburger-steak.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/mushroom-hamburger-steak.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_14",
@@ -6263,8 +6263,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "豆子 × 1、 番茄 × 1、 任意食材 × 2",
     "snorlaxEffect": "商店會變得比較容易出現好東西。",
     "snorlaxExp": "200／300",
-    "icon": "assets/item_sprites/60px-Bag_番茄漢堡排_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/5/56/Bag_%E7%95%AA%E8%8C%84%E6%BC%A2%E5%A0%A1%E6%8E%92_Pokopia_Sprite.png/40px-Bag_%E7%95%AA%E8%8C%84%E6%BC%A2%E5%A0%A1%E6%8E%92_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/tomato-hamburger-steak.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/tomato-hamburger-steak.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_2",
@@ -6730,8 +6730,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "豆子 × 1、 馬鈴薯 × 1、 任意食材 × 2",
     "snorlaxEffect": "較容易找到「遺古之物」。",
     "snorlaxExp": "200／300",
-    "icon": "assets/item_sprites/60px-Bag_馬鈴薯漢堡排_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/d/dd/Bag_%E9%A6%AC%E9%88%B4%E8%96%AF%E6%BC%A2%E5%A0%A1%E6%8E%92_Pokopia_Sprite.png/40px-Bag_%E9%A6%AC%E9%88%B4%E8%96%AF%E6%BC%A2%E5%A0%A1%E6%8E%92_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/potato-hamburger-steak.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/potato-hamburger-steak.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_1",
@@ -7190,8 +7190,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "豆子 × 1、 莓莓果 × 1、 木子果 × 1、 任意食材 × 1",
     "snorlaxEffect": "可以相當容易發現稀有物品。",
     "snorlaxExp": "500／750",
-    "icon": "assets/item_sprites/60px-Bag_成熟滋味漢堡排_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/f/fc/Bag_%E6%88%90%E7%86%9F%E6%BB%8B%E5%91%B3%E6%BC%A2%E5%A0%A1%E6%8E%92_Pokopia_Sprite.png/40px-Bag_%E6%88%90%E7%86%9F%E6%BB%8B%E5%91%B3%E6%BC%A2%E5%A0%A1%E6%8E%92_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/bitter-hamburger-steak.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/bitter-hamburger-steak.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_13",
@@ -7699,8 +7699,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "豆子 × 1、 馬鈴薯 × 1、 任意沙拉 × 2",
     "snorlaxEffect": "和寶可夢變得相當要好。",
     "snorlaxExp": "500／750",
-    "icon": "assets/item_sprites/60px-Bag_多彩漢堡排_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/f/f2/Bag_%E5%A4%9A%E5%BD%A9%E6%BC%A2%E5%A0%A1%E6%8E%92_Pokopia_Sprite.png/40px-Bag_%E5%A4%9A%E5%BD%A9%E6%BC%A2%E5%A0%A1%E6%8E%92_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/vibrant-hamburger-steak.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/vibrant-hamburger-steak.png",
     "likedPokemon": []
   },
   {
@@ -7722,7 +7722,7 @@ var POKOPIA_RECIPES_DB = [
       {
         "name": "辣酱",
         "count": 1,
-        "icon": ""
+        "icon": "assets/item_sprites/chili-sauce.png"
       },
       {
         "name": "任意食材",
@@ -7733,8 +7733,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "豆子 × 1、 辣酱 × 1、 任意食材 × 2",
     "snorlaxEffect": "棲息地會比較容易出現寶可夢。",
     "snorlaxExp": "500／750",
-    "icon": "assets/item_sprites/60px-Bag_原味漢堡排_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/f/fb/Bag_%E8%B1%86%E5%AD%90_Pokopia_Sprite.png/20px-Bag_%E8%B1%86%E5%AD%90_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/explosive-hamburger-steak.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/explosive-hamburger-steak.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_4",
@@ -8195,8 +8195,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "美味之水 × 1、 任意食材 × 3",
     "snorlaxEffect": "可以和寶可夢變得比較要好。",
     "snorlaxExp": "100／150",
-    "icon": "assets/item_sprites/60px-Bag_原味湯_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/9/9c/Bag_%E5%8E%9F%E5%91%B3%E6%B9%AF_Pokopia_Sprite.png/40px-Bag_%E5%8E%9F%E5%91%B3%E6%B9%AF_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/simple-soup.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/simple-soup.png",
     "likedPokemon": []
   },
   {
@@ -8229,8 +8229,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "美味之水 × 1、 海藻 × 1、 任意食材 × 1",
     "snorlaxEffect": "可以比較容易發現稀有物品。",
     "snorlaxExp": "100／150",
-    "icon": "assets/item_sprites/60px-Bag_海藻湯_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/f/f0/Bag_%E6%B5%B7%E8%97%BB%E6%B9%AF_Pokopia_Sprite.png/40px-Bag_%E6%B5%B7%E8%97%BB%E6%B9%AF_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/seaweed-soup.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/seaweed-soup.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_13",
@@ -8738,8 +8738,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "美味之水 × 1、 成熟的蘑菇 × 1、 任意食材 × 1",
     "snorlaxEffect": "可以比較容易遇到帶著稀有羽毛的寶可夢。",
     "snorlaxExp": "200／300",
-    "icon": "assets/item_sprites/60px-Bag_蘑菇湯_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/5/5d/Bag_%E8%98%91%E8%8F%87%E6%B9%AF_Pokopia_Sprite.png/40px-Bag_%E8%98%91%E8%8F%87%E6%B9%AF_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/mushroom-soup.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/mushroom-soup.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_14",
@@ -9206,8 +9206,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "美味之水 × 1、 任意食材 × 3",
     "snorlaxEffect": "棲息地會比較容易出現寶可夢。",
     "snorlaxExp": "200／300",
-    "icon": "assets/item_sprites/60px-Bag_電電湯_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/8/8b/Bag_%E9%9B%BB%E9%9B%BB%E6%B9%AF_Pokopia_Sprite.png/40px-Bag_%E9%9B%BB%E9%9B%BB%E6%B9%AF_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/electrifying-soup.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/electrifying-soup.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_4",
@@ -9673,8 +9673,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "美味之水 × 1、 豆子 × 1、 葉子 × 1",
     "snorlaxEffect": "棲息地較容易出現寶可夢。",
     "snorlaxExp": "500／750",
-    "icon": "assets/item_sprites/60px-Bag_藥膳湯_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/1/13/Bag_%E8%97%A5%E8%86%B3%E6%B9%AF_Pokopia_Sprite.png/40px-Bag_%E8%97%A5%E8%86%B3%E6%B9%AF_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/healthy-soup.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/healthy-soup.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_4",
@@ -10140,8 +10140,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "美味之水 × 1、 利木果 × 1、 任意漢堡排 × 1",
     "snorlaxEffect": "商店會變得相當容易出現好東西。",
     "snorlaxExp": "500／750",
-    "icon": "assets/item_sprites/60px-Bag_多滋湯_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/a/a7/Bag_%E5%A4%9A%E6%BB%8B%E6%B9%AF_Pokopia_Sprite.png/40px-Bag_%E5%A4%9A%E6%BB%8B%E6%B9%AF_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/flavorful-soup.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/flavorful-soup.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_2",
@@ -10579,7 +10579,7 @@ var POKOPIA_RECIPES_DB = [
   },
   {
     "id": "recipe_028",
-    "name": "咖喱飯",
+    "name": "咖哩飯",
     "category": "咖喱類",
     "facilityId": "party_pot",
     "facilityName": "派對鍋",
@@ -10612,8 +10612,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "蘋野果 × 15、 小麥 × 15、 豆子 × 15、 甜甜蜜 × 15",
     "snorlaxEffect": "大家一起享用的派對盛宴",
     "snorlaxExp": "100／150",
-    "icon": "assets/item_sprites/60px-Bag_咖喱飯_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/7/76/Bag_%E5%92%96%E5%96%B1%E9%A3%AF_Pokopia_Sprite.png/40px-Bag_%E5%92%96%E5%96%B1%E9%A3%AF_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/curry-and-rice.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/curry-and-rice.png",
     "likedPokemon": []
   },
   {
@@ -10630,7 +10630,7 @@ var POKOPIA_RECIPES_DB = [
       {
         "name": "切塊西瓜",
         "count": 1,
-        "icon": ""
+        "icon": "assets/item_sprites/watermelon-slice.png"
       },
       {
         "name": "任意食材",
@@ -10641,8 +10641,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "切塊西瓜 × 1、 任意食材 × 3",
     "snorlaxEffect": "會變得相當容易找到遠古之物。",
     "snorlaxExp": "100／150",
-    "icon": "assets/item_sprites/60px-Bag_蘋野冰沙_Pokopia_Sprite.png",
-    "onlineIcon": "",
+    "icon": "assets/item_sprites/watermelon-smoothie.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/watermelon-smoothie.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_1",
@@ -11080,12 +11080,12 @@ var POKOPIA_RECIPES_DB = [
       {
         "name": "切塊西瓜",
         "count": 1,
-        "icon": ""
+        "icon": "assets/item_sprites/watermelon-slice.png"
       },
       {
         "name": "海葡萄",
         "count": 1,
-        "icon": ""
+        "icon": "assets/item_sprites/sea-grapes.png"
       },
       {
         "name": "任意食材",
@@ -11096,8 +11096,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "切塊西瓜 × 1、 海葡萄 × 1、 任意食材 × 1",
     "snorlaxEffect": "可以比較容易遇到帶著稀有羽毛的寶可夢。",
     "snorlaxExp": "100／150",
-    "icon": "assets/item_sprites/60px-Bag_蘋野冰沙_Pokopia_Sprite.png",
-    "onlineIcon": "",
+    "icon": "assets/item_sprites/sea-grape-smoothie.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/sea-grape-smoothie.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_14",
@@ -11553,7 +11553,7 @@ var POKOPIA_RECIPES_DB = [
       {
         "name": "切塊西瓜",
         "count": 1,
-        "icon": ""
+        "icon": "assets/item_sprites/watermelon-slice.png"
       },
       {
         "name": "蘋野果",
@@ -11569,8 +11569,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "切塊西瓜 × 1、 蘋野果 × 1、 任意食材 × 1",
     "snorlaxEffect": "會變得相當容易找到遠古之物。",
     "snorlaxExp": "200／300",
-    "icon": "assets/item_sprites/60px-Bag_蘋野冰沙_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/d/de/Bag_%E8%98%8B%E9%87%8E%E6%9E%9C_Pokopia_Sprite.png/20px-Bag_%E8%98%8B%E9%87%8E%E6%9E%9C_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/leppa-smoothie.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/leppa-smoothie.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_1",
@@ -12008,7 +12008,7 @@ var POKOPIA_RECIPES_DB = [
       {
         "name": "切塊西瓜",
         "count": 1,
-        "icon": ""
+        "icon": "assets/item_sprites/watermelon-slice.png"
       },
       {
         "name": "成熟的紅蘿蔔",
@@ -12024,8 +12024,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "切塊西瓜 × 1、 成熟的紅蘿蔔 × 1、 任意食材 × 1",
     "snorlaxEffect": "棲息地會比較容易出現寶可夢。",
     "snorlaxExp": "200／300",
-    "icon": "assets/item_sprites/60px-Bag_蘋野冰沙_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/9/9b/Bag_%E6%88%90%E7%86%9F%E7%9A%84%E7%B4%85%E8%98%BF%E8%94%94_Pokopia_Sprite.png/20px-Bag_%E6%88%90%E7%86%9F%E7%9A%84%E7%B4%85%E8%98%BF%E8%94%94_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/red-hot-smoothie.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/red-hot-smoothie.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_4",
@@ -12475,7 +12475,7 @@ var POKOPIA_RECIPES_DB = [
       {
         "name": "切塊西瓜",
         "count": 1,
-        "icon": ""
+        "icon": "assets/item_sprites/watermelon-slice.png"
       },
       {
         "name": "勁爽汽水",
@@ -12491,8 +12491,8 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "切塊西瓜 × 1、 勁爽汽水 × 1、 任意食材 × 1",
     "snorlaxEffect": "商店會變得相當容易出現好東西。",
     "snorlaxExp": "500／750",
-    "icon": "assets/item_sprites/60px-Bag_蘋野冰沙_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/a/a3/Bag_%E5%8B%81%E7%88%BD%E6%B1%BD%E6%B0%B4_Pokopia_Sprite.png/20px-Bag_%E5%8B%81%E7%88%BD%E6%B1%BD%E6%B0%B4_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/refreshing-soda-smoothie.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/refreshing-soda-smoothie.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_2",
@@ -12942,7 +12942,7 @@ var POKOPIA_RECIPES_DB = [
       {
         "name": "切塊西瓜",
         "count": 1,
-        "icon": ""
+        "icon": "assets/item_sprites/watermelon-slice.png"
       },
       {
         "name": "哞哞鮮奶咖啡",
@@ -12958,8 +12958,517 @@ var POKOPIA_RECIPES_DB = [
     "ingredientsText": "切塊西瓜 × 1、 哞哞鮮奶咖啡 × 1、 任意食材 × 1",
     "snorlaxEffect": "可以比較容易發現稀有物品。",
     "snorlaxExp": "500／750",
-    "icon": "assets/item_sprites/60px-Bag_蘋野冰沙_Pokopia_Sprite.png",
-    "onlineIcon": "https://s1.52poke.com/wiki/thumb/4/4c/Bag_%E5%93%9E%E5%93%9E%E9%AE%AE%E5%A5%B6%E5%92%96%E5%95%A1_Pokopia_Sprite.png/20px-Bag_%E5%93%9E%E5%93%9E%E9%AE%AE%E5%A5%B6%E5%92%96%E5%95%A1_Pokopia_Sprite.png",
+    "icon": "assets/item_sprites/coffee-parfait-smoothie.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/coffee-parfait-smoothie.png",
+    "likedPokemon": [
+      {
+        "id": "pkm_s1_13",
+        "number": "No. 013",
+        "name": "走路草",
+        "sprite": "assets/pkm_sprites/pkm_icon_0043.webp"
+      },
+      {
+        "id": "pkm_s1_15",
+        "number": "No. 015",
+        "name": "霸王花",
+        "sprite": "assets/pkm_sprites/pkm_icon_0045.webp"
+      },
+      {
+        "id": "pkm_s1_17",
+        "number": "No. 017",
+        "name": "派拉斯",
+        "sprite": "assets/pkm_sprites/pkm_icon_0046.webp"
+      },
+      {
+        "id": "pkm_s1_18",
+        "number": "No. 018",
+        "name": "派拉斯特",
+        "sprite": "assets/pkm_sprites/pkm_icon_0047.webp"
+      },
+      {
+        "id": "pkm_s1_19",
+        "number": "No. 019",
+        "name": "毛球",
+        "sprite": "assets/pkm_sprites/pkm_icon_0048.webp"
+      },
+      {
+        "id": "pkm_s1_20",
+        "number": "No. 020",
+        "name": "摩魯蛾",
+        "sprite": "assets/pkm_sprites/pkm_icon_0049.webp"
+      },
+      {
+        "id": "pkm_s1_22",
+        "number": "No. 022",
+        "name": "口呆花",
+        "sprite": "assets/pkm_sprites/pkm_icon_0070.webp"
+      },
+      {
+        "id": "pkm_s1_23",
+        "number": "No. 023",
+        "name": "大食花",
+        "sprite": "assets/pkm_sprites/pkm_icon_0071.webp"
+      },
+      {
+        "id": "pkm_s1_27",
+        "number": "No. 027",
+        "name": "小磁怪",
+        "sprite": "assets/pkm_sprites/pkm_icon_0081.webp"
+      },
+      {
+        "id": "pkm_s1_28",
+        "number": "No. 028",
+        "name": "三合一磁怪",
+        "sprite": "assets/pkm_sprites/pkm_icon_0082.webp"
+      },
+      {
+        "id": "pkm_s1_29",
+        "number": "No. 029",
+        "name": "自爆磁怪",
+        "sprite": "assets/pkm_sprites/pkm_icon_0462.webp"
+      },
+      {
+        "id": "pkm_s1_32",
+        "number": "No. 032",
+        "name": "卡拉卡拉",
+        "sprite": "assets/pkm_sprites/pkm_icon_0104.webp"
+      },
+      {
+        "id": "pkm_s1_38",
+        "number": "No. 038",
+        "name": "瓦斯彈",
+        "sprite": "assets/pkm_sprites/pkm_icon_0109.webp"
+      },
+      {
+        "id": "pkm_s1_39",
+        "number": "No. 039",
+        "name": "雙彈瓦斯",
+        "sprite": "assets/pkm_sprites/pkm_icon_0110.webp"
+      },
+      {
+        "id": "pkm_s1_42",
+        "number": "No. 041",
+        "name": "巨蔓藤（博士）",
+        "sprite": "assets/pkm_sprites/pkm_icon_0465P.webp"
+      },
+      {
+        "id": "pkm_s1_44",
+        "number": "No. 043",
+        "name": "巨鉗螳螂",
+        "sprite": "assets/pkm_sprites/pkm_icon_0212.webp"
+      },
+      {
+        "id": "pkm_s1_55",
+        "number": "No. 054",
+        "name": "吞食獸",
+        "sprite": "assets/pkm_sprites/pkm_icon_0317.webp"
+      },
+      {
+        "id": "pkm_s1_64",
+        "number": "No. 061",
+        "name": "飄飄球",
+        "sprite": "assets/pkm_sprites/pkm_icon_0425.webp"
+      },
+      {
+        "id": "pkm_s1_65",
+        "number": "No. 062",
+        "name": "隨風球",
+        "sprite": "assets/pkm_sprites/pkm_icon_0426.webp"
+      },
+      {
+        "id": "pkm_s1_71",
+        "number": "No. 068",
+        "name": "燭光靈",
+        "sprite": "assets/pkm_sprites/pkm_icon_0607.webp"
+      },
+      {
+        "id": "pkm_s1_72",
+        "number": "No. 069",
+        "name": "燈火幽靈",
+        "sprite": "assets/pkm_sprites/pkm_icon_0608.webp"
+      },
+      {
+        "id": "pkm_s1_80",
+        "number": "No. 077",
+        "name": "古月鳥",
+        "sprite": "assets/pkm_sprites/pkm_icon_0845.webp"
+      },
+      {
+        "id": "pkm_s1_95",
+        "number": "No. 091",
+        "name": "臭泥",
+        "sprite": "assets/pkm_sprites/pkm_icon_0088.webp"
+      },
+      {
+        "id": "pkm_s1_96",
+        "number": "No. 092",
+        "name": "臭臭泥",
+        "sprite": "assets/pkm_sprites/pkm_icon_0089.webp"
+      },
+      {
+        "id": "pkm_s1_100",
+        "number": "No. 096",
+        "name": "霹靂電球",
+        "sprite": "assets/pkm_sprites/pkm_icon_0100.webp"
+      },
+      {
+        "id": "pkm_s1_114",
+        "number": "No. 109",
+        "name": "圓絲蛛",
+        "sprite": "assets/pkm_sprites/pkm_icon_0167.webp"
+      },
+      {
+        "id": "pkm_s1_117",
+        "number": "No. 112",
+        "name": "茸茸羊",
+        "sprite": "assets/pkm_sprites/pkm_icon_0180.webp"
+      },
+      {
+        "id": "pkm_s1_123",
+        "number": "No. 118",
+        "name": "土王",
+        "sprite": "assets/pkm_sprites/pkm_icon_0980.webp"
+      },
+      {
+        "id": "pkm_s1_135",
+        "number": "No. 130",
+        "name": "帝王拿波",
+        "sprite": "assets/pkm_sprites/pkm_icon_0395.webp"
+      },
+      {
+        "id": "pkm_s1_136",
+        "number": "No. 131",
+        "name": "差不多娃娃",
+        "sprite": "assets/pkm_sprites/pkm_icon_0531.webp"
+      },
+      {
+        "id": "pkm_s1_137",
+        "number": "No. 132",
+        "name": "破破袋",
+        "sprite": "assets/pkm_sprites/pkm_icon_0568.webp"
+      },
+      {
+        "id": "pkm_s1_144",
+        "number": "No. 139",
+        "name": "蟲電寶",
+        "sprite": "assets/pkm_sprites/pkm_icon_0737.webp"
+      },
+      {
+        "id": "pkm_s1_146",
+        "number": "No. 141",
+        "name": "謎擬Ｑ",
+        "sprite": "assets/pkm_sprites/pkm_icon_0778.webp"
+      },
+      {
+        "id": "pkm_s1_161",
+        "number": "No. 154",
+        "name": "地鼠",
+        "sprite": "assets/pkm_sprites/pkm_icon_0050.webp"
+      },
+      {
+        "id": "pkm_s1_167",
+        "number": "No. 160",
+        "name": "隆隆石",
+        "sprite": "assets/pkm_sprites/pkm_icon_0075.webp"
+      },
+      {
+        "id": "pkm_s1_174",
+        "number": "No. 167",
+        "name": "黑暗鴉",
+        "sprite": "assets/pkm_sprites/pkm_icon_0198.webp"
+      },
+      {
+        "id": "pkm_s1_175",
+        "number": "No. 168",
+        "name": "烏鴉頭頭",
+        "sprite": "assets/pkm_sprites/pkm_icon_0430.webp"
+      },
+      {
+        "id": "pkm_s1_180",
+        "number": "No. 173",
+        "name": "蓮帽小童",
+        "sprite": "assets/pkm_sprites/pkm_icon_0271.webp"
+      },
+      {
+        "id": "pkm_s1_184",
+        "number": "No. 177",
+        "name": "圓法師",
+        "sprite": "assets/pkm_sprites/pkm_icon_0401.webp"
+      },
+      {
+        "id": "pkm_s1_189",
+        "number": "No. 182",
+        "name": "洛托姆",
+        "sprite": "assets/pkm_sprites/pkm_icon_0479D.webp"
+      },
+      {
+        "id": "pkm_s1_190",
+        "number": "No. 183",
+        "name": "燃燒蟲",
+        "sprite": "assets/pkm_sprites/pkm_icon_0636.webp"
+      },
+      {
+        "id": "pkm_s1_205",
+        "number": "No. 197",
+        "name": "顫弦蠑螈（高調）",
+        "sprite": "assets/pkm_sprites/pkm_icon_0849.webp"
+      },
+      {
+        "id": "pkm_s1_210",
+        "number": "No. 202",
+        "name": "蒼炎刃鬼",
+        "sprite": "assets/pkm_sprites/pkm_icon_0937.webp"
+      },
+      {
+        "id": "pkm_s1_211",
+        "number": "No. 203",
+        "name": "晶光芽",
+        "sprite": "assets/pkm_sprites/pkm_icon_0969.webp"
+      },
+      {
+        "id": "pkm_s1_212",
+        "number": "No. 204",
+        "name": "晶光花",
+        "sprite": "assets/pkm_sprites/pkm_icon_0970.webp"
+      },
+      {
+        "id": "pkm_s1_213",
+        "number": "No. 205",
+        "name": "索財靈",
+        "sprite": "assets/pkm_sprites/pkm_icon_0999.webp"
+      },
+      {
+        "id": "pkm_s1_215",
+        "number": "No. 207",
+        "name": "六尾",
+        "sprite": "assets/pkm_sprites/pkm_icon_0037.webp"
+      },
+      {
+        "id": "pkm_s1_218",
+        "number": "No. 210",
+        "name": "蚊香君",
+        "sprite": "assets/pkm_sprites/pkm_icon_0061.webp"
+      },
+      {
+        "id": "pkm_s1_223",
+        "number": "No. 215",
+        "name": "胡地",
+        "sprite": "assets/pkm_sprites/pkm_icon_0065.webp"
+      },
+      {
+        "id": "pkm_s1_225",
+        "number": "No. 217",
+        "name": "魔牆人偶",
+        "sprite": "assets/pkm_sprites/pkm_icon_0122.webp"
+      },
+      {
+        "id": "pkm_s1_226",
+        "number": "No. 218",
+        "name": "多邊獸",
+        "sprite": "assets/pkm_sprites/pkm_icon_0137.webp"
+      },
+      {
+        "id": "pkm_s1_236",
+        "number": "No. 228",
+        "name": "夢妖魔",
+        "sprite": "assets/pkm_sprites/pkm_icon_0429.webp"
+      },
+      {
+        "id": "pkm_s1_246",
+        "number": "No. 238",
+        "name": "超音波幼蟲",
+        "sprite": "assets/pkm_sprites/pkm_icon_0329.webp"
+      },
+      {
+        "id": "pkm_s1_250",
+        "number": "No. 242",
+        "name": "夜巡靈",
+        "sprite": "assets/pkm_sprites/pkm_icon_0355.webp"
+      },
+      {
+        "id": "pkm_s1_252",
+        "number": "No. 244",
+        "name": "黑夜魔靈",
+        "sprite": "assets/pkm_sprites/pkm_icon_0477.webp"
+      },
+      {
+        "id": "pkm_s1_254",
+        "number": "No. 246",
+        "name": "金屬怪",
+        "sprite": "assets/pkm_sprites/pkm_icon_0375.webp"
+      },
+      {
+        "id": "pkm_s1_257",
+        "number": "No. 249",
+        "name": "青藤蛇",
+        "sprite": "assets/pkm_sprites/pkm_icon_0496.webp"
+      },
+      {
+        "id": "pkm_s1_261",
+        "number": "No. 253",
+        "name": "甲賀忍蛙",
+        "sprite": "assets/pkm_sprites/pkm_icon_0658.webp"
+      },
+      {
+        "id": "pkm_s1_267",
+        "number": "No. 259",
+        "name": "鋼鎧鴉",
+        "sprite": "assets/pkm_sprites/pkm_icon_0823.webp"
+      },
+      {
+        "id": "pkm_s1_283",
+        "number": "No. 275",
+        "name": "護城龍",
+        "sprite": "assets/pkm_sprites/pkm_icon_0411.webp"
+      },
+      {
+        "id": "pkm_s1_293",
+        "number": "No. 285",
+        "name": "月亮伊布",
+        "sprite": "assets/pkm_sprites/pkm_icon_0197.webp"
+      },
+      {
+        "id": "pkm_s1_299",
+        "number": "No. 291",
+        "name": "炎帝",
+        "sprite": "assets/pkm_sprites/pkm_icon_0244.webp"
+      },
+      {
+        "id": "pkm_s2_13",
+        "number": "No. 013",
+        "name": "太陽珊瑚",
+        "sprite": "assets/pkm_sprites/pkm_icon_0222.webp"
+      },
+      {
+        "id": "pkm_s2_15",
+        "number": "No. 015",
+        "name": "沼躍魚",
+        "sprite": "assets/pkm_sprites/pkm_icon_0259.webp"
+      },
+      {
+        "id": "pkm_s2_17",
+        "number": "No. 017",
+        "name": "利牙魚",
+        "sprite": "assets/pkm_sprites/pkm_icon_0318.webp"
+      },
+      {
+        "id": "pkm_s2_18",
+        "number": "No. 018",
+        "name": "巨牙鯊",
+        "sprite": "assets/pkm_sprites/pkm_icon_0319.webp"
+      },
+      {
+        "id": "pkm_s2_19",
+        "number": "No. 019",
+        "name": "泥泥鰍",
+        "sprite": "assets/pkm_sprites/pkm_icon_0339.webp"
+      },
+      {
+        "id": "pkm_s2_20",
+        "number": "No. 020",
+        "name": "鯰魚王",
+        "sprite": "assets/pkm_sprites/pkm_icon_0340.webp"
+      },
+      {
+        "id": "pkm_s2_22",
+        "number": "No. 022",
+        "name": "鐵螯龍蝦",
+        "sprite": "assets/pkm_sprites/pkm_icon_0342.webp"
+      },
+      {
+        "id": "pkm_s2_23",
+        "number": "No. 023",
+        "name": "愛心魚",
+        "sprite": "assets/pkm_sprites/pkm_icon_0370.webp"
+      },
+      {
+        "id": "pkm_s2_27",
+        "number": "No. 027",
+        "name": "霓虹魚",
+        "sprite": "assets/pkm_sprites/pkm_icon_0457.webp"
+      },
+      {
+        "id": "pkm_s2_28",
+        "number": "No. 028",
+        "name": "輕飄飄（雄性）",
+        "sprite": "assets/pkm_sprites/pkm_icon_0592.webp"
+      },
+      {
+        "id": "pkm_s2_29",
+        "number": "No. 028",
+        "name": "輕飄飄（雌性）",
+        "sprite": "assets/pkm_sprites/pkm_icon_0592F.webp"
+      },
+      {
+        "id": "pkm_s2_32",
+        "number": "No. 030",
+        "name": "保母曼波",
+        "sprite": "assets/pkm_sprites/pkm_icon_0594.webp"
+      },
+      {
+        "id": "pkm_s2_38",
+        "number": "No. 036",
+        "name": "西獅海壬",
+        "sprite": "assets/pkm_sprites/pkm_icon_0730.webp"
+      },
+      {
+        "id": "pkm_s2_39",
+        "number": "No. 037",
+        "name": "好壞星",
+        "sprite": "assets/pkm_sprites/pkm_icon_0747.webp"
+      },
+      {
+        "id": "pkm_s2_42",
+        "number": "No. 040",
+        "name": "具甲武者",
+        "sprite": "assets/pkm_sprites/pkm_icon_0768.webp"
+      },
+      {
+        "id": "pkm_s2_44",
+        "number": "No. 042",
+        "name": "破破舵輪",
+        "sprite": "assets/pkm_sprites/pkm_icon_0781.webp"
+      },
+      {
+        "id": "pkm_s2_52",
+        "number": "No. 050",
+        "name": "瑪納霏",
+        "sprite": "assets/pkm_sprites/pkm_icon_0490.webp"
+      }
+    ]
+  },
+  {
+    "id": "recipe_035",
+    "name": "啵啵湯",
+    "category": "湯品類",
+    "facilityId": "pot",
+    "facilityName": "鍋子",
+    "facilityIcon": "assets/item_sprites/60px-Bag_鍋子_Pokopia_Sprite.png",
+    "move": "水槍",
+    "specialty": "",
+    "taste": "苦苦的",
+    "ingredients": [
+      {
+        "name": "美味之水",
+        "count": 1,
+        "icon": "assets/item_sprites/60px-Bag_美味之水_Pokopia_Sprite.png"
+      },
+      {
+        "name": "海葡萄",
+        "count": 1,
+        "icon": "assets/item_sprites/sea-grapes.png"
+      },
+      {
+        "name": "任意食材",
+        "count": 1,
+        "icon": ""
+      }
+    ],
+    "ingredientsText": "美味之水 × 1、 海葡萄 × 1、 任意食材 × 1",
+    "snorlaxEffect": "「水槍」威力提升。",
+    "snorlaxExp": "100／150",
+    "icon": "assets/item_sprites/popping-soup.png",
+    "onlineIcon": "https://pokopia.gamertw.com/images/items/popping-soup.png",
     "likedPokemon": [
       {
         "id": "pkm_s1_13",
@@ -13438,6 +13947,7 @@ var POKOPIA_RECIPES_DB = [
     ]
   }
 ];
+
 if (typeof module !== "undefined" && module.exports) {
   module.exports = POKOPIA_RECIPES_DB;
 }
