@@ -230,7 +230,7 @@
           <div class="recipe-card-poke-wrapper">
             <button type="button" class="recipe-card-poke-trigger ${isPopoverOpen ? 'active' : ''}" data-popover-target="${r.id}" title="點擊檢視喜愛此料理的 ${r.likedPokemon.length} 隻寶可夢">
               <span class="recipe-poke-heart">❤️</span>
-              <span class="recipe-poke-btn-text"><strong>${r.likedPokemon.length}</strong> 隻喜愛</span>
+              <span class="recipe-poke-btn-text"><strong>${r.likedPokemon.length}</strong> 隻</span>
             </button>
             <div class="recipe-row-popover ${isPopoverOpen ? 'show' : 'hidden'}" id="popover-${r.id}" role="dialog" aria-label="${r.name} 喜愛寶可夢清單">
               <div class="recipe-popover-header">
