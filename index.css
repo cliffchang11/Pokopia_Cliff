@@ -2314,6 +2314,8 @@ body {
   border-radius: 0.875rem;
   overflow-x: auto;
   box-shadow: 0 2px 10px rgba(90, 80, 70, 0.04);
+  max-width: 75rem; /* 1200px 手帳黃金比例置中，釋放兩側呼吸感 */
+  margin: 0 auto;
 }
 
 .data-table {
@@ -4005,13 +4007,13 @@ body {
 }
 
 .pokemon-table td {
-  background: var(--table-bg);
+  background: transparent; /* 透出奇偶列亞麻淡米灰與微米白交替 */
   border-bottom: 1px solid var(--table-td-border);
   vertical-align: middle !important;
   text-align: center !important;
   white-space: nowrap !important;
   word-break: keep-all !important;
-  padding: 0.90rem 0.65rem !important; /* 舒展呼吸感行距，消除緊促壓迫感 */
+  padding: 0.85rem 0.65rem !important; /* 舒展呼吸感行距，消除緊促壓迫感 */
 }
 
 .pokemon-table td .checkbox-container {
@@ -4116,8 +4118,8 @@ body {
 }
 
 .pkm-avatar-table-large {
-  width: clamp(3.7500rem, 5.0vw, 4.8500rem);
-  height: clamp(3.7500rem, 5.0vw, 4.8500rem);
+  width: 3.35rem; /* 精緻適中模型展示尺寸 (約54px) */
+  height: 3.35rem;
   object-fit: contain;
   display: block;
   margin: 0 auto;
@@ -9257,38 +9259,38 @@ body.has-floating-back .scroll-top-btn {
 /* 1. 寬螢幕預設 (>= 1280px)：8 欄流體百分比系統 (總和 100%) */
 .pokemon-table th:first-child,
 .pokemon-table td:first-child {
-  width: 3.5% !important;
+  width: 4.0% !important;
   min-width: 0 !important;
 }
 
 .pokemon-table th:nth-child(2),
 .pokemon-table td:nth-child(2) {
-  width: 7.0% !important;
+  width: 10.0% !important;
   min-width: 0 !important;
 }
 
 .pokemon-table th:nth-child(3),
 .pokemon-table td:nth-child(3) {
-  width: 16.0% !important;
+  width: 8.0% !important; /* 外觀欄收斂為精緻合宜比例 (不再膨脹過大) */
   min-width: 0 !important;
 }
 
 .pokemon-table th:nth-child(4),
 .pokemon-table td:nth-child(4) {
-  width: 6.5% !important;
+  width: 7.5% !important;
   min-width: 0 !important;
 }
 
 .pokemon-table th:nth-child(5),
 .pokemon-table td:nth-child(5) {
-  width: 7.0% !important;
+  width: 7.5% !important;
   min-width: 0 !important;
 }
 
 .pokemon-table .col-th-region,
 .pokemon-table .col-td-region {
   display: table-cell;
-  width: 8.5% !important;
+  width: 9.0% !important;
   min-width: 0 !important;
   text-align: center;
   vertical-align: middle;
@@ -9312,7 +9314,7 @@ body.has-floating-back .scroll-top-btn {
 
 .pokemon-table th.col-th-habitat,
 .pokemon-table td.pkm-col-hab {
-  width: 36.5% !important;
+  width: 36.0% !important;
   min-width: 0 !important;
 }
 
@@ -9320,7 +9322,7 @@ body.has-floating-back .scroll-top-btn {
 .pokemon-table td.col-favorites,
 .pokemon-table th:last-child,
 .pokemon-table td:last-child {
-  width: 15.0% !important;
+  width: 18.0% !important;
   min-width: 0 !important;
 }
 
@@ -9329,24 +9331,24 @@ body.has-floating-back .scroll-top-btn {
   display: none !important;
 }
 
-/* 2. 主角視覺微調收斂 15%、縮圖尺寸硬約束與文字微縮 */
+/* 2. 主角視覺約束在精緻日系展示尺寸 (約54px)，徹底告別大螢幕膨脹過大 */
 @media (min-width: 1280px) {
   .pokemon-table .pkm-avatar-table-large {
-    width: clamp(3.8250rem, 5.525vw, 5.1000rem) !important;
-    height: clamp(3.8250rem, 5.525vw, 5.1000rem) !important;
+    width: 3.35rem !important;
+    height: 3.35rem !important;
   }
 }
 
 .pokemon-table .pkm-table-hab-single-wrap,
 .pokemon-table .pkm-table-hab-carousel {
   width: 95% !important;
-  max-width: 14.3750rem !important;
+  max-width: 10.5rem !important; /* 棲息地縮圖微縮約 25%，緊緻行高 */
   margin: 0 auto !important;
 }
 
 .pokemon-table .pkm-table-hab-thumb {
   width: 100% !important;
-  max-width: 14.3750rem !important;
+  max-width: 10.5rem !important;
   height: auto !important;
   aspect-ratio: 3 / 2 !important;
 }
