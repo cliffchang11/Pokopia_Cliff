@@ -10483,20 +10483,16 @@ body.has-floating-back .scroll-top-btn {
 }
 
 /* 頂部設施分類列 (Sticky) */
+/* 頂部雙層篩選器 (完全透明自然穿透、gamertw 風格、無黑底) */
 .recipe-filter-bar {
   display: flex;
   flex-direction: column;
   gap: 0.625rem;
-  position: sticky;
-  top: 4.5rem;
-  z-index: 25;
-  background: var(--bg-surface-glass, rgba(15, 23, 42, 0.85));
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  padding: 0.75rem 1rem;
-  border-radius: 0.875rem;
-  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08));
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  margin-bottom: 1.25rem;
+  background: transparent;
+  padding: 0;
+  border: none;
+  box-shadow: none;
 }
 
 /* 雙層篩選按鈕組 (品項類別 + 口味風味) */
@@ -10540,9 +10536,9 @@ body.has-floating-back .scroll-top-btn {
 }
 
 :root[data-theme="dark"] .recipe-filter-bar {
-  background: rgba(30, 41, 59, 0.7);
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 :root[data-theme="dark"] .recipe-filter-btn {
@@ -10724,6 +10720,7 @@ body.has-floating-back .scroll-top-btn {
   gap: 0.35rem;
   flex: 1;
   min-width: 0;
+  padding-right: 5.5rem;
 }
 
 .recipe-card-title {
@@ -10942,10 +10939,13 @@ body.has-floating-back .scroll-top-btn {
   flex-shrink: 0;
 }
 
-/* 喜愛寶可夢連動按鈕與 Popover */
+/* 喜愛寶可夢連動按鈕 (位於卡片右上角) 與 Popover */
 .recipe-card-poke-wrapper {
-  position: relative;
-  margin-top: 0.2rem;
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  z-index: 10;
+  margin-top: 0;
 }
 
 .recipe-card-poke-trigger {
@@ -10988,8 +10988,10 @@ body.has-floating-back .scroll-top-btn {
 /* 寶可夢箱子頭像網格彈層 (Popover) */
 .recipe-row-popover {
   position: absolute;
-  bottom: calc(100% + 8px);
-  left: 0;
+  top: calc(100% + 6px);
+  right: 0;
+  bottom: auto;
+  left: auto;
   width: 290px;
   max-width: 90vw;
   background: #ffffff;

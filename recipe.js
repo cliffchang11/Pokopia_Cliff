@@ -230,7 +230,7 @@
           <div class="recipe-card-poke-wrapper">
             <button type="button" class="recipe-card-poke-trigger ${isPopoverOpen ? 'active' : ''}" data-popover-target="${r.id}" title="點擊檢視喜愛此料理的 ${r.likedPokemon.length} 隻寶可夢">
               <span class="recipe-poke-heart">❤️</span>
-              <span class="recipe-poke-btn-text"><strong>${r.likedPokemon.length}</strong> 隻寶可夢喜愛</span>
+              <span class="recipe-poke-btn-text"><strong>${r.likedPokemon.length}</strong> 隻喜愛</span>
             </button>
             <div class="recipe-row-popover ${isPopoverOpen ? 'show' : 'hidden'}" id="popover-${r.id}" role="dialog" aria-label="${r.name} 喜愛寶可夢清單">
               <div class="recipe-popover-header">
@@ -248,6 +248,9 @@
 
       return `
         <div class="recipe-card" data-recipe-id="${r.id}" data-recipe-name="${r.name}" data-category="${catMeta.slug}">
+          <!-- 右上角：喜愛寶可夢連動按鈕 -->
+          ${pokemonSectionHtml}
+
           <!-- 1. 卡片頂部：56px 圖標 + 標題 + 標籤列 -->
           <div class="recipe-card-header">
             <div class="recipe-card-avatar-box">
@@ -268,14 +271,13 @@
             ${ingredientsHtml}
           </div>
 
-          <!-- 3. 卡片底部：招式加成、苔卡比獸效果與喜愛寶可夢 -->
+          <!-- 3. 卡片底部：招式加成與苔卡比獸效果 -->
           <div class="recipe-card-footer">
             ${r.move ? `<div class="recipe-card-move-line"><span class="recipe-move-pill">「${r.move}」威力提升</span></div>` : ''}
             <div class="recipe-card-snorlax-line">
               <span class="snorlax-moss-icon">🍃</span>
               <span class="snorlax-effect-text">${r.snorlaxEffect || '可以和寶可夢變得比較要好'}</span>
             </div>
-            ${pokemonSectionHtml}
           </div>
         </div>
       `;

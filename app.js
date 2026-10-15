@@ -1581,8 +1581,8 @@
       if (DOM.searchRow) DOM.searchRow.classList.remove('hidden');
       if (DOM.searchInput) DOM.searchInput.placeholder = '搜尋料理名稱、食材、設施、招式或口味 (如: 西瓜麵包, 小麥, 番茄)...';
       if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.add('hidden');
-      if (DOM.filterToolbar) DOM.filterToolbar.classList.remove('hidden');
-      if (DOM.filterResultGroup) DOM.filterResultGroup.classList.remove('hidden');
+      if (DOM.filterToolbar) DOM.filterToolbar.classList.add('hidden');
+      if (DOM.filterResultGroup) DOM.filterResultGroup.classList.add('hidden');
       if (DOM.categoryFilterGroup) DOM.categoryFilterGroup.classList.add('hidden');
       if (DOM.envFilterGroup) DOM.envFilterGroup.classList.add('hidden');
       if (DOM.specialtyFilterGroup) DOM.specialtyFilterGroup.classList.add('hidden');
