@@ -211,12 +211,12 @@
         `;
       }).join('');
 
-      // 喜愛寶可夢連動區 (純頭像箱子 Popover)
-      let pokemonSectionHtml = '';
+      // 喜愛寶可夢連動區 (純頭像箱子 Popover，若無寶可夢則保留佔位插槽維持齊平)
+      let pokemonSectionHtml = '<div class="recipe-card-poke-placeholder"></div>';
       if (hasLikedPoke) {
         const pokeListHtml = r.likedPokemon.map(p => `
           <div class="recipe-popover-avatar-item" title="${p.number} ${p.name} (喜愛${r.taste})">
-            <img class="recipe-popover-avatar-img" src="${p.sprite}" alt="${p.name}" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'40\\' height=\\'40\\' viewBox=\\'0 0 24 24\\' fill=\\'%2394a3b8\\'><circle cx=\\'12\\' cy=\\'12\\' r=\\'10\\'/></svg>'">
+            <img class="recipe-popover-avatar-img" src="${p.sprite}" alt="${p.name}" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'40\\' height=\\'40\\' viewBox=\\'0 0 24 24\\' fill=\\'%2394a3b8\\'><circle cx=\\'12\\' cy=\\'12\\' r=\\'10\\'/></svg>'">
             <span class="recipe-popover-avatar-num">${p.number.replace('No. ', '#')}</span>
           </div>
         `).join('');
@@ -243,13 +243,14 @@
 
       return `
         <div class="recipe-row" data-recipe-id="${r.id}" data-recipe-name="${r.name}" data-category="${catMeta.slug}">
-          <!-- 1. 左區：定寬料理名片（48px 圖標 ＋ 料理名稱 ＋ 風味/專長副標） -->
+          <!-- 1. 左區：定寬料理名片（48px 圖標 ＋ 料理名稱 ＋ 彩色品項與風味標籤） -->
           <div class="recipe-row-identity">
             <img class="recipe-row-avatar-img" src="${r.icon || r.onlineIcon}" alt="${r.name}" loading="lazy" onerror="this.onerror=null; if('${r.onlineIcon}' && this.src !== '${r.onlineIcon}') { this.src='${r.onlineIcon}'; } else { this.src='assets/item_sprites/simple-salad.png'; }">
             <div class="recipe-row-identity-text">
               <h3 class="recipe-row-title">${r.name}</h3>
               <div class="recipe-row-subtitle">
-                <span class="recipe-row-taste-sub ${tasteClass}">${r.taste || '美味'}</span>
+                <span class="recipe-badge recipe-badge-cat cat-${catMeta.slug}">${catMeta.label}</span>
+                <span class="recipe-badge recipe-badge-taste ${tasteClass}">${r.taste || '美味'}</span>
                 ${specialtySubHtml}
               </div>
             </div>
@@ -260,21 +261,31 @@
             ${ingredientsHtml}
           </div>
 
-          <!-- 3. 右區：效果說明與喜愛寶可夢膠囊 (垂直置中收攏) -->
+          <!-- 3. 右區：三欄鎖定定寬插槽（招式 110px ＋ 效果 260px ＋ 寶可夢按鈕 80px，全列絕對齊頭） -->
           <div class="recipe-row-effects-section">
-            <div class="recipe-row-effects-text">
-              ${r.move ? `<span class="recipe-row-move-tag">「${r.move}」威力提升</span>` : ''}
-              <span class="recipe-row-snorlax-text">🍃 ${r.snorlaxEffect || '可以和寶可夢變得比較要好'}</span>
+            <div class="recipe-row-col-move">
+              ${r.move ? `<span class="recipe-row-move-tag">「${r.move}」威力提升</span>` : '<span class="recipe-row-col-empty"></span>'}
             </div>
-            ${pokemonSectionHtml}
+            <div class="recipe-row-col-snorlax">
+              <span class="recipe-row-snorlax-text" title="${r.snorlaxEffect || ''}">🍃 ${r.snorlaxEffect || '可以和寶可夢變得比較要好'}</span>
+            </div>
+            <div class="recipe-row-col-poke">
+              ${pokemonSectionHtml}
+            </div>
           </div>
         </div>
       `;
     }).join('');
   }
 
+  // 防重複初始化守衛
+  let isEventsInited = false;
+
   // 設置雙層篩選與卡片互動事件
   function initRecipeEvents() {
+    if (isEventsInited) return;
+    isEventsInited = true;
+
     // 1. 第一層：品項類別點擊 (支援 Toggle 再次點擊取消)
     const catContainer = document.getElementById('recipeCategoryFilters');
     if (catContainer) {
