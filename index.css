@@ -2352,7 +2352,8 @@ body {
 }
 
 .data-table tbody tr:hover {
-  background-color: var(--table-tr-hover) !important;
+  /* 背景顏色 100% 保持原色不變，消除跳色閃爍差異 */
+  box-shadow: inset 0 0 0 1px rgba(90, 80, 70, 0.08);
 }
 
 .data-table tbody tr.completed {
@@ -3569,7 +3570,7 @@ body {
 }
 
 .habitat-52poke-table tbody tr:hover {
-  background: rgba(99, 102, 241, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(90, 80, 70, 0.08);
 }
 
 /* Number pill */
