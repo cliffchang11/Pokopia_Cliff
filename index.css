@@ -10690,7 +10690,16 @@ body.has-floating-back .scroll-top-btn {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
 }
 
-/* 1. 左區：原生透明料理圖標 (48px) */
+/* 1. 左區：定寬料理名片 (220px 絕對鎖定起跑線) */
+.recipe-row-identity {
+  width: 220px;
+  min-width: 220px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
 .recipe-row-avatar-img {
   width: 48px;
   height: 48px;
@@ -10699,45 +10708,81 @@ body.has-floating-back .scroll-top-btn {
   filter: drop-shadow(0 2px 5px rgba(60, 50, 40, 0.08));
 }
 
-/* 2. 中區：日系手帳雙行層次流 (上行身份屬性／下行食材配方垂直齊頭) */
-.recipe-row-main {
-  flex: 1;
-  min-width: 0;
+.recipe-row-identity-text {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
-  justify-content: center;
-}
-
-/* 上行：料理身份（名稱、分類標籤、風味標籤、專長） */
-.recipe-row-header-line {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.45rem;
+  gap: 0.2rem;
+  min-width: 0;
+  flex: 1;
 }
 
 .recipe-row-title {
-  font-size: 0.98rem;
+  font-size: 1.02rem;
   font-weight: 700;
   color: #2d2a26;
   margin: 0;
   line-height: 1.25;
   letter-spacing: -0.01em;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 :root[data-theme="dark"] .recipe-row-title {
   color: #f8fafc;
 }
 
-/* 下行：所需食材配方籤 (100% 絕對垂直齊頭對齊) */
+.recipe-row-subtitle {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.76rem;
+  color: #78716c;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+:root[data-theme="dark"] .recipe-row-subtitle {
+  color: #94a3b8;
+}
+
+.recipe-row-taste-sub {
+  font-weight: 500;
+}
+
+.recipe-row-taste-sub.taste-sweet { color: #d97706; }
+.recipe-row-taste-sub.taste-sour { color: #ca8a04; }
+.recipe-row-taste-sub.taste-bitter { color: #059669; }
+.recipe-row-taste-sub.taste-spicy { color: #dc2626; }
+.recipe-row-taste-sub.taste-astringent { color: #7c3aed; }
+.recipe-row-taste-sub.taste-plain { color: #78716c; }
+
+:root[data-theme="dark"] .recipe-row-taste-sub.taste-sweet { color: #fbbf24; }
+:root[data-theme="dark"] .recipe-row-taste-sub.taste-sour { color: #facc15; }
+:root[data-theme="dark"] .recipe-row-taste-sub.taste-bitter { color: #34d399; }
+:root[data-theme="dark"] .recipe-row-taste-sub.taste-spicy { color: #f87171; }
+:root[data-theme="dark"] .recipe-row-taste-sub.taste-astringent { color: #c084fc; }
+:root[data-theme="dark"] .recipe-row-taste-sub.taste-plain { color: #94a3b8; }
+
+.recipe-row-spec-sub {
+  color: #854d0e;
+  font-weight: 500;
+  font-size: 0.74rem;
+}
+
+:root[data-theme="dark"] .recipe-row-spec-sub {
+  color: #fbbf24;
+}
+
+/* 2. 中區：所需食材配方籤 (100% 絕對垂直齊頭對齊) */
 .recipe-row-ingredients {
+  flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.38rem;
-  width: 100%;
+  gap: 0.45rem;
+  justify-content: flex-start;
 }
 
 /* 3. 右區：效果說明與喜愛寶可夢膠囊 (垂直置中收攏) */
@@ -10795,8 +10840,13 @@ body.has-floating-back .scroll-top-btn {
     gap: 0.75rem;
     padding: 0.85rem;
   }
-  .recipe-row-main {
-    flex: 1 1 calc(100% - 64px);
+  .recipe-row-identity {
+    width: 100%;
+    min-width: 0;
+  }
+  .recipe-row-ingredients {
+    width: 100%;
+    padding: 0.2rem 0;
   }
   .recipe-row-effects-section {
     width: 100%;

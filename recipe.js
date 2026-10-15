@@ -188,17 +188,12 @@
       const tasteClass = tasteClassMap[r.taste] || 'taste-plain';
       const catMeta = getCategoryMeta(r.category, r.name);
 
-      // 所需專長徽章 HTML
-      let specialtyHtml = '';
+      // 所需專長副標字樣
+      let specialtySubHtml = '';
       if (r.specialty && r.specialty.trim() !== '') {
         const specName = r.specialty.trim();
-        const cfg = specialtyConfig[specName] || { icon: '✨', label: specName, styleClass: 'specialty-default' };
-        specialtyHtml = `
-          <span class="recipe-badge recipe-badge-specialty ${cfg.styleClass}" title="製作此料理需要寶可夢具備「${cfg.label}」專長">
-            <span class="specialty-icon">${cfg.icon}</span>
-            <span class="specialty-label">${cfg.label}</span>
-          </span>
-        `;
+        const cfg = specialtyConfig[specName] || { icon: '✨', label: specName };
+        specialtySubHtml = `<span class="recipe-row-spec-sub"> · ${cfg.icon} ${cfg.label}</span>`;
       }
 
       // 食材膠囊 HTML (乾淨無 emoji，點擊可即時反查)
@@ -248,20 +243,21 @@
 
       return `
         <div class="recipe-row" data-recipe-id="${r.id}" data-recipe-name="${r.name}" data-category="${catMeta.slug}">
-          <!-- 1. 左區：原生透明料理圖標 (48px) -->
-          <img class="recipe-row-avatar-img" src="${r.icon || r.onlineIcon}" alt="${r.name}" loading="lazy" onerror="this.onerror=null; if('${r.onlineIcon}' && this.src !== '${r.onlineIcon}') { this.src='${r.onlineIcon}'; } else { this.src='assets/item_sprites/simple-salad.png'; }">
-
-          <!-- 2. 中區：日系手帳雙行層次流 (上行身份屬性／下行食材垂直齊頭) -->
-          <div class="recipe-row-main">
-            <div class="recipe-row-header-line">
+          <!-- 1. 左區：定寬料理名片（48px 圖標 ＋ 料理名稱 ＋ 風味/專長副標） -->
+          <div class="recipe-row-identity">
+            <img class="recipe-row-avatar-img" src="${r.icon || r.onlineIcon}" alt="${r.name}" loading="lazy" onerror="this.onerror=null; if('${r.onlineIcon}' && this.src !== '${r.onlineIcon}') { this.src='${r.onlineIcon}'; } else { this.src='assets/item_sprites/simple-salad.png'; }">
+            <div class="recipe-row-identity-text">
               <h3 class="recipe-row-title">${r.name}</h3>
-              <span class="recipe-badge recipe-badge-cat cat-${catMeta.slug}">${catMeta.label}</span>
-              <span class="recipe-badge recipe-badge-taste ${tasteClass}">${r.taste || '美味'}</span>
-              ${specialtyHtml}
+              <div class="recipe-row-subtitle">
+                <span class="recipe-row-taste-sub ${tasteClass}">${r.taste || '美味'}</span>
+                ${specialtySubHtml}
+              </div>
             </div>
-            <div class="recipe-row-ingredients">
-              ${ingredientsHtml}
-            </div>
+          </div>
+
+          <!-- 2. 中區：所需食材籤 (100% 絕對垂直齊頭對齊，點擊反查) -->
+          <div class="recipe-row-ingredients">
+            ${ingredientsHtml}
           </div>
 
           <!-- 3. 右區：效果說明與喜愛寶可夢膠囊 (垂直置中收攏) -->
