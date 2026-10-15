@@ -1,14 +1,15 @@
 /**
- * Pokopia Recipe Encyclopedia Module (100% Traditional Chinese - PWA & Compact Rows)
- * Clean, lightweight row-based encyclopedia list with native 36px sprites,
- * touch-friendly ingredient reverse-lookup, and pure avatar grid popover.
+ * Pokopia Recipe Encyclopedia Module (100% Traditional Chinese)
+ * Modern clean card grid inspired by gamertw + Dual-layer filter system + Required Specialty badges
+ * Interactive touch-friendly ingredient reverse-lookup + Pokemon affinity avatar box popover.
  */
 (function() {
   'use strict';
 
   // State
   const recipeState = {
-    facility: 'all',          // 'all' | 'cutting_board' | 'bread_oven' | 'frying_pan' | 'pot' | 'party_pot' | 'blender'
+    category: 'all',          // 'all' | 'salad' | 'bread' | 'burger' | 'soup' | 'smoothie' | 'curry'
+    taste: 'all',             // 'all' | '甜甜的' | '酸酸的' | '苦苦的' | '辣辣的' | '澀澀的' | '平淡無奇的'
     selectedIngredient: '',   // Reverse-lookup ingredient filter
     keyword: '',              // Search keyword
     activePopoverId: null     // ID of the recipe whose pokemon popover is open
@@ -32,7 +33,8 @@
     '居合斩': '居合斬',
     '碎岩': '碎岩',
     '树叶': '樹葉',
-    '水枪': '水槍'
+    '水枪': '水槍',
+    '滋润': '滋潤'
   };
 
   const tasteClassMap = {
@@ -41,7 +43,20 @@
     '酸酸的': 'taste-sour',
     '苦苦的': 'taste-bitter',
     '澀澀的': 'taste-astringent',
-    '平淡無奇的': 'taste-plain'
+    '平淡無奇的': 'taste-plain',
+    '濃郁': 'taste-rich'
+  };
+
+  // 專長徽章圖示與樣式對應
+  const specialtyConfig = {
+    '伐木': { icon: '🪵', label: '伐木', styleClass: 'specialty-wood' },
+    '碾壓': { icon: '🪨', label: '碾壓', styleClass: 'specialty-crush' },
+    '回收利用': { icon: '♻️', label: '回收利用', styleClass: 'specialty-recycle' },
+    '滋潤': { icon: '💧', label: '滋潤', styleClass: 'specialty-water' },
+    '點火': { icon: '🔥', label: '點火', styleClass: 'specialty-fire' },
+    '爆炸': { icon: '💥', label: '爆炸', styleClass: 'specialty-blast' },
+    '發電': { icon: '⚡', label: '發電', styleClass: 'specialty-electric' },
+    '開派對': { icon: '🎉', label: '開派對', styleClass: 'specialty-party' }
   };
 
   function normalizeKeyword(kw) {
@@ -53,42 +68,51 @@
     return res.toLowerCase();
   }
 
-  // Facility Counts helper
-  function updateFacilityCounts() {
-    if (!window.POKOPIA_RECIPES_DB) return;
-    const db = window.POKOPIA_RECIPES_DB;
-    const counts = { all: db.length };
-    db.forEach(r => {
-      counts[r.facilityId] = (counts[r.facilityId] || 0) + 1;
-    });
-
-    const tabs = document.querySelectorAll('.recipe-tab');
-    tabs.forEach(tab => {
-      const fac = tab.getAttribute('data-facility');
-      const countEl = tab.querySelector('.recipe-tab-count');
-      if (countEl && counts[fac] !== undefined) {
-        countEl.textContent = `(${counts[fac]})`;
-      }
-    });
+  // 品項分類匹配
+  function matchCategory(recipe, cat) {
+    if (cat === 'all') return true;
+    const c = recipe.category || '';
+    const name = recipe.name || '';
+    if (cat === 'salad') return c.includes('沙拉') || name.includes('沙拉');
+    if (cat === 'bread') return c.includes('麵包') || name.includes('麵包');
+    if (cat === 'burger') return c.includes('漢堡') || name.includes('漢堡');
+    if (cat === 'soup') return c.includes('湯') || name.includes('湯');
+    if (cat === 'smoothie') return c.includes('冰沙') || name.includes('冰沙');
+    if (cat === 'curry') return c.includes('咖喱') || c.includes('咖哩') || name.includes('咖喱') || name.includes('咖哩');
+    return true;
   }
 
-  // Filter recipes based on state
+  // 口味風味匹配
+  function matchTaste(recipe, taste) {
+    if (taste === 'all') return true;
+    if (taste === '平淡無奇的') {
+      return recipe.taste === '平淡無奇的' || recipe.taste === '平淡';
+    }
+    return recipe.taste === taste || (recipe.taste && recipe.taste.includes(taste));
+  }
+
+  // 取得過濾後的食譜清單
   function getFilteredRecipes() {
     if (!window.POKOPIA_RECIPES_DB) return [];
     let list = window.POKOPIA_RECIPES_DB;
 
-    // 1. Facility filter
-    if (recipeState.facility !== 'all') {
-      list = list.filter(r => r.facilityId === recipeState.facility);
+    // 1. 第一層：品項類別
+    if (recipeState.category !== 'all') {
+      list = list.filter(r => matchCategory(r, recipeState.category));
     }
 
-    // 2. Selected Ingredient filter (reverse lookup)
+    // 2. 第二層：口味風味
+    if (recipeState.taste !== 'all') {
+      list = list.filter(r => matchTaste(r, recipeState.taste));
+    }
+
+    // 3. 食材反查過濾
     if (recipeState.selectedIngredient) {
-      const target = recipeState.selectedIngredient;
+      const target = recipeState.selectedIngredient.trim();
       list = list.filter(r => r.ingredients.some(ig => ig.name === target || ig.name.includes(target)));
     }
 
-    // 3. Keyword filter
+    // 4. 關鍵字過濾
     if (recipeState.keyword) {
       const kw = normalizeKeyword(recipeState.keyword);
       list = list.filter(r => {
@@ -96,17 +120,41 @@
         const catMatch = r.category && r.category.toLowerCase().includes(kw);
         const facMatch = r.facilityName && r.facilityName.toLowerCase().includes(kw);
         const moveMatch = r.move && r.move.toLowerCase().includes(kw);
+        const specMatch = r.specialty && r.specialty.toLowerCase().includes(kw);
         const tasteMatch = r.taste && r.taste.toLowerCase().includes(kw);
         const ingMatch = r.ingredients.some(ig => ig.name.toLowerCase().includes(kw));
         const effectMatch = r.snorlaxEffect && r.snorlaxEffect.toLowerCase().includes(kw);
-        return nameMatch || catMatch || facMatch || moveMatch || tasteMatch || ingMatch || effectMatch;
+        return nameMatch || catMatch || facMatch || moveMatch || specMatch || tasteMatch || ingMatch || effectMatch;
       });
     }
 
     return list;
   }
 
-  // Render Compact Recipe Rows
+  // 取得品項顯示名與 CSS class
+  function getCategoryMeta(categoryStr, name) {
+    if ((categoryStr && categoryStr.includes('沙拉')) || name.includes('沙拉')) {
+      return { label: '🥗 沙拉', slug: 'salad' };
+    }
+    if ((categoryStr && categoryStr.includes('麵包')) || name.includes('麵包')) {
+      return { label: '🍞 麵包', slug: 'bread' };
+    }
+    if ((categoryStr && categoryStr.includes('漢堡')) || name.includes('漢堡')) {
+      return { label: '🍔 漢堡排', slug: 'burger' };
+    }
+    if ((categoryStr && categoryStr.includes('湯')) || name.includes('湯')) {
+      return { label: '🍲 湯', slug: 'soup' };
+    }
+    if ((categoryStr && categoryStr.includes('冰沙')) || name.includes('冰沙')) {
+      return { label: '🥤 冰沙', slug: 'smoothie' };
+    }
+    if ((categoryStr && categoryStr.includes('咖喱')) || (categoryStr && categoryStr.includes('咖哩')) || name.includes('咖哩') || name.includes('咖喱')) {
+      return { label: '🍛 咖哩', slug: 'curry' };
+    }
+    return { label: categoryStr || '料理', slug: 'default' };
+  }
+
+  // 渲染現代清爽卡片清單 (gamertw 風格)
   function renderRecipes() {
     const grid = document.getElementById('recipeCardGrid');
     const emptyState = document.getElementById('recipeEmptyState');
@@ -115,12 +163,13 @@
 
     if (!grid) return;
 
-    // Ingredient Notice Bar
-    if (recipeState.selectedIngredient) {
+    // 食材反查專用提示膠囊控制
+    if (recipeState.selectedIngredient && recipeState.selectedIngredient.trim() !== '') {
       if (notice) notice.classList.remove('hidden');
-      if (activeIngName) activeIngName.textContent = recipeState.selectedIngredient;
+      if (activeIngName) activeIngName.textContent = recipeState.selectedIngredient.trim();
     } else {
       if (notice) notice.classList.add('hidden');
+      if (activeIngName) activeIngName.textContent = '';
     }
 
     const recipes = getFilteredRecipes();
@@ -137,36 +186,51 @@
       const isPopoverOpen = recipeState.activePopoverId === r.id;
       const hasLikedPoke = r.likedPokemon && r.likedPokemon.length > 0;
       const tasteClass = tasteClassMap[r.taste] || 'taste-plain';
+      const catMeta = getCategoryMeta(r.category, r.name);
 
-      // Ingredients HTML - Clean touch-friendly chips
+      // 所需專長徽章 HTML
+      let specialtyHtml = '';
+      if (r.specialty && r.specialty.trim() !== '') {
+        const specName = r.specialty.trim();
+        const cfg = specialtyConfig[specName] || { icon: '✨', label: specName, styleClass: 'specialty-default' };
+        specialtyHtml = `
+          <span class="recipe-badge recipe-badge-specialty ${cfg.styleClass}" title="製作此料理需要寶可夢具備「${cfg.label}」專長">
+            <span class="specialty-icon">${cfg.icon}</span>
+            <span class="specialty-label">${cfg.label}</span>
+          </span>
+        `;
+      }
+
+      // 食材膠囊 HTML (乾淨無 emoji，點擊可即時反查)
       const ingredientsHtml = r.ingredients.map(ig => {
         const isSelected = recipeState.selectedIngredient === ig.name;
         const iconHtml = ig.icon 
-          ? `<img class="recipe-row-ing-icon" src="${ig.icon}" alt="${ig.name}" loading="lazy" onerror="this.style.display='none'">` 
+          ? `<img class="recipe-ing-chip-icon" src="${ig.icon}" alt="${ig.name}" loading="lazy" onerror="this.style.display='none'">` 
           : '';
         return `
-          <button type="button" class="recipe-row-ing-chip ${isSelected ? 'selected' : ''}" data-ingredient="${ig.name}" title="點擊即時反查所有使用「${ig.name}」的食譜" aria-label="篩選食材：${ig.name}">
+          <button type="button" class="recipe-ing-chip ${isSelected ? 'selected' : ''}" data-ingredient="${ig.name}" title="點擊即時反查所有使用「${ig.name}」的食譜" aria-label="反查食材：${ig.name}">
             ${iconHtml}
-            <span class="recipe-row-ing-name">${ig.name}</span>
-            <span class="recipe-row-ing-count">×${ig.count}</span>
+            <span class="recipe-ing-chip-name">${ig.name}</span>
+            <span class="recipe-ing-chip-count">×${ig.count}</span>
           </button>
         `;
       }).join('');
 
-      // Pokemon Linkage Popover HTML (Pure Avatar Grid)
+      // 喜愛寶可夢連動區 (純頭像箱子 Popover)
       let pokemonSectionHtml = '';
       if (hasLikedPoke) {
         const pokeListHtml = r.likedPokemon.map(p => `
           <div class="recipe-popover-avatar-item" title="${p.number} ${p.name} (喜愛${r.taste})">
-            <img class="recipe-popover-avatar-img" src="${p.sprite}" alt="${p.name}" loading="lazy" onerror="this.src='assets/pkm_sprites/pkm_icon_0001.webp'">
+            <img class="recipe-popover-avatar-img" src="${p.sprite}" alt="${p.name}" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'40\\' height=\\'40\\' viewBox=\\'0 0 24 24\\' fill=\\'%2394a3b8\\'><circle cx=\\'12\\' cy=\\'12\\' r=\\'10\\'/></svg>'">
+            <span class="recipe-popover-avatar-num">${p.number.replace('No. ', '#')}</span>
           </div>
         `).join('');
 
         pokemonSectionHtml = `
-          <div class="recipe-row-poke-wrapper">
-            <button type="button" class="recipe-row-poke-trigger ${isPopoverOpen ? 'active' : ''}" data-popover-target="${r.id}" title="點擊檢視喜愛此料理的 ${r.likedPokemon.length} 隻寶可夢">
+          <div class="recipe-card-poke-wrapper">
+            <button type="button" class="recipe-card-poke-trigger ${isPopoverOpen ? 'active' : ''}" data-popover-target="${r.id}" title="點擊檢視喜愛此料理的 ${r.likedPokemon.length} 隻寶可夢">
               <span class="recipe-poke-heart">❤️</span>
-              <span class="recipe-poke-btn-text"><strong>${r.likedPokemon.length}</strong> 隻</span>
+              <span class="recipe-poke-btn-text"><strong>${r.likedPokemon.length}</strong> 隻寶可夢喜愛</span>
             </button>
             <div class="recipe-row-popover ${isPopoverOpen ? 'show' : 'hidden'}" id="popover-${r.id}" role="dialog" aria-label="${r.name} 喜愛寶可夢清單">
               <div class="recipe-popover-header">
@@ -182,82 +246,81 @@
         `;
       }
 
-      // Facility badge colors
-      let facClass = 'fac-default';
-      if (r.facilityId === 'cutting_board') facClass = 'fac-leaf';
-      else if (r.facilityId === 'bread_oven') facClass = 'fac-bread';
-      else if (r.facilityId === 'frying_pan') facClass = 'fac-rock';
-      else if (r.facilityId === 'pot') facClass = 'fac-water';
-      else if (r.facilityId === 'blender') facClass = 'fac-blender';
-      else if (r.facilityId === 'party_pot') facClass = 'fac-party';
-
       return `
-        <div class="recipe-row" data-recipe-id="${r.id}" data-recipe-name="${r.name}" data-facility="${r.facilityId}">
-          <!-- 1. 料理主體識別區 -->
-          <div class="recipe-row-main">
-            <div class="recipe-row-avatar-box">
-              <img class="recipe-row-avatar-img" src="${r.icon || r.onlineIcon}" alt="${r.name}" loading="lazy" onerror="this.onerror=null; if('${r.onlineIcon}' && this.src !== '${r.onlineIcon}') { this.src='${r.onlineIcon}'; } else { this.src='assets/item_sprites/60px-Bag_原味沙拉_Pokopia_Sprite.png'; }">
+        <div class="recipe-card" data-recipe-id="${r.id}" data-recipe-name="${r.name}" data-category="${catMeta.slug}">
+          <!-- 1. 卡片頂部：56px 圖標 + 標題 + 標籤列 -->
+          <div class="recipe-card-header">
+            <div class="recipe-card-avatar-box">
+              <img class="recipe-card-avatar-img" src="${r.icon || r.onlineIcon}" alt="${r.name}" loading="lazy" onerror="this.onerror=null; if('${r.onlineIcon}' && this.src !== '${r.onlineIcon}') { this.src='${r.onlineIcon}'; } else { this.src='assets/item_sprites/60px-Bag_原味沙拉_Pokopia_Sprite.png'; }">
             </div>
-            <div class="recipe-row-text-info">
-              <div class="recipe-row-name-line">
-                <span class="recipe-row-title">${r.name}</span>
-                <span class="recipe-row-taste-badge ${tasteClass}">${r.taste || '美味'}</span>
-              </div>
-              <div class="recipe-row-meta-line">
-                <span class="recipe-row-fac-tag ${facClass}">${r.facilityName}</span>
-                <span class="recipe-row-move-tag">⚡ ${r.move}</span>
+            <div class="recipe-card-header-main">
+              <h3 class="recipe-card-title">${r.name}</h3>
+              <div class="recipe-card-badges">
+                <span class="recipe-badge recipe-badge-cat cat-${catMeta.slug}">${catMeta.label}</span>
+                <span class="recipe-badge recipe-badge-taste ${tasteClass}">${r.taste || '美味'}</span>
+                ${specialtyHtml}
               </div>
             </div>
           </div>
 
-          <!-- 2. 所需食材清單區 (點擊即時反查) -->
-          <div class="recipe-row-ingredients">
-            <div class="recipe-row-ing-chips">
-              ${ingredientsHtml}
-            </div>
+          <!-- 2. 卡片中段：精緻食材膠囊晶片 -->
+          <div class="recipe-card-ingredients">
+            ${ingredientsHtml}
           </div>
 
-          <!-- 3. 卡比獸效果與連動區 -->
-          <div class="recipe-row-extras">
-            <div class="recipe-row-snorlax-pill" title="供奉苔卡比獸效果: ${r.snorlaxEffect || '無'}">
-              <span class="snorlax-pill-icon">💤</span>
-              <span class="snorlax-pill-text">${r.snorlaxEffect || '和寶可夢變得要好'}</span>
-              <span class="snorlax-pill-exp">${r.snorlaxExp}</span>
+          <!-- 3. 卡片底部：招式加成、苔卡比獸效果與喜愛寶可夢 -->
+          <div class="recipe-card-footer">
+            ${r.move ? `<div class="recipe-card-move-line"><span class="recipe-move-pill">「${r.move}」威力提升</span></div>` : ''}
+            <div class="recipe-card-snorlax-line">
+              <span class="snorlax-moss-icon">🍃</span>
+              <span class="snorlax-effect-text">${r.snorlaxEffect || '可以和寶可夢變得比較要好'}</span>
             </div>
             ${pokemonSectionHtml}
           </div>
         </div>
       `;
     }).join('');
-
-    // Update result badge in toolbar if active
-    const resultText = document.getElementById('filterResultText');
-    if (resultText && window.POKOPIA_STATE && window.POKOPIA_STATE.currentTab === 'recipe') {
-      resultText.textContent = `料理 ${recipes.length} / ${window.POKOPIA_RECIPES_DB.length} 道`;
-    }
   }
 
-  // Setup Event Listeners
+  // 設置雙層篩選與卡片互動事件
   function initRecipeEvents() {
-    // 1. Facility Tabs Click
-    const tabsContainer = document.getElementById('recipeTabs');
-    if (tabsContainer) {
-      tabsContainer.addEventListener('click', (e) => {
-        const btn = e.target.closest('.recipe-tab');
+    // 1. 第一層：品項類別點擊
+    const catContainer = document.getElementById('recipeCategoryFilters');
+    if (catContainer) {
+      catContainer.addEventListener('click', (e) => {
+        const btn = e.target.closest('.recipe-filter-btn');
         if (!btn) return;
-        const fac = btn.getAttribute('data-facility');
-        if (!fac) return;
+        const cat = btn.getAttribute('data-category');
+        if (!cat) return;
 
-        tabsContainer.querySelectorAll('.recipe-tab').forEach(t => t.classList.remove('active'));
+        catContainer.querySelectorAll('.recipe-filter-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
 
-        recipeState.facility = fac;
+        recipeState.category = cat;
         recipeState.activePopoverId = null;
         renderRecipes();
       });
     }
 
-    // 2. Clear Ingredient Filter Button
+    // 2. 第二層：口味風味點擊
+    const tasteContainer = document.getElementById('recipeTasteFilters');
+    if (tasteContainer) {
+      tasteContainer.addEventListener('click', (e) => {
+        const btn = e.target.closest('.recipe-filter-btn');
+        if (!btn) return;
+        const taste = btn.getAttribute('data-taste');
+        if (!taste) return;
+
+        tasteContainer.querySelectorAll('.recipe-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        recipeState.taste = taste;
+        recipeState.activePopoverId = null;
+        renderRecipes();
+      });
+    }
+
+    // 3. 清除食材反查按鈕
     const btnClearIng = document.getElementById('btnClearIngredientFilter');
     if (btnClearIng) {
       btnClearIng.addEventListener('click', () => {
@@ -266,12 +329,12 @@
       });
     }
 
-    // 3. Delegate on Recipe Grid
+    // 4. 卡片容器代理事件 (食材反查、寶可夢彈層)
     const grid = document.getElementById('recipeCardGrid');
     if (grid) {
       grid.addEventListener('click', (e) => {
-        // A. Ingredient Chip clicked (Reverse lookup)
-        const ingChip = e.target.closest('.recipe-row-ing-chip');
+        // A. 食材膠囊點擊 (反查)
+        const ingChip = e.target.closest('.recipe-ing-chip');
         if (ingChip) {
           const ingName = ingChip.getAttribute('data-ingredient');
           if (ingName && ingName !== '任意食材') {
@@ -282,26 +345,24 @@
             }
             recipeState.activePopoverId = null;
             renderRecipes();
-            const bar = document.querySelector('.recipe-filter-bar');
-            if (bar) bar.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            return;
           }
-          return;
         }
 
-        // B. Popover Trigger Button clicked
-        const popoverBtn = e.target.closest('.recipe-row-poke-trigger');
-        if (popoverBtn) {
-          const targetId = popoverBtn.getAttribute('data-popover-target');
-          if (recipeState.activePopoverId === targetId) {
+        // B. 喜愛寶可夢展開按鈕
+        const pokeTrigger = e.target.closest('.recipe-card-poke-trigger');
+        if (pokeTrigger) {
+          const recipeId = pokeTrigger.getAttribute('data-popover-target');
+          if (recipeState.activePopoverId === recipeId) {
             recipeState.activePopoverId = null;
           } else {
-            recipeState.activePopoverId = targetId;
+            recipeState.activePopoverId = recipeId;
           }
           renderRecipes();
           return;
         }
 
-        // C. Popover Close Button clicked
+        // C. Popover 關閉按鈕
         const closeBtn = e.target.closest('.recipe-popover-close-btn');
         if (closeBtn) {
           recipeState.activePopoverId = null;
@@ -311,11 +372,11 @@
       });
     }
 
-    // 4. Global click to dismiss Popover when clicking outside
+    // 5. 全域點擊收起 Popover
     document.addEventListener('click', (e) => {
       if (!recipeState.activePopoverId) return;
       const insidePopover = e.target.closest('.recipe-row-popover');
-      const insideTrigger = e.target.closest('.recipe-row-poke-trigger');
+      const insideTrigger = e.target.closest('.recipe-card-poke-trigger');
       if (!insidePopover && !insideTrigger) {
         recipeState.activePopoverId = null;
         renderRecipes();
@@ -323,10 +384,9 @@
     });
   }
 
-  // Public Interface
+  // 公開外部 API
   window.RecipeModule = {
     init: function() {
-      updateFacilityCounts();
       initRecipeEvents();
     },
     render: function() {
@@ -338,72 +398,78 @@
       renderRecipes();
     },
     resetFilters: function() {
-      recipeState.facility = 'all';
+      recipeState.category = 'all';
+      recipeState.taste = 'all';
       recipeState.selectedIngredient = '';
       recipeState.keyword = '';
       recipeState.activePopoverId = null;
-      const tabsContainer = document.getElementById('recipeTabs');
-      if (tabsContainer) {
-        tabsContainer.querySelectorAll('.recipe-tab').forEach(t => {
-          if (t.getAttribute('data-facility') === 'all') t.classList.add('active');
-          else t.classList.remove('active');
+
+      // 重設按鈕 active 樣式
+      const catContainer = document.getElementById('recipeCategoryFilters');
+      if (catContainer) {
+        catContainer.querySelectorAll('.recipe-filter-btn').forEach(b => {
+          b.classList.toggle('active', b.getAttribute('data-category') === 'all');
         });
       }
+      const tasteContainer = document.getElementById('recipeTasteFilters');
+      if (tasteContainer) {
+        tasteContainer.querySelectorAll('.recipe-filter-btn').forEach(b => {
+          b.classList.toggle('active', b.getAttribute('data-taste') === 'all');
+        });
+      }
+
       renderRecipes();
     },
     scrollToRecipe: function(recipeName) {
       if (!recipeName) return;
-      // 1. 重設關鍵字與食材篩選，恢復全量食譜
-      recipeState.facility = 'all';
-      recipeState.selectedIngredient = '';
-      recipeState.keyword = '';
-      recipeState.activePopoverId = null;
-      const tabsContainer = document.getElementById('recipeTabs');
-      if (tabsContainer) {
-        tabsContainer.querySelectorAll('.recipe-tab').forEach(t => {
-          if (t.getAttribute('data-facility') === 'all') t.classList.add('active');
-          else t.classList.remove('active');
-        });
-      }
-      renderRecipes();
+      // 1. 重設篩選為全部，確保目標食譜可見
+      this.resetFilters();
 
-      // 2. 定位到目標料理行並閃爍高亮呼吸光暈
+      // 2. 定位到目標卡片並閃爍呼吸光暈
       setTimeout(() => {
-        const rows = document.querySelectorAll('.recipe-row');
-        let targetRow = null;
-        for (const row of rows) {
-          const name = row.getAttribute('data-recipe-name');
-          const id = row.getAttribute('data-recipe-id');
+        const cards = document.querySelectorAll('.recipe-card');
+        let targetCard = null;
+        for (const card of cards) {
+          const name = card.getAttribute('data-recipe-name');
+          const id = card.getAttribute('data-recipe-id');
           if (name === recipeName || id === recipeName || (name && name.includes(recipeName)) || (recipeName && recipeName.includes(name))) {
-            targetRow = row;
+            targetCard = card;
             break;
           }
         }
-        if (targetRow) {
-          targetRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          targetRow.classList.remove('recipe-row-highlight');
-          void targetRow.offsetWidth; // 強制重繪觸發動畫
-          targetRow.classList.add('recipe-row-highlight');
+        if (targetCard) {
+          targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          targetCard.classList.remove('recipe-card-highlight');
+          void targetCard.offsetWidth; // 重繪動畫
+          targetCard.classList.add('recipe-card-highlight');
           setTimeout(() => {
-            targetRow.classList.remove('recipe-row-highlight');
+            targetCard.classList.remove('recipe-card-highlight');
           }, 2500);
         }
       }, 100);
     },
     filterByIngredient: function(ingredientName) {
       if (!ingredientName) return;
-      // 1. 重設設施為全部，關鍵字清空，激活該食材反查
-      recipeState.facility = 'all';
-      recipeState.selectedIngredient = ingredientName;
+      // 1. 重設兩層分類為全部，關鍵字清空，激活該食材反查
+      recipeState.category = 'all';
+      recipeState.taste = 'all';
+      recipeState.selectedIngredient = ingredientName.trim();
       recipeState.keyword = '';
       recipeState.activePopoverId = null;
-      const tabsContainer = document.getElementById('recipeTabs');
-      if (tabsContainer) {
-        tabsContainer.querySelectorAll('.recipe-tab').forEach(t => {
-          if (t.getAttribute('data-facility') === 'all') t.classList.add('active');
-          else t.classList.remove('active');
+
+      const catContainer = document.getElementById('recipeCategoryFilters');
+      if (catContainer) {
+        catContainer.querySelectorAll('.recipe-filter-btn').forEach(b => {
+          b.classList.toggle('active', b.getAttribute('data-category') === 'all');
         });
       }
+      const tasteContainer = document.getElementById('recipeTasteFilters');
+      if (tasteContainer) {
+        tasteContainer.querySelectorAll('.recipe-filter-btn').forEach(b => {
+          b.classList.toggle('active', b.getAttribute('data-taste') === 'all');
+        });
+      }
+
       renderRecipes();
 
       // 2. 平滑滾動至食譜區頂部

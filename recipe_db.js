@@ -4362,7 +4362,7 @@ var POKOPIA_RECIPES_DB = [
     "facilityName": "麵包窯",
     "facilityIcon": "assets/item_sprites/60px-Bag_麵包窯_Pokopia_Sprite.png",
     "move": "居合斬",
-    "specialty": "滋润",
+    "specialty": "滋潤",
     "taste": "甜甜的",
     "ingredients": [
       {
@@ -12002,7 +12002,7 @@ var POKOPIA_RECIPES_DB = [
     "facilityName": "食物攪拌機",
     "facilityIcon": "assets/item_sprites/60px-Bag_食物攪拌機_Pokopia_Sprite.png",
     "move": "衝浪",
-    "specialty": "",
+    "specialty": "點火",
     "taste": "辣辣的",
     "ingredients": [
       {

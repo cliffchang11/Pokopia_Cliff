@@ -307,30 +307,28 @@
 
     <!-- Recipe View Container (料理食譜全百科) -->
     <section id="recipeSection" class="view-section hidden-section recipe-section">
-      <!-- 料理專屬頂部設施分類標籤列與反查狀態 -->
+      <!-- 料理專屬雙層智慧篩選器 (品項類別 + 口味風味) 與反查狀態 -->
       <div class="recipe-filter-bar">
-        <div class="recipe-tabs" id="recipeTabs">
-          <button class="recipe-tab active" data-facility="all">
-            <span class="recipe-tab-icon">🍽️</span> 全部 <span class="recipe-tab-count">(34)</span>
-          </button>
-          <button class="recipe-tab" data-facility="cutting_board">
-            <span class="recipe-tab-icon">🔪</span> 砧板（樹葉） <span class="recipe-tab-count">(7)</span>
-          </button>
-          <button class="recipe-tab" data-facility="bread_oven">
-            <span class="recipe-tab-icon">🥖</span> 麵包窯（居合斬） <span class="recipe-tab-count">(7)</span>
-          </button>
-          <button class="recipe-tab" data-facility="frying_pan">
-            <span class="recipe-tab-icon">🍳</span> 平底鍋（碎岩） <span class="recipe-tab-count">(7)</span>
-          </button>
-          <button class="recipe-tab" data-facility="pot">
-            <span class="recipe-tab-icon">🍲</span> 鍋子（水槍） <span class="recipe-tab-count">(6)</span>
-          </button>
-          <button class="recipe-tab" data-facility="party_pot">
-            <span class="recipe-tab-icon">🎉</span> 派對鍋（開派對） <span class="recipe-tab-count">(1)</span>
-          </button>
-          <button class="recipe-tab" data-facility="blender">
-            <span class="recipe-tab-icon">🍹</span> 食物攪拌機（衝浪） <span class="recipe-tab-count">(6)</span>
-          </button>
+        <!-- 第一層：品項類別篩選 -->
+        <div class="recipe-filter-group" id="recipeCategoryFilters" role="tablist" aria-label="料理品項分類">
+          <button class="recipe-filter-btn active" data-category="all">全部</button>
+          <button class="recipe-filter-btn" data-category="salad"><span class="btn-icon">🥗</span> 沙拉</button>
+          <button class="recipe-filter-btn" data-category="bread"><span class="btn-icon">🍞</span> 麵包</button>
+          <button class="recipe-filter-btn" data-category="burger"><span class="btn-icon">🍔</span> 漢堡排</button>
+          <button class="recipe-filter-btn" data-category="soup"><span class="btn-icon">🍲</span> 湯</button>
+          <button class="recipe-filter-btn" data-category="smoothie"><span class="btn-icon">🥤</span> 冰沙</button>
+          <button class="recipe-filter-btn" data-category="curry"><span class="btn-icon">🍛</span> 咖哩</button>
+        </div>
+
+        <!-- 第二層：風味口味篩選 -->
+        <div class="recipe-filter-group" id="recipeTasteFilters" role="tablist" aria-label="口味風味分類">
+          <button class="recipe-filter-btn active" data-taste="all">全部風味</button>
+          <button class="recipe-filter-btn" data-taste="甜甜的"><span class="btn-icon">🍯</span> 甜甜的</button>
+          <button class="recipe-filter-btn" data-taste="酸酸的"><span class="btn-icon">🍋</span> 酸酸的</button>
+          <button class="recipe-filter-btn" data-taste="苦苦的"><span class="btn-icon">🍵</span> 苦苦的</button>
+          <button class="recipe-filter-btn" data-taste="辣辣的"><span class="btn-icon">🌶️</span> 辣辣的</button>
+          <button class="recipe-filter-btn" data-taste="澀澀的"><span class="btn-icon">🌾</span> 澀澀的</button>
+          <button class="recipe-filter-btn" data-taste="平淡無奇的"><span class="btn-icon">🧂</span> 平淡無奇的</button>
         </div>
 
         <!-- 食材反查啟用時的專屬過濾指示條 -->
