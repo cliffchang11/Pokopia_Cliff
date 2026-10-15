@@ -8,7 +8,7 @@
   font-size: clamp(0.85rem, 2.5vw, 1.2rem) !important;
   
   /* Harmony Light Theme Palette (Pure Soft Ivory Paper Tone - 100% Unified Color Temp) */
-  --bg-dark: #f9f9f8; /* 極淡乾淨象牙柔白，告別濃黃燕麥色 */
+  --bg-dark: #fcfbf9; /* 高透光晨光柔白，明朗通透、溫潤手帳質地，消除灰濛暗沉 */
   --bg-body-radial-1: rgba(245, 158, 11, 0.015);
   --bg-body-radial-2: rgba(16, 185, 129, 0.015);
   --bg-body-radial-3: rgba(180, 160, 140, 0.015);
@@ -17,7 +17,7 @@
   --bg-header-sticky: rgba(255, 255, 255, 0.98);
   --bg-card: #ffffff; /* 純淨手帳純白紙色 */
   --bg-card-hover: #faf9f6;
-  --glass-border: #e9e8e4; /* 極細素雅線條 */
+  --glass-border: #ebe9e4; /* 極細素雅線條 */
   --glass-border-focus: #38bdf8;
   --card-edge-glow: 0 2px 8px rgba(90, 80, 70, 0.03), 0 1px 2px rgba(0, 0, 0, 0.02);
   
@@ -10515,7 +10515,7 @@ body.has-floating-back .scroll-top-btn {
   padding: 0.42rem 0.85rem;
   min-height: 2.15rem;
   background: #ffffff;
-  border: 1px solid #e7e3da;
+  border: 1px solid #eae8e2;
   border-radius: 9999px; /* 精巧微膠囊手冊感 */
   color: #57534e;
   font-size: 0.84rem;
@@ -10524,13 +10524,13 @@ body.has-floating-back .scroll-top-btn {
   white-space: nowrap;
   transition: all 0.18s ease;
   user-select: none;
-  box-shadow: 0 1px 2px rgba(120, 110, 90, 0.04);
+  box-shadow: 0 1px 2px rgba(120, 110, 90, 0.025);
 }
 
 .recipe-filter-btn:hover {
   background: #faf8f5;
   color: #1c1917;
-  border-color: #d6d0c4;
+  border-color: #dedbd3;
   transform: translateY(-1px);
 }
 
@@ -10665,18 +10665,18 @@ body.has-floating-back .scroll-top-btn {
   justify-content: space-between;
   gap: 1.25rem;
   background: #ffffff;
-  border: 1px solid #e9e8e4;
+  border: 1px solid #edebe6;
   border-radius: 0.75rem;
   padding: 0.85rem 1.15rem;
-  box-shadow: 0 1px 3px rgba(90, 80, 70, 0.03);
+  box-shadow: 0 1px 3px rgba(60, 50, 40, 0.02), 0 1px 2px rgba(0, 0, 0, 0.015);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
 }
 
 .recipe-row:hover {
   transform: translateY(-1px);
-  border-color: #d8d6ce;
-  box-shadow: 0 4px 12px rgba(90, 80, 70, 0.06);
+  border-color: #dedbd3;
+  box-shadow: 0 4px 12px rgba(90, 80, 70, 0.04);
 }
 
 :root[data-theme="dark"] .recipe-row {
