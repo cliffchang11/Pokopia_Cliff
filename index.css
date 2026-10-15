@@ -15,11 +15,11 @@
 
   --bg-header: rgba(255, 255, 255, 0.90);
   --bg-header-sticky: rgba(255, 255, 255, 0.96);
-  --bg-card: #ffffff;
-  --bg-card-hover: #fafcff;
-  --glass-border: rgba(226, 232, 240, 0.9);
+  --bg-card: #faf8f5; /* 低飽和亞麻淡米灰霧面紙色 */
+  --bg-card-hover: #f5f2ec;
+  --glass-border: #e6e2da; /* 極細素雅線條 */
   --glass-border-focus: #38bdf8;
-  --card-edge-glow: inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 -1px 0 rgba(15, 23, 42, 0.03);
+  --card-edge-glow: 0 2px 8px rgba(90, 80, 70, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
   
   --primary-indigo: #0284c7;
   --primary-indigo-glow: rgba(2, 132, 199, 0.18);
@@ -28,38 +28,38 @@
   --accent-pink: #db2777;
   --accent-sky: #0284c7;
 
-  --text-main: #0f172a;
-  --text-sub: #334155;
-  --text-muted: #64748b;
+  --text-main: #2d2a26; /* 低調炭褐黑 */
+  --text-sub: #44403c;
+  --text-muted: #78716c;
 
-  --stat-bg: #f1f5f9;
-  --stat-border: #e2e8f0;
-  --stat-text: #0f172a;
+  --stat-bg: #f5f3ee;
+  --stat-border: #e6e2da;
+  --stat-text: #2d2a26;
 
   --input-bg: #ffffff;
-  --input-border: #cbd5e1;
-  --input-text: #0f172a;
+  --input-border: #e2ddd4;
+  --input-text: #2d2a26;
 
-  --tab-btn-bg: #f1f5f9;
-  --tab-btn-text: #475569;
+  --tab-btn-bg: #f5f3ee;
+  --tab-btn-text: #57534e;
   --tab-btn-active-bg: #0284c7;
   --tab-btn-active-text: #ffffff;
 
-  --table-bg: #ffffff;
-  --table-th-bg: #f1f5f9;
-  --table-th-text: #1e293b;
-  --table-td-border: #f1f5f9;
-  --table-tr-alt: #f8fafc;
-  --table-tr-hover: #edf2f7;
+  --table-bg: #faf8f5;
+  --table-th-bg: #f2efe9;
+  --table-th-text: #2d2a26;
+  --table-td-border: #ebe6dd;
+  --table-tr-alt: #ffffff;
+  --table-tr-hover: #f5f2eb;
   --table-tr-completed: transparent;
 
   --storage-th-bg: #f3f0ff;
   --storage-th-text: #6d28d9;
   --storage-th-border: #ddd6fe;
 
-  --pokemon-th-bg: #e6f7f0;
-  --pokemon-th-text: #047857;
-  --pokemon-th-border: #a7f3d0;
+  --pokemon-th-bg: #edf8f3;
+  --pokemon-th-text: #065f46;
+  --pokemon-th-border: #d1fae5;
 
   --hab-th-bg: #eaf6fe;
   --hab-th-text: #0369a1;
@@ -1130,23 +1130,23 @@ body {
   backdrop-filter: blur(0.7500rem);
   -webkit-backdrop-filter: blur(0.7500rem);
   border: 0.0625rem solid var(--glass-border);
-  border-radius: var(--radius-lg);
-  padding: 1.3750rem;
+  border-radius: 0.875rem;
+  padding: 1.15rem; /* 精緻微排版充裕留白 */
   display: flex;
   flex-direction: column;
-  gap: 1.0000rem;
+  gap: 0.75rem;
   position: relative;
   overflow: hidden;
-  box-shadow: var(--shadow-main), var(--card-edge-glow);
-  transition: transform 0.25s var(--ease-spring), border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.2s ease;
+  box-shadow: 0 2px 8px rgba(90, 80, 70, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  transition: transform 0.22s var(--ease-spring), border-color 0.22s ease, box-shadow 0.22s ease, background-color 0.2s ease;
   content-visibility: auto;
   contain-intrinsic-size: 0 16rem;
 }
 
 .item-card:hover {
-  transform: translateY(-0.2500rem);
-  border-color: var(--glass-border-focus);
-  box-shadow: var(--shadow-hover), var(--card-edge-glow), 0 0 16px var(--primary-indigo-glow);
+  transform: translateY(-2px);
+  border-color: #d6d0c4;
+  box-shadow: 0 6px 18px rgba(90, 80, 70, 0.08);
   background: var(--bg-card-hover);
 }
 
@@ -1281,19 +1281,21 @@ body {
 }
 
 .card-number {
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: 0.68rem; /* 微型精緻編號 */
+  font-weight: 600;
   color: var(--accent-sky);
   text-transform: uppercase;
-  letter-spacing: 0.0312rem;
+  letter-spacing: 0.02rem;
   white-space: nowrap !important;
   word-break: keep-all !important;
 }
 
 .card-title {
-  font-size: 1.12rem;
-  font-weight: 700;
+  font-size: 0.92rem; /* 精緻微縮標題 (約14.7px) */
+  font-weight: 600;
   color: var(--text-main);
+  letter-spacing: -0.01em;
+  line-height: 1.3;
 }
 
 /* Custom Checkbox */
@@ -1760,10 +1762,10 @@ body {
 }
 
 .tag-badge {
-  font-size: 0.75rem;
-  padding: 0.1250rem 0.6250rem;
-  border-radius: 0.7500rem;
-  font-weight: 600;
+  font-size: 0.68rem; /* 微型素雅標籤 */
+  padding: 0.12rem 0.45rem;
+  border-radius: 0.35rem;
+  font-weight: 500;
   white-space: nowrap !important;
   word-break: keep-all !important;
   display: inline-flex;
@@ -1798,11 +1800,11 @@ body {
 .tag-specialty {
   display: inline-flex;
   align-items: center;
-  gap: 0.2500rem;
-  font-weight: 600;
-  font-size: 0.78rem;
-  padding: 0.1875rem 0.5000rem;
-  border-radius: 0.3750rem;
+  gap: 0.2rem;
+  font-weight: 500;
+  font-size: 0.68rem; /* 微型專長標籤 */
+  padding: 0.14rem 0.42rem;
+  border-radius: 0.35rem;
   cursor: pointer;
   transition: all var(--transition-fast);
   background: rgba(99, 102, 241, 0.18);
@@ -2141,13 +2143,13 @@ body {
 
 /* Pokemon Card View Habitat Modern Styling (52poke 柔和淡彩縮圖) */
 .pkm-card-hab-container {
-  background: #f8fafc;
-  border: 0.0625rem solid #e2e8f0;
-  border-radius: var(--radius-md);
-  padding: 0.6250rem 0.7500rem;
+  background: #ffffff;
+  border: 1px solid #eae5db;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.65rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5000rem;
+  gap: 0.35rem;
   transition: background var(--transition-fast), border-color var(--transition-fast);
 }
 
@@ -2157,8 +2159,8 @@ body {
 }
 
 .pkm-card-hab-label {
-  font-size: 0.76rem;
-  font-weight: 700;
+  font-size: 0.68rem; /* 微型手帳標題 */
+  font-weight: 600;
   color: #065f46;
   letter-spacing: 0.0125rem;
   display: flex;
@@ -2308,32 +2310,32 @@ body {
   background: var(--bg-card);
   backdrop-filter: blur(0.7500rem);
   -webkit-backdrop-filter: blur(0.7500rem);
-  border: 0.0625rem solid var(--glass-border);
-  border-radius: var(--radius-lg);
+  border: 1px solid var(--glass-border);
+  border-radius: 0.875rem;
   overflow-x: auto;
-  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 2px 10px rgba(90, 80, 70, 0.04);
 }
 
 .data-table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  font-size: 0.9rem;
+  font-size: 0.84rem; /* 微排版精緻字級 */
 }
 
 .data-table th {
   background: rgba(15, 23, 42, 0.9);
   color: var(--text-sub);
-  font-weight: 700;
-  padding: 0.8750rem 1.0000rem;
-  border-bottom: 0.0625rem solid var(--glass-border);
+  font-weight: 600;
+  padding: 0.85rem 1.05rem;
+  border-bottom: 1px solid var(--glass-border);
   white-space: nowrap;
   text-align: center;
 }
 
 .data-table td {
-  padding: 0.8750rem 1.0000rem;
-  border-bottom: 0.0625rem solid var(--table-td-border);
+  padding: 0.95rem 1.05rem; /* 舒展呼吸感內襯 */
+  border-bottom: 1px solid var(--table-td-border);
   vertical-align: top;
 }
 
@@ -3991,24 +3993,25 @@ body {
 }
 
 .pokemon-table th {
-  background: var(--pokemon-th-bg, #e6f7f0) !important;
-  color: var(--pokemon-th-text, #047857) !important;
+  background: var(--pokemon-th-bg, #edf8f3) !important;
+  color: var(--pokemon-th-text, #065f46) !important;
   font-weight: 600;
-  border-bottom: 0.0625rem solid var(--pokemon-th-border, #a7f3d0);
+  border-bottom: 1px solid var(--pokemon-th-border, #d1fae5);
   letter-spacing: 0.0125rem;
   text-align: center;
   white-space: nowrap !important;
   word-break: keep-all !important;
+  padding: 0.85rem 0.65rem !important;
 }
 
 .pokemon-table td {
   background: var(--table-bg);
-  border-bottom: 0.0625rem solid var(--table-td-border);
+  border-bottom: 1px solid var(--table-td-border);
   vertical-align: middle !important;
   text-align: center !important;
   white-space: nowrap !important;
   word-break: keep-all !important;
-  padding: 0.6000rem 0.6250rem !important;
+  padding: 0.90rem 0.65rem !important; /* 舒展呼吸感行距，消除緊促壓迫感 */
 }
 
 .pokemon-table td .checkbox-container {
@@ -4034,7 +4037,7 @@ body {
 .pokemon-table td:nth-child(2) {
   width: clamp(5.2500rem, 6.5vw, 5.7500rem);
   min-width: clamp(5.2500rem, 6.5vw, 5.7500rem);
-  padding: 0.5000rem 0.3500rem !important;
+  padding: 0.90rem 0.40rem !important;
   text-align: center !important;
 }
 
