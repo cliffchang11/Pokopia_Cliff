@@ -271,12 +271,14 @@
             ${ingredientsHtml}
           </div>
 
-          <!-- 3. 卡片底部：招式加成與苔卡比獸效果 -->
+          <!-- 3. 卡片底部：招式加成與苔卡比獸效果 (自然露營手冊雙微章) -->
           <div class="recipe-card-footer">
-            ${r.move ? `<div class="recipe-card-move-line"><span class="recipe-move-pill">「${r.move}」威力提升</span></div>` : ''}
-            <div class="recipe-card-snorlax-line">
-              <span class="snorlax-moss-icon">🍃</span>
-              <span class="snorlax-effect-text">${r.snorlaxEffect || '可以和寶可夢變得比較要好'}</span>
+            <div class="recipe-card-effects-row">
+              ${r.move ? `<div class="recipe-move-tag">「${r.move}」威力提升</div>` : ''}
+              <div class="recipe-snorlax-tag">
+                <span class="snorlax-moss-icon">🍃</span>
+                <span class="snorlax-effect-text">${r.snorlaxEffect || '可以和寶可夢變得比較要好'}</span>
+              </div>
             </div>
           </div>
         </div>
