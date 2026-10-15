@@ -248,25 +248,23 @@
 
       return `
         <div class="recipe-row" data-recipe-id="${r.id}" data-recipe-name="${r.name}" data-category="${catMeta.slug}">
-          <!-- 1. 左區：料理身份與專長 -->
-          <div class="recipe-row-identity">
-            <img class="recipe-row-avatar-img" src="${r.icon || r.onlineIcon}" alt="${r.name}" loading="lazy" onerror="this.onerror=null; if('${r.onlineIcon}' && this.src !== '${r.onlineIcon}') { this.src='${r.onlineIcon}'; } else { this.src='assets/item_sprites/simple-salad.png'; }">
-            <div class="recipe-row-identity-text">
-              <div class="recipe-row-title-line">
-                <h3 class="recipe-row-title">${r.name}</h3>
-                <span class="recipe-badge recipe-badge-cat cat-${catMeta.slug}">${catMeta.label}</span>
-                <span class="recipe-badge recipe-badge-taste ${tasteClass}">${r.taste || '美味'}</span>
-                ${specialtyHtml}
-              </div>
+          <!-- 1. 左區：原生透明料理圖標 (48px) -->
+          <img class="recipe-row-avatar-img" src="${r.icon || r.onlineIcon}" alt="${r.name}" loading="lazy" onerror="this.onerror=null; if('${r.onlineIcon}' && this.src !== '${r.onlineIcon}') { this.src='${r.onlineIcon}'; } else { this.src='assets/item_sprites/simple-salad.png'; }">
+
+          <!-- 2. 中區：日系手帳雙行層次流 (上行身份屬性／下行食材垂直齊頭) -->
+          <div class="recipe-row-main">
+            <div class="recipe-row-header-line">
+              <h3 class="recipe-row-title">${r.name}</h3>
+              <span class="recipe-badge recipe-badge-cat cat-${catMeta.slug}">${catMeta.label}</span>
+              <span class="recipe-badge recipe-badge-taste ${tasteClass}">${r.taste || '美味'}</span>
+              ${specialtyHtml}
+            </div>
+            <div class="recipe-row-ingredients">
+              ${ingredientsHtml}
             </div>
           </div>
 
-          <!-- 2. 中區：所需食材籤 (輕盈無框手帳流，點擊反查) -->
-          <div class="recipe-row-ingredients">
-            ${ingredientsHtml}
-          </div>
-
-          <!-- 3. 右區：效果說明與喜愛寶可夢膠囊 -->
+          <!-- 3. 右區：效果說明與喜愛寶可夢膠囊 (垂直置中收攏) -->
           <div class="recipe-row-effects-section">
             <div class="recipe-row-effects-text">
               ${r.move ? `<span class="recipe-row-move-tag">「${r.move}」威力提升</span>` : ''}
