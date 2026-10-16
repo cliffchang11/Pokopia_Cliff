@@ -1613,9 +1613,13 @@ body {
   background: #fefce8;
 }
 :root:not([data-theme="dark"]) .fav-pill[data-fav="百花盛開的"],
+:root:not([data-theme="dark"]) .fav-pill[data-fav="花朵綻放的"],
 :root:not([data-theme="dark"]) .fav-pill[data-fav="用於觀賞的"],
+:root:not([data-theme="dark"]) .fav-pill[data-fav="觀賞用的"],
 :root[data-theme="light"] .fav-pill[data-fav="百花盛開的"],
-:root[data-theme="light"] .fav-pill[data-fav="用於觀賞的"] {
+:root[data-theme="light"] .fav-pill[data-fav="花朵綻放的"],
+:root[data-theme="light"] .fav-pill[data-fav="用於觀賞的"],
+:root[data-theme="light"] .fav-pill[data-fav="觀賞用的"] {
   border-color: #a855f7;
   color: #7e22ce;
   background: #faf5ff;
@@ -1645,7 +1649,9 @@ body {
   background: #eff6ff;
 }
 :root:not([data-theme="dark"]) .fav-pill[data-fav="電力驅動的"],
-:root[data-theme="light"] .fav-pill[data-fav="電力驅動的"] {
+:root:not([data-theme="dark"]) .fav-pill[data-fav="以電力驅動的"],
+:root[data-theme="light"] .fav-pill[data-fav="電力驅動的"],
+:root[data-theme="light"] .fav-pill[data-fav="以電力驅動的"] {
   border-color: #eab308;
   color: #854d0e;
   background: #fef9c3;
@@ -1663,22 +1669,36 @@ body {
   background: #f0f9ff;
 }
 :root:not([data-theme="dark"]) .fav-pill[data-fav="圓圓的"],
-:root[data-theme="light"] .fav-pill[data-fav="圓圓的"] {
+:root:not([data-theme="dark"]) .fav-pill[data-fav="圓滾滾的"],
+:root[data-theme="light"] .fav-pill[data-fav="圓圓的"],
+:root[data-theme="light"] .fav-pill[data-fav="圓滾滾的"] {
   border-color: #fb923c;
   color: #c2410c;
   background: #fff7ed;
 }
 :root:not([data-theme="dark"]) .fav-pill[data-fav="能出聲的"],
-:root[data-theme="light"] .fav-pill[data-fav="能出聲的"] {
+:root:not([data-theme="dark"]) .fav-pill[data-fav="會發出聲響的"],
+:root[data-theme="light"] .fav-pill[data-fav="能出聲的"],
+:root[data-theme="light"] .fav-pill[data-fav="會發出聲響的"] {
   border-color: #a855f7;
   color: #6b21a8;
   background: #faf5ff;
 }
 :root:not([data-theme="dark"]) .fav-pill[data-fav="多彩的"],
-:root[data-theme="light"] .fav-pill[data-fav="多彩的"] {
+:root:not([data-theme="dark"]) .fav-pill[data-fav="色彩繽紛的"],
+:root[data-theme="light"] .fav-pill[data-fav="多彩的"],
+:root[data-theme="light"] .fav-pill[data-fav="色彩繽紛的"] {
   border-color: #ec4899;
   color: #9d174d;
   background: #fdf2f8;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="稜角分明的"],
+:root:not([data-theme="dark"]) .fav-pill[data-fav="方方的"],
+:root[data-theme="light"] .fav-pill[data-fav="稜角分明的"],
+:root[data-theme="light"] .fav-pill[data-fav="方方的"] {
+  border-color: #0284c7;
+  color: #0369a1;
+  background: #f0f9ff;
 }
 :root:not([data-theme="dark"]) .fav-pill[data-fav="整潔的"],
 :root:not([data-theme="dark"]) .fav-pill[data-fav="能治癒傷口的"],

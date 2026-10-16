@@ -629,11 +629,11 @@ window.POKOPIA_DATA = {
       "habitat2": "綠色的長椅 - 花籬（任意） x 2 椅子（長） x 1",
       "habitat2_img": "assets/habitats/hab_022.webp",
       "favorites": [
-        "能感受大自然的",
-        "柔軟的",
         "可愛的",
-        "能感受水的",
         "大家一起用的",
+        "柔軟的",
+        "能感受大自然的",
+        "能感受水的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -662,11 +662,11 @@ window.POKOPIA_DATA = {
       "habitat2": "整片的花海 - 草地的花 x 8",
       "habitat2_img": "assets/habitats/hab_011.webp",
       "favorites": [
-        "能感受大自然的",
-        "柔軟的",
         "可愛的",
-        "百花盛開的",
-        "多彩的",
+        "色彩繽紛的",
+        "柔軟的",
+        "花朵綻放的",
+        "能感受大自然的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -696,10 +696,10 @@ window.POKOPIA_DATA = {
       "habitat2": "整片的花海 - 草地的花 x 8",
       "habitat2_img": "assets/habitats/hab_011.webp",
       "favorites": [
-        "能感受大自然的",
-        "柔軟的",
         "可愛的",
-        "百花盛開的",
+        "柔軟的",
+        "花朵綻放的",
+        "能感受大自然的",
         "豪華的",
         "酸酸的"
       ],
@@ -730,11 +730,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受火的",
-        "木製的",
         "堅硬的",
-        "訓練用的",
         "大家一起用的",
+        "木製的",
+        "能感受火的",
+        "訓練用的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -763,11 +763,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受火的",
-        "木製的",
-        "堅硬的",
-        "訓練用的",
         "交通工具",
+        "堅硬的",
+        "木製的",
+        "能感受火的",
+        "訓練用的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -797,9 +797,9 @@ window.POKOPIA_DATA = {
       "habitat2": "綠色的草叢 - 綠草 x 4",
       "habitat2_img": "assets/habitats/hab_001.webp",
       "favorites": [
+        "木製的",
         "能感受火的",
         "能感受風的",
-        "木製的",
         "訓練用的",
         "豪華的",
         "辣辣的"
@@ -831,11 +831,11 @@ window.POKOPIA_DATA = {
       "habitat2": "濕潤的草叢 - 綠草 x 4 水 x 2",
       "habitat2_img": "assets/habitats/hab_004.webp",
       "favorites": [
-        "能感受水的",
-        "整潔的",
-        "能治癒傷口的",
         "可愛的",
         "大家一起用的",
+        "整潔的",
+        "能感受水的",
+        "能治癒傷口的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -864,11 +864,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受水的",
+        "堅硬的",
         "整潔的",
+        "能感受水的",
         "能治癒傷口的",
         "訓練用的",
-        "堅硬的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -898,8 +898,8 @@ window.POKOPIA_DATA = {
       "habitat2": "濕潤的草叢 - 綠草 x 4 水 x 2",
       "habitat2_img": "assets/habitats/hab_004.webp",
       "favorites": [
-        "能感受水的",
         "整潔的",
+        "能感受水的",
         "能治癒傷口的",
         "訓練用的",
         "豪華的",
@@ -934,10 +934,10 @@ window.POKOPIA_DATA = {
       "habitat2_img": "assets/habitats/hab_006.webp",
       "favorites": [
         "柔軟的",
-        "能感受風的",
-        "用於觀賞的",
+        "遊戲區",
+        "觀賞用的",
         "能感受大自然的",
-        "遊樂區",
+        "能感受風的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -968,11 +968,11 @@ window.POKOPIA_DATA = {
       "habitat2": "漂亮的花田 - 草地的花 x 4",
       "habitat2_img": "assets/habitats/hab_008.webp",
       "favorites": [
+        "像食物的",
         "柔軟的",
-        "能感受風的",
-        "用於觀賞的",
+        "觀賞用的",
         "能感受大自然的",
-        "很像食物的",
+        "能感受風的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -1003,10 +1003,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "柔軟的",
-        "能感受風的",
         "木製的",
+        "柔軟的",
         "能感受大自然的",
+        "能感受風的",
         "豪華的",
         "酸酸的"
       ],
@@ -1037,10 +1037,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受大自然的",
-        "能感受土的",
         "柔軟的",
-        "百花盛開的",
+        "花朵綻放的",
+        "能感受土的",
+        "能感受大自然的",
         "能感受水的",
         "苦苦的"
       ],
@@ -1070,11 +1070,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受大自然的",
-        "能感受土的",
-        "柔軟的",
-        "百花盛開的",
         "垃圾",
+        "柔軟的",
+        "花朵綻放的",
+        "能感受土的",
+        "能感受大自然的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -1104,11 +1104,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受大自然的",
-        "能感受土的",
+        "色彩繽紛的",
         "柔軟的",
-        "百花盛開的",
-        "多彩的",
+        "花朵綻放的",
+        "能感受土的",
+        "能感受大自然的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -1139,11 +1139,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受大自然的",
-        "百花盛開的",
-        "遊樂區",
+        "會發出聲響的",
         "可愛的",
-        "能出聲的",
+        "遊戲區",
+        "花朵綻放的",
+        "能感受大自然的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -1173,11 +1173,11 @@ window.POKOPIA_DATA = {
       "habitat2": "花園 - 花籬（任意） x 4 草地的花 x 4",
       "habitat2_img": "assets/habitats/hab_014.webp",
       "favorites": [
-        "能感受大自然的",
+        "像食物的",
         "木製的",
-        "用於觀賞的",
+        "觀賞用的",
         "能感受土的",
-        "很像食物的",
+        "能感受大自然的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -1206,11 +1206,11 @@ window.POKOPIA_DATA = {
       "habitat2": "高崗的花田 - 草地的花 x 4 高處 x 1",
       "habitat2_img": "assets/habitats/hab_012.webp",
       "favorites": [
-        "能感受大自然的",
-        "木製的",
-        "用於觀賞的",
-        "能感受土的",
         "奇妙的",
+        "木製的",
+        "觀賞用的",
+        "能感受土的",
+        "能感受大自然的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -1239,11 +1239,11 @@ window.POKOPIA_DATA = {
       "habitat2": "光照的長椅 - 椅子（長） x 1 路燈（任意） x 1",
       "habitat2_img": "assets/habitats/hab_023.webp",
       "favorites": [
-        "能感受大自然的",
-        "木製的",
-        "用於觀賞的",
-        "看起來很難懂的",
         "有文字的",
+        "木製的",
+        "觀賞用的",
+        "艱深難懂的",
+        "能感受大自然的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -1272,11 +1272,11 @@ window.POKOPIA_DATA = {
       "habitat2": "光照的草叢 - 草（任意） x 4 照明（任意） x 1",
       "habitat2_img": "assets/habitats/hab_007.webp",
       "favorites": [
-        "能感受大自然的",
         "木製的",
-        "用於觀賞的",
+        "觀賞用的",
+        "花朵綻放的",
+        "能感受大自然的",
         "能感受風的",
-        "百花盛開的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -1306,11 +1306,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受大自然的",
         "木製的",
+        "花朵綻放的",
         "能感受土的",
+        "能感受大自然的",
         "能感受水的",
-        "百花盛開的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -1341,11 +1341,11 @@ window.POKOPIA_DATA = {
       "habitat2": "華麗的桌子 - 椅子（任意） x 1 桌子（任意） x 1 單枝花花瓶 x 1",
       "habitat2_img": "assets/habitats/hab_021.webp",
       "favorites": [
-        "能感受大自然的",
+        "色彩繽紛的",
         "木製的",
+        "花朵綻放的",
         "能感受土的",
-        "多彩的",
-        "百花盛開的",
+        "能感受大自然的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -1376,11 +1376,11 @@ window.POKOPIA_DATA = {
       "habitat2": "華麗的桌子 - 椅子（任意） x 1 桌子（任意） x 1 單枝花花瓶 x 1",
       "habitat2_img": "assets/habitats/hab_021.webp",
       "favorites": [
-        "能感受大自然的",
+        "色彩繽紛的",
         "木製的",
+        "花朵綻放的",
         "能感受土的",
-        "多彩的",
-        "百花盛開的",
+        "能感受大自然的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -1411,10 +1411,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受水的",
-        "整潔的",
         "奇妙的",
+        "整潔的",
         "柔軟的",
+        "能感受水的",
         "能治癒傷口的",
         "澀澀的"
       ],
@@ -1446,10 +1446,10 @@ window.POKOPIA_DATA = {
       "habitat2": "布偶伴好眠 - 床鋪（任意） x 1 玩偶（任意） x 1",
       "habitat2_img": "assets/habitats/hab_030.webp",
       "favorites": [
-        "能感受水的",
-        "整潔的",
-        "奇妙的",
         "大家一起用的",
+        "奇妙的",
+        "整潔的",
+        "能感受水的",
         "能治癒傷口的",
         "澀澀的"
       ],
@@ -1481,10 +1481,10 @@ window.POKOPIA_DATA = {
       "habitat2": "布偶伴好眠 - 床鋪（任意） x 1 玩偶（任意） x 1",
       "habitat2_img": "assets/habitats/hab_030.webp",
       "favorites": [
-        "能感受水的",
-        "整潔的",
-        "奇妙的",
         "大家一起用的",
+        "奇妙的",
+        "整潔的",
+        "能感受水的",
         "能治癒傷口的",
         "酸酸的"
       ],
@@ -1515,11 +1515,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "電力驅動的",
-        "金屬的",
-        "閃亮亮的",
         "堅硬的",
         "大家一起用的",
+        "以電力驅動的",
+        "金屬的",
+        "閃亮亮的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -1548,11 +1548,11 @@ window.POKOPIA_DATA = {
       "habitat2": "垃圾桶擺好擺滿 - 垃圾桶 x 4",
       "habitat2_img": "assets/habitats/hab_064.webp",
       "favorites": [
-        "電力驅動的",
+        "大家一起用的",
+        "以電力驅動的",
+        "集聚在一起的",
         "金屬的",
         "閃亮亮的",
-        "羣聚的",
-        "大家一起用的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -1582,11 +1582,11 @@ window.POKOPIA_DATA = {
       "habitat2": "垃圾桶擺好擺滿 - 垃圾桶 x 4",
       "habitat2_img": "assets/habitats/hab_064.webp",
       "favorites": [
-        "電力驅動的",
-        "金屬的",
-        "豪華的",
-        "羣聚的",
         "堅硬的",
+        "以電力驅動的",
+        "集聚在一起的",
+        "豪華的",
+        "金屬的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -1617,10 +1617,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "方方的",
         "石製的",
-        "能感受土的",
-        "稜角分明的",
         "細長的",
+        "能感受土的",
         "訓練用的",
         "澀澀的"
       ],
@@ -1652,11 +1652,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "金屬的",
-        "能感受土的",
+        "堅硬的",
         "石製的",
         "細長的",
-        "堅硬的",
+        "能感受土的",
+        "金屬的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -1686,11 +1686,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受土的",
-        "建設",
-        "訓練用的",
-        "細長的",
         "大家一起用的",
+        "建設",
+        "細長的",
+        "能感受土的",
+        "訓練用的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -1719,10 +1719,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受土的",
         "建設",
-        "訓練用的",
         "細長的",
+        "能感受土的",
+        "訓練用的",
         "豪華的",
         "澀澀的"
       ],
@@ -1752,11 +1752,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "訓練用的",
+        "圓滾滾的",
         "大家一起用的",
         "布製的",
         "石製的",
-        "圓圓的",
+        "訓練用的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -1785,11 +1785,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "訓練用的",
+        "圓滾滾的",
         "大家一起用的",
         "布製的",
         "石製的",
-        "圓圓的",
+        "訓練用的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -1818,11 +1818,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "訓練用的",
+        "圓滾滾的",
         "大家一起用的",
         "布製的",
         "石製的",
-        "圓圓的",
+        "訓練用的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -1851,11 +1851,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "訓練用的",
+        "圓滾滾的",
         "大家一起用的",
         "布製的",
         "石製的",
-        "圓圓的",
+        "訓練用的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -1885,10 +1885,10 @@ window.POKOPIA_DATA = {
       "habitat2_img": "",
       "favorites": [
         "垃圾",
-        "羣聚的",
-        "看起來很難懂的",
+        "會搖晃的",
         "柔軟的",
-        "搖搖晃晃的",
+        "艱深難懂的",
+        "集聚在一起的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -1918,10 +1918,10 @@ window.POKOPIA_DATA = {
       "habitat2_img": "assets/habitats/hab_063.webp",
       "favorites": [
         "垃圾",
-        "羣聚的",
-        "看起來很難懂的",
+        "會搖晃的",
         "柔軟的",
-        "搖搖晃晃的",
+        "艱深難懂的",
+        "集聚在一起的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -1951,11 +1951,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "花朵綻放的",
+        "細長的",
+        "集聚在一起的",
         "能感受大自然的",
         "能感受水的",
-        "羣聚的",
-        "百花盛開的",
-        "細長的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -1986,12 +1986,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "觀賞用的",
+        "花朵綻放的",
+        "集聚在一起的",
         "能感受大自然的",
-        "看起來很難懂的",
-        "有文字的",
-        "奇妙的",
-        "大家一起用的",
-        "澀澀的"
+        "能感受水的",
+        "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
       "habitat1_id": "hab_022",
@@ -2021,12 +2021,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "大家一起用的",
+        "奇妙的",
+        "有文字的",
+        "艱深難懂的",
         "能感受大自然的",
-        "能感受水的",
-        "羣聚的",
-        "百花盛開的",
-        "用於觀賞的",
-        "苦苦的"
+        "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
       "habitat1_id": "hab_043",
@@ -2055,10 +2055,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "尖尖的",
+        "木製的",
         "能感受大自然的",
         "能感受風的",
-        "木製的",
-        "尖尖的",
         "訓練用的",
         "辣辣的"
       ],
@@ -2088,11 +2088,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受大自然的",
-        "金屬的",
-        "木製的",
         "堅硬的",
+        "木製的",
+        "能感受大自然的",
         "訓練用的",
+        "金屬的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -2122,10 +2122,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受大自然的",
-        "木製的",
-        "百花盛開的",
         "尖尖的",
+        "木製的",
+        "花朵綻放的",
+        "能感受大自然的",
         "訓練用的",
         "辣辣的"
       ],
@@ -2156,11 +2156,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "交通工具",
+        "大家一起用的",
+        "會搖晃的",
         "能感受水的",
         "能感受海的",
-        "大家一起用的",
-        "交通工具",
-        "搖搖晃晃的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -2189,11 +2189,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "整潔的",
+        "細長的",
         "能感受水的",
         "能感受海的",
         "能感受風的",
-        "整潔的",
-        "細長的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -2251,11 +2251,11 @@ window.POKOPIA_DATA = {
       "habitat2": "高崗的草叢 - 綠草 x 4 高處 x 1",
       "habitat2_img": "assets/habitats/hab_006.webp",
       "favorites": [
-        "柔軟的",
-        "能感受風的",
         "布製的",
-        "搖搖晃晃的",
-        "用於觀賞的",
+        "會搖晃的",
+        "柔軟的",
+        "觀賞用的",
+        "能感受風的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -2286,11 +2286,11 @@ window.POKOPIA_DATA = {
       "habitat2": "高崗的草叢 - 綠草 x 4 高處 x 1",
       "habitat2_img": "assets/habitats/hab_006.webp",
       "favorites": [
-        "柔軟的",
-        "能感受風的",
-        "有文字的",
         "容器",
-        "用於觀賞的",
+        "有文字的",
+        "柔軟的",
+        "觀賞用的",
+        "能感受風的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -2321,10 +2321,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受大自然的",
+        "像食物的",
         "木製的",
-        "百花盛開的",
-        "很像食物的",
+        "花朵綻放的",
+        "能感受大自然的",
         "訓練用的",
         "甜甜的"
       ],
@@ -2355,11 +2355,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受大自然的",
-        "木製的",
-        "閃亮亮的",
         "可愛的",
         "大家一起用的",
+        "木製的",
+        "能感受大自然的",
+        "閃亮亮的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -2388,11 +2388,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受大自然的",
-        "木製的",
-        "閃亮亮的",
         "可愛的",
         "大家一起用的",
+        "木製的",
+        "能感受大自然的",
+        "閃亮亮的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -2422,10 +2422,10 @@ window.POKOPIA_DATA = {
       "habitat2_img": "",
       "favorites": [
         "可愛的",
-        "很像食物的",
-        "圓圓的",
+        "圓滾滾的",
+        "色彩繽紛的",
         "容器",
-        "多彩的",
+        "像食物的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -2454,11 +2454,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "圓滾滾的",
         "垃圾",
-        "很像食物的",
-        "圓圓的",
+        "色彩繽紛的",
         "容器",
-        "多彩的",
+        "像食物的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -2487,11 +2487,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受大自然的",
-        "百花盛開的",
         "可愛的",
-        "圓圓的",
+        "圓滾滾的",
         "尖尖的",
+        "花朵綻放的",
+        "能感受大自然的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -2521,11 +2521,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "尖尖的",
         "能感受大自然的",
         "能感受風的",
         "豪華的",
         "閃亮亮的",
-        "尖尖的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -2555,11 +2555,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "大家一起用的",
+        "木製的",
+        "集聚在一起的",
         "能感受大自然的",
         "能感受風的",
-        "木製的",
-        "羣聚的",
-        "大家一起用的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -2589,11 +2589,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "木製的",
+        "艱深難懂的",
+        "集聚在一起的",
         "能感受大自然的",
         "能感受風的",
-        "木製的",
-        "羣聚的",
-        "看起來很難懂的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -2623,11 +2623,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "色彩繽紛的",
+        "容器",
+        "整潔的",
         "能感受水的",
         "能感受海的",
-        "整潔的",
-        "多彩的",
-        "容器",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -2656,11 +2656,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "色彩繽紛的",
+        "容器",
+        "整潔的",
         "能感受水的",
         "能感受海的",
-        "整潔的",
-        "多彩的",
-        "容器",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -2690,11 +2690,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受水的",
-        "能感受土的",
-        "能感受海的",
-        "整潔的",
         "容器",
+        "整潔的",
+        "能感受土的",
+        "能感受水的",
+        "能感受海的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -2725,11 +2725,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受水的",
-        "能感受土的",
-        "能感受海的",
-        "整潔的",
         "容器",
+        "整潔的",
+        "能感受土的",
+        "能感受水的",
+        "能感受海的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -2759,11 +2759,11 @@ window.POKOPIA_DATA = {
       "habitat2": "身在布偶堆 - 風速狗玩偶 x 1 皮卡丘玩偶 x 1 快龍玩偶 x 1 伊布玩偶 x 1",
       "habitat2_img": "assets/habitats/hab_181.webp",
       "favorites": [
-        "詭異的",
+        "可愛的",
+        "圓滾滾的",
         "奇妙的",
         "能感受風的",
-        "可愛的",
-        "圓圓的",
+        "詭異的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -2793,11 +2793,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "詭異的",
         "奇妙的",
+        "會搖晃的",
+        "會旋轉的",
         "能感受風的",
-        "搖搖晃晃的",
-        "旋轉的",
+        "詭異的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -2827,11 +2827,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受土的",
-        "石製的",
-        "能感受大自然的",
-        "用於觀賞的",
         "尖尖的",
+        "觀賞用的",
+        "石製的",
+        "能感受土的",
+        "能感受大自然的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -2861,11 +2861,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受土的",
-        "金屬的",
-        "訓練用的",
-        "用於觀賞的",
         "尖尖的",
+        "觀賞用的",
+        "能感受土的",
+        "訓練用的",
+        "金屬的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -2895,11 +2895,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "訓練用的",
         "建設",
         "木製的",
+        "方方的",
         "細長的",
-        "稜角分明的",
+        "訓練用的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -2928,11 +2928,11 @@ window.POKOPIA_DATA = {
       "habitat2": "巖影的草叢 - 綠草 x 4 大石頭 x 1",
       "habitat2_img": "assets/habitats/hab_003.webp",
       "favorites": [
-        "訓練用的",
-        "建設",
-        "金屬的",
-        "細長的",
         "大家一起用的",
+        "建設",
+        "細長的",
+        "訓練用的",
+        "金屬的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -2962,11 +2962,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "訓練用的",
+        "大家一起用的",
         "建設",
         "石製的",
         "細長的",
-        "大家一起用的",
+        "訓練用的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -2996,11 +2996,11 @@ window.POKOPIA_DATA = {
       "habitat2": "墓前的供品 - 墓碑 x 1 細長蠟燭 x 2 裝盤的食物 x 1",
       "habitat2_img": "assets/habitats/hab_032.webp",
       "favorites": [
-        "詭異的",
         "奇妙的",
+        "會搖晃的",
+        "方方的",
         "能感受火的",
-        "搖搖晃晃的",
-        "稜角分明的",
+        "詭異的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3029,11 +3029,11 @@ window.POKOPIA_DATA = {
       "habitat2": "墓前的供品 - 墓碑 x 1 細長蠟燭 x 2 裝盤的食物 x 1",
       "habitat2_img": "assets/habitats/hab_032.webp",
       "favorites": [
-        "詭異的",
         "奇妙的",
-        "能感受火的",
-        "搖搖晃晃的",
         "容器",
+        "會搖晃的",
+        "能感受火的",
+        "詭異的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3062,11 +3062,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "詭異的",
         "奇妙的",
+        "會搖晃的",
+        "觀賞用的",
         "能感受火的",
-        "搖搖晃晃的",
-        "用於觀賞的",
+        "詭異的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3095,11 +3095,11 @@ window.POKOPIA_DATA = {
       "habitat2": "圓木的溫馨感 - 圓木椅子 x 1 圓木床鋪 x 1 圓木桌 x 1",
       "habitat2_img": "assets/habitats/hab_044.webp",
       "favorites": [
-        "能感受火的",
-        "豪華的",
-        "能感受土的",
         "堅硬的",
         "尖尖的",
+        "能感受土的",
+        "能感受火的",
+        "豪華的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3128,11 +3128,11 @@ window.POKOPIA_DATA = {
       "habitat2": "圓木的溫馨感 - 圓木椅子 x 1 圓木床鋪 x 1 圓木桌 x 1",
       "habitat2_img": "assets/habitats/hab_044.webp",
       "favorites": [
-        "能感受火的",
-        "豪華的",
-        "能感受土的",
-        "訓練用的",
         "尖尖的",
+        "能感受土的",
+        "能感受火的",
+        "訓練用的",
+        "豪華的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3162,11 +3162,11 @@ window.POKOPIA_DATA = {
       "habitat2": "圓木的溫馨感 - 圓木椅子 x 1 圓木床鋪 x 1 圓木桌 x 1",
       "habitat2_img": "assets/habitats/hab_044.webp",
       "favorites": [
-        "能感受火的",
-        "豪華的",
-        "能感受土的",
-        "訓練用的",
         "尖尖的",
+        "能感受土的",
+        "能感受火的",
+        "訓練用的",
+        "豪華的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3196,11 +3196,11 @@ window.POKOPIA_DATA = {
       "habitat2": "樹蔭的花田 - 樹果樹（任意） x 1 草地的花 x 4",
       "habitat2_img": "assets/habitats/hab_009.webp",
       "favorites": [
-        "能感受水的",
-        "豪華的",
-        "能感受大自然的",
         "整潔的",
+        "能感受大自然的",
+        "能感受水的",
         "能治癒傷口的",
+        "豪華的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3229,11 +3229,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受水的",
-        "豪華的",
-        "柔軟的",
         "整潔的",
+        "柔軟的",
+        "能感受水的",
         "能治癒傷口的",
+        "豪華的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3263,11 +3263,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受水的",
-        "豪華的",
-        "訓練用的",
         "整潔的",
+        "能感受水的",
         "能治癒傷口的",
+        "訓練用的",
+        "豪華的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3298,11 +3298,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受風的",
+        "像食物的",
+        "細長的",
         "能感受水的",
         "能感受海的",
-        "細長的",
-        "很像食物的",
+        "能感受風的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3332,11 +3332,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "電力驅動的",
-        "有玻璃的",
         "可愛的",
-        "百花盛開的",
         "布製的",
+        "有玻璃的",
+        "以電力驅動的",
+        "花朵綻放的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3365,11 +3365,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "電力驅動的",
-        "有玻璃的",
         "可愛的",
-        "能治癒傷口的",
         "有文字的",
+        "有玻璃的",
+        "以電力驅動的",
+        "能治癒傷口的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3398,11 +3398,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "電力驅動的",
-        "有玻璃的",
-        "大家一起用的",
-        "圓圓的",
         "交通工具",
+        "圓滾滾的",
+        "大家一起用的",
+        "有玻璃的",
+        "以電力驅動的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3432,11 +3432,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "電力驅動的",
-        "有玻璃的",
+        "圓滾滾的",
         "大家一起用的",
-        "圓圓的",
-        "遊樂區",
+        "有玻璃的",
+        "遊戲區",
+        "以電力驅動的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3466,11 +3466,11 @@ window.POKOPIA_DATA = {
       "habitat2": "公園的長椅 - 椅子（長） x 1 垃圾桶 x 1",
       "habitat2_img": "assets/habitats/hab_066.webp",
       "favorites": [
-        "詭異的",
-        "能感受風的",
+        "會發出聲響的",
         "木製的",
-        "能出聲的",
-        "看起來很難懂的",
+        "艱深難懂的",
+        "能感受風的",
+        "詭異的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3499,11 +3499,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "詭異的",
-        "能感受風的",
+        "會發出聲響的",
         "木製的",
-        "能出聲的",
-        "看起來很難懂的",
+        "艱深難懂的",
+        "能感受風的",
+        "詭異的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3533,11 +3533,11 @@ window.POKOPIA_DATA = {
       "habitat2": "高崗的黃色的草叢 - 黃色的草 x 4 高處 x 1",
       "habitat2_img": "assets/habitats/hab_052.webp",
       "favorites": [
-        "詭異的",
-        "能感受風的",
-        "木製的",
         "垃圾",
-        "用於觀賞的",
+        "木製的",
+        "觀賞用的",
+        "能感受風的",
+        "詭異的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3567,11 +3567,11 @@ window.POKOPIA_DATA = {
       "habitat2": "休息好地方 - 紙箱 x 1 乾草床鋪 x 1",
       "habitat2_img": "assets/habitats/hab_061.webp",
       "favorites": [
-        "容器",
         "大家一起用的",
-        "閃亮亮的",
+        "容器",
         "有玻璃的",
         "豪華的",
+        "閃亮亮的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3601,11 +3601,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "容器",
         "大家一起用的",
-        "閃亮亮的",
-        "用於觀賞的",
+        "容器",
+        "觀賞用的",
         "豪華的",
+        "閃亮亮的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3635,10 +3635,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "奇妙的",
+        "艱深難懂的",
         "能感受水的",
         "能感受海的",
-        "奇妙的",
-        "看起來很難懂的",
         "能治癒傷口的",
         "澀澀的"
       ],
@@ -3668,11 +3668,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "奇妙的",
+        "尖尖的",
+        "艱深難懂的",
         "能感受水的",
         "能感受海的",
-        "奇妙的",
-        "看起來很難懂的",
-        "尖尖的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3702,11 +3702,11 @@ window.POKOPIA_DATA = {
       "habitat2": "來收拾吧 - 紙箱 x 1 玩具（任意） x 2",
       "habitat2_img": "assets/habitats/hab_062.webp",
       "favorites": [
-        "能感受火的",
-        "石製的",
-        "能感受風的",
         "有文字的",
-        "百花盛開的",
+        "花朵綻放的",
+        "石製的",
+        "能感受火的",
+        "能感受風的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3737,11 +3737,11 @@ window.POKOPIA_DATA = {
       "habitat2": "小小博物館 - 分隔物（任意） x 3 臺座／展示臺 x 1 遺失物（大） x 1",
       "habitat2_img": "assets/habitats/hab_129.webp",
       "favorites": [
-        "能感受火的",
+        "觀賞用的",
         "石製的",
+        "能感受火的",
         "能感受風的",
-        "用於觀賞的",
-        "象徵的",
+        "象徵",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3772,10 +3772,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "柔軟的",
-        "能感受風的",
         "木製的",
+        "柔軟的",
         "細長的",
+        "能感受風的",
         "訓練用的",
         "辣辣的"
       ],
@@ -3807,10 +3807,10 @@ window.POKOPIA_DATA = {
       "habitat2_img": "",
       "favorites": [
         "垃圾",
-        "詭異的",
-        "羣聚的",
-        "閃亮亮的",
         "容器",
+        "集聚在一起的",
+        "詭異的",
+        "閃亮亮的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3840,10 +3840,10 @@ window.POKOPIA_DATA = {
       "habitat2_img": "",
       "favorites": [
         "垃圾",
+        "色彩繽紛的",
+        "集聚在一起的",
         "詭異的",
-        "羣聚的",
         "閃亮亮的",
-        "多彩的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3873,11 +3873,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "詭異的",
-        "奇妙的",
         "垃圾",
-        "容器",
         "大家一起用的",
+        "奇妙的",
+        "容器",
+        "詭異的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3908,11 +3908,11 @@ window.POKOPIA_DATA = {
       "habitat2": "詭異書房 - 書架 x 1 雅緻沙發 x 1 自然桌子 x 1 細長蠟燭 x 1",
       "habitat2_img": "assets/habitats/hab_089.webp",
       "favorites": [
-        "詭異的",
-        "奇妙的",
         "垃圾",
-        "搖搖晃晃的",
         "大家一起用的",
+        "奇妙的",
+        "會搖晃的",
+        "詭異的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3943,11 +3943,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "詭異的",
-        "奇妙的",
-        "垃圾",
         "交通工具",
+        "垃圾",
         "大家一起用的",
+        "奇妙的",
+        "詭異的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -3978,11 +3978,11 @@ window.POKOPIA_DATA = {
       "habitat2": "公園的長椅 - 椅子（長） x 1 垃圾桶 x 1",
       "habitat2_img": "assets/habitats/hab_066.webp",
       "favorites": [
-        "電力驅動的",
+        "圓滾滾的",
+        "色彩繽紛的",
+        "會旋轉的",
+        "以電力驅動的",
         "閃亮亮的",
-        "圓圓的",
-        "多彩的",
-        "旋轉的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4013,11 +4013,11 @@ window.POKOPIA_DATA = {
       "habitat2": "公園的長椅 - 椅子（長） x 1 垃圾桶 x 1",
       "habitat2_img": "assets/habitats/hab_066.webp",
       "favorites": [
-        "電力驅動的",
+        "圓滾滾的",
+        "會旋轉的",
+        "遊戲區",
+        "以電力驅動的",
         "閃亮亮的",
-        "圓圓的",
-        "遊樂區",
-        "旋轉的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4048,11 +4048,11 @@ window.POKOPIA_DATA = {
       "habitat2": "南國氛圍 - 大椰子樹 x 1 海邊的花 x 4",
       "habitat2_img": "assets/habitats/hab_057.webp",
       "favorites": [
-        "能感受大自然的",
-        "奇妙的",
-        "羣聚的",
-        "用於觀賞的",
         "大家一起用的",
+        "奇妙的",
+        "觀賞用的",
+        "集聚在一起的",
+        "能感受大自然的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4083,11 +4083,11 @@ window.POKOPIA_DATA = {
       "habitat2": "南國氛圍 - 大椰子樹 x 1 海邊的花 x 4",
       "habitat2_img": "assets/habitats/hab_057.webp",
       "favorites": [
-        "能感受大自然的",
         "奇妙的",
-        "羣聚的",
-        "用於觀賞的",
         "木製的",
+        "觀賞用的",
+        "集聚在一起的",
+        "能感受大自然的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4117,11 +4117,11 @@ window.POKOPIA_DATA = {
       "habitat2": "夢醒床位 - 床鋪（任意） x 1 桌子（任意） x 1 鬧鐘 x 1",
       "habitat2_img": "assets/habitats/hab_082.webp",
       "favorites": [
-        "柔軟的",
-        "布製的",
-        "能治癒傷口的",
-        "圓圓的",
+        "圓滾滾的",
         "容器",
+        "布製的",
+        "柔軟的",
+        "能治癒傷口的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4150,11 +4150,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "柔軟的",
-        "布製的",
-        "能治癒傷口的",
-        "圓圓的",
+        "圓滾滾的",
         "大家一起用的",
+        "布製的",
+        "柔軟的",
+        "能治癒傷口的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4184,11 +4184,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "柔軟的",
-        "布製的",
-        "能治癒傷口的",
-        "圓圓的",
+        "圓滾滾的",
         "大家一起用的",
+        "布製的",
+        "柔軟的",
+        "能治癒傷口的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4218,11 +4218,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "電力驅動的",
-        "有玻璃的",
         "可愛的",
-        "圓圓的",
-        "旋轉的",
+        "圓滾滾的",
+        "會旋轉的",
+        "有玻璃的",
+        "以電力驅動的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4251,10 +4251,10 @@ window.POKOPIA_DATA = {
       "habitat2": "垃圾桶擺好擺滿 - 垃圾桶 x 4",
       "habitat2_img": "assets/habitats/hab_064.webp",
       "favorites": [
-        "電力驅動的",
-        "有玻璃的",
-        "能感受火的",
         "尖尖的",
+        "有玻璃的",
+        "以電力驅動的",
+        "能感受火的",
         "訓練用的",
         "辣辣的"
       ],
@@ -4285,10 +4285,10 @@ window.POKOPIA_DATA = {
       "habitat2": "自動販賣機套組 - 垃圾桶（任意） x 1 自動販賣機 x 1",
       "habitat2_img": "assets/habitats/hab_084.webp",
       "favorites": [
-        "電力驅動的",
-        "有玻璃的",
-        "能感受火的",
         "堅硬的",
+        "有玻璃的",
+        "以電力驅動的",
+        "能感受火的",
         "訓練用的",
         "酸酸的"
       ],
@@ -4319,10 +4319,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "整潔的",
+        "觀賞用的",
         "能感受水的",
         "能感受海的",
-        "整潔的",
-        "用於觀賞的",
         "能治癒傷口的",
         "酸酸的"
       ],
@@ -4352,11 +4352,11 @@ window.POKOPIA_DATA = {
       "habitat2": "布偶伴好眠 - 床鋪（任意） x 1 玩偶（任意） x 1",
       "habitat2_img": "assets/habitats/hab_030.webp",
       "favorites": [
+        "大家一起用的",
+        "像食物的",
+        "會搖晃的",
         "柔軟的",
         "能感受大自然的",
-        "很像食物的",
-        "搖搖晃晃的",
-        "大家一起用的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4385,11 +4385,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "柔軟的",
-        "布製的",
-        "很像食物的",
-        "用於觀賞的",
         "奇妙的",
+        "布製的",
+        "像食物的",
+        "柔軟的",
+        "觀賞用的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4418,11 +4418,11 @@ window.POKOPIA_DATA = {
       "habitat2": "古色古香古董好 - 古董衣櫥 x 1 古董床鋪 x 1 古董梳妝檯 x 1 古董椅子 x 1",
       "habitat2_img": "assets/habitats/hab_048.webp",
       "favorites": [
-        "柔軟的",
-        "布製的",
-        "很像食物的",
-        "搖搖晃晃的",
         "交通工具",
+        "布製的",
+        "像食物的",
+        "會搖晃的",
+        "柔軟的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4451,11 +4451,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受大自然的",
-        "木製的",
-        "垃圾",
         "交通工具",
-        "多彩的",
+        "垃圾",
+        "色彩繽紛的",
+        "木製的",
+        "能感受大自然的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4484,11 +4484,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受大自然的",
-        "木製的",
-        "垃圾",
         "交通工具",
-        "多彩的",
+        "垃圾",
+        "色彩繽紛的",
+        "木製的",
+        "能感受大自然的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4518,11 +4518,11 @@ window.POKOPIA_DATA = {
       "habitat2": "草叢的自動販賣機 - 黃色的草 x 4 自動販賣機 x 1",
       "habitat2_img": "assets/habitats/hab_055.webp",
       "favorites": [
-        "電力驅動的",
-        "閃亮亮的",
-        "有玻璃的",
         "可愛的",
         "布製的",
+        "有玻璃的",
+        "以電力驅動的",
+        "閃亮亮的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4553,11 +4553,11 @@ window.POKOPIA_DATA = {
       "habitat2": "用毛線來織東西吧 - 椅子（任意） x 1 桌子（任意） x 1 編織套組 x 1",
       "habitat2_img": "assets/habitats/hab_077.webp",
       "favorites": [
-        "電力驅動的",
-        "閃亮亮的",
-        "有玻璃的",
-        "可愛的",
         "交通工具",
+        "可愛的",
+        "有玻璃的",
+        "以電力驅動的",
+        "閃亮亮的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4588,11 +4588,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "電力驅動的",
-        "閃亮亮的",
-        "有玻璃的",
         "可愛的",
-        "百花盛開的",
+        "有玻璃的",
+        "以電力驅動的",
+        "花朵綻放的",
+        "閃亮亮的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4623,11 +4623,11 @@ window.POKOPIA_DATA = {
       "habitat2": "來收拾吧 - 紙箱 x 1 玩具（任意） x 2",
       "habitat2_img": "assets/habitats/hab_062.webp",
       "favorites": [
-        "能感受水的",
+        "交通工具",
         "可愛的",
         "整潔的",
+        "能感受水的",
         "能治癒傷口的",
-        "交通工具",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4658,11 +4658,11 @@ window.POKOPIA_DATA = {
       "habitat2": "濕潤的黃色的草叢 - 黃色的草 x 4 水 x 2",
       "habitat2_img": "assets/habitats/hab_053.webp",
       "favorites": [
-        "能感受水的",
         "可愛的",
+        "圓滾滾的",
         "整潔的",
-        "圓圓的",
-        "象徵的",
+        "能感受水的",
+        "象徵",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4693,11 +4693,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受水的",
         "可愛的",
         "建設",
-        "搖搖晃晃的",
-        "象徵的",
+        "會搖晃的",
+        "能感受水的",
+        "象徵",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4728,10 +4728,10 @@ window.POKOPIA_DATA = {
       "habitat2_img": "",
       "favorites": [
         "垃圾",
-        "能感受土的",
-        "石製的",
-        "整潔的",
         "大家一起用的",
+        "整潔的",
+        "石製的",
+        "能感受土的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4761,11 +4761,11 @@ window.POKOPIA_DATA = {
       "habitat2": "沼澤的草叢 - 黃色的草 x 4 泥水 x 2",
       "habitat2_img": "assets/habitats/hab_054.webp",
       "favorites": [
+        "圓滾滾的",
         "垃圾",
+        "整潔的",
         "能感受土的",
         "能感受水的",
-        "整潔的",
-        "圓圓的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4795,10 +4795,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "柔軟的",
-        "布製的",
+        "色彩繽紛的",
         "奇妙的",
-        "多彩的",
+        "布製的",
+        "柔軟的",
         "閃亮亮的",
         "澀澀的"
       ],
@@ -4828,11 +4828,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受火的",
-        "石製的",
         "可愛的",
         "容器",
-        "百花盛開的",
+        "花朵綻放的",
+        "石製的",
+        "能感受火的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4862,11 +4862,11 @@ window.POKOPIA_DATA = {
       "habitat2": "度假區的備餐時刻 - 大椰子樹 x 1 椅子（任意） x 1 裝盤的食物 x 1 火堆 x 1",
       "habitat2_img": "assets/habitats/hab_079.webp",
       "favorites": [
-        "能感受火的",
-        "石製的",
-        "訓練用的",
         "容器",
         "建設",
+        "石製的",
+        "能感受火的",
+        "訓練用的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4897,11 +4897,11 @@ window.POKOPIA_DATA = {
       "habitat2": "咕咕啾啾大餐 - 木頭巢箱 x 1 桌子（任意） x 1 裝盤的食物 x 1",
       "habitat2_img": "assets/habitats/hab_069.webp",
       "favorites": [
-        "能感受火的",
-        "豪華的",
-        "訓練用的",
         "容器",
         "建設",
+        "能感受火的",
+        "訓練用的",
+        "豪華的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4932,11 +4932,11 @@ window.POKOPIA_DATA = {
       "habitat2": "風之花田 - 風力發電機 x 1 海邊的花 x 4",
       "habitat2_img": "assets/habitats/hab_058.webp",
       "favorites": [
-        "能感受水的",
-        "能感受風的",
         "整潔的",
+        "觀賞用的",
+        "能感受水的",
         "能感受海的",
-        "用於觀賞的",
+        "能感受風的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -4967,11 +4967,11 @@ window.POKOPIA_DATA = {
       "habitat2": "高崗的黃色的草叢 - 黃色的草 x 4 高處 x 1",
       "habitat2_img": "assets/habitats/hab_052.webp",
       "favorites": [
-        "能感受水的",
-        "能感受風的",
         "整潔的",
+        "觀賞用的",
+        "能感受水的",
         "能感受海的",
-        "用於觀賞的",
+        "能感受風的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5002,11 +5002,11 @@ window.POKOPIA_DATA = {
       "habitat2": "打包好囉 - 板車 x 1 紙箱 x 2",
       "habitat2_img": "assets/habitats/hab_080.webp",
       "favorites": [
-        "訓練用的",
-        "建設",
+        "圓滾滾的",
         "布製的",
-        "圓圓的",
+        "建設",
         "木製的",
+        "訓練用的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5037,11 +5037,11 @@ window.POKOPIA_DATA = {
       "habitat2": "打包好囉 - 板車 x 1 紙箱 x 2",
       "habitat2_img": "assets/habitats/hab_080.webp",
       "favorites": [
-        "訓練用的",
-        "建設",
-        "布製的",
-        "圓圓的",
         "交通工具",
+        "圓滾滾的",
+        "布製的",
+        "建設",
+        "訓練用的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5071,10 +5071,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "柔軟的",
-        "能感受風的",
         "有文字的",
-        "看起來很難懂的",
+        "柔軟的",
+        "艱深難懂的",
+        "能感受風的",
         "訓練用的",
         "澀澀的"
       ],
@@ -5104,11 +5104,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "容器",
+        "整潔的",
         "能感受水的",
         "能感受海的",
         "能感受風的",
-        "整潔的",
-        "容器",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5138,11 +5138,11 @@ window.POKOPIA_DATA = {
       "habitat2": "濕潤的黃色的草叢 - 黃色的草 x 4 水 x 2",
       "habitat2_img": "assets/habitats/hab_053.webp",
       "favorites": [
+        "容器",
+        "整潔的",
         "能感受水的",
         "能感受海的",
         "能感受風的",
-        "整潔的",
-        "容器",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5173,11 +5173,11 @@ window.POKOPIA_DATA = {
       "habitat2": "水力發電廠 - 水力發電機 x 1 水 x 2 瀑布 x 1",
       "habitat2_img": "assets/habitats/hab_086.webp",
       "favorites": [
+        "整潔的",
+        "有文字的",
         "能感受水的",
         "能感受海的",
         "金屬的",
-        "整潔的",
-        "有文字的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5207,11 +5207,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "柔軟的",
-        "布製的",
-        "能治癒傷口的",
         "可愛的",
-        "圓圓的",
+        "圓滾滾的",
+        "布製的",
+        "柔軟的",
+        "能治癒傷口的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5242,9 +5242,9 @@ window.POKOPIA_DATA = {
       "favorites": [
         "垃圾",
         "容器",
-        "看起來很難懂的",
+        "艱深難懂的",
+        "集聚在一起的",
         "閃亮亮的",
-        "羣聚的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5276,9 +5276,9 @@ window.POKOPIA_DATA = {
       "favorites": [
         "垃圾",
         "容器",
-        "看起來很難懂的",
+        "艱深難懂的",
+        "集聚在一起的",
         "閃亮亮的",
-        "羣聚的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5308,11 +5308,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "閃亮亮的",
-        "豪華的",
-        "有玻璃的",
         "可愛的",
         "大家一起用的",
+        "有玻璃的",
+        "豪華的",
+        "閃亮亮的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5342,11 +5342,11 @@ window.POKOPIA_DATA = {
       "habitat2": "涼爽的花田 - 海邊的花 x 4",
       "habitat2_img": "assets/habitats/hab_056.webp",
       "favorites": [
-        "閃亮亮的",
-        "豪華的",
-        "有玻璃的",
-        "奇妙的",
         "大家一起用的",
+        "奇妙的",
+        "有玻璃的",
+        "豪華的",
+        "閃亮亮的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5376,11 +5376,11 @@ window.POKOPIA_DATA = {
       "habitat2": "打扮中請勿偷看 - 屏風（任意） x 2 衣櫃（任意） x 1 梳妝檯（任意） x 1",
       "habitat2_img": "assets/habitats/hab_076.webp",
       "favorites": [
-        "柔軟的",
-        "布製的",
         "交通工具",
         "可愛的",
+        "布製的",
         "整潔的",
+        "柔軟的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5410,11 +5410,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "柔軟的",
-        "布製的",
         "交通工具",
         "可愛的",
+        "布製的",
         "整潔的",
+        "柔軟的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5444,11 +5444,11 @@ window.POKOPIA_DATA = {
       "habitat2": "自動販賣機旁偷個閒 - 自動販賣機 x 1 椅子（長） x 1",
       "habitat2_img": "assets/habitats/hab_083.webp",
       "favorites": [
-        "能感受大自然的",
-        "電力驅動的",
-        "用於觀賞的",
-        "能感受土的",
         "容器",
+        "觀賞用的",
+        "以電力驅動的",
+        "能感受土的",
+        "能感受大自然的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5478,11 +5478,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受大自然的",
-        "電力驅動的",
-        "用於觀賞的",
         "有玻璃的",
-        "稜角分明的",
+        "方方的",
+        "觀賞用的",
+        "以電力驅動的",
+        "能感受大自然的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5513,11 +5513,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受大自然的",
-        "電力驅動的",
-        "訓練用的",
         "有玻璃的",
+        "以電力驅動的",
+        "能感受大自然的",
         "能感受風的",
+        "訓練用的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5547,11 +5547,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "詭異的",
         "可愛的",
-        "電力驅動的",
-        "布製的",
         "大家一起用的",
+        "布製的",
+        "以電力驅動的",
+        "詭異的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5580,11 +5580,11 @@ window.POKOPIA_DATA = {
       "habitat2": "餓肚肚餐廳 - 椅子（任意） x 1 菜單立牌 x 1 桌子（任意） x 1 裝盤的食物 x 1",
       "habitat2_img": "assets/habitats/hab_067.webp",
       "favorites": [
-        "電力驅動的",
-        "閃亮亮的",
         "可愛的",
-        "有玻璃的",
         "大家一起用的",
+        "有玻璃的",
+        "以電力驅動的",
+        "閃亮亮的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5614,11 +5614,11 @@ window.POKOPIA_DATA = {
       "habitat2": "茶水休息區 - 椅子（任意） x 2 植栽（任意） x 1 櫃檯面 x 2 馬克杯 x 1 菜單立牌 x 1",
       "habitat2_img": "assets/habitats/hab_070.webp",
       "favorites": [
-        "電力驅動的",
-        "閃亮亮的",
-        "訓練用的",
-        "有玻璃的",
         "大家一起用的",
+        "有玻璃的",
+        "以電力驅動的",
+        "訓練用的",
+        "閃亮亮的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5649,11 +5649,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "電力驅動的",
-        "閃亮亮的",
-        "訓練用的",
-        "能治癒傷口的",
         "大家一起用的",
+        "以電力驅動的",
+        "能治癒傷口的",
+        "訓練用的",
+        "閃亮亮的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5683,11 +5683,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受水的",
-        "能感受海的",
         "大家一起用的",
         "細長的",
-        "羣聚的",
+        "集聚在一起的",
+        "能感受水的",
+        "能感受海的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5716,11 +5716,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受土的",
-        "能感受海的",
         "大家一起用的",
-        "旋轉的",
-        "稜角分明的",
+        "會旋轉的",
+        "方方的",
+        "能感受水的",
+        "能感受海的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5749,11 +5749,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "大家一起用的",
+        "容器",
+        "有文字的",
         "能感受水的",
         "能感受海的",
-        "大家一起用的",
-        "有文字的",
-        "容器",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5783,10 +5783,10 @@ window.POKOPIA_DATA = {
       "habitat2_img": "",
       "favorites": [
         "垃圾",
-        "用於觀賞的",
-        "能感受大自然的",
+        "會旋轉的",
+        "觀賞用的",
         "細長的",
-        "旋轉的",
+        "能感受大自然的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5816,10 +5816,10 @@ window.POKOPIA_DATA = {
       "habitat2_img": "",
       "favorites": [
         "垃圾",
-        "用於觀賞的",
-        "能感受大自然的",
+        "會旋轉的",
+        "觀賞用的",
         "細長的",
-        "旋轉的",
+        "能感受大自然的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5848,11 +5848,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "可愛的",
-        "圓圓的",
-        "多彩的",
-        "能治癒傷口的",
         "交通工具",
+        "可愛的",
+        "圓滾滾的",
+        "色彩繽紛的",
+        "能治癒傷口的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5882,10 +5882,10 @@ window.POKOPIA_DATA = {
       "habitat2_img": "assets/habitats/hab_104.webp",
       "favorites": [
         "可愛的",
-        "遊樂區",
-        "百花盛開的",
-        "能治癒傷口的",
         "大家一起用的",
+        "遊戲區",
+        "花朵綻放的",
+        "能治癒傷口的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5916,10 +5916,10 @@ window.POKOPIA_DATA = {
       "habitat2_img": "assets/habitats/hab_104.webp",
       "favorites": [
         "可愛的",
-        "遊樂區",
-        "百花盛開的",
-        "能治癒傷口的",
         "大家一起用的",
+        "遊戲區",
+        "花朵綻放的",
+        "能治癒傷口的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5949,11 +5949,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "柔軟的",
+        "會發出聲響的",
         "可愛的",
-        "遊樂區",
+        "柔軟的",
+        "遊戲區",
         "能治癒傷口的",
-        "能出聲的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -5982,11 +5982,11 @@ window.POKOPIA_DATA = {
       "habitat2": "花田的樹樁舞臺 - 巖地的花 x 4 樹樁（任意） x 1 蘑菇檯燈 x 2",
       "habitat2_img": "assets/habitats/hab_107.webp",
       "favorites": [
-        "柔軟的",
         "可愛的",
-        "遊樂區",
+        "會搖晃的",
+        "柔軟的",
+        "遊戲區",
         "能治癒傷口的",
-        "搖搖晃晃的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -6016,11 +6016,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "柔軟的",
         "可愛的",
-        "遊樂區",
-        "能治癒傷口的",
         "大家一起用的",
+        "柔軟的",
+        "遊戲區",
+        "能治癒傷口的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -6050,11 +6050,11 @@ window.POKOPIA_DATA = {
       "habitat2": "樹蔭的紅色的草叢 - 大樹（任意） x 1 紅色的草 x 4",
       "habitat2_img": "assets/habitats/hab_099.webp",
       "favorites": [
-        "能感受土的",
-        "遊樂區",
         "可愛的",
         "大家一起用的",
+        "遊戲區",
         "細長的",
+        "能感受土的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -6084,11 +6084,11 @@ window.POKOPIA_DATA = {
       "habitat2": "樹蔭的紅色的草叢 - 大樹（任意） x 1 紅色的草 x 4",
       "habitat2_img": "assets/habitats/hab_099.webp",
       "favorites": [
-        "能感受土的",
-        "遊樂區",
-        "羣聚的",
         "大家一起用的",
+        "遊戲區",
         "細長的",
+        "集聚在一起的",
+        "能感受土的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -6119,11 +6119,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "訓練用的",
-        "建設",
-        "石製的",
         "堅硬的",
         "大家一起用的",
+        "建設",
+        "石製的",
+        "訓練用的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -6154,11 +6154,11 @@ window.POKOPIA_DATA = {
       "habitat2": "跟著節奏一二三 - 沙袋 x 1 桌子（任意） x 1 CD播放器 x 1",
       "habitat2_img": "assets/habitats/hab_127.webp",
       "favorites": [
-        "訓練用的",
-        "建設",
-        "石製的",
         "堅硬的",
         "大家一起用的",
+        "建設",
+        "石製的",
+        "訓練用的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -6189,11 +6189,11 @@ window.POKOPIA_DATA = {
       "habitat2": "草叢訓練場 - 沙包 x 2 紅色的草 x 4",
       "habitat2_img": "assets/habitats/hab_103.webp",
       "favorites": [
-        "訓練用的",
-        "建設",
-        "石製的",
         "堅硬的",
         "大家一起用的",
+        "建設",
+        "石製的",
+        "訓練用的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -6223,10 +6223,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "石製的",
+        "圓滾滾的",
         "堅硬的",
-        "旋轉的",
-        "圓圓的",
+        "會旋轉的",
+        "石製的",
         "訓練用的",
         "澀澀的"
       ],
@@ -6256,10 +6256,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "石製的",
+        "圓滾滾的",
         "堅硬的",
-        "旋轉的",
-        "圓圓的",
+        "會旋轉的",
+        "石製的",
         "訓練用的",
         "苦苦的"
       ],
@@ -6290,10 +6290,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "石製的",
+        "圓滾滾的",
         "堅硬的",
-        "旋轉的",
-        "圓圓的",
+        "會旋轉的",
+        "石製的",
         "訓練用的",
         "酸酸的"
       ],
@@ -6324,11 +6324,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受火的",
-        "石製的",
-        "用於觀賞的",
         "可愛的",
-        "搖搖晃晃的",
+        "會搖晃的",
+        "觀賞用的",
+        "石製的",
+        "能感受火的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -6357,10 +6357,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受火的",
-        "石製的",
-        "電力驅動的",
         "堅硬的",
+        "以電力驅動的",
+        "石製的",
+        "能感受火的",
         "訓練用的",
         "甜甜的"
       ],
@@ -6391,10 +6391,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受火的",
-        "石製的",
-        "電力驅動的",
         "堅硬的",
+        "以電力驅動的",
+        "石製的",
+        "能感受火的",
         "訓練用的",
         "澀澀的"
       ],
@@ -6425,11 +6425,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "石製的",
+        "圓滾滾的",
         "堅硬的",
-        "能感受大自然的",
         "木製的",
-        "圓圓的",
+        "石製的",
+        "能感受大自然的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -6458,11 +6458,11 @@ window.POKOPIA_DATA = {
       "habitat2": "樹蔭的紅色的草叢 - 大樹（任意） x 1 紅色的草 x 4",
       "habitat2_img": "assets/habitats/hab_099.webp",
       "favorites": [
-        "石製的",
         "堅硬的",
-        "能感受大自然的",
         "木製的",
-        "用於觀賞的",
+        "觀賞用的",
+        "石製的",
+        "能感受大自然的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -6492,11 +6492,11 @@ window.POKOPIA_DATA = {
       "habitat2": "高崗的紅色的草叢 - 紅色的草 x 4 高處 x 1",
       "habitat2_img": "assets/habitats/hab_102.webp",
       "favorites": [
-        "閃亮亮的",
-        "能感受風的",
         "大家一起用的",
-        "豪華的",
         "布製的",
+        "能感受風的",
+        "豪華的",
+        "閃亮亮的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -6527,11 +6527,11 @@ window.POKOPIA_DATA = {
       "habitat2": "啁啁啾啾獨唱會 - 木製棲槓 x 1 直立式麥克風 x 1",
       "habitat2_img": "assets/habitats/hab_125.webp",
       "favorites": [
-        "閃亮亮的",
-        "能感受風的",
-        "詭異的",
         "有文字的",
         "有玻璃的",
+        "能感受風的",
+        "詭異的",
+        "閃亮亮的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -6562,11 +6562,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "像食物的",
         "石製的",
         "能感受土的",
         "豪華的",
         "閃亮亮的",
-        "很像食物的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -6597,11 +6597,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "石製的",
         "堅硬的",
+        "觀賞用的",
+        "石製的",
         "豪華的",
         "閃亮亮的",
-        "用於觀賞的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -6632,11 +6632,11 @@ window.POKOPIA_DATA = {
       "habitat2": "滿滿是苔 - 苔蘚 x 4",
       "habitat2_img": "assets/habitats/hab_110.webp",
       "favorites": [
-        "石製的",
         "堅硬的",
+        "石製的",
+        "訓練用的",
         "豪華的",
         "閃亮亮的",
-        "訓練用的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -6666,11 +6666,11 @@ window.POKOPIA_DATA = {
       "habitat2": "快樂無比的水坑 - 浮萍 x 4 水 x 2",
       "habitat2_img": "assets/habitats/hab_109.webp",
       "favorites": [
-        "能感受水的",
-        "能感受大自然的",
-        "整潔的",
+        "會發出聲響的",
         "容器",
-        "能出聲的",
+        "整潔的",
+        "能感受大自然的",
+        "能感受水的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -6699,11 +6699,11 @@ window.POKOPIA_DATA = {
       "habitat2": "濕潤的紅色的草叢 - 紅色的草 x 4 水 x 2",
       "habitat2_img": "assets/habitats/hab_101.webp",
       "favorites": [
-        "能感受水的",
-        "能感受大自然的",
-        "整潔的",
+        "會發出聲響的",
         "容器",
-        "能出聲的",
+        "整潔的",
+        "能感受大自然的",
+        "能感受水的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -6733,11 +6733,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受水的",
-        "能感受大自然的",
-        "遊樂區",
+        "會發出聲響的",
         "容器",
-        "能出聲的",
+        "遊戲區",
+        "能感受大自然的",
+        "能感受水的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -6768,11 +6768,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "金屬的",
         "可愛的",
-        "多彩的",
-        "很像食物的",
+        "色彩繽紛的",
         "大家一起用的",
+        "像食物的",
+        "金屬的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -6802,11 +6802,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受火的",
-        "石製的",
-        "金屬的",
         "堅硬的",
-        "用於觀賞的",
+        "觀賞用的",
+        "石製的",
+        "能感受火的",
+        "金屬的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -6835,11 +6835,11 @@ window.POKOPIA_DATA = {
       "habitat2": "紅色的草叢 - 紅色的草 x 4",
       "habitat2_img": "assets/habitats/hab_098.webp",
       "favorites": [
-        "能感受大自然的",
+        "會發出聲響的",
+        "色彩繽紛的",
         "木製的",
-        "能出聲的",
-        "多彩的",
-        "用於觀賞的",
+        "觀賞用的",
+        "能感受大自然的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -6868,11 +6868,11 @@ window.POKOPIA_DATA = {
       "habitat2": "紅色的草叢 - 紅色的草 x 4",
       "habitat2_img": "assets/habitats/hab_098.webp",
       "favorites": [
-        "能感受大自然的",
+        "會發出聲響的",
+        "色彩繽紛的",
         "木製的",
-        "能出聲的",
-        "多彩的",
-        "用於觀賞的",
+        "觀賞用的",
+        "能感受大自然的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -6902,11 +6902,11 @@ window.POKOPIA_DATA = {
       "habitat2": "啁啁啾啾獨唱會 - 木製棲槓 x 1 直立式麥克風 x 1",
       "habitat2_img": "assets/habitats/hab_125.webp",
       "favorites": [
-        "能感受風的",
+        "會發出聲響的",
         "布製的",
+        "遊戲區",
         "細長的",
-        "遊樂區",
-        "能出聲的",
+        "能感受風的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -6936,11 +6936,11 @@ window.POKOPIA_DATA = {
       "habitat2": "紅色的草叢 - 紅色的草 x 4",
       "habitat2_img": "assets/habitats/hab_098.webp",
       "favorites": [
-        "訓練用的",
         "布製的",
         "建設",
-        "羣聚的",
-        "用於觀賞的",
+        "觀賞用的",
+        "集聚在一起的",
+        "訓練用的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -6969,11 +6969,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "建設",
+        "艱深難懂的",
+        "能治癒傷口的",
         "訓練用的",
         "金屬的",
-        "建設",
-        "看起來很難懂的",
-        "能治癒傷口的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7002,11 +7002,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "閃亮亮的",
-        "有玻璃的",
-        "能出聲的",
+        "會發出聲響的",
         "大家一起用的",
-        "稜角分明的",
+        "有玻璃的",
+        "方方的",
+        "閃亮亮的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7036,11 +7036,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受大自然的",
-        "能感受火的",
         "尖尖的",
         "木製的",
-        "象徵的",
+        "能感受大自然的",
+        "能感受火的",
+        "象徵",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7071,11 +7071,11 @@ window.POKOPIA_DATA = {
       "habitat2": "樹蔭的優雅花田 - 三角樹 x 1 巖地的花 x 4",
       "habitat2_img": "assets/habitats/hab_105.webp",
       "favorites": [
-        "能感受大自然的",
-        "能感受火的",
         "有文字的",
         "木製的",
-        "象徵的",
+        "能感受大自然的",
+        "能感受火的",
+        "象徵",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7105,11 +7105,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受大自然的",
-        "木製的",
-        "能感受風的",
         "容器",
-        "旋轉的",
+        "會旋轉的",
+        "木製的",
+        "能感受大自然的",
+        "能感受風的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7139,11 +7139,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受大自然的",
-        "木製的",
-        "能感受風的",
-        "細長的",
         "整潔的",
+        "木製的",
+        "細長的",
+        "能感受大自然的",
+        "能感受風的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7174,11 +7174,11 @@ window.POKOPIA_DATA = {
       "habitat2": "三角形樹蔭下的巖石與草叢 - 三角樹 x 1 紅色的草 x 4 大石頭 x 1",
       "habitat2_img": "assets/habitats/hab_100.webp",
       "favorites": [
-        "能感受大自然的",
-        "詭異的",
-        "木製的",
-        "能感受風的",
         "有文字的",
+        "木製的",
+        "能感受大自然的",
+        "能感受風的",
+        "詭異的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7208,11 +7208,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受火的",
-        "石製的",
-        "柔軟的",
         "大家一起用的",
         "尖尖的",
+        "柔軟的",
+        "石製的",
+        "能感受火的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7241,11 +7241,11 @@ window.POKOPIA_DATA = {
       "habitat2": "露天溫泉 - 出水口 x 1 溫泉 x 2",
       "habitat2_img": "assets/habitats/hab_113.webp",
       "favorites": [
-        "能感受火的",
-        "石製的",
-        "遊樂區",
         "大家一起用的",
-        "建設",
+        "容器",
+        "遊戲區",
+        "石製的",
+        "能感受火的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7275,11 +7275,11 @@ window.POKOPIA_DATA = {
       "habitat2": "紅色的草叢 - 紅色的草 x 4",
       "habitat2_img": "assets/habitats/hab_098.webp",
       "favorites": [
-        "能感受火的",
-        "石製的",
-        "遊樂區",
+        "圓滾滾的",
         "大家一起用的",
-        "圓圓的",
+        "遊戲區",
+        "石製的",
+        "能感受火的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7310,11 +7310,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "柔軟的",
+        "圓滾滾的",
+        "像食物的",
         "木製的",
-        "用於觀賞的",
-        "很像食物的",
-        "圓圓的",
+        "柔軟的",
+        "觀賞用的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7344,11 +7344,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "柔軟的",
-        "金屬的",
         "大家一起用的",
-        "很像食物的",
+        "像食物的",
+        "柔軟的",
         "豪華的",
+        "金屬的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7378,11 +7378,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "交通工具",
+        "堅硬的",
         "石製的",
         "能感受火的",
-        "堅硬的",
         "金屬的",
-        "交通工具",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7413,11 +7413,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "交通工具",
+        "堅硬的",
         "石製的",
         "能感受火的",
-        "堅硬的",
         "金屬的",
-        "交通工具",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7448,11 +7448,11 @@ window.POKOPIA_DATA = {
       "habitat2": "平交道 - 鐵軌 x 1 平交道柵欄 x 1",
       "habitat2_img": "assets/habitats/hab_132.webp",
       "favorites": [
+        "交通工具",
+        "堅硬的",
         "石製的",
         "能感受火的",
-        "堅硬的",
         "金屬的",
-        "交通工具",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7482,11 +7482,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "電力驅動的",
-        "閃亮亮的",
-        "能出聲的",
-        "有玻璃的",
+        "會發出聲響的",
         "垃圾",
+        "有玻璃的",
+        "以電力驅動的",
+        "閃亮亮的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7516,12 +7516,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "電力驅動的",
-        "遊樂區",
-        "能出聲的",
-        "細長的",
+        "會發出聲響的",
         "尖尖的",
-        "辣辣的"
+        "遊戲區",
+        "以電力驅動的",
+        "細長的",
+        "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
       "habitat1_id": "hab_189",
@@ -7551,12 +7551,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "電力驅動的",
-        "遊樂區",
-        "能出聲的",
-        "細長的",
+        "會發出聲響的",
         "尖尖的",
-        "苦苦的"
+        "遊戲區",
+        "以電力驅動的",
+        "細長的",
+        "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
       "habitat1_id": "hab_190",
@@ -7586,10 +7586,10 @@ window.POKOPIA_DATA = {
       "habitat2_img": "assets/habitats/hab_104.webp",
       "favorites": [
         "可愛的",
-        "用於觀賞的",
-        "柔軟的",
-        "能感受火的",
         "有文字的",
+        "柔軟的",
+        "觀賞用的",
+        "能感受火的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7620,10 +7620,10 @@ window.POKOPIA_DATA = {
       "habitat2_img": "assets/habitats/hab_104.webp",
       "favorites": [
         "可愛的",
-        "用於觀賞的",
         "大家一起用的",
+        "像食物的",
+        "觀賞用的",
         "能感受火的",
-        "很像食物的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7653,9 +7653,9 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受火的",
-        "石製的",
         "奇妙的",
+        "石製的",
+        "能感受火的",
         "訓練用的",
         "豪華的",
         "甜甜的"
@@ -7687,9 +7687,9 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受火的",
-        "石製的",
         "奇妙的",
+        "石製的",
+        "能感受火的",
         "訓練用的",
         "豪華的",
         "辣辣的"
@@ -7722,10 +7722,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受火的",
-        "石製的",
-        "詭異的",
         "奇妙的",
+        "石製的",
+        "能感受火的",
+        "詭異的",
         "豪華的",
         "苦苦的"
       ],
@@ -7756,11 +7756,11 @@ window.POKOPIA_DATA = {
       "habitat2": "在行李放置處處偷喫 - 木桶 x 1 木箱 x 1 提燈 x 1 裝盤的食物 x 1",
       "habitat2_img": "assets/habitats/hab_119.webp",
       "favorites": [
-        "石製的",
         "堅硬的",
         "垃圾",
+        "艱深難懂的",
+        "石製的",
         "閃亮亮的",
-        "看起來很難懂的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7789,11 +7789,11 @@ window.POKOPIA_DATA = {
       "habitat2": "詭異的白色巖石 - 荀巖石 x 1 苔蘚 x 4 木箱 x 1 提燈 x 1",
       "habitat2_img": "assets/habitats/hab_118.webp",
       "favorites": [
-        "石製的",
         "堅硬的",
         "垃圾",
+        "艱深難懂的",
+        "石製的",
         "閃亮亮的",
-        "看起來很難懂的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7822,11 +7822,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "奇妙的",
+        "艱深難懂的",
         "詭異的",
         "金屬的",
-        "奇妙的",
         "閃亮亮的",
-        "看起來很難懂的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7855,11 +7855,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "奇妙的",
+        "艱深難懂的",
         "詭異的",
         "金屬的",
-        "奇妙的",
         "閃亮亮的",
-        "看起來很難懂的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7888,11 +7888,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受火的",
-        "柔軟的",
         "可愛的",
-        "圓圓的",
-        "百花盛開的",
+        "圓滾滾的",
+        "柔軟的",
+        "花朵綻放的",
+        "能感受火的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7921,11 +7921,11 @@ window.POKOPIA_DATA = {
       "habitat2": "軟綿綿花田 - 空島的花 x 4",
       "habitat2_img": "assets/habitats/hab_142.webp",
       "favorites": [
-        "能感受火的",
         "柔軟的",
-        "用於觀賞的",
+        "觀賞用的",
+        "花朵綻放的",
+        "能感受火的",
         "豪華的",
-        "百花盛開的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7954,11 +7954,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受水的",
-        "整潔的",
-        "圓圓的",
         "交通工具",
-        "旋轉的",
+        "圓滾滾的",
+        "整潔的",
+        "會旋轉的",
+        "能感受水的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -7987,11 +7987,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受水的",
         "整潔的",
+        "會旋轉的",
         "能感受大自然的",
+        "能感受水的",
         "訓練用的",
-        "旋轉的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8021,11 +8021,11 @@ window.POKOPIA_DATA = {
       "habitat2": "正在保養人孔蓋 - 鐵管堆 x 1 人孔蓋 x 1 掘山道具 x 1 可連結式三角錐 x 1",
       "habitat2_img": "assets/habitats/hab_156.webp",
       "favorites": [
-        "能感受水的",
-        "整潔的",
-        "建設",
-        "訓練用的",
         "大家一起用的",
+        "建設",
+        "整潔的",
+        "能感受水的",
+        "訓練用的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8056,11 +8056,11 @@ window.POKOPIA_DATA = {
       "habitat2": "花田的樹樁舞臺 - 巖地的花 x 4 樹樁（任意） x 1 蘑菇檯燈 x 2",
       "habitat2_img": "assets/habitats/hab_107.webp",
       "favorites": [
-        "能感受水的",
-        "遊樂區",
-        "能出聲的",
-        "羣聚的",
+        "會發出聲響的",
         "大家一起用的",
+        "遊戲區",
+        "集聚在一起的",
+        "能感受水的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8091,10 +8091,10 @@ window.POKOPIA_DATA = {
       "habitat2_img": "assets/habitats/hab_151.webp",
       "favorites": [
         "奇妙的",
-        "搖搖晃晃的",
-        "金屬的",
+        "會搖晃的",
         "柔軟的",
-        "用於觀賞的",
+        "觀賞用的",
+        "金屬的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8124,10 +8124,10 @@ window.POKOPIA_DATA = {
       "habitat2_img": "",
       "favorites": [
         "奇妙的",
-        "搖搖晃晃的",
-        "金屬的",
         "容器",
-        "用於觀賞的",
+        "會搖晃的",
+        "觀賞用的",
+        "金屬的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8158,10 +8158,10 @@ window.POKOPIA_DATA = {
       "habitat2_img": "assets/habitats/hab_151.webp",
       "favorites": [
         "奇妙的",
-        "搖搖晃晃的",
-        "金屬的",
+        "會搖晃的",
         "有文字的",
-        "用於觀賞的",
+        "觀賞用的",
+        "金屬的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8191,11 +8191,11 @@ window.POKOPIA_DATA = {
       "habitat2": "歡迎自由取閱 - 雜櫃 x 1 報紙 x 1",
       "habitat2_img": "assets/habitats/hab_171.webp",
       "favorites": [
-        "奇妙的",
-        "可愛的",
         "交通工具",
-        "遊樂區",
-        "多彩的",
+        "可愛的",
+        "色彩繽紛的",
+        "奇妙的",
+        "遊戲區",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8225,11 +8225,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "奇妙的",
-        "可愛的",
         "交通工具",
-        "搖搖晃晃的",
-        "能感受水的",
+        "可愛的",
+        "奇妙的",
+        "會搖晃的",
+        "觀賞用的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8259,11 +8259,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "柔軟的",
+        "色彩繽紛的",
         "奇妙的",
-        "稜角分明的",
         "建設",
-        "多彩的",
+        "柔軟的",
+        "方方的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8292,11 +8292,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "柔軟的",
+        "圓滾滾的",
+        "色彩繽紛的",
         "奇妙的",
-        "圓圓的",
         "建設",
-        "多彩的",
+        "柔軟的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8325,11 +8325,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "柔軟的",
+        "色彩繽紛的",
         "奇妙的",
         "布製的",
-        "用於觀賞的",
-        "多彩的",
+        "柔軟的",
+        "觀賞用的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8358,11 +8358,11 @@ window.POKOPIA_DATA = {
       "habitat2": "簡約浴室 - 蓮蓬頭 x 1 浴缸 x 1",
       "habitat2_img": "assets/habitats/hab_148.webp",
       "favorites": [
+        "可愛的",
+        "整潔的",
+        "細長的",
         "能感受水的",
         "能感受火的",
-        "整潔的",
-        "可愛的",
-        "細長的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8391,11 +8391,11 @@ window.POKOPIA_DATA = {
       "habitat2": "濕潤的軟綿綿花田 - 空島的花 x 4 水 x 2",
       "habitat2_img": "assets/habitats/hab_144.webp",
       "favorites": [
-        "能感受水的",
-        "能感受火的",
         "整潔的",
         "有玻璃的",
         "細長的",
+        "能感受水的",
+        "能感受火的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8425,11 +8425,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "整潔的",
+        "花朵綻放的",
         "能感受火的",
         "能感受風的",
-        "整潔的",
-        "象徵的",
-        "百花盛開的",
+        "象徵",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8459,11 +8459,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受火的",
+        "交通工具",
         "布製的",
         "細長的",
+        "能感受火的",
         "金屬的",
-        "交通工具",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8492,11 +8492,11 @@ window.POKOPIA_DATA = {
       "habitat2": "水泥管祕密基地 - 水泥管 x 3 草（任意） x 4",
       "habitat2_img": "assets/habitats/hab_141.webp",
       "favorites": [
-        "能感受火的",
+        "交通工具",
         "布製的",
         "細長的",
+        "能感受火的",
         "金屬的",
-        "交通工具",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8526,11 +8526,11 @@ window.POKOPIA_DATA = {
       "habitat2": "在壁爐前打瞌睡 - 石頭壁爐 x 1 椅子（長） x 1",
       "habitat2_img": "assets/habitats/hab_150.webp",
       "favorites": [
-        "能感受火的",
+        "交通工具",
         "布製的",
         "細長的",
+        "能感受火的",
         "金屬的",
-        "交通工具",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8560,11 +8560,11 @@ window.POKOPIA_DATA = {
       "habitat2": "辦公室的儲藏室 - 辦公室架子 x 1 腳踏凳 x 1 紙箱 x 1",
       "habitat2_img": "assets/habitats/hab_167.webp",
       "favorites": [
-        "詭異的",
+        "色彩繽紛的",
         "奇妙的",
+        "觀賞用的",
+        "詭異的",
         "閃亮亮的",
-        "多彩的",
-        "用於觀賞的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8594,11 +8594,11 @@ window.POKOPIA_DATA = {
       "habitat2": "辦公室的儲藏室 - 辦公室架子 x 1 腳踏凳 x 1 紙箱 x 1",
       "habitat2_img": "assets/habitats/hab_167.webp",
       "favorites": [
-        "詭異的",
-        "奇妙的",
-        "能出聲的",
-        "搖搖晃晃的",
+        "會發出聲響的",
         "大家一起用的",
+        "奇妙的",
+        "會搖晃的",
+        "詭異的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8628,10 +8628,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "柔軟的",
-        "奇妙的",
         "交通工具",
-        "用於觀賞的",
+        "奇妙的",
+        "柔軟的",
+        "觀賞用的",
         "細長的",
         "酸酸的"
       ],
@@ -8662,10 +8662,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "柔軟的",
-        "奇妙的",
         "交通工具",
-        "用於觀賞的",
+        "奇妙的",
+        "柔軟的",
+        "觀賞用的",
         "細長的",
         "酸酸的"
       ],
@@ -8696,11 +8696,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "奇妙的",
         "可愛的",
+        "奇妙的",
+        "觀賞用的",
         "能治癒傷口的",
-        "用於觀賞的",
-        "象徵的",
+        "象徵",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8729,11 +8729,11 @@ window.POKOPIA_DATA = {
       "habitat2": "讀書區 - 書架 x 1 椅子（任意） x 1 桌子（任意） x 1 筆筒 x 1",
       "habitat2_img": "assets/habitats/hab_159.webp",
       "favorites": [
-        "奇妙的",
         "可愛的",
+        "奇妙的",
+        "觀賞用的",
         "能治癒傷口的",
-        "用於觀賞的",
-        "象徵的",
+        "象徵",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8764,10 +8764,10 @@ window.POKOPIA_DATA = {
       "habitat2_img": "assets/habitats/hab_162.webp",
       "favorites": [
         "奇妙的",
-        "豪華的",
+        "觀賞用的",
         "能治癒傷口的",
-        "用於觀賞的",
-        "象徵的",
+        "象徵",
+        "豪華的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8799,10 +8799,10 @@ window.POKOPIA_DATA = {
       "habitat2_img": "",
       "favorites": [
         "奇妙的",
-        "訓練用的",
-        "能治癒傷口的",
-        "建設",
         "布製的",
+        "建設",
+        "能治癒傷口的",
+        "訓練用的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8832,11 +8832,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "電力驅動的",
-        "有玻璃的",
-        "柔軟的",
         "可愛的",
         "大家一起用的",
+        "有玻璃的",
+        "柔軟的",
+        "以電力驅動的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8865,11 +8865,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "電力驅動的",
-        "有玻璃的",
-        "柔軟的",
         "可愛的",
         "大家一起用的",
+        "有玻璃的",
+        "柔軟的",
+        "以電力驅動的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8899,10 +8899,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受土的",
         "堅硬的",
         "奇妙的",
-        "用於觀賞的",
+        "觀賞用的",
+        "能感受土的",
         "訓練用的",
         "辣辣的"
       ],
@@ -8934,11 +8934,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "會發出聲響的",
         "能感受土的",
-        "能感受火的",
         "能感受大自然的",
+        "能感受火的",
         "豪華的",
-        "能出聲的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -8969,11 +8969,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受土的",
-        "能感受火的",
-        "能感受大自然的",
-        "石製的",
         "木製的",
+        "石製的",
+        "能感受土的",
+        "能感受大自然的",
+        "能感受火的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9003,11 +9003,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "柔軟的",
-        "能感受風的",
         "可愛的",
-        "用於觀賞的",
         "整潔的",
+        "柔軟的",
+        "觀賞用的",
+        "能感受風的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9037,11 +9037,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "柔軟的",
-        "能感受風的",
+        "會發出聲響的",
         "可愛的",
-        "用於觀賞的",
-        "能出聲的",
+        "柔軟的",
+        "觀賞用的",
+        "能感受風的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9071,11 +9071,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "詭異的",
-        "奇妙的",
         "交通工具",
-        "有玻璃的",
+        "奇妙的",
         "布製的",
+        "有玻璃的",
+        "詭異的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9104,11 +9104,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "詭異的",
-        "奇妙的",
         "交通工具",
-        "柔軟的",
+        "奇妙的",
         "容器",
+        "柔軟的",
+        "詭異的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9138,11 +9138,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "詭異的",
-        "奇妙的",
         "交通工具",
         "大家一起用的",
+        "奇妙的",
         "容器",
+        "詭異的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9172,11 +9172,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "金屬的",
-        "奇妙的",
         "堅硬的",
-        "看起來很難懂的",
+        "奇妙的",
+        "艱深難懂的",
         "石製的",
+        "金屬的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9205,11 +9205,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "金屬的",
-        "奇妙的",
         "堅硬的",
-        "看起來很難懂的",
+        "奇妙的",
+        "艱深難懂的",
         "石製的",
+        "金屬的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9239,11 +9239,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "金屬的",
-        "奇妙的",
         "堅硬的",
+        "奇妙的",
         "訓練用的",
         "豪華的",
+        "金屬的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9274,10 +9274,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受大自然的",
+        "會搖晃的",
         "木製的",
+        "能感受大自然的",
         "能感受水的",
-        "搖搖晃晃的",
         "閃亮亮的",
         "酸酸的"
       ],
@@ -9309,10 +9309,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受大自然的",
-        "木製的",
-        "能感受水的",
         "整潔的",
+        "木製的",
+        "能感受大自然的",
+        "能感受水的",
         "閃亮亮的",
         "苦苦的"
       ],
@@ -9344,11 +9344,11 @@ window.POKOPIA_DATA = {
       "habitat2": "樹蔭的軟綿綿花田 - 大樹（任意） x 1 空島的花 x 4",
       "habitat2_img": "assets/habitats/hab_143.webp",
       "favorites": [
-        "能感受大自然的",
-        "木製的",
-        "能感受水的",
         "容器",
+        "木製的",
         "細長的",
+        "能感受大自然的",
+        "能感受水的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9378,11 +9378,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "容器",
+        "整潔的",
+        "觀賞用的",
         "能感受水的",
         "能感受海的",
-        "整潔的",
-        "用於觀賞的",
-        "容器",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9411,10 +9411,10 @@ window.POKOPIA_DATA = {
       "habitat2": "濕潤的粉紅色的草叢 - 粉紅色的草 x 4 水 x 2",
       "habitat2_img": "assets/habitats/hab_139.webp",
       "favorites": [
+        "整潔的",
+        "觀賞用的",
         "能感受水的",
         "能感受海的",
-        "整潔的",
-        "用於觀賞的",
         "訓練用的",
         "辣辣的"
       ],
@@ -9445,11 +9445,11 @@ window.POKOPIA_DATA = {
       "habitat2": "濕潤的粉紅色的草叢 - 粉紅色的草 x 4 水 x 2",
       "habitat2_img": "assets/habitats/hab_139.webp",
       "favorites": [
+        "整潔的",
         "能感受水的",
         "能感受海的",
-        "整潔的",
-        "閃亮亮的",
         "訓練用的",
+        "閃亮亮的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9479,11 +9479,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "電力驅動的",
         "可愛的",
-        "用於觀賞的",
         "大家一起用的",
-        "很像食物的",
+        "像食物的",
+        "觀賞用的",
+        "以電力驅動的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9512,11 +9512,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受風的",
+        "像食物的",
+        "觀賞用的",
         "能感受火的",
-        "用於觀賞的",
+        "能感受風的",
         "豪華的",
-        "很像食物的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9546,11 +9546,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受風的",
+        "像食物的",
+        "遊戲區",
+        "觀賞用的",
         "能感受火的",
-        "能感受水的",
-        "遊樂區",
-        "很像食物的",
+        "能感受風的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9580,11 +9580,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "容器",
+        "木製的",
+        "細長的",
         "能感受風的",
         "閃亮亮的",
-        "容器",
-        "細長的",
-        "木製的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9613,11 +9613,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "容器",
+        "木製的",
+        "細長的",
         "能感受風的",
         "閃亮亮的",
-        "容器",
-        "細長的",
-        "木製的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9647,11 +9647,11 @@ window.POKOPIA_DATA = {
       "habitat2": "高崗的粉紅色的草叢 - 粉紅色的草 x 4 高處 x 1",
       "habitat2_img": "assets/habitats/hab_140.webp",
       "favorites": [
+        "容器",
+        "木製的",
         "能感受風的",
         "金屬的",
         "閃亮亮的",
-        "容器",
-        "木製的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9682,11 +9682,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "交通工具",
+        "大家一起用的",
+        "奇妙的",
         "能感受火的",
         "詭異的",
-        "交通工具",
-        "奇妙的",
-        "大家一起用的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9717,11 +9717,11 @@ window.POKOPIA_DATA = {
       "habitat2": "樹蔭的粉紅色的草叢 - 大樹（任意） x 1 粉紅色的草 x 4",
       "habitat2_img": "assets/habitats/hab_138.webp",
       "favorites": [
+        "交通工具",
+        "大家一起用的",
+        "奇妙的",
         "能感受火的",
         "詭異的",
-        "交通工具",
-        "奇妙的",
-        "大家一起用的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9752,11 +9752,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "交通工具",
+        "大家一起用的",
+        "奇妙的",
         "能感受火的",
         "詭異的",
-        "交通工具",
-        "奇妙的",
-        "大家一起用的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9786,11 +9786,11 @@ window.POKOPIA_DATA = {
       "habitat2": "和搭檔一起調查 - 風速狗玩偶 x 1 鐵管椅子 x 2 工業風桌子 x 1 書桌燈 x 1",
       "habitat2_img": "assets/habitats/hab_155.webp",
       "favorites": [
-        "能感受大自然的",
-        "百花盛開的",
-        "容器",
-        "多彩的",
         "可愛的",
+        "色彩繽紛的",
+        "容器",
+        "花朵綻放的",
+        "能感受大自然的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9819,11 +9819,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受大自然的",
-        "百花盛開的",
-        "尖尖的",
-        "多彩的",
         "可愛的",
+        "色彩繽紛的",
+        "尖尖的",
+        "花朵綻放的",
+        "能感受大自然的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9853,11 +9853,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受大自然的",
-        "百花盛開的",
-        "閃亮亮的",
-        "豪華的",
         "可愛的",
+        "花朵綻放的",
+        "能感受大自然的",
+        "豪華的",
+        "閃亮亮的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9887,11 +9887,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "電力驅動的",
-        "能感受風的",
+        "以電力驅動的",
+        "艱深難懂的",
+        "集聚在一起的",
         "能感受海的",
-        "羣聚的",
-        "看起來很難懂的",
+        "能感受風的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9921,11 +9921,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "電力驅動的",
-        "能感受風的",
-        "能感受海的",
-        "羣聚的",
+        "以電力驅動的",
         "細長的",
+        "集聚在一起的",
+        "能感受海的",
+        "能感受風的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9956,10 +9956,10 @@ window.POKOPIA_DATA = {
       "habitat2_img": "assets/habitats/hab_028.webp",
       "favorites": [
         "可愛的",
-        "金屬的",
         "建設",
-        "很像食物的",
+        "像食物的",
         "訓練用的",
+        "金屬的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -9989,10 +9989,10 @@ window.POKOPIA_DATA = {
       "habitat2_img": "assets/habitats/hab_028.webp",
       "favorites": [
         "可愛的",
-        "金屬的",
-        "建設",
         "大家一起用的",
+        "建設",
         "訓練用的",
+        "金屬的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -10022,10 +10022,10 @@ window.POKOPIA_DATA = {
       "habitat2_img": "",
       "favorites": [
         "可愛的",
-        "金屬的",
         "建設",
-        "稜角分明的",
+        "方方的",
         "訓練用的",
+        "金屬的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -10054,11 +10054,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "堅硬的",
+        "會旋轉的",
         "石製的",
         "能感受風的",
-        "堅硬的",
         "閃亮亮的",
-        "旋轉的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -10087,10 +10087,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "石製的",
         "堅硬的",
-        "搖搖晃晃的",
         "大家一起用的",
+        "會搖晃的",
+        "石製的",
         "訓練用的",
         "辣辣的"
       ],
@@ -10121,11 +10121,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "石製的",
         "堅硬的",
-        "金屬的",
-        "豪華的",
+        "石製的",
         "訓練用的",
+        "豪華的",
+        "金屬的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -10155,11 +10155,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "石製的",
+        "圓滾滾的",
         "堅硬的",
-        "金屬的",
+        "石製的",
         "豪華的",
-        "圓圓的",
+        "金屬的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -10189,11 +10189,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "石製的",
         "堅硬的",
-        "金屬的",
-        "豪華的",
+        "石製的",
         "訓練用的",
+        "豪華的",
+        "金屬的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -10223,11 +10223,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "石製的",
         "堅硬的",
+        "石製的",
         "能感受火的",
-        "豪華的",
         "訓練用的",
+        "豪華的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -10257,11 +10257,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "石製的",
         "堅硬的",
+        "石製的",
         "能感受火的",
-        "豪華的",
         "訓練用的",
+        "豪華的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -10291,11 +10291,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "石製的",
         "堅硬的",
-        "閃亮亮的",
         "大家一起用的",
         "容器",
+        "石製的",
+        "閃亮亮的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -10325,11 +10325,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "石製的",
+        "會發出聲響的",
         "堅硬的",
+        "石製的",
+        "象徵",
         "閃亮亮的",
-        "能出聲的",
-        "象徵的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -10359,11 +10359,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "可愛的",
+        "大家一起用的",
+        "有文字的",
         "柔軟的",
         "石製的",
-        "可愛的",
-        "有文字的",
-        "大家一起用的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -10392,11 +10392,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受水的",
-        "整潔的",
         "可愛的",
-        "百花盛開的",
-        "用於觀賞的",
+        "整潔的",
+        "觀賞用的",
+        "花朵綻放的",
+        "能感受水的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -10425,11 +10425,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "電力驅動的",
-        "閃亮亮的",
         "可愛的",
-        "有玻璃的",
         "尖尖的",
+        "有玻璃的",
+        "以電力驅動的",
+        "閃亮亮的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -10458,11 +10458,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受火的",
-        "木製的",
-        "可愛的",
-        "金屬的",
         "交通工具",
+        "可愛的",
+        "木製的",
+        "能感受火的",
+        "金屬的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -10491,11 +10491,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "奇妙的",
-        "能感受風的",
         "可愛的",
-        "看起來很難懂的",
-        "用於觀賞的",
+        "奇妙的",
+        "觀賞用的",
+        "艱深難懂的",
+        "能感受風的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -10524,11 +10524,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "閃亮亮的",
-        "豪華的",
         "可愛的",
         "有文字的",
-        "用於觀賞的",
+        "觀賞用的",
+        "豪華的",
+        "閃亮亮的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -10557,10 +10557,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受大自然的",
-        "百花盛開的",
         "可愛的",
         "布製的",
+        "花朵綻放的",
+        "能感受大自然的",
         "能治癒傷口的",
         "酸酸的"
       ],
@@ -10590,11 +10590,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "可愛的",
+        "大家一起用的",
+        "有玻璃的",
         "能感受水的",
         "閃亮亮的",
-        "可愛的",
-        "有玻璃的",
-        "大家一起用的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -10623,11 +10623,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "會發出聲響的",
         "可愛的",
-        "能感受大自然的",
+        "圓滾滾的",
         "布製的",
-        "能出聲的",
-        "圓圓的",
+        "能感受大自然的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -10656,11 +10656,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "有玻璃的",
         "能感受水的",
         "能感受海的",
         "豪華的",
         "閃亮亮的",
-        "有玻璃的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -10689,11 +10689,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "電力驅動的",
-        "能感受風的",
-        "閃亮亮的",
         "有玻璃的",
+        "以電力驅動的",
+        "能感受風的",
         "豪華的",
+        "閃亮亮的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -10722,10 +10722,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受火的",
         "石製的",
-        "象徵的",
+        "能感受火的",
         "訓練用的",
+        "象徵",
         "豪華的",
         "苦苦的"
       ],
@@ -10755,10 +10755,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "整潔的",
+        "觀賞用的",
         "能感受水的",
         "能感受海的",
-        "整潔的",
-        "用於觀賞的",
         "能治癒傷口的",
         "酸酸的"
       ],
@@ -10788,11 +10788,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受火的",
-        "能感受水的",
-        "石製的",
         "容器",
-        "象徵的",
+        "石製的",
+        "能感受水的",
+        "能感受火的",
+        "象徵",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -10823,9 +10823,9 @@ window.POKOPIA_DATA = {
       "favorites": [
         "能感受水的",
         "能感受風的",
-        "閃亮亮的",
-        "象徵的",
+        "象徵",
         "豪華的",
+        "閃亮亮的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -10854,10 +10854,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "電力驅動的",
-        "能感受風的",
         "有玻璃的",
-        "象徵的",
+        "以電力驅動的",
+        "能感受風的",
+        "象徵",
         "豪華的",
         "辣辣的"
       ],
@@ -10887,10 +10887,10 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "石製的",
         "能感受火的",
         "能感受風的",
-        "石製的",
-        "象徵的",
+        "象徵",
         "豪華的",
         "辣辣的"
       ],
@@ -10921,10 +10921,10 @@ window.POKOPIA_DATA = {
       "habitat2_img": "",
       "favorites": [
         "奇妙的",
-        "能感受風的",
         "能感受水的",
         "能感受海的",
-        "象徵的",
+        "能感受風的",
+        "象徵",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -10953,11 +10953,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "能感受火的",
         "木製的",
-        "能感受風的",
         "能感受大自然的",
-        "象徵的",
+        "能感受火的",
+        "能感受風的",
+        "象徵",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -10987,9 +10987,9 @@ window.POKOPIA_DATA = {
       "habitat2_img": "",
       "favorites": [
         "奇妙的",
-        "用於觀賞的",
         "有文字的",
-        "看起來很難懂的",
+        "觀賞用的",
+        "艱深難懂的",
         "石製的",
         "澀澀的"
       ],
@@ -11020,10 +11020,10 @@ window.POKOPIA_DATA = {
       "habitat2_img": "",
       "favorites": [
         "奇妙的",
-        "用於觀賞的",
+        "遊戲區",
+        "觀賞用的",
+        "艱深難懂的",
         "豪華的",
-        "看起來很難懂的",
-        "遊樂區",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -11052,11 +11052,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "會搖晃的",
         "柔軟的",
+        "花朵綻放的",
         "能感受大自然的",
         "能感受風的",
-        "百花盛開的",
-        "搖搖晃晃的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -11085,11 +11085,11 @@ window.POKOPIA_DATA = {
       "habitat2": "遠足必備 - 花朵背包 x 1 毽子草水壺 x 1 便當 x 1",
       "habitat2_img": "assets/habitats/hab_e002.webp",
       "favorites": [
+        "會旋轉的",
         "柔軟的",
+        "花朵綻放的",
         "能感受大自然的",
         "能感受風的",
-        "百花盛開的",
-        "旋轉的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -11119,11 +11119,11 @@ window.POKOPIA_DATA = {
       "habitat2": "和蒲公英一起午餐 - 悠然的花 x 1 花朵靠枕 x 1 便當 x 1 花朵餐具套組 x 1",
       "habitat2_img": "assets/habitats/hab_e003.webp",
       "favorites": [
+        "圓滾滾的",
         "柔軟的",
+        "花朵綻放的",
         "能感受大自然的",
         "能感受風的",
-        "百花盛開的",
-        "圓圓的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -11153,11 +11153,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "像食物的",
+        "觀賞用的",
         "詭異的",
-        "閃亮亮的",
         "豪華的",
-        "很像食物的",
-        "用於觀賞的",
+        "閃亮亮的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -11186,11 +11186,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "金屬的",
         "奇妙的",
+        "會搖晃的",
+        "觀賞用的",
+        "金屬的",
         "閃亮亮的",
-        "用於觀賞的",
-        "搖搖晃晃的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5",
@@ -11215,7 +11215,9 @@ window.POKOPIA_DATA = {
       "name": "醜醜魚",
       "sprite": "assets/pkm_sprites/pkm_icon_0349.webp",
       "environment": "☀️ 明亮",
-      "favorites": [],
+      "favorites": [
+        "無"
+      ],
       "habitat1": "雀躍沙灘 - 沙浴場 x 1 大泳圈 x 1",
       "habitat1_id": "hab_e006",
       "habitat1_img": "assets/habitats/hab_e006.webp",
@@ -11233,7 +11235,9 @@ window.POKOPIA_DATA = {
       "name": "美納斯",
       "sprite": "assets/pkm_sprites/pkm_icon_0350.webp",
       "environment": "☀️ 明亮",
-      "favorites": [],
+      "favorites": [
+        "無"
+      ],
       "habitat1": "海洋風休閒處 - 泳圈 x 1 冷藏箱 x 1 沙灘排球套組 x 1",
       "habitat1_id": "hab_e007",
       "habitat1_img": "assets/habitats/hab_e007.webp",
@@ -11256,7 +11260,12 @@ window.POKOPIA_DATA = {
       "habitat2": "沙中尋寶 - 沙丘 x 1 玩沙套組 x 1",
       "habitat2_img": "assets/habitats/hab_b009.webp",
       "favorites": [
-        "甜甜的"
+        "圓滾滾的",
+        "堅硬的",
+        "容器",
+        "能感受水的",
+        "閃亮亮的",
+        "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b002",
@@ -11286,6 +11295,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "圓滾滾的",
+        "容器",
+        "尖尖的",
+        "能感受水的",
+        "閃亮亮的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
@@ -11315,7 +11329,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "酸酸的"
+        "大家一起用的",
+        "會旋轉的",
+        "遊戲區",
+        "細長的",
+        "能感受水的",
+        "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b007",
@@ -11344,6 +11363,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "尖尖的",
+        "會旋轉的",
+        "細長的",
+        "能感受水的",
+        "能感受海的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
@@ -11374,7 +11398,12 @@ window.POKOPIA_DATA = {
       "habitat2": "海中風情梳妝區 - 大海衣櫃 x 1 大海梳妝檯 x 1 大海椅子 x 1",
       "habitat2_img": "assets/habitats/hab_b034.webp",
       "favorites": [
-        "辣辣的"
+        "細長的",
+        "能感受水的",
+        "能感受風的",
+        "訓練用的",
+        "豪華的",
+        "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b007",
@@ -11403,7 +11432,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "辣辣的"
+        "色彩繽紛的",
+        "奇妙的",
+        "尖尖的",
+        "會旋轉的",
+        "能感受水的",
+        "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b003",
@@ -11432,7 +11466,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "甜甜的"
+        "色彩繽紛的",
+        "奇妙的",
+        "會旋轉的",
+        "艱深難懂的",
+        "能感受水的",
+        "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b036",
@@ -11461,6 +11500,11 @@ window.POKOPIA_DATA = {
       "habitat2": "獨木舟搭乘處 - 獨木舟 x 1 漂浮圓木 x 2 水 x 2",
       "habitat2_img": "assets/habitats/hab_b024.webp",
       "favorites": [
+        "大家一起用的",
+        "尖尖的",
+        "會搖晃的",
+        "遊戲區",
+        "能感受水的",
         "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
@@ -11490,7 +11534,12 @@ window.POKOPIA_DATA = {
       "habitat2": "獨木舟搭乘處 - 獨木舟 x 1 漂浮圓木 x 2 水 x 2",
       "habitat2_img": "assets/habitats/hab_b024.webp",
       "favorites": [
-        "酸酸的"
+        "尖尖的",
+        "布製的",
+        "細長的",
+        "能感受水的",
+        "訓練用的",
+        "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b015",
@@ -11520,6 +11569,11 @@ window.POKOPIA_DATA = {
       "habitat2": "大口咬沙袋 - 沙丘 x 1 沙袋 x 1 桌子（全部） x 1 金假牙 x 1",
       "habitat2_img": "assets/habitats/hab_b011.webp",
       "favorites": [
+        "尖尖的",
+        "能感受水的",
+        "能感受風的",
+        "訓練用的",
+        "豪華的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
@@ -11549,7 +11603,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "辣辣的"
+        "會搖晃的",
+        "有玻璃的",
+        "以電力驅動的",
+        "能感受水的",
+        "閃亮亮的",
+        "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b023",
@@ -11578,7 +11637,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "酸酸的"
+        "會搖晃的",
+        "整潔的",
+        "有玻璃的",
+        "以電力驅動的",
+        "能感受水的",
+        "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b033",
@@ -11607,7 +11671,12 @@ window.POKOPIA_DATA = {
       "habitat2": "珊瑚大集合 - 色彩繽紛珊瑚 x 1 小珊瑚 x 1 縱長珊瑚 x 1",
       "habitat2_img": "assets/habitats/hab_b007.webp",
       "favorites": [
-        "苦苦的"
+        "整潔的",
+        "有玻璃的",
+        "石製的",
+        "能感受大自然的",
+        "能感受水的",
+        "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b002",
@@ -11635,6 +11704,11 @@ window.POKOPIA_DATA = {
       "habitat2": "軟綿綿的放鬆空間 - 軟墊床鋪 x 1 光源（全部） x 1 玩偶（全部） x 1",
       "habitat2_img": "assets/habitats/hab_b023.webp",
       "favorites": [
+        "柔軟的",
+        "遊戲區",
+        "石製的",
+        "能感受土的",
+        "能感受水的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
@@ -11664,7 +11738,12 @@ window.POKOPIA_DATA = {
       "habitat2": "快樂玩泥巴 - 飄飄浮浮好啦魷 x 1 壁掛毛巾 x 1 漂浮圓木 x 1 泥水 x 2",
       "habitat2_img": "assets/habitats/hab_b025.webp",
       "favorites": [
-        "苦苦的"
+        "建設",
+        "柔軟的",
+        "觀賞用的",
+        "能感受土的",
+        "能感受水的",
+        "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b014",
@@ -11694,7 +11773,12 @@ window.POKOPIA_DATA = {
       "habitat2": "泥泥水療區 - 椅子（長型） x 1 暴鯉龍噴水池 x 1 洗澡套組 x 1 泥水 x 2",
       "habitat2_img": "assets/habitats/hab_b026.webp",
       "favorites": [
-        "酸酸的"
+        "建設",
+        "柔軟的",
+        "能感受土的",
+        "能感受水的",
+        "訓練用的",
+        "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b002",
@@ -11723,7 +11807,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "苦苦的"
+        "大家一起用的",
+        "尖尖的",
+        "能感受水的",
+        "能感受海的",
+        "訓練用的",
+        "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b006",
@@ -11752,7 +11841,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "苦苦的"
+        "尖尖的",
+        "能感受水的",
+        "能感受海的",
+        "訓練用的",
+        "象徵",
+        "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b015",
@@ -11781,6 +11875,11 @@ window.POKOPIA_DATA = {
       "habitat2": "海洋休息區 - 小珊瑚 x 1 貝殼坐墊 x 1 燈籠 x 1",
       "habitat2_img": "assets/habitats/hab_b019.webp",
       "favorites": [
+        "柔軟的",
+        "觀賞用的",
+        "細長的",
+        "能感受土的",
+        "能感受水的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
@@ -11810,7 +11909,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "苦苦的"
+        "會搖晃的",
+        "柔軟的",
+        "觀賞用的",
+        "能感受土的",
+        "能感受水的",
+        "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b035",
@@ -11839,7 +11943,12 @@ window.POKOPIA_DATA = {
       "habitat2": "沙中尋寶 - 沙丘 x 1 玩沙套組 x 1",
       "habitat2_img": "assets/habitats/hab_b009.webp",
       "favorites": [
-        "澀澀的"
+        "建設",
+        "遊戲區",
+        "能感受大自然的",
+        "能感受水的",
+        "訓練用的",
+        "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b008",
@@ -11868,7 +11977,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "苦苦的"
+        "建設",
+        "能感受水的",
+        "能治癒傷口的",
+        "訓練用的",
+        "豪華的",
+        "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b009",
@@ -11897,7 +12011,12 @@ window.POKOPIA_DATA = {
       "habitat2": "閃亮亮寶石箱 - 大寶箱 x 1 閃亮亮飾品 x 1 提燈 x 1",
       "habitat2_img": "assets/habitats/hab_b018.webp",
       "favorites": [
-        "苦苦的"
+        "可愛的",
+        "大家一起用的",
+        "遊戲區",
+        "能感受水的",
+        "能治癒傷口的",
+        "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b004",
@@ -11926,6 +12045,11 @@ window.POKOPIA_DATA = {
       "habitat2": "來做冰沙吧 - 食物攪拌機 x 1 盤中的食物 x 1 桌子（全部） x 1",
       "habitat2_img": "assets/habitats/hab_b022.webp",
       "favorites": [
+        "大家一起用的",
+        "會旋轉的",
+        "柔軟的",
+        "遊戲區",
+        "能感受水的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
@@ -11956,7 +12080,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "澀澀的"
+        "整潔的",
+        "會旋轉的",
+        "柔軟的",
+        "能感受水的",
+        "能治癒傷口的",
+        "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b020",
@@ -11985,11 +12114,11 @@ window.POKOPIA_DATA = {
       "habitat2": "滿滿海中苔蘚 - 海中苔蘚 x 1",
       "habitat2_img": "assets/habitats/hab_b012.webp",
       "favorites": [
-        "多彩的",
-        "閃亮亮的",
-        "有玻璃的",
+        "色彩繽紛的",
         "布製的",
-        "酸酸的",
+        "有玻璃的",
+        "能感受水的",
+        "閃亮亮的",
         "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
@@ -12019,12 +12148,12 @@ window.POKOPIA_DATA = {
       "habitat2": "滿滿海中苔蘚 - 海中苔蘚 x 1",
       "habitat2_img": "assets/habitats/hab_b012.webp",
       "favorites": [
-        "多彩的",
-        "閃亮亮的",
-        "有玻璃的",
+        "色彩繽紛的",
         "大家一起用的",
-        "澀澀的",
-        "苦苦的"
+        "有玻璃的",
+        "能感受水的",
+        "閃亮亮的",
+        "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b005",
@@ -12054,7 +12183,12 @@ window.POKOPIA_DATA = {
       "habitat2": "大海的寶物 - 大海儲物櫃 x 1 瓶中船 x 1 閃亮亮飾品 x 1",
       "habitat2_img": "assets/habitats/hab_b021.webp",
       "favorites": [
-        "苦苦的"
+        "布製的",
+        "觀賞用的",
+        "能感受水的",
+        "能感受海的",
+        "詭異的",
+        "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b017",
@@ -12084,7 +12218,12 @@ window.POKOPIA_DATA = {
       "habitat2": "大海的寶物 - 大海儲物櫃 x 1 瓶中船 x 1 閃亮亮飾品 x 1",
       "habitat2_img": "assets/habitats/hab_b021.webp",
       "favorites": [
-        "苦苦的"
+        "布製的",
+        "觀賞用的",
+        "能感受水的",
+        "能感受海的",
+        "詭異的",
+        "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b017",
@@ -12114,7 +12253,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "澀澀的"
+        "交通工具",
+        "能感受水的",
+        "能感受海的",
+        "詭異的",
+        "豪華的",
+        "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b032",
@@ -12144,7 +12288,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "酸酸的"
+        "交通工具",
+        "能感受水的",
+        "能感受海的",
+        "詭異的",
+        "豪華的",
+        "辣辣的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b032",
@@ -12174,7 +12323,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "苦苦的"
+        "可愛的",
+        "色彩繽紛的",
+        "整潔的",
+        "能感受水的",
+        "能治癒傷口的",
+        "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b021",
@@ -12204,6 +12358,11 @@ window.POKOPIA_DATA = {
       "habitat2": "網網海藻 - 網子 x 4 長長的海藻 x 2",
       "habitat2_img": "assets/habitats/hab_b006.webp",
       "favorites": [
+        "柔軟的",
+        "方方的",
+        "觀賞用的",
+        "以電力驅動的",
+        "能感受土的",
         "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
@@ -12234,7 +12393,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "辣辣的"
+        "會發出聲響的",
+        "色彩繽紛的",
+        "奇妙的",
+        "會旋轉的",
+        "艱深難懂的",
+        "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b025",
@@ -12264,7 +12428,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "辣辣的"
+        "色彩繽紛的",
+        "奇妙的",
+        "有文字的",
+        "艱深難懂的",
+        "詭異的",
+        "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b027",
@@ -12294,6 +12463,11 @@ window.POKOPIA_DATA = {
       "habitat2": "泡沫舞臺 - 舞臺 x 1 泡泡機 x 2",
       "habitat2_img": "assets/habitats/hab_b029.webp",
       "favorites": [
+        "可愛的",
+        "圓滾滾的",
+        "遊戲區",
+        "能感受水的",
+        "閃亮亮的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
@@ -12324,6 +12498,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "會發出聲響的",
+        "大家一起用的",
+        "整潔的",
+        "遊戲區",
+        "能感受水的",
         "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
@@ -12354,7 +12533,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "苦苦的"
+        "會發出聲響的",
+        "可愛的",
+        "整潔的",
+        "遊戲區",
+        "能感受水的",
+        "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b031",
@@ -12383,6 +12567,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "垃圾",
+        "色彩繽紛的",
+        "尖尖的",
+        "能感受水的",
+        "閃亮亮的",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
@@ -12412,7 +12601,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "酸酸的"
+        "垃圾",
+        "色彩繽紛的",
+        "容器",
+        "尖尖的",
+        "能感受水的",
+        "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b018",
@@ -12441,7 +12635,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "澀澀的"
+        "垃圾",
+        "大家一起用的",
+        "能感受大自然的",
+        "能感受水的",
+        "能感受海的",
+        "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b016",
@@ -12470,7 +12669,12 @@ window.POKOPIA_DATA = {
       "habitat2": "被丟棄的寶物？ - 大寶箱 x 1 垃圾桶（全部） x 1 垃圾袋 x 1",
       "habitat2_img": "assets/habitats/hab_b016.webp",
       "favorites": [
-        "苦苦的"
+        "能感受大自然的",
+        "能感受水的",
+        "能治癒傷口的",
+        "訓練用的",
+        "豪華的",
+        "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b004",
@@ -12500,7 +12704,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "辣辣的"
+        "堅硬的",
+        "色彩繽紛的",
+        "奇妙的",
+        "觀賞用的",
+        "能感受水的",
+        "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b013",
@@ -12530,6 +12739,11 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "會搖晃的",
+        "能感受大自然的",
+        "能感受海的",
+        "詭異的",
+        "象徵",
         "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
@@ -12559,7 +12773,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "辣辣的"
+        "圓滾滾的",
+        "堅硬的",
+        "布製的",
+        "能感受大自然的",
+        "能感受水的",
+        "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b022",
@@ -12588,7 +12807,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "甜甜的"
+        "圓滾滾的",
+        "堅硬的",
+        "石製的",
+        "能感受水的",
+        "訓練用的",
+        "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b024",
@@ -12617,7 +12841,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "辣辣的"
+        "圓滾滾的",
+        "尖尖的",
+        "觀賞用的",
+        "以電力驅動的",
+        "能感受海的",
+        "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b014",
@@ -12645,7 +12874,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "無"
+        "大家一起用的",
+        "細長的",
+        "集聚在一起的",
+        "能感受土的",
+        "能感受水的",
+        "澀澀的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b010",
@@ -12674,7 +12908,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "澀澀的"
+        "大家一起用的",
+        "石製的",
+        "細長的",
+        "集聚在一起的",
+        "能感受水的",
+        "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b030",
@@ -12704,7 +12943,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
-        "澀澀的"
+        "交通工具",
+        "尖尖的",
+        "柔軟的",
+        "能感受水的",
+        "訓練用的",
+        "甜甜的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "hab_b012",
@@ -12734,11 +12978,11 @@ window.POKOPIA_DATA = {
       "habitat2_img": "",
       "favorites": [
         "可愛的",
-        "能感受海的",
+        "圓滾滾的",
         "柔軟的",
-        "圓圓的",
-        "酸酸的",
-        "甜甜的"
+        "能感受水的",
+        "能感受海的",
+        "酸酸的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "",
@@ -12767,12 +13011,12 @@ window.POKOPIA_DATA = {
       "habitat2": "無特別需求",
       "habitat2_img": "",
       "favorites": [
+        "會發出聲響的",
         "可愛的",
+        "能感受水的",
         "能感受海的",
         "能治癒傷口的",
-        "能出聲的",
-        "苦苦的",
-        "甜甜的"
+        "苦苦的"
       ],
       "relatedCategory": "cat4 / cat5 (水域)",
       "habitat1_id": "",

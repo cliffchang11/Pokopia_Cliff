@@ -355,7 +355,7 @@ def run_tests():
     assert '🌙 黑暗' in env_names, "百科環境名稱應統一為「🌙 黑暗」"
     assert '昏暗' not in env_names, "百科環境名稱不應再保留舊稱「昏暗」"
     thing_names = [th['name'] for th in pref_db['things']]
-    assert '稜角分明的' in thing_names, "百科特徵名稱應統一為正體繁體「稜角分明的」"
+    assert '方方的' in thing_names, "百科特徵名稱應統一為官方正名「方方的」"
     assert '棱角分明的' not in thing_names, "百科特徵名稱不應再包含簡體「棱角分明的」"
     print("✅ [PASS] 喜好百科反向對齊 (367筆)、形態喜好嚴格獨立 (西海/東海、下垂/上弓/平挺等) 驗證 100% 正確！")
 

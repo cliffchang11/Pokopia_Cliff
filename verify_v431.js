@@ -110,9 +110,9 @@ assertCheck(
 // -------------------------------------------------------------
 const bitterPkm = (db.tastes.find(t => t.name === '苦苦的') || {}).pokemon || [];
 const check6Pass = spicyPkm.includes('卡比獸（萌苔）') && astrPkm.includes('卡比獸') &&
-                   bitterPkm.includes('巨蔓藤（博士）') && astrPkm.includes('巨蔓藤') &&
+                   bitterPkm.includes('巨蔓藤') && astrPkm.includes('巨蔓藤（博士）') &&
                    spicyPkm.includes('巨鍛匠') && sweetPkm.includes('藏飽栗鼠') &&
-                   bitterPkm.includes('顫弦蠑螈（高調）') && spicyPkm.includes('顫弦蠑螈（低調）') &&
+                   spicyPkm.includes('顫弦蠑螈（高調）') && bitterPkm.includes('顫弦蠑螈（低調）') &&
                    bitterPkm.includes('洛托姆') && astrPkm.includes('圖圖犬');
 assertCheck(
   6,
@@ -192,15 +192,15 @@ assertCheck(
 );
 
 // -------------------------------------------------------------
-// [Check 10] 特徵名稱統一為正體繁體「稜角分明的」
+// [Check 10] 特徵名稱正式正名為官方「方方的」
 // -------------------------------------------------------------
 const thingNames = db.things.map(th => th.name);
-const check10Pass = thingNames.includes('稜角分明的') && !thingNames.includes('棱角分明的');
+const check10Pass = thingNames.includes('方方的') && !thingNames.includes('棱角分明的');
 assertCheck(
   10,
-  '特徵名稱統一為正體繁體「稜角分明的」',
+  '特徵名稱正式正名為官方正名「方方的」',
   check10Pass,
-  `已徹底消除簡體木字旁「棱」，正體繁體「稜角分明的」收錄 ${((db.things.find(t=>t.name==='稜角分明的')||{}).pokemon||[]).length} 隻寶可夢`
+  `已正名為官方名稱「方方的」，收錄 ${((db.things.find(t=>t.name==='方方的')||{}).pokemon||[]).length} 隻寶可夢`
 );
 
 // -------------------------------------------------------------
