@@ -10750,10 +10750,8 @@ body.has-floating-back .scroll-top-btn {
   color: #fbbf24;
 }
 
-/* 2. 中區：所需食材配方籤 (100% 絕對垂直齊頭對齊) */
+/* 2. 中區：所需食材配方籤 ＋ 所需專長徽章 */
 .recipe-row-ingredients {
-  flex: 1;
-  min-width: 0;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -10788,25 +10786,17 @@ body.has-floating-back .scroll-top-btn {
   color: #38bdf8;
 }
 
-/* 3. 右區：雙行折疊效果區（左側雙行效果容器 230px ＋ 右側寶可夢按鈕 80px） */
+/* 3. 右區：雙行效果（自然緊接食材後方流動排列，選項 B） */
 .recipe-row-effects-section {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-shrink: 0;
-}
-
-.recipe-row-effects-text-col {
-  width: 230px;
-  min-width: 230px;
-  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  min-width: 210px;
+  flex-shrink: 0;
   justify-content: center;
 }
 
-/* 欄位 1：招式威力標籤欄 */
+/* 上行：招式威力標籤欄 */
 .recipe-row-col-move {
   width: 100%;
   min-width: 0;
@@ -10839,7 +10829,7 @@ body.has-floating-back .scroll-top-btn {
   border-color: rgba(14, 165, 233, 0.3);
 }
 
-/* 欄位 2：卡比獸效果說明欄 */
+/* 下行：卡比獸效果說明欄 */
 .recipe-row-col-snorlax {
   width: 100%;
   min-width: 0;
@@ -10860,21 +10850,6 @@ body.has-floating-back .scroll-top-btn {
 
 :root[data-theme="dark"] .recipe-row-snorlax-text {
   color: #86efac;
-}
-
-/* 欄位 3：喜愛寶可夢愛心按鈕欄 (80px 定寬，靠右切齊，無按鈕時保留佔位) */
-.recipe-row-col-poke {
-  width: 80px;
-  min-width: 80px;
-  flex-shrink: 0;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
-
-.recipe-card-poke-placeholder {
-  width: 80px;
-  height: 24px;
 }
 
 /* ==========================================================================
@@ -11218,8 +11193,8 @@ body.has-floating-back .scroll-top-btn {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
   gap: 0.6rem;
-  max-height: 220px;
-  overflow-y: auto;
+  max-height: none;
+  overflow: visible;
   padding: 0.2rem;
 }
 
@@ -11309,8 +11284,7 @@ body.has-floating-back .scroll-top-btn {
     border-top: 1px dashed #f0eee9;
   }
   .recipe-row-col-move,
-  .recipe-row-col-snorlax,
-  .recipe-row-col-poke {
+  .recipe-row-col-snorlax {
     width: auto;
     min-width: 0;
   }

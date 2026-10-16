@@ -228,36 +228,6 @@
         `;
       }
 
-      // 喜愛寶可夢連動區 (純頭像箱子 Popover，若無寶可夢則保留佔位插槽維持齊平)
-      let pokemonSectionHtml = '<div class="recipe-card-poke-placeholder"></div>';
-      if (hasLikedPoke) {
-        const pokeListHtml = r.likedPokemon.map(p => `
-          <div class="recipe-popover-avatar-item" title="${p.number} ${p.name} (喜愛${r.taste})">
-            <img class="recipe-popover-avatar-img" src="${p.sprite}" alt="${p.name}" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'40\\' height=\\'40\\' viewBox=\\'0 0 24 24\\' fill=\\'%2394a3b8\\'><circle cx=\\'12\\' cy=\\'12\\' r=\\'10\\'/></svg>'">
-            <span class="recipe-popover-avatar-num">${p.number.replace('No. ', '#')}</span>
-          </div>
-        `).join('');
-
-        pokemonSectionHtml = `
-          <div class="recipe-card-poke-wrapper">
-            <button type="button" class="recipe-card-poke-trigger ${isPopoverOpen ? 'active' : ''}" data-popover-target="${r.id}" title="點擊檢視喜愛此料理的 ${r.likedPokemon.length} 隻寶可夢">
-              <span class="recipe-poke-heart">❤️</span>
-              <span class="recipe-poke-btn-text"><strong>${r.likedPokemon.length}</strong> 隻</span>
-            </button>
-            <div class="recipe-row-popover ${isPopoverOpen ? 'show' : 'hidden'}" id="popover-${r.id}" role="dialog" aria-label="${r.name} 喜愛寶可夢清單">
-              <div class="recipe-popover-header">
-                <span class="recipe-popover-title">喜愛寶可夢 <strong>(${r.likedPokemon.length})</strong></span>
-                <span class="recipe-popover-taste ${tasteClass}">${r.taste}</span>
-                <button type="button" class="recipe-popover-close-btn" data-popover-close="${r.id}" aria-label="關閉">✕</button>
-              </div>
-              <div class="recipe-popover-avatar-grid">
-                ${pokeListHtml}
-              </div>
-            </div>
-          </div>
-        `;
-      }
-
       return `
         <div class="recipe-row" data-recipe-id="${r.id}" data-recipe-name="${r.name}" data-category="${catMeta.slug}">
           <!-- 1. 左區：定寬料理名片（點擊開啟專屬詳情介紹） -->
@@ -272,24 +242,19 @@
             </div>
           </div>
 
-          <!-- 2. 中區：所需食材籤 ＋ 所需專長徽章 (完全水平舒展，不再被擠壓) -->
+          <!-- 2. 中區：所需食材籤 ＋ 所需專長徽章 (完全水平舒展) -->
           <div class="recipe-row-ingredients">
             ${ingredientsHtml}
             ${specialtyBadgeHtml}
           </div>
 
-          <!-- 3. 右區：雙行折疊效果插槽（上行招式標籤 ＋ 下行卡比獸效果，定寬 230px ＋ 寶可夢按鈕 80px） -->
+          <!-- 3. 右區：雙行效果（自然緊接食材後方流動排列，選項 B） -->
           <div class="recipe-row-effects-section">
-            <div class="recipe-row-effects-text-col">
-              <div class="recipe-row-col-move">
-                ${formatMoveTag(r.move)}
-              </div>
-              <div class="recipe-row-col-snorlax">
-                <span class="recipe-row-snorlax-text" title="${r.snorlaxEffect || ''}">🍃 ${r.snorlaxEffect || '可以和寶可夢變得比較要好'}</span>
-              </div>
+            <div class="recipe-row-col-move">
+              ${formatMoveTag(r.move)}
             </div>
-            <div class="recipe-row-col-poke">
-              ${pokemonSectionHtml}
+            <div class="recipe-row-col-snorlax">
+              <span class="recipe-row-snorlax-text" title="${r.snorlaxEffect || ''}">🍃 ${r.snorlaxEffect || '可以和寶可夢變得比較要好'}</span>
             </div>
           </div>
         </div>
@@ -579,29 +544,6 @@
             return;
           }
         }
-
-        // D. 喜愛寶可夢展開按鈕
-        const pokeTrigger = e.target.closest('.recipe-card-poke-trigger');
-        if (pokeTrigger) {
-          e.stopPropagation();
-          const recipeId = pokeTrigger.getAttribute('data-popover-target');
-          if (recipeState.activePopoverId === recipeId) {
-            recipeState.activePopoverId = null;
-          } else {
-            recipeState.activePopoverId = recipeId;
-          }
-          renderRecipes();
-          return;
-        }
-
-        // E. Popover 關閉按鈕
-        const closeBtn = e.target.closest('.recipe-popover-close-btn');
-        if (closeBtn) {
-          e.stopPropagation();
-          recipeState.activePopoverId = null;
-          renderRecipes();
-          return;
-        }
       });
     }
 
@@ -621,17 +563,6 @@
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         closeRecipeDetailModal();
-      }
-    });
-
-    // 6. 全域點擊收起 Popover
-    document.addEventListener('click', (e) => {
-      if (!recipeState.activePopoverId) return;
-      const insidePopover = e.target.closest('.recipe-row-popover');
-      const insideTrigger = e.target.closest('.recipe-card-poke-trigger');
-      if (!insidePopover && !insideTrigger) {
-        recipeState.activePopoverId = null;
-        renderRecipes();
       }
     });
   }
