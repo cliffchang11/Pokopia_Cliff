@@ -10769,10 +10769,10 @@ body.has-floating-back .scroll-top-btn {
   flex-shrink: 0;
 }
 
-/* 欄位 1：招式威力標籤欄 (110px 定寬) */
+/* 欄位 1：招式威力標籤欄 (115px 定寬) */
 .recipe-row-col-move {
-  width: 110px;
-  min-width: 110px;
+  width: 115px;
+  min-width: 115px;
   flex-shrink: 0;
   display: flex;
   align-items: center;

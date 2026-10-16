@@ -154,6 +154,19 @@
     return { label: categoryStr || '料理', slug: 'default' };
   }
 
+  // 招式與效果標籤智慧格式化 (精簡用詞、消滅死板模板與冗詞)
+  function formatMoveTag(moveStr) {
+    if (!moveStr || moveStr.trim() === '') return '<span class="recipe-row-col-empty"></span>';
+    const m = moveStr.trim();
+    if (m === '開派對') {
+      return '<span class="recipe-row-move-tag">開派對</span>';
+    }
+    if (m.includes('大幅') || m.includes('碎岩（大幅增強）')) {
+      return '<span class="recipe-row-move-tag">「碎岩」大幅增強</span>';
+    }
+    return `<span class="recipe-row-move-tag">「${m}」提升</span>`;
+  }
+
   // 渲染現代清爽卡片清單 (gamertw 風格)
   function renderRecipes() {
     const grid = document.getElementById('recipeCardGrid');
@@ -264,7 +277,7 @@
           <!-- 3. 右區：三欄鎖定定寬插槽（招式 110px ＋ 效果 260px ＋ 寶可夢按鈕 80px，全列絕對齊頭） -->
           <div class="recipe-row-effects-section">
             <div class="recipe-row-col-move">
-              ${r.move ? `<span class="recipe-row-move-tag">「${r.move}」威力提升</span>` : '<span class="recipe-row-col-empty"></span>'}
+              ${formatMoveTag(r.move)}
             </div>
             <div class="recipe-row-col-snorlax">
               <span class="recipe-row-snorlax-text" title="${r.snorlaxEffect || ''}">🍃 ${r.snorlaxEffect || '可以和寶可夢變得比較要好'}</span>
