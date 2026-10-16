@@ -10527,6 +10527,29 @@ body.has-floating-back .scroll-top-btn {
   box-shadow: 0 1px 2px rgba(120, 110, 90, 0.025);
 }
 
+/* 電腦版 (桌機) 專屬比例收斂與美感定錨：根字級回歸 15px 精緻規格，消滅膨脹笨重感，手機版 100% 不動 */
+@media (min-width: 901px) {
+  :root, :root[data-theme="light"], :root[data-theme="dark"] {
+    font-size: 0.9375rem !important; /* 電腦版基準約 15px，比例和諧緊湊 */
+  }
+
+  .recipe-filter-bar {
+    gap: 0.55rem;
+    margin-bottom: 1rem;
+  }
+
+  .recipe-filter-group {
+    gap: 0.4rem;
+  }
+
+  .recipe-filter-btn {
+    padding: 0.28rem 0.68rem;
+    min-height: 1.85rem;
+    font-size: 0.78rem;
+    gap: 0.3rem;
+  }
+}
+
 .recipe-filter-btn:hover {
   background: #faf8f5;
   color: #1c1917;
