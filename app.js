@@ -175,6 +175,7 @@
     tabHabitat: document.getElementById('tabHabitat'),
     tabHabitatCatalog: document.getElementById('tabHabitatCatalog'),
     tabRecipe: document.getElementById('tabRecipe'),
+    tabPreferences: document.getElementById('tabPreferences'),
     tabAutoFarm: document.getElementById('tabAutoFarm'),
     tabCustomStorage: document.getElementById('tabCustomStorage'),
     tabVideo: document.getElementById('tabVideo'),
@@ -183,6 +184,7 @@
     btnVideoNav: document.getElementById('btnVideoNav'),
     autoFarmSection: document.getElementById('autoFarmSection'),
     customStorageSection: document.getElementById('customStorageSection'),
+    preferencesSection: document.getElementById('preferencesSection'),
     videoSection: document.getElementById('videoSection'),
     videoPlayerIframe: document.getElementById('videoPlayerIframe'),
     videoResumeBanner: document.getElementById('videoResumeBanner'),
@@ -379,7 +381,7 @@
 
   // Navigation State Persistence (URL Hash 絕對第一優先權 + LocalStorage 回退)
   function getInitialNavState() {
-    const validTabs = ['storage', 'habitat', 'habitatCatalog', 'recipe', 'autofarm', 'customStorage', 'regionMap', 'video'];
+    const validTabs = ['storage', 'habitat', 'habitatCatalog', 'recipe', 'preferences', 'autofarm', 'customStorage', 'regionMap', 'video'];
     const validViews = ['card', 'table'];
 
     let tab = null;
@@ -1110,6 +1112,15 @@
       });
     }
 
+    if (DOM.tabPreferences) {
+      DOM.tabPreferences.addEventListener('click', () => {
+        closeTocDropdown();
+        switchTab('preferences', true);
+        pushNavHistory({ tab: 'preferences' });
+        hideFloatingBackBtn();
+      });
+    }
+
     if (DOM.tabAutoFarm) {
       DOM.tabAutoFarm.addEventListener('click', () => {
         closeTocDropdown();
@@ -1268,9 +1279,14 @@
       DOM.btnResetFilters.addEventListener('click', resetPokemonFilters);
     }
 
-    // 喜好百科抽屜開關事件
+    // 喜好百科入口按鈕切換
     if (DOM.btnPrefDrawer) {
-      DOM.btnPrefDrawer.addEventListener('click', () => openPrefDrawer());
+      DOM.btnPrefDrawer.addEventListener('click', () => {
+        closeTocDropdown();
+        switchTab('preferences', true);
+        pushNavHistory({ tab: 'preferences' });
+        hideFloatingBackBtn();
+      });
     }
     if (DOM.prefDrawerCloseBtn) {
       DOM.prefDrawerCloseBtn.addEventListener('click', closePrefDrawer);
@@ -1279,7 +1295,7 @@
       DOM.prefDrawerBackdrop.addEventListener('click', closePrefDrawer);
     }
 
-    // 抽屜 4 大分頁切換
+    // 喜好百科 4 大子分頁切換
     document.querySelectorAll('.pref-tab-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -1293,7 +1309,7 @@
       });
     });
 
-    // 抽屜搜尋框即時過濾
+    // 喜好百科搜尋框即時過濾
     if (DOM.prefDrawerSearch) {
       DOM.prefDrawerSearch.addEventListener('input', (e) => {
         state.prefSearch = e.target.value;
@@ -1309,6 +1325,59 @@
         if (DOM.prefDrawerSearch) DOM.prefDrawerSearch.value = '';
         DOM.prefDrawerClearSearch.classList.add('hidden');
         renderPrefDrawerContent();
+      });
+    }
+
+    // 喜好百科極速父層事件委派 (單一監聽器接管 2500+ 按鈕點擊，零遍歷消耗)
+    if (DOM.prefDrawerBody) {
+      DOM.prefDrawerBody.addEventListener('click', (e) => {
+        // 1. 點擊道具方格
+        const itemSlot = e.target.closest('.pref-item-slot');
+        if (itemSlot) {
+          e.stopPropagation();
+          const itemName = itemSlot.dataset.itemName;
+          if (!itemName) return;
+          if (navigateItemToRecipe(itemName)) return;
+
+          state.prefTab = 'items';
+          document.querySelectorAll('.pref-tab-btn').forEach(b => {
+            b.classList.toggle('active', b.dataset.prefTab === 'items');
+          });
+          state.prefItemCat = 'all';
+          state.prefSearch = '';
+          if (DOM.prefDrawerSearch) DOM.prefDrawerSearch.value = '';
+          const db = window.POKOPIA_PREFERENCES_DB;
+          renderPrefDrawerItems(db ? (db.items || {}) : {}, '', itemName, db);
+          return;
+        }
+
+        // 2. 點擊寶可夢方格或頭像 Chip
+        const pkmSlot = e.target.closest('.pref-pkm-slot, .pref-pkm-chip');
+        if (pkmSlot) {
+          e.stopPropagation();
+          const pkmId = pkmSlot.dataset.pkmId;
+          const pkmName = pkmSlot.dataset.pkmName;
+          if (pkmId) {
+            jumpToPokemon(pkmId, true);
+          } else if (pkmName) {
+            const pokemons = (window.POKOPIA_DATA && window.POKOPIA_DATA.pokemons) || [];
+            const found = pokemons.find(p => p.name === pkmName);
+            if (found) jumpToPokemon(found.id, true);
+          }
+          showFloatingBackBtn('喜好百科');
+          return;
+        }
+
+        // 3. 點擊特徵或口味藥丸標籤
+        const favChip = e.target.closest('.pref-fav-chip');
+        if (favChip) {
+          e.stopPropagation();
+          const targetFav = favChip.dataset.fav;
+          if (targetFav) {
+            openPrefDrawer('things', targetFav);
+          }
+          return;
+        }
       });
     }
 
@@ -1470,6 +1539,8 @@
     DOM.tabHabitat.classList.remove('active');
     DOM.tabHabitatCatalog.classList.remove('active');
     if (DOM.tabRecipe) DOM.tabRecipe.classList.remove('active');
+    if (DOM.tabPreferences) DOM.tabPreferences.classList.remove('active');
+    if (DOM.btnPrefDrawer) DOM.btnPrefDrawer.classList.remove('active');
     if (DOM.tabAutoFarm) DOM.tabAutoFarm.classList.remove('active');
     if (DOM.btnAutoFarmNav) DOM.btnAutoFarmNav.classList.remove('active');
     if (DOM.tabCustomStorage) DOM.tabCustomStorage.classList.remove('active');
@@ -1487,6 +1558,10 @@
     if (DOM.recipeSection) {
       DOM.recipeSection.classList.add('hidden-section');
       DOM.recipeSection.classList.remove('active-section');
+    }
+    if (DOM.preferencesSection) {
+      DOM.preferencesSection.classList.add('hidden-section');
+      DOM.preferencesSection.classList.remove('active-section');
     }
     if (DOM.autoFarmSection) {
       DOM.autoFarmSection.classList.add('hidden-section');
@@ -1676,6 +1751,24 @@
       if (typeof renderVideoSection === 'function') {
         renderVideoSection();
       }
+    } else if (tab === 'preferences') {
+      if (DOM.tabPreferences) DOM.tabPreferences.classList.add('active');
+      if (DOM.btnPrefDrawer) DOM.btnPrefDrawer.classList.add('active');
+      if (DOM.preferencesSection) {
+        DOM.preferencesSection.classList.remove('hidden-section');
+        DOM.preferencesSection.classList.add('active-section');
+      }
+      if (DOM.toolbarContainer) DOM.toolbarContainer.classList.remove('hidden');
+      if (DOM.toolbarHeaderRow) DOM.toolbarHeaderRow.classList.remove('hidden');
+      if (DOM.toolbarTitle) DOM.toolbarTitle.textContent = '喜好百科';
+      if (DOM.catalogProgressBadge) DOM.catalogProgressBadge.classList.remove('hidden');
+      if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '💖';
+      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>48</strong> 種偏好 ‧ 12 大類物品';
+      if (DOM.searchRow) DOM.searchRow.classList.add('hidden');
+      if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.add('hidden');
+      if (DOM.filterToolbar) DOM.filterToolbar.classList.add('hidden');
+      if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.add('hidden');
+      renderPrefDrawerContent();
     }
 
     if (!skipSync) {
@@ -2607,6 +2700,9 @@
       }
     } else if (state.currentTab === 'autofarm') {
       hasResults = renderAutoFarm();
+    } else if (state.currentTab === 'preferences') {
+      renderPrefDrawerContent();
+      hasResults = true;
     }
 
     if (!hasResults) {
@@ -4231,7 +4327,6 @@
 
   // 開啟喜好百科抽屜 (可指定目標分頁與高亮項目)
   function openPrefDrawer(targetTab, highlightItem) {
-    if (!DOM.prefDrawer) return;
     if (targetTab) {
       state.prefTab = targetTab;
     }
@@ -4240,20 +4335,31 @@
       btn.classList.toggle('active', btn.dataset.prefTab === state.prefTab);
     });
 
-    DOM.prefDrawer.classList.remove('closed');
-    if (DOM.prefDrawerBackdrop) {
-      DOM.prefDrawerBackdrop.classList.remove('hidden');
+    const fromTab = state.currentTab;
+    switchTab('preferences', false);
+
+    if (fromTab && fromTab !== 'preferences') {
+      const tabNameMap = {
+        habitat: '寶可夢圖鑑',
+        habitatCatalog: '棲息地總覽',
+        recipe: '料理食譜',
+        storage: '儲存庫'
+      };
+      showFloatingBackBtn(tabNameMap[fromTab] || '上一頁');
     }
 
-    renderPrefDrawerContent(highlightItem);
+    if (highlightItem) {
+      setTimeout(() => {
+        scrollHighlightItem(highlightItem);
+      }, 60);
+    }
   }
 
-  // 關閉喜好百科抽屜
+  // 關閉喜好百科 (返回首頁圖鑑)
   function closePrefDrawer() {
-    if (!DOM.prefDrawer) return;
-    DOM.prefDrawer.classList.add('closed');
-    if (DOM.prefDrawerBackdrop) {
-      DOM.prefDrawerBackdrop.classList.add('hidden');
+    if (state.currentTab === 'preferences') {
+      switchTab('habitat', false);
+      hideFloatingBackBtn();
     }
   }
 
@@ -4385,37 +4491,8 @@
     return false;
   }
 
-  // 輔助函式：綁定所有純圖片道具格點擊跳轉事件
-  function bindPrefDrawerItemSlots(db) {
-    if (!DOM.prefDrawerBody) return;
-    DOM.prefDrawerBody.querySelectorAll('.pref-item-slot').forEach(slot => {
-      slot.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const itemName = slot.dataset.itemName;
-        if (!itemName) return;
-
-        // 若點擊的是料理成品或食材，智慧導向料理食譜並定位
-        if (navigateItemToRecipe(itemName)) {
-          return;
-        }
-
-        // 切換至物品列表分頁
-        state.prefTab = 'items';
-        if (DOM.prefDrawerTabs) {
-          DOM.prefDrawerTabs.querySelectorAll('.pref-tab-btn').forEach(b => {
-            b.classList.toggle('active', b.dataset.tab === 'items');
-          });
-        }
-
-        // 清空搜尋以確保目標物品必定顯示在全量列表中
-        state.prefItemCat = 'all';
-        state.prefSearch = '';
-        if (DOM.prefDrawerSearch) DOM.prefDrawerSearch.value = '';
-
-        renderPrefDrawerItems(db.items || {}, '', itemName, db);
-      });
-    });
-  }
+  // 輔助函式：道具與寶可夢事件由父層事件委派接管 (相容保留函式簽章)
+  function bindPrefDrawerItemSlots(db) {}
 
   // 渲染分頁 1：喜歡的口味
   function renderPrefDrawerTastes(tastes, query, pkmMap, highlightItem, db) {
@@ -4766,27 +4843,8 @@
     }, 120);
   }
 
-  // 綁定抽屜內點擊寶可夢跳轉事件
-  function bindPrefDrawerPokemonChips() {
-    if (!DOM.prefDrawerBody) return;
-    DOM.prefDrawerBody.querySelectorAll('.pref-pkm-slot, .pref-pkm-chip').forEach(chip => {
-      chip.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const pkmId = chip.dataset.pkmId;
-        const pkmName = chip.dataset.pkmName;
-        closePrefDrawer();
-        if (pkmId) {
-          jumpToPokemon(pkmId, true);
-        } else if (pkmName) {
-          const pokemons = (window.POKOPIA_DATA && window.POKOPIA_DATA.pokemons) || [];
-          const found = pokemons.find(p => p.name === pkmName);
-          if (found) {
-            jumpToPokemon(found.id, true);
-          }
-        }
-      });
-    });
-  }
+  // 綁定抽屜內點擊寶可夢跳轉事件 (由父層事件委派接管，保留相容函式)
+  function bindPrefDrawerPokemonChips() {}
 
   // 手機進階篩選抽屜控制與 Badge 計算
   function updateFilterBadge() {
