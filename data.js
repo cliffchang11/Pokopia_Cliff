@@ -2221,9 +2221,7 @@ window.POKOPIA_DATA = {
       "habitat1_img": "",
       "habitat2": "無特別需求",
       "habitat2_img": "",
-      "favorites": [
-        "無"
-      ],
+      "favorites": [],
       "relatedCategory": "cat4 / cat5",
       "habitat1_id": "",
       "specialties": [
@@ -11216,7 +11214,12 @@ window.POKOPIA_DATA = {
       "sprite": "assets/pkm_sprites/pkm_icon_0349.webp",
       "environment": "☀️ 明亮",
       "favorites": [
-        "無"
+        "能感受水的",
+        "閃亮亮的",
+        "有玻璃的",
+        "能感受大自然的",
+        "大家一起用的",
+        "甜甜的"
       ],
       "habitat1": "雀躍沙灘 - 沙浴場 x 1 大泳圈 x 1",
       "habitat1_id": "hab_e006",
@@ -11236,7 +11239,12 @@ window.POKOPIA_DATA = {
       "sprite": "assets/pkm_sprites/pkm_icon_0350.webp",
       "environment": "☀️ 明亮",
       "favorites": [
-        "無"
+        "能感受水的",
+        "閃亮亮的",
+        "有玻璃的",
+        "豪華的",
+        "整潔的",
+        "酸酸的"
       ],
       "habitat1": "海洋風休閒處 - 泳圈 x 1 冷藏箱 x 1 沙灘排球套組 x 1",
       "habitat1_id": "hab_e007",

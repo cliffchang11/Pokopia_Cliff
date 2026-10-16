@@ -61,7 +61,7 @@ window.POKOPIA_REGION_DATA = {
         "幽靈與水系出沒的礁石洞窟",
         "外海深邃水域（變身拉普拉斯可遇見蓋歐卡）"
       ],
-      defaultPokemonIds: ["pkm_s1_7", "pkm_s1_131", "pkm_s1_94", "pkm_s1_117", "pkm_s1_382"]
+      defaultPokemonIds: ["pkm_s1_7", "pkm_s1_131", "pkm_s1_94", "pkm_s1_117", "pkm_s1_297"]
     },
     {
       id: "rocky_ridges",
@@ -99,7 +99,7 @@ window.POKOPIA_REGION_DATA = {
         "高空氣流滑翔軌道與彩虹瀑布",
         "天際雲海觀景台"
       ],
-      defaultPokemonIds: ["pkm_s1_18", "pkm_s1_181", "pkm_s1_468", "pkm_s1_479", "pkm_s1_149"]
+      defaultPokemonIds: ["pkm_s1_18", "pkm_s1_181", "pkm_s1_176", "pkm_s1_189", "pkm_s1_149"]
     }
   ]
 };

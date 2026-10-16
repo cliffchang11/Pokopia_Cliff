@@ -6,7 +6,7 @@ var POKOPIA_PREFERENCES_DB = {
   "tastes": [
     {
       "name": "甜甜的",
-      "pokemonCount": 73,
+      "pokemonCount": 74,
       "pokemon": [
         "妙蛙種子",
         "傑尼龜",
@@ -80,7 +80,8 @@ var POKOPIA_PREFERENCES_DB = {
         "花漾海獅",
         "咬咬龜",
         "三海地鼠",
-        "輕身鱈"
+        "輕身鱈",
+        "醜醜魚"
       ],
       "foods": [
         "桃桃果",
@@ -106,7 +107,7 @@ var POKOPIA_PREFERENCES_DB = {
     },
     {
       "name": "酸酸的",
-      "pokemonCount": 73,
+      "pokemonCount": 74,
       "pokemon": [
         "妙蛙草",
         "妙蛙花",
@@ -180,7 +181,8 @@ var POKOPIA_PREFERENCES_DB = {
         "西獅海壬",
         "磨牙彩皮魚",
         "暴噬龜",
-        "霏歐納"
+        "霏歐納",
+        "美納斯"
       ],
       "foods": [
         "利木果",
@@ -1717,7 +1719,7 @@ var POKOPIA_PREFERENCES_DB = {
     },
     {
       "name": "大家一起用的",
-      "pokemonCount": 81,
+      "pokemonCount": 82,
       "pokemon": [
         "妙蛙種子",
         "小火龍",
@@ -1799,7 +1801,8 @@ var POKOPIA_PREFERENCES_DB = {
         "花漾海獅",
         "膽小蟲",
         "海地鼠",
-        "三海地鼠"
+        "三海地鼠",
+        "醜醜魚"
       ],
       "items": [
         "沙池",
@@ -2448,7 +2451,7 @@ var POKOPIA_PREFERENCES_DB = {
     },
     {
       "name": "整潔的",
-      "pokemonCount": 48,
+      "pokemonCount": 49,
       "pokemon": [
         "傑尼龜",
         "卡咪龜",
@@ -2497,7 +2500,8 @@ var POKOPIA_PREFERENCES_DB = {
         "浮潛鼬",
         "保母曼波",
         "花漾海獅",
-        "西獅海壬"
+        "西獅海壬",
+        "美納斯"
       ],
       "items": [
         "水盆",
@@ -2613,7 +2617,7 @@ var POKOPIA_PREFERENCES_DB = {
     },
     {
       "name": "有玻璃的",
-      "pokemonCount": 34,
+      "pokemonCount": 36,
       "pokemon": [
         "皮丘",
         "皮卡丘（淺色）",
@@ -2648,7 +2652,9 @@ var POKOPIA_PREFERENCES_DB = {
         "電燈怪",
         "太陽珊瑚",
         "螢光魚",
-        "霓虹魚"
+        "霓虹魚",
+        "美納斯",
+        "醜醜魚"
       ],
       "items": [
         "海玻璃碎片",
@@ -3860,7 +3866,7 @@ var POKOPIA_PREFERENCES_DB = {
     },
     {
       "name": "能感受大自然的",
-      "pokemonCount": 75,
+      "pokemonCount": 76,
       "pokemon": [
         "妙蛙種子",
         "妙蛙草",
@@ -3936,7 +3942,8 @@ var POKOPIA_PREFERENCES_DB = {
         "膽小蟲",
         "具甲武者",
         "破破舵輪",
-        "咬咬龜"
+        "咬咬龜",
+        "醜醜魚"
       ],
       "items": [
         "樹果花紋",
@@ -3972,7 +3979,7 @@ var POKOPIA_PREFERENCES_DB = {
     },
     {
       "name": "能感受水的",
-      "pokemonCount": 105,
+      "pokemonCount": 107,
       "pokemon": [
         "妙蛙種子",
         "傑尼龜",
@@ -4078,7 +4085,9 @@ var POKOPIA_PREFERENCES_DB = {
         "三海地鼠",
         "輕身鱈",
         "霏歐納",
-        "瑪納霏"
+        "瑪納霏",
+        "美納斯",
+        "醜醜魚"
       ],
       "items": [
         "墨海馬噴水池",
@@ -4549,7 +4558,7 @@ var POKOPIA_PREFERENCES_DB = {
     },
     {
       "name": "豪華的",
-      "pokemonCount": 52,
+      "pokemonCount": 53,
       "pokemon": [
         "妙蛙花",
         "噴火龍",
@@ -4602,7 +4611,8 @@ var POKOPIA_PREFERENCES_DB = {
         "鐵螯龍蝦",
         "胖嘟嘟（雄性）",
         "胖嘟嘟（雌性）",
-        "具甲武者"
+        "具甲武者",
+        "美納斯"
       ],
       "items": [
         "吉利蛋植栽",
@@ -4800,7 +4810,7 @@ var POKOPIA_PREFERENCES_DB = {
     },
     {
       "name": "閃亮亮的",
-      "pokemonCount": 59,
+      "pokemonCount": 61,
       "pokemon": [
         "小磁怪",
         "三合一磁怪",
@@ -4860,7 +4870,9 @@ var POKOPIA_PREFERENCES_DB = {
         "螢光魚",
         "霓虹魚",
         "球球海獅",
-        "好壞星"
+        "好壞星",
+        "美納斯",
+        "醜醜魚"
       ],
       "items": [
         "水晶碎片",

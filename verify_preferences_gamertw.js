@@ -87,9 +87,9 @@ console.log(`✓ 喜好百科與圖鑑資料庫雙向對齊 100% 零死角驗證
 
 // 7. index.html 快取版號檢查
 const html = fs.readFileSync('index.html', 'utf8');
-assert(html.includes('data.js?v=4.12.12'), 'index.html 必須使用 data.js?v=4.12.12');
-assert(html.includes('preferences_db.js?v=4.12.12'), 'index.html 必須使用 preferences_db.js?v=4.12.12');
-assert(html.includes('index.css?v=4.12.12'), 'index.html 必須使用 index.css?v=4.12.12');
-console.log('✓ index.html 4.12.12 版號檢查通過');
+assert(html.includes('data.js?v=4.12.13'), 'index.html 必須使用 data.js?v=4.12.13');
+assert(html.includes('preferences_db.js?v=4.12.13'), 'index.html 必須使用 preferences_db.js?v=4.12.13');
+assert(html.includes('index.css?v=4.12.13'), 'index.html 必須使用 index.css?v=4.12.13');
+console.log('✓ index.html 4.12.13 版號檢查通過');
 
 console.log('🎉 全部喜好百科與雙向對齊測試 100% 通過！');
