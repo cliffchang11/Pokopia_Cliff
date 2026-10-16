@@ -10533,6 +10533,12 @@ body.has-floating-back .scroll-top-btn {
     font-size: 0.9375rem !important; /* 電腦版基準約 15px，比例和諧緊湊 */
   }
 
+  .recipe-section {
+    max-width: 980px; /* 鎖定 980px 黃金聚焦比例，與三欄內容契合且不橫向過度拉扯 */
+    margin: 0 auto;
+    padding: 1rem 1rem 4rem;
+  }
+
   .recipe-filter-bar {
     gap: 0.55rem;
     margin-bottom: 1rem;
