@@ -34,10 +34,11 @@ const css = fs.readFileSync('index.css', 'utf8');
 assert(css.includes('.preferences-section'), 'index.css 必須定義 .preferences-section 樣式');
 assert(css.includes('.pref-page-container'), 'index.css 必須定義 .pref-page-container 樣式');
 assert(css.includes('.pref-page-header'), 'index.css 必須定義 .pref-page-header 樣式');
-assert(css.includes('.pref-page-body'), 'index.css 必須定義 .pref-page-body 響應式網格');
+assert(css.includes('.pref-page-body'), 'index.css 必須定義 .pref-page-body 響應式容器');
+assert(css.includes('flex-direction: column'), 'pref-page-body 必須採用單欄寬版流體排版');
 assert(css.includes(':root[data-theme="dark"] .pref-page-header'), '必須支援深色模式 header 樣式');
 assert(css.includes(':root[data-theme="dark"] .pref-card'), '必須支援深色模式卡片樣式');
-console.log('  ✅ [PASS] 現代流體網格、毛玻璃過渡、卡片懸浮微動效及深淺色樣式健全');
+console.log('  ✅ [PASS] 現代單欄寬版流體卡片、毛玻璃過渡、卡片懸浮微動效及深淺色樣式健全');
 
 // 3. 檢驗 app.js 邏輯整合與事件委派
 console.log('\n3. 檢驗 app.js 路由、事件委派與跳轉連動：');

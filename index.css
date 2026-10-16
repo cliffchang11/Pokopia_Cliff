@@ -12053,18 +12053,12 @@ body.has-floating-back .scroll-top-btn {
   padding: 0.25rem;
 }
 
-/* 內容網格與流體卡片 */
+/* 內容流體：單欄寬版大氣卡片流，消除雙欄參差不齊錯位 */
 .pref-page-body {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
   width: 100%;
-}
-
-@media (min-width: 56rem) {
-  .pref-page-body {
-    grid-template-columns: repeat(auto-fill, minmax(25rem, 1fr));
-  }
 }
 
 .pref-card {
@@ -12073,11 +12067,13 @@ body.has-floating-back .scroll-top-btn {
   -webkit-backdrop-filter: blur(0.5rem);
   border: 0.0625rem solid var(--border-color, #e2e8f0);
   border-radius: 1.0rem;
-  padding: 1.25rem 1.25rem;
+  padding: 1.35rem 1.6rem;
   box-shadow: 0 0.125rem 0.5rem rgba(15, 23, 42, 0.04);
   transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
   display: flex;
   flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .pref-card:hover {
