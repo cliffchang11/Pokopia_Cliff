@@ -201,14 +201,6 @@
       const tasteClass = tasteClassMap[r.taste] || 'taste-plain';
       const catMeta = getCategoryMeta(r.category, r.name);
 
-      // 所需專長副標字樣
-      let specialtySubHtml = '';
-      if (r.specialty && r.specialty.trim() !== '') {
-        const specName = r.specialty.trim();
-        const cfg = specialtyConfig[specName] || { icon: '✨', label: specName };
-        specialtySubHtml = `<span class="recipe-row-spec-sub"> · ${cfg.icon} ${cfg.label}</span>`;
-      }
-
       // 食材膠囊 HTML (乾淨無 emoji，點擊可即時反查)
       const ingredientsHtml = r.ingredients.map(ig => {
         const isSelected = recipeState.selectedIngredient === ig.name;
@@ -223,6 +215,18 @@
           </button>
         `;
       }).join('');
+
+      // 工作專長需求徽章 (放在食材最後方，格式 100% 與寶可夢圖鑑 .tag-specialty 一致，點擊開啟介紹面板)
+      let specialtyBadgeHtml = '';
+      if (r.specialty && r.specialty.trim() !== '') {
+        const specName = r.specialty.trim();
+        const icon = (window.SPECIALTY_ICONS && window.SPECIALTY_ICONS[specName]) || (specialtyConfig[specName] && specialtyConfig[specName].icon) || '✨';
+        specialtyBadgeHtml = `
+          <button type="button" class="tag-specialty recipe-spec-tag" data-spec="${specName}" data-recipe-id="${r.id}" title="點擊檢視需要「${specName}」的寶可夢及食譜詳情" aria-label="工作專長：${specName}">
+            ${icon} ${specName}
+          </button>
+        `;
+      }
 
       // 喜愛寶可夢連動區 (純頭像箱子 Popover，若無寶可夢則保留佔位插槽維持齊平)
       let pokemonSectionHtml = '<div class="recipe-card-poke-placeholder"></div>';
@@ -256,31 +260,33 @@
 
       return `
         <div class="recipe-row" data-recipe-id="${r.id}" data-recipe-name="${r.name}" data-category="${catMeta.slug}">
-          <!-- 1. 左區：定寬料理名片（48px 圖標 ＋ 料理名稱 ＋ 彩色品項與風味標籤） -->
-          <div class="recipe-row-identity">
+          <!-- 1. 左區：定寬料理名片（點擊開啟專屬詳情介紹） -->
+          <div class="recipe-row-identity" data-recipe-detail="${r.id}" title="點擊查看「${r.name}」專屬介紹面板">
             <img class="recipe-row-avatar-img" src="${r.icon || r.onlineIcon}" alt="${r.name}" loading="lazy" onerror="this.onerror=null; if('${r.onlineIcon}' && this.src !== '${r.onlineIcon}') { this.src='${r.onlineIcon}'; } else { this.src='assets/item_sprites/simple-salad.png'; }">
             <div class="recipe-row-identity-text">
               <h3 class="recipe-row-title">${r.name}</h3>
               <div class="recipe-row-subtitle">
                 <span class="recipe-badge recipe-badge-cat cat-${catMeta.slug}">${catMeta.label}</span>
                 <span class="recipe-badge recipe-badge-taste ${tasteClass}">${r.taste || '美味'}</span>
-                ${specialtySubHtml}
               </div>
             </div>
           </div>
 
-          <!-- 2. 中區：所需食材籤 (100% 絕對垂直齊頭對齊，點擊反查) -->
+          <!-- 2. 中區：所需食材籤 ＋ 所需專長徽章 (完全水平舒展，不再被擠壓) -->
           <div class="recipe-row-ingredients">
             ${ingredientsHtml}
+            ${specialtyBadgeHtml}
           </div>
 
-          <!-- 3. 右區：三欄鎖定定寬插槽（招式 110px ＋ 效果 260px ＋ 寶可夢按鈕 80px，全列絕對齊頭） -->
+          <!-- 3. 右區：雙行折疊效果插槽（上行招式標籤 ＋ 下行卡比獸效果，定寬 230px ＋ 寶可夢按鈕 80px） -->
           <div class="recipe-row-effects-section">
-            <div class="recipe-row-col-move">
-              ${formatMoveTag(r.move)}
-            </div>
-            <div class="recipe-row-col-snorlax">
-              <span class="recipe-row-snorlax-text" title="${r.snorlaxEffect || ''}">🍃 ${r.snorlaxEffect || '可以和寶可夢變得比較要好'}</span>
+            <div class="recipe-row-effects-text-col">
+              <div class="recipe-row-col-move">
+                ${formatMoveTag(r.move)}
+              </div>
+              <div class="recipe-row-col-snorlax">
+                <span class="recipe-row-snorlax-text" title="${r.snorlaxEffect || ''}">🍃 ${r.snorlaxEffect || '可以和寶可夢變得比較要好'}</span>
+              </div>
             </div>
             <div class="recipe-row-col-poke">
               ${pokemonSectionHtml}
@@ -289,6 +295,178 @@
         </div>
       `;
     }).join('');
+  }
+
+  // 開啟 gamertw 風格的專屬食譜詳情介紹面板 (Modal)
+  function openRecipeDetailModal(recipeId) {
+    if (!window.POKOPIA_RECIPES_DB) return;
+    const recipe = window.POKOPIA_RECIPES_DB.find(x => x.id === recipeId);
+    if (!recipe) return;
+
+    const modal = document.getElementById('recipeDetailModal');
+    const avatar = document.getElementById('recipeModalAvatar');
+    const title = document.getElementById('recipeModalTitle');
+    const badges = document.getElementById('recipeModalBadges');
+    const body = document.getElementById('recipeModalBody');
+
+    if (!modal || !body) return;
+
+    const catMeta = getCategoryMeta(recipe.category, recipe.name);
+    const tasteClass = tasteClassMap[recipe.taste] || 'taste-plain';
+
+    // 料理名與大圖
+    if (avatar) {
+      avatar.src = recipe.icon || recipe.onlineIcon || 'assets/item_sprites/simple-salad.png';
+      avatar.alt = recipe.name;
+    }
+    if (title) {
+      title.textContent = recipe.name;
+    }
+    if (badges) {
+      const facilityHtml = recipe.facilityName ? `<span class="recipe-modal-tag tag-facility">🔪 ${recipe.facilityName}</span>` : '';
+      badges.innerHTML = `
+        <span class="recipe-badge recipe-badge-cat cat-${catMeta.slug}">${catMeta.label}</span>
+        <span class="recipe-badge recipe-badge-taste ${tasteClass}">${recipe.taste || '美味'}</span>
+        ${facilityHtml}
+      `;
+    }
+
+    // 1. 食材清單卡片
+    const ingredientsHtml = recipe.ingredients.map(ig => {
+      const iconHtml = ig.icon 
+        ? `<img class="recipe-modal-ing-img" src="${ig.icon}" alt="${ig.name}" onerror="this.style.display='none'">` 
+        : '';
+      return `
+        <div class="recipe-modal-ing-item">
+          ${iconHtml}
+          <div class="recipe-modal-ing-info">
+            <span class="recipe-modal-ing-name">${ig.name}</span>
+            <span class="recipe-modal-ing-count">× ${ig.count}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // 2. 會「該專長」的寶可夢清單 (例如：會「伐木」的寶可夢，共 32 隻)
+    let specPokemons = [];
+    const specName = (recipe.specialty || '').trim();
+    if (specName && window.POKOPIA_DATA && Array.isArray(window.POKOPIA_DATA.pokemons)) {
+      specPokemons = window.POKOPIA_DATA.pokemons.filter(p => 
+        (p.specialties && p.specialties.includes(specName)) ||
+        (p.abilities && p.abilities.includes(specName))
+      );
+    }
+
+    let specSectionHtml = '';
+    if (specName) {
+      const specIcon = (window.SPECIALTY_ICONS && window.SPECIALTY_ICONS[specName]) || (specialtyConfig[specName] && specialtyConfig[specName].icon) || '✨';
+      const specPkmGridHtml = specPokemons.length > 0
+        ? specPokemons.map(p => `
+            <div class="recipe-modal-pkm-card" title="${p.number} ${p.name}">
+              <img class="recipe-modal-pkm-sprite" src="${p.sprite}" alt="${p.name}" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'44\\' height=\\'44\\' viewBox=\\'0 0 24 24\\' fill=\\'%2394a3b8\\'><circle cx=\\'12\\' cy=\\'12\\' r=\\'10\\'/></svg>'">
+              <span class="recipe-modal-pkm-num">${p.number.replace('No. ', '#')}</span>
+              <span class="recipe-modal-pkm-name">${p.name}</span>
+            </div>
+          `).join('')
+        : '<div class="recipe-modal-empty-msg">暫無資料</div>';
+
+      specSectionHtml = `
+        <div class="recipe-modal-section" id="modalSpecialtySection">
+          <div class="recipe-modal-section-header">
+            <h4 class="recipe-modal-section-title">
+              <span class="tag-specialty" data-spec="${specName}">${specIcon} ${specName}</span>
+              會「${specName}」的寶可夢 (${specPokemons.length})
+            </h4>
+            <span class="recipe-modal-section-desc">這道菜需要有「${specName}」專長的寶可夢才能製作，共 ${specPokemons.length} 隻寶可夢具備此專長。</span>
+          </div>
+          <div class="recipe-modal-pkm-grid">
+            ${specPkmGridHtml}
+          </div>
+        </div>
+      `;
+    }
+
+    // 3. 喜歡這道菜的寶可夢清單 (例如：喜好為「酸酸的」的寶可夢，共 72 隻)
+    let likedPokemons = recipe.likedPokemon || [];
+    if ((!likedPokemons || likedPokemons.length === 0) && recipe.taste && window.POKOPIA_DATA && Array.isArray(window.POKOPIA_DATA.pokemons)) {
+      likedPokemons = window.POKOPIA_DATA.pokemons.filter(p => 
+        p.favorites && p.favorites.includes(recipe.taste)
+      );
+    }
+
+    const likedPkmGridHtml = likedPokemons.length > 0
+      ? likedPokemons.map(p => `
+          <div class="recipe-modal-pkm-card" title="${p.number} ${p.name}">
+            <img class="recipe-modal-pkm-sprite" src="${p.sprite}" alt="${p.name}" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'44\\' height=\\'44\\' viewBox=\\'0 0 24 24\\' fill=\\'%2394a3b8\\'><circle cx=\\'12\\' cy=\\'12\\' r=\\'10\\'/></svg>'">
+            <span class="recipe-modal-pkm-num">${(p.number || '').replace('No. ', '#')}</span>
+            <span class="recipe-modal-pkm-name">${p.name}</span>
+          </div>
+        `).join('')
+      : '<div class="recipe-modal-empty-msg">暫無資料</div>';
+
+    const likedSectionHtml = `
+      <div class="recipe-modal-section">
+        <div class="recipe-modal-section-header">
+          <h4 class="recipe-modal-section-title">❤️ 喜歡這道菜的寶可夢 (${likedPokemons.length})</h4>
+          <span class="recipe-modal-section-desc">喜好風味為「${recipe.taste || '美味'}」的寶可夢夥伴。</span>
+        </div>
+        <div class="recipe-modal-pkm-grid">
+          ${likedPkmGridHtml}
+        </div>
+      </div>
+    `;
+
+    // 組裝 Modal 內部結構
+    body.innerHTML = `
+      <!-- 料理配方與效果 -->
+      <div class="recipe-modal-overview-grid">
+        <!-- 所需材料 -->
+        <div class="recipe-modal-card">
+          <div class="recipe-modal-card-title">📦 所需食材材料</div>
+          <div class="recipe-modal-ing-grid">
+            ${ingredientsHtml}
+          </div>
+        </div>
+
+        <!-- 供奉效果與招式強化 -->
+        <div class="recipe-modal-card">
+          <div class="recipe-modal-card-title">✨ 特殊效果與效益</div>
+          <div class="recipe-modal-effect-list">
+            <div class="recipe-modal-effect-row">
+              <span class="recipe-modal-effect-label">招式強化</span>
+              <span class="recipe-modal-effect-val">${formatMoveTag(recipe.move)}</span>
+            </div>
+            <div class="recipe-modal-effect-row">
+              <span class="recipe-modal-effect-label">供奉效果</span>
+              <span class="recipe-modal-effect-val effect-snorlax">🍃 ${recipe.snorlaxEffect || '可以和寶可夢變得比較要好'}</span>
+            </div>
+            <div class="recipe-modal-effect-row">
+              <span class="recipe-modal-effect-label">精力獲得</span>
+              <span class="recipe-modal-effect-val">⚡ ${recipe.snorlaxExp || '100／150'}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 會該專長的寶可夢 -->
+      ${specSectionHtml}
+
+      <!-- 喜愛該菜的寶可夢 -->
+      ${likedSectionHtml}
+    `;
+
+    // 顯示 Modal
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  // 關閉食譜詳情介紹面板
+  function closeRecipeDetailModal() {
+    const modal = document.getElementById('recipeDetailModal');
+    if (modal) {
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
   }
 
   // 防重複初始化守衛
@@ -360,13 +538,25 @@
       });
     }
 
-    // 4. 卡片容器代理事件 (食材反查、寶可夢彈層)
+    // 4. 卡片容器代理事件 (食材反查、專長點擊開啟詳情、料理標題開啟詳情、喜愛寶可夢彈層)
     const grid = document.getElementById('recipeCardGrid');
     if (grid) {
       grid.addEventListener('click', (e) => {
-        // A. 食材膠囊點擊 (反查)
+        // A. 專長徽章點擊 (開啟專屬食譜詳情面板)
+        const specTag = e.target.closest('.recipe-spec-tag');
+        if (specTag) {
+          e.stopPropagation();
+          const recipeId = specTag.getAttribute('data-recipe-id');
+          if (recipeId) {
+            openRecipeDetailModal(recipeId);
+            return;
+          }
+        }
+
+        // B. 食材膠囊點擊 (反查)
         const ingChip = e.target.closest('.recipe-ing-chip');
         if (ingChip) {
+          e.stopPropagation();
           const ingName = ingChip.getAttribute('data-ingredient');
           if (ingName && ingName !== '任意食材') {
             if (recipeState.selectedIngredient === ingName) {
@@ -380,9 +570,20 @@
           }
         }
 
-        // B. 喜愛寶可夢展開按鈕
+        // C. 點擊料理名片/頭像 (開啟專屬食譜詳情面板)
+        const identityCard = e.target.closest('.recipe-row-identity');
+        if (identityCard) {
+          const recipeId = identityCard.getAttribute('data-recipe-detail');
+          if (recipeId) {
+            openRecipeDetailModal(recipeId);
+            return;
+          }
+        }
+
+        // D. 喜愛寶可夢展開按鈕
         const pokeTrigger = e.target.closest('.recipe-card-poke-trigger');
         if (pokeTrigger) {
+          e.stopPropagation();
           const recipeId = pokeTrigger.getAttribute('data-popover-target');
           if (recipeState.activePopoverId === recipeId) {
             recipeState.activePopoverId = null;
@@ -393,9 +594,10 @@
           return;
         }
 
-        // C. Popover 關閉按鈕
+        // E. Popover 關閉按鈕
         const closeBtn = e.target.closest('.recipe-popover-close-btn');
         if (closeBtn) {
+          e.stopPropagation();
           recipeState.activePopoverId = null;
           renderRecipes();
           return;
@@ -403,7 +605,26 @@
       });
     }
 
-    // 5. 全域點擊收起 Popover
+    // 5. 食譜詳情 Modal 關閉事件綁定
+    const modal = document.getElementById('recipeDetailModal');
+    const modalCloseBtn = document.getElementById('recipeModalCloseBtn');
+    if (modalCloseBtn) {
+      modalCloseBtn.addEventListener('click', closeRecipeDetailModal);
+    }
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          closeRecipeDetailModal();
+        }
+      });
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeRecipeDetailModal();
+      }
+    });
+
+    // 6. 全域點擊收起 Popover
     document.addEventListener('click', (e) => {
       if (!recipeState.activePopoverId) return;
       const insidePopover = e.target.closest('.recipe-row-popover');
@@ -422,6 +643,9 @@
     },
     render: function() {
       renderRecipes();
+    },
+    openDetail: function(id) {
+      openRecipeDetailModal(id);
     },
     setKeyword: function(kw) {
       recipeState.keyword = kw || '';
