@@ -1564,14 +1564,18 @@ body {
 }
 :root:not([data-theme="dark"]) .fav-pill[data-fav="甜甜的"],
 :root[data-theme="light"] .fav-pill[data-fav="甜甜的"] {
-  border-color: #f43f5e;
+  border-color: #fecdd3;
   color: #be123c;
   background: #fff1f2;
 }
-:root:not([data-theme="dark"]) .fav-pill[data-fav="能感受火的"],
 :root:not([data-theme="dark"]) .fav-pill[data-fav="辣辣的"],
-:root[data-theme="light"] .fav-pill[data-fav="能感受火的"],
 :root[data-theme="light"] .fav-pill[data-fav="辣辣的"] {
+  border-color: #fecaca;
+  color: #b91c1c;
+  background: #fef2f2;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="能感受火的"],
+:root[data-theme="light"] .fav-pill[data-fav="能感受火的"] {
   border-color: #ef4444;
   color: #b91c1c;
   background: #fef2f2;
@@ -1626,21 +1630,27 @@ body {
 }
 :root:not([data-theme="dark"]) .fav-pill[data-fav="酸酸的"],
 :root[data-theme="light"] .fav-pill[data-fav="酸酸的"] {
-  border-color: #84cc16;
-  color: #4d7c0f;
-  background: #f7fee7;
+  border-color: #fef08a;
+  color: #854d0e;
+  background: #fefce8;
 }
 :root:not([data-theme="dark"]) .fav-pill[data-fav="苦苦的"],
 :root[data-theme="light"] .fav-pill[data-fav="苦苦的"] {
-  border-color: #10b981;
-  color: #047857;
-  background: #ecfdf5;
+  border-color: #bbf7d0;
+  color: #15803d;
+  background: #f0fdf4;
 }
 :root:not([data-theme="dark"]) .fav-pill[data-fav="澀澀的"],
 :root[data-theme="light"] .fav-pill[data-fav="澀澀的"] {
-  border-color: #06b6d4;
-  color: #0e7490;
-  background: #ecfeff;
+  border-color: #e9d5ff;
+  color: #7e22ce;
+  background: #faf5ff;
+}
+:root:not([data-theme="dark"]) .fav-pill[data-fav="平淡無奇的"],
+:root[data-theme="light"] .fav-pill[data-fav="平淡無奇的"] {
+  border-color: #e7e3da;
+  color: #57534e;
+  background: #f5f4ef;
 }
 :root:not([data-theme="dark"]) .fav-pill[data-fav="交通工具"],
 :root[data-theme="light"] .fav-pill[data-fav="交通工具"] {
@@ -1745,11 +1755,36 @@ body {
   color: #bef264;
 }
 :root[data-theme="dark"] .fav-pill[data-fav="甜甜的"] {
-  border-color: rgba(244, 63, 94, 0.8);
+  border-color: rgba(244, 63, 94, 0.35);
   color: #fda4af;
+  background: rgba(244, 63, 94, 0.18);
 }
-:root[data-theme="dark"] .fav-pill[data-fav="能感受火的"],
 :root[data-theme="dark"] .fav-pill[data-fav="辣辣的"] {
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.18);
+}
+:root[data-theme="dark"] .fav-pill[data-fav="酸酸的"] {
+  border-color: rgba(234, 179, 8, 0.35);
+  color: #fde047;
+  background: rgba(234, 179, 8, 0.18);
+}
+:root[data-theme="dark"] .fav-pill[data-fav="苦苦的"] {
+  border-color: rgba(34, 197, 94, 0.35);
+  color: #86efac;
+  background: rgba(34, 197, 94, 0.18);
+}
+:root[data-theme="dark"] .fav-pill[data-fav="澀澀的"] {
+  border-color: rgba(168, 85, 247, 0.35);
+  color: #d8b4fe;
+  background: rgba(168, 85, 247, 0.18);
+}
+:root[data-theme="dark"] .fav-pill[data-fav="平淡無奇的"] {
+  border-color: rgba(148, 163, 184, 0.3);
+  color: #cbd5e1;
+  background: rgba(148, 163, 184, 0.15);
+}
+:root[data-theme="dark"] .fav-pill[data-fav="能感受火的"] {
   border-color: rgba(239, 68, 68, 0.8);
   color: #fca5a5;
 }
@@ -5100,7 +5135,7 @@ body.has-floating-back .scroll-top-btn {
   border: 0.0625rem solid rgba(56, 189, 248, 0.3);
 }
 
-/* 食物口味標籤 (暖粉柔和底色，無 emoji，如：甜甜的、辣辣的、酸酸的、苦苦的、澀澀的、平淡無奇的) */
+/* 食物口味標籤 (預設 fallback 暖粉柔和底色，無 emoji) */
 .pref-pill-taste {
   background: #fff1f2;
   color: #be123c;
@@ -5112,6 +5147,102 @@ body.has-floating-back .scroll-top-btn {
   color: #fda4af;
   border: 0.0625rem solid rgba(251, 113, 133, 0.3);
 }
+
+/* 喜好百科與全站標籤：六大經典口味專屬配色體系 (亮色模式) */
+.pref-pill[data-fav="辣辣的"],
+.pref-pill-taste[data-fav="辣辣的"],
+.taste-pill[data-fav="辣辣的"] {
+  background: #fef2f2 !important;
+  color: #b91c1c !important;
+  border-color: #fecaca !important;
+}
+.pref-pill[data-fav="甜甜的"],
+.pref-pill-taste[data-fav="甜甜的"],
+.taste-pill[data-fav="甜甜的"] {
+  background: #fff1f2 !important;
+  color: #be123c !important;
+  border-color: #fecdd3 !important;
+}
+.pref-pill[data-fav="酸酸的"],
+.pref-pill-taste[data-fav="酸酸的"],
+.taste-pill[data-fav="酸酸的"] {
+  background: #fefce8 !important;
+  color: #854d0e !important;
+  border-color: #fef08a !important;
+}
+.pref-pill[data-fav="苦苦的"],
+.pref-pill-taste[data-fav="苦苦的"],
+.taste-pill[data-fav="苦苦的"] {
+  background: #f0fdf4 !important;
+  color: #15803d !important;
+  border-color: #bbf7d0 !important;
+}
+.pref-pill[data-fav="澀澀的"],
+.pref-pill-taste[data-fav="澀澀的"],
+.taste-pill[data-fav="澀澀的"] {
+  background: #faf5ff !important;
+  color: #7e22ce !important;
+  border-color: #e9d5ff !important;
+}
+.pref-pill[data-fav="平淡無奇的"],
+.pref-pill-taste[data-fav="平淡無奇的"],
+.taste-pill[data-fav="平淡無奇的"] {
+  background: #f5f4ef !important;
+  color: #57534e !important;
+  border-color: #e7e3da !important;
+}
+
+/* 喜好百科與全站標籤：六大經典口味專屬配色體系 (暗色模式) */
+:root[data-theme="dark"] .pref-pill[data-fav="辣辣的"],
+:root[data-theme="dark"] .pref-pill-taste[data-fav="辣辣的"],
+:root[data-theme="dark"] .taste-pill[data-fav="辣辣的"] {
+  background: rgba(239, 68, 68, 0.18) !important;
+  color: #fca5a5 !important;
+  border-color: rgba(239, 68, 68, 0.35) !important;
+}
+:root[data-theme="dark"] .pref-pill[data-fav="甜甜的"],
+:root[data-theme="dark"] .pref-pill-taste[data-fav="甜甜的"],
+:root[data-theme="dark"] .taste-pill[data-fav="甜甜的"] {
+  background: rgba(244, 63, 94, 0.18) !important;
+  color: #fda4af !important;
+  border-color: rgba(244, 63, 94, 0.35) !important;
+}
+:root[data-theme="dark"] .pref-pill[data-fav="酸酸的"],
+:root[data-theme="dark"] .pref-pill-taste[data-fav="酸酸的"],
+:root[data-theme="dark"] .taste-pill[data-fav="酸酸的"] {
+  background: rgba(234, 179, 8, 0.18) !important;
+  color: #fde047 !important;
+  border-color: rgba(234, 179, 8, 0.35) !important;
+}
+:root[data-theme="dark"] .pref-pill[data-fav="苦苦的"],
+:root[data-theme="dark"] .pref-pill-taste[data-fav="苦苦的"],
+:root[data-theme="dark"] .taste-pill[data-fav="苦苦的"] {
+  background: rgba(34, 197, 94, 0.18) !important;
+  color: #86efac !important;
+  border-color: rgba(34, 197, 94, 0.35) !important;
+}
+:root[data-theme="dark"] .pref-pill[data-fav="澀澀的"],
+:root[data-theme="dark"] .pref-pill-taste[data-fav="澀澀的"],
+:root[data-theme="dark"] .taste-pill[data-fav="澀澀的"] {
+  background: rgba(168, 85, 247, 0.18) !important;
+  color: #d8b4fe !important;
+  border-color: rgba(168, 85, 247, 0.35) !important;
+}
+:root[data-theme="dark"] .pref-pill[data-fav="平淡無奇的"],
+:root[data-theme="dark"] .pref-pill-taste[data-fav="平淡無奇的"],
+:root[data-theme="dark"] .taste-pill[data-fav="平淡無奇的"] {
+  background: rgba(148, 163, 184, 0.15) !important;
+  color: #cbd5e1 !important;
+  border-color: rgba(148, 163, 184, 0.3) !important;
+}
+
+/* 喜好百科抽屜口味大卡片邊框微調（質感左側識別條） */
+.pref-card[data-name="辣辣的"] { border-left: 0.25rem solid #ef4444 !important; }
+.pref-card[data-name="甜甜的"] { border-left: 0.25rem solid #f43f5e !important; }
+.pref-card[data-name="酸酸的"] { border-left: 0.25rem solid #eab308 !important; }
+.pref-card[data-name="苦苦的"] { border-left: 0.25rem solid #22c55e !important; }
+.pref-card[data-name="澀澀的"] { border-left: 0.25rem solid #a855f7 !important; }
+.pref-card[data-name="平淡無奇的"] { border-left: 0.25rem solid #94a3b8 !important; }
 
 /* ==========================================================================
    Pure Icon Item Slots & Grid (純圖片道具圖標方格與網格)

@@ -4449,7 +4449,7 @@
         <div class="pref-card ${isTarget ? 'highlight-target' : ''}" data-name="${escapeHTML(t.name)}">
           <div class="pref-card-header">
             <div class="pref-card-title">
-              <span class="pref-pill pref-pill-taste" style="font-size:0.95rem; font-weight:700;">${escapeHTML(t.name)}</span>
+              <span class="pref-pill pref-pill-taste" data-fav="${escapeHTML(t.name)}" style="font-size:0.95rem; font-weight:700;">${escapeHTML(t.name)}</span>
             </div>
             <span class="pref-card-badge">${(t.pokemon || []).length} 隻寶可夢喜愛</span>
           </div>
