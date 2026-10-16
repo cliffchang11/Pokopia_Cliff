@@ -5,7 +5,7 @@
 
 :root, :root[data-theme="light"] {
   --font-primary: 'Noto Sans TC', 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: clamp(0.85rem, 2.5vw, 1.2rem) !important;
+  font-size: clamp(0.85rem, 0.75rem + 0.35vw, 1.05rem) !important;
   
   /* Harmony Light Theme Palette (Pure Soft Ivory Paper Tone - 100% Unified Color Temp) */
   --bg-dark: #fcfbf9; /* 高透光晨光柔白，明朗通透、溫潤手帳質地，消除灰濛暗沉 */
