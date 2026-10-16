@@ -10659,11 +10659,12 @@ body.has-floating-back .scroll-top-btn {
 }
 
 /* 單條日系手帳料理長條 (Horizontal Row) - 渾然一體無割裂 */
+/* 單條日系手帳料理長條 (Horizontal Row) - 全列靠左對齊，三欄鎖定起跑線 */
 .recipe-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1.25rem;
+  justify-content: flex-start;
+  gap: 1.5rem;
   background: #ffffff;
   border: 1px solid #edebe6;
   border-radius: 0.75rem;
@@ -10690,14 +10691,24 @@ body.has-floating-back .scroll-top-btn {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
 }
 
-/* 1. 左區：定寬料理名片 (250px 絕對鎖定起跑線，雙層彩色膠囊佈局) */
+/* 1. 左區：定寬料理名片 (240px 絕對鎖定起跑線) */
 .recipe-row-identity {
-  width: 250px;
-  min-width: 250px;
+  width: 240px;
+  min-width: 240px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: 0.85rem;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.recipe-row-identity:hover .recipe-row-title {
+  color: #0284c7;
+}
+
+:root[data-theme="dark"] .recipe-row-identity:hover .recipe-row-title {
+  color: #38bdf8;
 }
 
 .recipe-row-avatar-img {
@@ -10740,22 +10751,29 @@ body.has-floating-back .scroll-top-btn {
   flex-wrap: wrap;
 }
 
-.recipe-row-spec-sub {
-  color: #854d0e;
-  font-weight: 500;
-  font-size: 0.72rem;
-}
-
-:root[data-theme="dark"] .recipe-row-spec-sub {
-  color: #fbbf24;
-}
-
-/* 2. 中區：所需食材配方籤 ＋ 所需專長徽章 */
+/* 2. 中區：所需食材籤（上行） ＋ 所需專長徽章（一律第二行，定寬 320px 靠左對齊） */
 .recipe-row-ingredients {
+  width: 320px;
+  min-width: 320px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.recipe-row-ing-list {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.45rem;
+  gap: 0.4rem;
+  justify-content: flex-start;
+}
+
+.recipe-row-spec-line {
+  display: flex;
+  align-items: center;
   justify-content: flex-start;
 }
 
@@ -10773,27 +10791,16 @@ body.has-floating-back .scroll-top-btn {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
-.recipe-row-identity {
-  cursor: pointer;
-  transition: opacity 0.15s ease;
-}
-
-.recipe-row-identity:hover .recipe-row-title {
-  color: #0284c7;
-}
-
-:root[data-theme="dark"] .recipe-row-identity:hover .recipe-row-title {
-  color: #38bdf8;
-}
-
-/* 3. 右區：雙行效果（自然緊接食材後方流動排列，選項 B） */
+/* 3. 右區：雙行效果（定寬 280px，垂直起跑線統一，文字一律靠左） */
 .recipe-row-effects-section {
+  width: 280px;
+  min-width: 280px;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  min-width: 210px;
-  flex-shrink: 0;
   justify-content: center;
+  align-items: flex-start;
 }
 
 /* 上行：招式威力標籤欄 */
@@ -10801,6 +10808,7 @@ body.has-floating-back .scroll-top-btn {
   width: 100%;
   min-width: 0;
   display: flex;
+  justify-content: flex-start;
   align-items: center;
 }
 
@@ -10834,6 +10842,7 @@ body.has-floating-back .scroll-top-btn {
   width: 100%;
   min-width: 0;
   display: flex;
+  justify-content: flex-start;
   align-items: center;
 }
 
@@ -10843,6 +10852,7 @@ body.has-floating-back .scroll-top-btn {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: left;
   display: inline-flex;
   align-items: center;
   gap: 0.2rem;

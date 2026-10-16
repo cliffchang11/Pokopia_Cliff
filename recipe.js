@@ -242,13 +242,15 @@
             </div>
           </div>
 
-          <!-- 2. 中區：所需食材籤 ＋ 所需專長徽章 (完全水平舒展) -->
+          <!-- 2. 中區：所需食材籤（第一行） ＋ 所需專長徽章（一律第二行） -->
           <div class="recipe-row-ingredients">
-            ${ingredientsHtml}
-            ${specialtyBadgeHtml}
+            <div class="recipe-row-ing-list">
+              ${ingredientsHtml}
+            </div>
+            ${specialtyBadgeHtml ? `<div class="recipe-row-spec-line">${specialtyBadgeHtml}</div>` : ''}
           </div>
 
-          <!-- 3. 右區：雙行效果（自然緊接食材後方流動排列，選項 B） -->
+          <!-- 3. 右區：雙行效果（垂直起跑線對齊，文字靠左） -->
           <div class="recipe-row-effects-section">
             <div class="recipe-row-col-move">
               ${formatMoveTag(r.move)}

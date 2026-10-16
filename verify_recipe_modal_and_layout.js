@@ -19,11 +19,11 @@ const recipeDbCode = fs.readFileSync('recipe_db.js', 'utf8');
 const dataJsCode = fs.readFileSync('data.js', 'utf8');
 const recipeJsCode = fs.readFileSync('recipe.js', 'utf8');
 
-// 2. 驗證 index.html 中是否包含 Modal 結構與正確版號 4.12.3
+// 2. 驗證 index.html 中是否包含 Modal 結構與正確版號 4.12.4
 assert(htmlContent.includes('id="recipeDetailModal"'), 'index.html 必須包含 id="recipeDetailModal" 元素');
-assert(htmlContent.includes('recipe.js?v=4.12.3'), 'index.html 必須將 recipe.js 版號升級至 4.12.3');
-assert(htmlContent.includes('index.css?v=4.12.3'), 'index.html 必須將 index.css 版號升級至 4.12.3');
-console.log('✓ index.html 結構與快取版號 4.12.3 檢查通過');
+assert(htmlContent.includes('recipe.js?v=4.12.4'), 'index.html 必須將 recipe.js 版號升級至 4.12.4');
+assert(htmlContent.includes('index.css?v=4.12.4'), 'index.html 必須將 index.css 版號升級至 4.12.4');
+console.log('✓ index.html 結構與快取版號 4.12.4 檢查通過');
 
 // 3. 驗證 index.css 中包含雙行排版與 Modal 樣式，且消除了內部小捲軸與愛心按鈕
 assert(cssContent.includes('.recipe-modal-backdrop'), 'index.css 必須包含 .recipe-modal-backdrop 樣式');
@@ -31,7 +31,8 @@ assert(cssContent.includes('.recipe-modal-container'), 'index.css 必須包含 .
 assert(cssContent.includes('.recipe-modal-pkm-grid'), 'index.css 必須包含 .recipe-modal-pkm-grid 網格樣式');
 assert(!cssContent.includes('max-height: 220px'), 'index.css 中 .recipe-modal-pkm-grid 必須取消 max-height: 220px 小捲軸限制');
 assert(!cssContent.includes('.recipe-row-col-poke'), 'index.css 中必須移除 .recipe-row-col-poke 愛心按鈕樣式');
-console.log('✓ index.css 內部小捲軸消除與愛心按鈕樣式清理通過');
+assert(cssContent.includes('justify-content: flex-start;'), 'index.css 中 .recipe-row 必須靠左對齊 (justify-content: flex-start)');
+console.log('✓ index.css 全列靠左對齊與樣式清理通過');
 
 // 4. 建立 Mock DOM 沙盒環境執行 recipe.js
 const mockDomElements = {};
@@ -94,18 +95,20 @@ sandbox.RecipeModule.render();
 const gridHtml = mockDomElements['recipeCardGrid'].innerHTML;
 assert(gridHtml.length > 0, 'recipeCardGrid 必須渲染出內容');
 
-// 檢查右側效果區是否為雙行結構（緊接食材流動排列），且已不含愛心按鈕
+// 檢查右側效果區是否為雙行結構，且文字一律靠左
 assert(gridHtml.includes('recipe-row-effects-section'), '卡片中必須包含 recipe-row-effects-section 效果容器');
 assert(gridHtml.includes('recipe-row-col-move'), '卡片中必須包含 recipe-row-col-move 上行招式欄位');
 assert(gridHtml.includes('recipe-row-col-snorlax'), '卡片中必須包含 recipe-row-col-snorlax 下行卡比獸效果欄位');
 assert(!gridHtml.includes('recipe-card-poke-trigger'), '卡片中必須徹底取消 recipe-card-poke-trigger 愛心按鈕');
 assert(!gridHtml.includes('recipe-row-col-poke'), '卡片中必須徹底取消 recipe-row-col-poke 欄位');
-console.log('✓ 料理卡片右側雙行效果自然流動排列且愛心按鈕已徹底取消');
+console.log('✓ 料理卡片右側雙行效果起跑線對齊且愛心按鈕已徹底取消');
 
-// 檢查專長徽章是否為 .tag-specialty 且緊接在食材最後方
+// 檢查食材在第一行，專長徽章獨立在第二行
+assert(gridHtml.includes('recipe-row-ing-list'), '食材區必須包含第一行純食材容器 recipe-row-ing-list');
+assert(gridHtml.includes('recipe-row-spec-line'), '專長必須獨立在第二行容器 recipe-row-spec-line');
 assert(gridHtml.includes('tag-specialty recipe-spec-tag'), '專長徽章必須帶有 tag-specialty recipe-spec-tag 類別（與寶可夢圖鑑一致）');
 assert(gridHtml.includes('data-spec="伐木"'), '卡片中必須渲染有需要「伐木」的專長標籤');
-console.log('✓ 工作專長徽章格式（與圖鑑一致）及排列位置檢查通過');
+console.log('✓ 第一行純食材、第二行獨立工作專長結構檢查通過');
 
 // 6. 測試開啟專屬食譜詳情 Modal
 // 測試絲絲沙拉 (recipe_004) - 需要伐木，酸酸的
