@@ -10527,32 +10527,22 @@ body.has-floating-back .scroll-top-btn {
   box-shadow: 0 1px 2px rgba(120, 110, 90, 0.025);
 }
 
-/* 電腦版 (桌機) 專屬比例收斂與美感定錨：根字級回歸 15px 精緻規格，消滅膨脹笨重感，手機版 100% 不動 */
+/* 電腦版 (桌機) 專屬微膠囊精緻化：僅收斂頂部篩選按鈕厚重感，全站內容字體與 PWA 版面 100% 保持清晰開闊 */
 @media (min-width: 901px) {
-  :root, :root[data-theme="light"], :root[data-theme="dark"] {
-    font-size: 0.9375rem !important; /* 電腦版基準約 15px，比例和諧緊湊 */
-  }
-
-  .recipe-section {
-    max-width: 980px; /* 鎖定 980px 黃金聚焦比例，與三欄內容契合且不橫向過度拉扯 */
-    margin: 0 auto;
-    padding: 1rem 1rem 4rem;
-  }
-
   .recipe-filter-bar {
-    gap: 0.55rem;
-    margin-bottom: 1rem;
+    gap: 0.6rem;
+    margin-bottom: 1.15rem;
   }
 
   .recipe-filter-group {
-    gap: 0.4rem;
+    gap: 0.45rem;
   }
 
   .recipe-filter-btn {
-    padding: 0.28rem 0.68rem;
-    min-height: 1.85rem;
-    font-size: 0.78rem;
-    gap: 0.3rem;
+    padding: 0.32rem 0.72rem;
+    min-height: 1.95rem;
+    font-size: 0.8rem;
+    gap: 0.35rem;
   }
 }
 

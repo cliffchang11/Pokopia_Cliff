@@ -19,23 +19,23 @@ const recipeDbCode = fs.readFileSync('recipe_db.js', 'utf8');
 const dataJsCode = fs.readFileSync('data.js', 'utf8');
 const recipeJsCode = fs.readFileSync('recipe.js', 'utf8');
 
-// 2. 驗證 index.html 中是否包含 Modal 結構與正確版號 4.12.6
+// 2. 驗證 index.html 中是否包含 Modal 結構與正確版號 4.12.7
 assert(htmlContent.includes('id="recipeDetailModal"'), 'index.html 必須包含 id="recipeDetailModal" 元素');
-assert(htmlContent.includes('recipe.js?v=4.12.6'), 'index.html 必須將 recipe.js 版號升級至 4.12.6');
-assert(htmlContent.includes('index.css?v=4.12.6'), 'index.html 必須將 index.css 版號升級至 4.12.6');
-console.log('✓ index.html 結構與快取版號 4.12.6 檢查通過');
+assert(htmlContent.includes('recipe.js?v=4.12.7'), 'index.html 必須將 recipe.js 版號升級至 4.12.7');
+assert(htmlContent.includes('index.css?v=4.12.7'), 'index.html 必須將 index.css 版號升級至 4.12.7');
+console.log('✓ index.html 結構與快取版號 4.12.7 檢查通過');
 
-// 3. 驗證 index.css 中包含雙行排版與 Modal 樣式，且包含電腦版比例美感定錨
+// 3. 驗證 index.css 中包含雙行排版與 Modal 樣式，且內容未被縮小，精準修飾微膠囊
 assert(cssContent.includes('.recipe-modal-backdrop'), 'index.css 必須包含 .recipe-modal-backdrop 樣式');
 assert(cssContent.includes('.recipe-modal-container'), 'index.css 必須包含 .recipe-modal-container 樣式');
 assert(cssContent.includes('.recipe-modal-pkm-grid'), 'index.css 必須包含 .recipe-modal-pkm-grid 網格樣式');
 assert(!cssContent.includes('max-height: 220px'), 'index.css 中 .recipe-modal-pkm-grid 必須取消 max-height: 220px 小捲軸限制');
 assert(!cssContent.includes('.recipe-row-col-poke'), 'index.css 中必須移除 .recipe-row-col-poke 愛心按鈕樣式');
 assert(cssContent.includes('justify-content: flex-start;'), 'index.css 中 .recipe-row 必須靠左對齊 (justify-content: flex-start)');
-assert(cssContent.includes('@media (min-width: 901px)'), 'index.css 必須包含 @media (min-width: 901px) 電腦版比例定錨');
-assert(cssContent.includes('0.9375rem !important'), 'index.css 必須在電腦版定錨精緻根字級 0.9375rem');
-assert(cssContent.includes('max-width: 980px;'), 'index.css 必須在電腦版鎖定食譜專區 max-width: 980px');
-console.log('✓ index.css 電腦版比例定錨、980px 黃金聚焦寬度與樣式清理通過');
+assert(!cssContent.includes('0.9375rem !important'), 'index.css 不得將根字級縮小至 0.9375rem，全站內容文字需保持清晰舒適大尺寸');
+assert(!cssContent.includes('max-width: 980px;'), 'index.css 不得將食譜區限縮至 980px，保留 PWA 舒展版面');
+assert(cssContent.includes('min-height: 1.95rem;'), 'index.css 必須在電腦版將篩選按鈕精巧化為微膠囊 (min-height: 1.95rem)');
+console.log('✓ index.css 內容大字體保留、PWA 舒展版型維持與微膠囊精準修飾通過');
 
 // 4. 建立 Mock DOM 沙盒環境執行 recipe.js
 const mockDomElements = {};
