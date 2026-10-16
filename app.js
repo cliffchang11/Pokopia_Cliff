@@ -4312,7 +4312,17 @@
 
   // 輔助函式：渲染純圖片圖標道具格 (帶 Tooltip 與連動跳轉能力)
   function renderPrefItemSlot(itemName, db) {
-    const iconUrl = (db && db.itemIcons && db.itemIcons[itemName]) || '';
+    let iconUrl = (db && db.itemIcons && db.itemIcons[itemName]) || '';
+    if (!iconUrl && db && db.itemIcons) {
+      const norm1 = itemName.replace(/\(/g, '（').replace(/\)/g, '）');
+      const norm2 = itemName.replace(/（/g, '(').replace(/）/g, ')');
+      const norm3 = itemName.replace(/台/g, '檯');
+      const norm4 = itemName.replace(/檯/g, '台');
+      iconUrl = db.itemIcons[norm1] || db.itemIcons[norm2] || db.itemIcons[norm3] || db.itemIcons[norm4] || '';
+      if (!iconUrl && (itemName.startsWith('♪') || itemName.startsWith('♪♪'))) {
+        iconUrl = 'assets/item_sprites/60px-Bag_CD（紅／綠）_Pokopia_Sprite.png';
+      }
+    }
     const safeName = escapeHTML(itemName);
     if (iconUrl) {
       return `
