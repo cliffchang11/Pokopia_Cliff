@@ -12377,162 +12377,258 @@ body.has-floating-back .scroll-top-btn {
 
 :root[data-theme="dark"] .bp-material-count-pill {
   color: #818cf8;
-}
-
-/* 4. 分層網格藍圖視圖 (Grid Canvas) */
-.bp-grid-section-card {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(0.5rem);
-  border: 0.0625rem solid var(--border-color, #e2e8f0);
-  border-radius: 1.0rem;
-  padding: 1.5rem;
-  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.04);
+/* 4. 核心：四大模組樂高式立面積木圖解 (Lego Visual Blueprint) */
+.bp-modules-section {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  width: 100%;
 }
 
-:root[data-theme="dark"] .bp-grid-section-card {
-  background: rgba(30, 41, 59, 0.9);
-  border-color: rgba(255, 255, 255, 0.08);
-}
-
-.bp-layer-pills {
+.bp-module-nav-pills {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.6rem;
   flex-wrap: wrap;
+  align-items: center;
 }
 
-.bp-layer-btn {
+.bp-module-pill-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.45rem 0.9rem;
-  font-size: 0.8125rem;
-  font-weight: 700;
+  gap: 0.5rem;
+  padding: 0.6rem 1.15rem;
+  font-size: 0.875rem;
+  font-weight: 800;
   border-radius: 9999px;
-  background: var(--bg-card, #f1f5f9);
+  background: var(--bg-card, #ffffff);
   border: 0.0625rem solid var(--border-color, #cbd5e1);
   color: var(--text-secondary, #475569);
   cursor: pointer;
   transition: all var(--transition-fast);
+  box-shadow: 0 0.0625rem 0.25rem rgba(0, 0, 0, 0.04);
 }
 
-:root[data-theme="dark"] .bp-layer-btn {
-  background: rgba(15, 23, 42, 0.6);
+:root[data-theme="dark"] .bp-module-pill-btn {
+  background: rgba(30, 41, 59, 0.85);
   border-color: rgba(255, 255, 255, 0.1);
   color: #cbd5e1;
 }
 
-.bp-layer-btn.active {
+.bp-module-pill-btn:hover {
+  border-color: var(--primary-indigo, #4f46e5);
+  transform: translateY(-0.0625rem);
+}
+
+.bp-module-pill-btn.active {
   background: #7c3aed;
   border-color: #7c3aed;
   color: #ffffff;
   box-shadow: 0 0.25rem 0.75rem rgba(124, 58, 237, 0.35);
 }
 
-.bp-layer-desc-box {
-  background: rgba(124, 58, 237, 0.06);
-  border-left: 0.25rem solid #7c3aed;
-  padding: 0.75rem 1.0rem;
-  border-radius: 0 0.5rem 0.5rem 0;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  color: var(--text-secondary, #475569);
+.bp-lego-board {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(0.5rem);
+  border: 0.0625rem solid var(--border-color, #e2e8f0);
+  border-radius: 1.0rem;
+  padding: 1.5rem;
+  box-shadow: 0 0.25rem 1.0rem rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
-:root[data-theme="dark"] .bp-layer-desc-box {
-  background: rgba(124, 58, 237, 0.12);
+:root[data-theme="dark"] .bp-lego-board {
+  background: rgba(30, 41, 59, 0.9);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0.25rem 1.0rem rgba(0, 0, 0, 0.3);
+}
+
+.bp-module-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-bottom: 1.0rem;
+  border-bottom: 0.0625rem solid var(--border-color, #e2e8f0);
+}
+
+:root[data-theme="dark"] .bp-module-header {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.bp-module-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.bp-module-title {
+  font-size: 1.2rem;
+  font-weight: 900;
+  margin: 0;
+  color: var(--text-primary, #0f172a);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+:root[data-theme="dark"] .bp-module-title {
+  color: #f8fafc;
+}
+
+.bp-module-dim-badge {
+  background: rgba(79, 70, 229, 0.1);
+  color: var(--primary-indigo, #4f46e5);
+  border: 0.0625rem solid rgba(79, 70, 229, 0.25);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+}
+
+:root[data-theme="dark"] .bp-module-dim-badge {
+  background: rgba(129, 140, 248, 0.15);
+  color: #a5b4fc;
+}
+
+.bp-module-formula-box {
+  background: rgba(15, 23, 42, 0.03);
+  border-radius: 0.5rem;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text-secondary, #334155);
+  line-height: 1.5;
+}
+
+:root[data-theme="dark"] .bp-module-formula-box {
+  background: rgba(15, 23, 42, 0.5);
   color: #cbd5e1;
 }
 
-/* 棋盤滾動與網格外框 */
-.bp-grid-scroll-wrap {
-  width: 100%;
-  overflow-x: auto;
-  padding-bottom: 0.5rem;
+.bp-module-tips-box {
+  background: rgba(245, 158, 11, 0.08);
+  border-left: 0.25rem solid #f59e0b;
+  padding: 0.6rem 0.85rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: #b45309;
+}
+
+:root[data-theme="dark"] .bp-module-tips-box {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fde68a;
+}
+
+/* 樂高積木排版 (由上而下每層立面) */
+.bp-lego-rows-wrap {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: 1.0rem;
+  background: rgba(15, 23, 42, 0.02);
+  border: 0.0625rem solid var(--border-color, #e2e8f0);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
 }
 
-.bp-grid-table {
-  border-collapse: separate;
-  border-spacing: 0.125rem;
-  background: #0f172a;
-  border: 0.125rem solid #334155;
-  border-radius: 0.5rem;
-  padding: 0.35rem;
-  box-shadow: inset 0 0.125rem 0.5rem rgba(0, 0, 0, 0.4);
+:root[data-theme="dark"] .bp-lego-rows-wrap {
+  background: rgba(15, 23, 42, 0.4);
+  border-color: rgba(255, 255, 255, 0.06);
 }
 
-.bp-coord-th {
-  width: 1.65rem;
-  height: 1.65rem;
-  font-size: 0.6875rem;
-  font-weight: 700;
+.bp-lego-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.bp-lego-row-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8125rem;
+}
+
+.bp-lego-row-name {
+  font-weight: 800;
+  color: var(--text-primary, #1e293b);
+}
+
+:root[data-theme="dark"] .bp-lego-row-name {
+  color: #e2e8f0;
+}
+
+.bp-lego-row-dim {
+  color: var(--text-secondary, #64748b);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+:root[data-theme="dark"] .bp-lego-row-dim {
   color: #94a3b8;
-  text-align: center;
-  vertical-align: middle;
 }
 
-.bp-grid-cell {
+.bp-lego-blocks-track {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+  width: 100%;
+}
+
+.bp-lego-block {
+  min-height: 4.25rem;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.65rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.35rem;
+  position: relative;
+  transition: all var(--transition-fast);
+  cursor: default;
+  box-shadow: 0 0.15rem 0 rgba(0, 0, 0, 0.25), inset 0 0.0625rem 0.125rem rgba(255, 255, 255, 0.2);
+  border: 0.0625rem solid rgba(255, 255, 255, 0.2);
+}
+
+.bp-lego-block:hover {
+  transform: translateY(-0.1rem);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.3), inset 0 0.0625rem 0.125rem rgba(255, 255, 255, 0.3);
+  filter: brightness(1.1);
+}
+
+.bp-lego-block.is-key {
+  outline: 0.125rem solid #f59e0b;
+  outline-offset: 0.0625rem;
+  box-shadow: 0 0 0.75rem rgba(245, 158, 11, 0.4);
+}
+
+.bp-lego-block-icon {
   width: 1.85rem;
   height: 1.85rem;
-  border-radius: 0.2rem;
-  background: #1e293b;
-  border: 0.0625rem solid rgba(255, 255, 255, 0.05);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  position: relative;
-  transition: transform var(--transition-fast), filter var(--transition-fast);
+  object-fit: contain;
+  filter: drop-shadow(0 0.125rem 0.25rem rgba(0, 0, 0, 0.3));
 }
 
-.bp-grid-cell:hover {
-  transform: scale(1.3);
-  z-index: 10;
-  box-shadow: 0 0 0.75rem rgba(255, 255, 255, 0.5);
-  filter: brightness(1.2);
-}
-
-.bp-grid-cell.filled {
-  box-shadow: inset 0 0.0625rem 0.125rem rgba(255, 255, 255, 0.2);
-}
-
-.bp-grid-cell-text {
-  font-size: 0.625rem;
-  font-weight: 900;
-  color: #ffffff;
-  text-shadow: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.8);
-  pointer-events: none;
-}
-
-/* 網格圖例說明欄 */
-.bp-grid-legend-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  padding-top: 0.75rem;
-  border-top: 0.0625rem solid var(--border-color, #e2e8f0);
-}
-
-.bp-legend-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
+.bp-lego-block-label {
   font-size: 0.75rem;
-  color: var(--text-secondary, #64748b);
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 0.0625rem 0.15rem rgba(0, 0, 0, 0.8);
+  line-height: 1.25;
 }
 
-:root[data-theme="dark"] .bp-legend-item {
-  color: #94a3b8;
-}
-
-.bp-legend-color-box {
-  width: 0.85rem;
-  height: 0.85rem;
-  border-radius: 0.15rem;
+.bp-lego-block-qty {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(0, 0, 0, 0.35);
+  padding: 0.1rem 0.4rem;
+  border-radius: 9999px;
 }
 
 /* 5. 施工步驟指南 (Step-by-Step Flow Cards) */
@@ -12674,125 +12770,7 @@ body.has-floating-back .scroll-top-btn {
   color: #e2e8f0;
 }
 
-/* 6. 棋盤工作台與座標檢測面板 (Workbench & Inspector) */
-.bp-grid-workbench {
-  display: flex;
-  gap: 1.25rem;
-  align-items: flex-start;
-  flex-wrap: wrap;
-}
-
-.bp-grid-viewport {
-  flex: 1 1 38rem;
-  min-width: 18rem;
-}
-
-.bp-grid-tip {
-  font-size: 0.8125rem;
-  color: var(--text-secondary, #64748b);
-  margin-bottom: 0.5rem;
-}
-
-.bp-inspector-panel {
-  flex: 1 1 18rem;
-  min-width: 16rem;
-  background: var(--bg-card, #ffffff);
-  border: 0.0625rem solid var(--border-color, #e2e8f0);
-  border-radius: 0.85rem;
-  padding: 1.15rem;
-  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.04);
-}
-
-:root[data-theme="dark"] .bp-inspector-panel {
-  background: rgba(30, 41, 59, 0.85);
-  border-color: rgba(255, 255, 255, 0.08);
-}
-
-.bp-inspector-header {
-  font-size: 0.95rem;
-  font-weight: 800;
-  color: var(--text-primary, #0f172a);
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 0.0625rem solid var(--border-color, #e2e8f0);
-}
-
-:root[data-theme="dark"] .bp-inspector-header {
-  color: #f8fafc;
-  border-color: rgba(255, 255, 255, 0.08);
-}
-
-.bp-inspector-empty {
-  font-size: 0.84rem;
-  color: var(--text-muted, #94a3b8);
-  line-height: 1.5;
-  text-align: center;
-  padding: 1.5rem 0.5rem;
-}
-
-.bp-inspect-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-}
-
-.bp-inspect-coord-badge {
-  display: inline-block;
-  align-self: flex-start;
-  background: var(--primary-indigo, #4f46e5);
-  color: #ffffff;
-  font-size: 0.75rem;
-  font-weight: 800;
-  padding: 0.2rem 0.6rem;
-  border-radius: 9999px;
-}
-
-.bp-inspect-item-row {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-}
-
-.bp-inspect-icon {
-  width: 2.25rem;
-  height: 2.25rem;
-  object-fit: contain;
-}
-
-.bp-inspect-name {
-  font-size: 0.95rem;
-  font-weight: 800;
-  color: var(--text-primary, #0f172a);
-}
-
-:root[data-theme="dark"] .bp-inspect-name {
-  color: #f8fafc;
-}
-
-.bp-inspect-tag {
-  display: inline-block;
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 0.15rem 0.45rem;
-  border-radius: 0.35rem;
-  margin-top: 0.2rem;
-}
-
-.bp-inspect-note {
-  font-size: 0.84rem;
-  line-height: 1.5;
-  color: var(--text-secondary, #475569);
-  background: rgba(0, 0, 0, 0.03);
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.45rem;
-}
-
-:root[data-theme="dark"] .bp-inspect-note {
-  color: #cbd5e1;
-  background: rgba(255, 255, 255, 0.04);
-}
-
-/* 7. 進度條與重置按鈕樣式 */
+/* 6. 進度條與重置按鈕樣式 */
 .bp-progress-bar-bg {
   width: 100%;
   max-width: 14rem;
@@ -12831,7 +12809,7 @@ body.has-floating-back .scroll-top-btn {
   border-color: #ef4444;
 }
 
-/* 樣式別名相容 */
+/* 樣式別名與卡片相容 */
 .bp-materials-panel {
   display: flex;
   flex-direction: column;

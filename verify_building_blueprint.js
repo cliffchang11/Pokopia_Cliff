@@ -1,5 +1,5 @@
 // verify_building_blueprint.js
-// 驗證建築藍圖專區之資料結構、正名對齊、HTML/CSS/JS 整合與無損離線驗證
+// 驗證建築藍圖專區之四大模組樂高圖解結構、正名對齊、HTML/CSS/JS 整合與無損離線驗證
 
 const fs = require('fs');
 const path = require('path');
@@ -35,7 +35,7 @@ const bpData = bpSandbox.self.POKOPIA_BLUEPRINT_DATA || bpSandbox.window.POKOPIA
 assert(bpData, 'building_blueprint_data.js 必須正確掛載 POKOPIA_BLUEPRINT_DATA');
 
 // 2.1 藍圖基本屬性驗證
-const { blueprint, materialsSummary, layers, steps } = bpData;
+const { blueprint, materialsSummary, modules, steps } = bpData;
 assert(blueprint.id === 'halloween_mansion', '藍圖 ID 應為 halloween_mansion');
 assert(blueprint.title.includes('洋館'), '藍圖標題必須包含洋館');
 assert(blueprint.author.includes('リリィ'), '藍圖作者必須標記 リリィ');
@@ -52,22 +52,27 @@ materialsSummary.forEach(mat => {
 });
 console.log(`✓ 全數 ${materialsSummary.length} 種建材名稱與 preferences_db.js 100% 精準對齊，且圖示檔案皆存在`);
 
-// 2.3 分層網格 (Layers) 驗證
-assert(Array.isArray(layers) && layers.length === 4, `分層應為 4 層，目前為 ${layers.length}`);
-layers.forEach((layer, idx) => {
-  assert(layer.width === 16 && layer.height === 20, `圖層 ${layer.name} 尺寸必須為 16×20`);
-  assert(Array.isArray(layer.grid) && layer.grid.length === 20, `圖層 ${layer.name} 必須有 20 列`);
-  layer.grid.forEach((row, r) => {
-    assert(row.length === 16, `圖層 ${layer.name} 第 ${r + 1} 列長度必須為 16`);
-    row.forEach((cell, c) => {
-      if (cell !== null) {
-        assert(allKnownItemNames.has(cell.name), `網格座標 (X:${c+1}, Y:${r+1}) 之建材【${cell.name}】未對齊正名！`);
-        assert(fs.existsSync(cell.icon), `網格建材圖示不存在：${cell.icon}`);
-      }
+// 2.3 四大模組樂高立面圖解結構 (Modules) 驗證
+assert(Array.isArray(modules) && modules.length === 4, `模組應為 4 個，目前為 ${modules.length}`);
+modules.forEach(mod => {
+  assert(mod.id && mod.name && mod.badge && mod.dimensions && mod.keyFormula && mod.tips, `模組 ${mod.id} 缺少必要規格屬性`);
+  assert(Array.isArray(mod.materials) && mod.materials.length > 0, `模組 ${mod.id} 缺少建材小計`);
+  mod.materials.forEach(m => {
+    assert(allKnownItemNames.has(m.name), `模組 ${mod.name} 之建材【${m.name}】未對齊正名！`);
+    assert(fs.existsSync(m.icon), `模組建材圖示不存在：${m.icon}`);
+  });
+
+  assert(Array.isArray(mod.legoLayout) && mod.legoLayout.length > 0, `模組 ${mod.name} 缺少樂高排版結構`);
+  mod.legoLayout.forEach(row => {
+    assert(row.rowName && row.dimensionNote && Array.isArray(row.blocks) && row.blocks.length > 0, `模組 ${mod.name} 樂高列格式異常`);
+    row.blocks.forEach(block => {
+      assert(allKnownItemNames.has(block.name), `積木區塊【${block.name}】未對齊正名！`);
+      assert(block.color && block.label && block.icon && block.count > 0, `積木區塊【${block.name}】屬性不完整`);
+      assert(fs.existsSync(block.icon), `積木圖示不存在：${block.icon}`);
     });
   });
 });
-console.log('✓ 4 層 16×20 棋盤座標網格校驗通過，所有放置格皆具備精確正名與圖示');
+console.log('✓ 四大模組樂高立面結構校驗通過，所有積木區塊與尺寸標註皆具備精確正名與圖示');
 
 // 2.4 8 大分步指南 (Steps) 驗證
 assert(Array.isArray(steps) && steps.length === 8, `分步指南應為 8 個步驟，目前為 ${steps.length}`);
@@ -97,19 +102,19 @@ console.log('✓ index.html 導覽、主容器與 4.13.0 快取版本號驗證�
 const css = fs.readFileSync('index.css', 'utf8');
 const requiredClasses = [
   '.bp-hero-banner',
-  '.bp-view-switcher',
-  '.bp-materials-panel',
-  '.bp-mat-card',
-  '.bp-grid-table',
-  '.bp-grid-cell',
-  '.bp-inspector-panel',
-  '.bp-steps-timeline',
+  '.bp-materials-card',
+  '.bp-material-item',
+  '.bp-modules-section',
+  '.bp-module-pill-btn',
+  '.bp-lego-board',
+  '.bp-lego-block',
+  '.bp-steps-container',
   '.bp-step-card'
 ];
 requiredClasses.forEach(cls => {
   assert(css.includes(cls), `index.css 必須包含核心樣式：${cls}`);
 });
-console.log('✓ index.css 建築藍圖專用響應式樣式群驗證通過');
+console.log('✓ index.css 建築藍圖樂高圖解與三合一工作台專用樣式群驗證通過');
 
 // 5. app.js 控制邏輯驗證
 const appCode = fs.readFileSync('app.js', 'utf8');

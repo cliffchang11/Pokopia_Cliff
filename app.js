@@ -162,8 +162,8 @@
       return (typeof saved === 'string' && saved.trim()) ? saved.trim() : null;
     })(),
     selectedVideoTag: '全部',
-    blueprintView: 'grid',
-    blueprintActiveLayer: 'layer_foundation',
+    blueprintView: 'lego',
+    blueprintActiveModule: 'mod_foundation',
     blueprintChecked: (function() {
       const saved = loadProgress('pokopia_blueprint_checked', {});
       return (saved && typeof saved === 'object') ? saved : {};
@@ -6759,7 +6759,7 @@
   };
 
   // ==========================================
-  // 建築藍圖 (Building Blueprint) 專區實作
+  // 建築藍圖 (Building Blueprint) 專區實作 (三合一工作台 + 樂高式圖解)
   // ==========================================
   function renderBlueprintSection() {
     if (!DOM.blueprintContainer) return;
@@ -6775,54 +6775,60 @@
       return;
     }
 
-    const { blueprint, materialsSummary, layers, steps } = bpData;
+    const { blueprint, materialsSummary, modules, steps } = bpData;
 
-    // 計算備料進度
+    // 1. 計算備料進度
     const checkedMap = state.blueprintChecked || {};
     const totalMats = (materialsSummary && materialsSummary.length) || 0;
     const checkedCount = materialsSummary ? materialsSummary.filter(m => !!checkedMap[m.name]).length : 0;
     const progressPercent = totalMats > 0 ? Math.round((checkedCount / totalMats) * 100) : 0;
 
-    // 當前選中的圖層
-    const currentLayer = (layers && layers.find(l => l.id === state.blueprintActiveLayer)) || (layers && layers[0]) || null;
+    // 2. 當前選中的模組
+    const activeModuleId = state.blueprintActiveModule || 'mod_foundation';
+    const currentModule = (modules && modules.find(m => m.id === activeModuleId)) || (modules && modules[0]) || null;
 
-    // HTML 組合
+    // 3. HTML 組合
     let html = `
+      <!-- (1) 頂部 Hero Banner -->
       <div class="bp-hero-banner">
-        <div class="bp-hero-badge">🎃 萬聖節限定造景藍圖</div>
+        <div class="bp-hero-badge-row">
+          <span class="bp-badge-theme">🎃 萬聖節限定造景藍圖</span>
+          <span class="bp-badge-author">原創作者：${blueprint.author}</span>
+        </div>
         <h2 class="bp-hero-title">${blueprint.title}</h2>
-        <div class="bp-hero-meta">
-          <span class="bp-meta-pill">創作者：<strong>${blueprint.author}</strong></span>
-          <span class="bp-meta-pill">規格：<strong>${blueprint.dimensions}</strong></span>
-          <span class="bp-meta-pill">難度：<strong>${blueprint.difficulty}</strong></span>
-          <span class="bp-meta-pill">預估工時：<strong>${blueprint.estimatedTime}</strong></span>
+        <p class="bp-hero-desc">${blueprint.description}</p>
+        <div class="bp-meta-grid">
+          <div class="bp-meta-item">
+            <span class="bp-meta-icon">📐</span>
+            <span class="bp-meta-label">佔地規格：</span>
+            <span class="bp-meta-val">${blueprint.dimensions}</span>
+          </div>
+          <div class="bp-meta-item">
+            <span class="bp-meta-icon">⏱️</span>
+            <span class="bp-meta-label">預估工時：</span>
+            <span class="bp-meta-val">${blueprint.estimatedTime}</span>
+          </div>
+          <div class="bp-meta-item">
+            <span class="bp-meta-icon">🏆</span>
+            <span class="bp-meta-label">建造難度：</span>
+            <span class="bp-meta-val">${blueprint.difficulty}</span>
+          </div>
           <a href="${blueprint.videoUrl}" target="_blank" rel="noopener noreferrer" class="bp-video-link-btn">
             🎬 觀看 YouTube 建造原片 ↗
           </a>
         </div>
-        <p class="bp-hero-desc">${blueprint.description}</p>
       </div>
 
-      <!-- 視圖切換列 -->
-      <div class="bp-view-switcher">
-        <button type="button" class="bp-view-tab-btn ${state.blueprintView === 'grid' ? 'active' : ''}" data-bp-view="grid">
-          📐 分層俯視網格圖 (Grid Plan)
-        </button>
-        <button type="button" class="bp-view-tab-btn ${state.blueprintView === 'steps' ? 'active' : ''}" data-bp-view="steps">
-          🔨 8 大施工步驟指南 (Step-by-Step)
-        </button>
-      </div>
-
-      <!-- 互動備料庫 -->
-      <div class="bp-materials-panel">
-        <div class="bp-mat-header">
-          <div class="bp-mat-title-wrap">
-            <h3 class="bp-mat-title">📦 施工備料檢驗清單 (${totalMats} 種建材)</h3>
-            <span class="bp-mat-subtitle">點擊材料卡片即可打勾記錄進度，自動留存於本地</span>
+      <!-- (2) 頂部：23 種官方正名建材互動備料清單 -->
+      <div class="bp-materials-card bp-materials-panel">
+        <div class="bp-materials-header">
+          <div class="bp-materials-title-group">
+            <h3 class="bp-materials-title">📦 施工備料檢驗清單</h3>
+            <span class="bp-progress-badge">共收錄 ${totalMats} 種官方建材</span>
           </div>
-          <div class="bp-mat-progress-wrap">
-            <div class="bp-mat-counter">
-              已備妥 <strong id="bpCheckedCount">${checkedCount}</strong> / <span>${totalMats}</span> 種 (${progressPercent}%)
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+            <div style="font-size: 0.84rem; font-weight: 700; color: var(--text-secondary);">
+              已備妥 <strong id="bpCheckedCount" style="color: #10b981;">${checkedCount}</strong> / <span>${totalMats}</span> 種 (${progressPercent}%)
             </div>
             <div class="bp-progress-bar-bg">
               <div class="bp-progress-bar-fill" style="width: ${progressPercent}%;"></div>
@@ -6833,192 +6839,153 @@
           </div>
         </div>
 
-        <div class="bp-mat-grid">
+        <div class="bp-materials-grid">
           ${materialsSummary.map(mat => {
             const isChecked = !!checkedMap[mat.name];
             return `
-              <div class="bp-mat-card ${isChecked ? 'checked' : ''}" data-mat-name="${mat.name}">
-                <label class="bp-mat-checkbox-label">
-                  <input type="checkbox" class="bp-mat-checkbox" data-mat-name="${mat.name}" ${isChecked ? 'checked' : ''}>
-                  <span class="bp-custom-checkmark"></span>
-                </label>
-                <img src="${mat.icon}" alt="${mat.name}" class="bp-mat-icon" loading="lazy">
-                <div class="bp-mat-info">
-                  <div class="bp-mat-name-row">
-                    <span class="bp-mat-name">${mat.name}</span>
-                    <span class="bp-mat-qty">×${mat.count}</span>
-                  </div>
-                  <div class="bp-mat-desc">${mat.desc || mat.category}</div>
+              <div class="bp-material-item ${isChecked ? 'checked' : ''}" data-mat-name="${mat.name}">
+                <input type="checkbox" class="bp-material-checkbox" data-mat-name="${mat.name}" ${isChecked ? 'checked' : ''}>
+                <img src="${mat.icon}" alt="${mat.name}" class="bp-material-icon" loading="lazy">
+                <div class="bp-material-info">
+                  <span class="bp-material-name" title="${mat.name}">${mat.name}</span>
+                  <span style="font-size: 0.72rem; color: var(--text-muted);">${mat.desc || mat.category}</span>
                 </div>
+                <span class="bp-material-count-pill">×${mat.count}</span>
               </div>
             `;
           }).join('')}
         </div>
       </div>
-    `;
 
-    // 視圖區塊分歧：Grid 俯視圖 vs Steps 步驟指南
-    if (state.blueprintView === 'grid' && currentLayer) {
-      html += `
-        <div class="bp-grid-section">
-          <!-- 分層切換器 -->
-          <div class="bp-layer-pills">
-            ${layers.map(layer => `
-              <button type="button" class="bp-layer-pill-btn ${layer.id === currentLayer.id ? 'active' : ''}" data-layer-id="${layer.id}">
-                <span class="bp-layer-badge">${layer.badge}</span>
-                <span class="bp-layer-name">${layer.name}</span>
-              </button>
-            `).join('')}
-          </div>
+      <!-- (3) 中部核心：四大模組樂高立面圖解 -->
+      <div class="bp-modules-section">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+          <h3 style="font-size: 1.15rem; font-weight: 900; margin: 0; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+            <span>🏛️</span> 核心模組積木圖解（四大組裝單元）
+          </h3>
+          <span style="font-size: 0.8125rem; color: var(--text-muted);">點選下方分頁檢視各模組立體結構圖</span>
+        </div>
 
-          <div class="bp-layer-banner">
-            <div class="bp-layer-banner-title">📍 當前檢視：<strong>${currentLayer.name}</strong> (寬 ${currentLayer.width} × 長 ${currentLayer.height})</div>
-            <p class="bp-layer-banner-desc">${currentLayer.description}</p>
-          </div>
+        <!-- 四大模組導覽膠囊 -->
+        <div class="bp-module-nav-pills">
+          ${(modules || []).map(mod => `
+            <button type="button" class="bp-module-pill-btn ${mod.id === (currentModule ? currentModule.id : '') ? 'active' : ''}" data-mod-id="${mod.id}">
+              <span>${mod.id === 'mod_foundation' ? '🧱' : mod.id === 'mod_wall' ? '🚪' : mod.id === 'mod_roof' ? '🏰' : '🎃'}</span>
+              <span>${mod.name}</span>
+            </button>
+          `).join('')}
+        </div>
 
-          <!-- 網格與詳情檢視區 (並排工作台) -->
-          <div class="bp-grid-workbench">
-            <div class="bp-grid-viewport">
-              <div class="bp-grid-tip">💡 提示：點擊或滑鼠懸停於方格上，可在右側檢視詳細建材與擺設座標</div>
-              <div class="bp-grid-scroll-wrap">
-                <table class="bp-grid-table">
-                  <thead>
-                    <tr>
-                      <th class="bp-coord-th bp-corner-th">Y \\ X</th>
-                      ${Array.from({ length: currentLayer.width }, (_, i) => `<th class="bp-coord-th">${i + 1}</th>`).join('')}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    ${currentLayer.grid.map((row, r) => `
-                      <tr>
-                        <th class="bp-coord-th">${r + 1}</th>
-                        ${row.map((cell, c) => {
-                          const cellClass = cell ? 'has-item' : 'empty-cell';
-                          const style = cell ? `background-color: ${cell.color}22; border-color: ${cell.color};` : '';
-                          return `
-                            <td class="bp-grid-cell ${cellClass}" data-r="${r}" data-c="${c}" style="${style}" title="${cell ? `${cell.name} (X:${c+1}, Y:${r+1})` : `空地 (X:${c+1}, Y:${r+1})`}">
-                              ${cell ? `
-                                <img src="${cell.icon}" alt="${cell.name}" class="bp-cell-icon" loading="lazy">
-                                <span class="bp-cell-label">${cell.label}</span>
-                              ` : '<span class="bp-cell-dot">·</span>'}
-                            </td>
-                          `;
-                        }).join('')}
-                      </tr>
+        ${currentModule ? `
+          <div class="bp-lego-board">
+            <div class="bp-module-header">
+              <div class="bp-module-title-row">
+                <h4 class="bp-module-title">
+                  <span>${currentModule.badge}</span>
+                  <span>${currentModule.name}</span>
+                </h4>
+                <span class="bp-module-dim-badge">📐 尺寸規格：${currentModule.dimensions}</span>
+              </div>
+              <div class="bp-module-formula-box">
+                💡 <strong>核心組裝公式：</strong> ${currentModule.keyFormula}
+              </div>
+              <div class="bp-module-tips-box">
+                🎯 <strong>建造秘訣：</strong> ${currentModule.tips}
+              </div>
+            </div>
+
+            <!-- 樂高積木排版 (由上而下逐層立面) -->
+            <div class="bp-lego-rows-wrap">
+              ${(currentModule.legoLayout || []).map(row => `
+                <div class="bp-lego-row">
+                  <div class="bp-lego-row-meta">
+                    <span class="bp-lego-row-name">${row.rowName}</span>
+                    <span class="bp-lego-row-dim">${row.dimensionNote}</span>
+                  </div>
+                  <div class="bp-lego-blocks-track">
+                    ${row.blocks.map(block => `
+                      <div class="bp-lego-block ${block.isKey ? 'is-key' : ''}" style="flex: ${block.flex || 1}; background-color: ${block.color};" title="${block.label}">
+                        <img src="${block.icon}" alt="${block.name}" class="bp-lego-block-icon" loading="lazy">
+                        <span class="bp-lego-block-label">${block.label}</span>
+                        <span class="bp-lego-block-qty">×${block.count}</span>
+                      </div>
                     `).join('')}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <!-- 格子檢測面板 (Inspector) -->
-            <div class="bp-inspector-panel" id="bpInspectorPanel">
-              <div class="bp-inspector-header">🔍 座標詳情檢視</div>
-              <div class="bp-inspector-body" id="bpInspectorBody">
-                <div class="bp-inspector-empty">請點選或將游標移至左側棋盤上的任一方格</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 分層圖例對照表 -->
-          <div class="bp-legend-card">
-            <h4 class="bp-legend-title">🎨 本層使用材料圖例</h4>
-            <div class="bp-legend-items">
-              ${(function() {
-                const used = new Map();
-                currentLayer.grid.forEach(row => {
-                  row.forEach(cell => {
-                    if (cell && !used.has(cell.name)) {
-                      used.set(cell.name, cell);
-                    }
-                  });
-                });
-                if (used.size === 0) return '<span class="bp-legend-none">此層未放置獨立物件</span>';
-                return Array.from(used.values()).map(item => `
-                  <div class="bp-legend-item">
-                    <span class="bp-legend-color-dot" style="background-color: ${item.color};"></span>
-                    <img src="${item.icon}" alt="${item.name}" class="bp-legend-icon" loading="lazy">
-                    <span class="bp-legend-name">${item.name}</span>
-                    <span class="bp-legend-tag">${item.label}</span>
-                  </div>
-                `).join('');
-              })()}
-            </div>
-          </div>
-        </div>
-      `;
-    } else if (steps && steps.length > 0) {
-      // 8 大分步指南視圖 (Steps View)
-      html += `
-        <div class="bp-steps-section">
-          <div class="bp-steps-intro">
-            <h3>🔨 依序施工指南（共 ${steps.length} 大步驟）</h3>
-            <p>嚴格按照建造工序分解，從最底層平整地基到終極屋頂封頂與庭園氛圍裝飾，一步步帶你完成神級建築！</p>
-          </div>
-          <div class="bp-steps-timeline">
-            ${steps.map(step => `
-              <div class="bp-step-card">
-                <div class="bp-step-card-header">
-                  <div class="bp-step-badge">步驟 ${step.stepNum}</div>
-                  <h4 class="bp-step-title">${step.title}</h4>
-                  <span class="bp-step-time">⏱️ 影片進度：${step.timing}</span>
-                </div>
-                <div class="bp-step-body">
-                  <p class="bp-step-summary">${step.summary}</p>
-                  <div class="bp-step-tips">
-                    <span class="bp-tips-badge">💡 施工秘訣</span>
-                    <span class="bp-tips-text">${step.tips}</span>
-                  </div>
-                  <div class="bp-step-mats">
-                    <div class="bp-step-mats-title">本步驟所需建材：</div>
-                    <div class="bp-step-mat-tags">
-                      ${step.materials.map(sm => {
-                        const matDef = materialsSummary.find(m => m.name === sm.name);
-                        const icon = matDef ? matDef.icon : '';
-                        return `
-                          <span class="bp-step-mat-tag">
-                            ${icon ? `<img src="${icon}" alt="${sm.name}" class="bp-step-mat-icon" loading="lazy">` : ''}
-                            <span class="bp-step-mat-name">${sm.name}</span>
-                            <strong class="bp-step-mat-count">×${sm.count}</strong>
-                          </span>
-                        `;
-                      }).join('')}
-                    </div>
                   </div>
                 </div>
-              </div>
-            `).join('')}
+              `).join('')}
+            </div>
+
+            <!-- 本模組所需建材小計標籤 -->
+            <div style="padding-top: 0.75rem; border-top: 0.0625rem solid var(--border-color); display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+              <span style="font-size: 0.8125rem; font-weight: 800; color: var(--text-secondary);">本模組所需建材：</span>
+              ${(currentModule.materials || []).map(m => `
+                <span class="bp-step-mat-tag">
+                  <img src="${m.icon}" alt="${m.name}" style="width: 1.25rem; height: 1.25rem; object-fit: contain;">
+                  <span>${m.name}</span>
+                  <strong style="color: var(--primary-indigo);">×${m.count}</strong>
+                </span>
+              `).join('')}
+            </div>
           </div>
+        ` : ''}
+      </div>
+
+      <!-- (4) 底部：8 大依序施工工序指南 -->
+      <div class="bp-steps-container bp-steps-timeline">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
+          <h3 style="font-size: 1.15rem; font-weight: 900; margin: 0; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+            <span>🔨</span> 8 大施工步驟指南（依序帶你蓋好）
+          </h3>
+          <span style="font-size: 0.8125rem; color: var(--text-muted);">嚴格按照建造工序分解，附 YouTube 影片對應秒數</span>
         </div>
-      `;
-    }
+
+        ${(steps || []).map(step => `
+          <div class="bp-step-card">
+            <div class="bp-step-header">
+              <div class="bp-step-title-wrap">
+                <span class="bp-step-num-badge">${step.stepNum}</span>
+                <h4 class="bp-step-title">${step.title}</h4>
+              </div>
+              <span class="bp-step-timing-pill">⏱️ 影片進度：${step.timing}</span>
+            </div>
+            <p class="bp-step-summary">${step.summary}</p>
+            <div class="bp-step-tips-box">
+              💡 <strong>施工秘訣：</strong> ${step.tips}
+            </div>
+            <div class="bp-step-materials-list">
+              <span style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); align-self: center;">本步所需材料：</span>
+              ${step.materials.map(sm => {
+                const matDef = materialsSummary.find(m => m.name === sm.name);
+                const icon = matDef ? matDef.icon : '';
+                return `
+                  <span class="bp-step-mat-tag">
+                    ${icon ? `<img src="${icon}" alt="${sm.name}" style="width: 1.15rem; height: 1.15rem; object-fit: contain;">` : ''}
+                    <span>${sm.name}</span>
+                    <strong style="color: var(--primary-indigo);">×${sm.count}</strong>
+                  </span>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
 
     DOM.blueprintContainer.innerHTML = html;
 
-    // 綁定事件監聽
-    bindBlueprintEvents(currentLayer);
+    // 4. 綁定事件監聽
+    bindBlueprintEvents();
   }
 
-  function bindBlueprintEvents(currentLayer) {
+  function bindBlueprintEvents() {
     if (!DOM.blueprintContainer) return;
 
-    // 1. 視圖切換 (Grid vs Steps)
-    DOM.blueprintContainer.querySelectorAll('.bp-view-tab-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const view = e.currentTarget.dataset.bpView;
-        if (view && view !== state.blueprintView) {
-          state.blueprintView = view;
-          renderBlueprintSection();
-        }
-      });
-    });
-
-    // 2. 材料勾選切換 (點擊整張卡片或 checkbox)
-    DOM.blueprintContainer.querySelectorAll('.bp-mat-card').forEach(card => {
+    // 1. 材料勾選切換 (點擊整張卡片或 checkbox)
+    DOM.blueprintContainer.querySelectorAll('.bp-material-item').forEach(card => {
       card.addEventListener('click', (e) => {
         const matName = card.dataset.matName;
         if (!matName) return;
-        const chk = card.querySelector('.bp-mat-checkbox');
+        const chk = card.querySelector('.bp-material-checkbox');
         if (e.target !== chk && chk) {
           chk.checked = !chk.checked;
         }
@@ -7033,7 +7000,7 @@
       });
     });
 
-    // 3. 重置勾選按鈕
+    // 2. 重置勾選按鈕
     const btnReset = document.getElementById('btnResetBpChecked');
     if (btnReset) {
       btnReset.addEventListener('click', (e) => {
@@ -7047,63 +7014,16 @@
       });
     }
 
-    // 4. 分層切換 (Grid 視圖限定)
-    if (state.blueprintView === 'grid') {
-      DOM.blueprintContainer.querySelectorAll('.bp-layer-pill-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const layerId = e.currentTarget.dataset.layerId;
-          if (layerId && layerId !== state.blueprintActiveLayer) {
-            state.blueprintActiveLayer = layerId;
-            renderBlueprintSection();
-          }
-        });
+    // 3. 四大模組切換按鈕
+    DOM.blueprintContainer.querySelectorAll('.bp-module-pill-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const modId = e.currentTarget.dataset.modId;
+        if (modId && modId !== state.blueprintActiveModule) {
+          state.blueprintActiveModule = modId;
+          renderBlueprintSection();
+        }
       });
-
-      // 5. 棋盤格子懸停與點擊檢測 (Inspector)
-      const inspectorBody = document.getElementById('bpInspectorBody');
-      const cells = DOM.blueprintContainer.querySelectorAll('.bp-grid-cell');
-      cells.forEach(cell => {
-        const handleInspect = () => {
-          cells.forEach(c => c.classList.remove('inspecting'));
-          cell.classList.add('inspecting');
-          const r = parseInt(cell.dataset.r, 10);
-          const c = parseInt(cell.dataset.c, 10);
-          const cellData = currentLayer && currentLayer.grid && currentLayer.grid[r] ? currentLayer.grid[r][c] : null;
-
-          if (inspectorBody) {
-            if (cellData) {
-              inspectorBody.innerHTML = `
-                <div class="bp-inspect-card">
-                  <div class="bp-inspect-coord-badge">座標：X: ${c + 1}，Y: ${r + 1}</div>
-                  <div class="bp-inspect-item-row">
-                    <img src="${cellData.icon}" alt="${cellData.name}" class="bp-inspect-icon">
-                    <div class="bp-inspect-item-info">
-                      <div class="bp-inspect-name">${cellData.name}</div>
-                      <div class="bp-inspect-tag" style="background-color: ${cellData.color}33; color: ${cellData.color}; border: 1px solid ${cellData.color};">
-                        標記：${cellData.label}
-                      </div>
-                    </div>
-                  </div>
-                  <div class="bp-inspect-note">
-                    <strong>施工指引：</strong> 請在此座標精確放置 1 格【${cellData.name}】。
-                  </div>
-                </div>
-              `;
-            } else {
-              inspectorBody.innerHTML = `
-                <div class="bp-inspect-card empty">
-                  <div class="bp-inspect-coord-badge">座標：X: ${c + 1}，Y: ${r + 1}</div>
-                  <div class="bp-inspect-empty-msg">🌿 此格為空地（保留原草皮或走道淨空）</div>
-                </div>
-              `;
-            }
-          }
-        };
-
-        cell.addEventListener('mouseenter', handleInspect);
-        cell.addEventListener('click', handleInspect);
-      });
-    }
+    });
   }
 
   function updateBpChecklistProgress() {
@@ -7126,8 +7046,7 @@
     bindBlueprintEvents,
     updateBpChecklistProgress,
     getState: () => ({
-      view: state.blueprintView,
-      activeLayer: state.blueprintActiveLayer,
+      activeModule: state.blueprintActiveModule,
       checked: state.blueprintChecked
     })
   };

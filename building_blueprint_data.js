@@ -13,7 +13,7 @@
   }
 })(typeof self !== 'undefined' ? self : this, function () {
 
-  // 圖例色碼與材料定義
+  // 圖例色碼與材料定義 (100% 精準對齊 preferences_db.js)
   const MATERIAL_DEFINITIONS = {
     'S_WALL': { name: '古舊石牆', code: 'S_WALL', label: '石牆', color: '#475569', icon: 'assets/item_sprites/60px-Bag_古舊石牆_Pokopia_Sprite.png' },
     'S_BRICK': { name: '石磚牆', code: 'S_BRICK', label: '磚基', color: '#64748b', icon: 'assets/item_sprites/60px-Bag_石磚牆_Pokopia_Sprite.png' },
@@ -40,143 +40,6 @@
     'LANTERN': { name: '提燈', code: 'LANTERN', label: '提燈', color: '#fb923c', icon: 'assets/item_sprites/60px-Bag_提燈_Pokopia_Sprite.png' }
   };
 
-  // 輔助函式：建立寬 W 高 H 的預設空白二維陣列
-  function createEmptyGrid(w, h) {
-    const grid = [];
-    for (let r = 0; r < h; r++) {
-      const row = [];
-      for (let c = 0; c < w; c++) {
-        row.push(null);
-      }
-      grid.push(row);
-    }
-    return grid;
-  }
-
-  // 1. Layer 1：地基基座與地面小徑 (16 寬 × 20 高)
-  const l1Grid = createEmptyGrid(16, 20);
-  // (A) 洋館基地：行 2 到行 12，列 2 到列 13 鋪設石磚牆底座
-  for (let r = 2; r <= 12; r++) {
-    for (let c = 2; c <= 13; c++) {
-      l1Grid[r][c] = MATERIAL_DEFINITIONS['S_BRICK'];
-    }
-  }
-  // (B) 正門迎賓階梯 (行 13, 列 7-8)
-  l1Grid[13][7] = MATERIAL_DEFINITIONS['STAIR'];
-  l1Grid[13][8] = MATERIAL_DEFINITIONS['STAIR'];
-  // (C) 正門步道與踏板石 (行 14 到行 19, 列 7-8)
-  for (let r = 14; r <= 19; r++) {
-    l1Grid[r][7] = MATERIAL_DEFINITIONS['PATH_STONE'];
-    l1Grid[r][8] = MATERIAL_DEFINITIONS['PATH_STONE'];
-    // 兩側滾邊磚塊
-    l1Grid[r][6] = MATERIAL_DEFINITIONS['CURB_LINE'];
-    l1Grid[r][9] = MATERIAL_DEFINITIONS['CURB_LINE'];
-  }
-  // (D) 馬車停放平台 (行 15 到行 18, 列 11 到列 14)
-  for (let r = 15; r <= 18; r++) {
-    for (let c = 11; c <= 14; c++) {
-      l1Grid[r][c] = MATERIAL_DEFINITIONS['PATH_STONE'];
-    }
-  }
-
-  // 2. Layer 2：1F 外牆、對稱柱體與門窗
-  const l2Grid = createEmptyGrid(16, 20);
-  // 四個轉角木樑支撐柱
-  l2Grid[2][2] = MATERIAL_DEFINITIONS['WOOD_LOG'];
-  l2Grid[2][13] = MATERIAL_DEFINITIONS['WOOD_LOG'];
-  l2Grid[12][2] = MATERIAL_DEFINITIONS['WOOD_LOG'];
-  l2Grid[12][13] = MATERIAL_DEFINITIONS['WOOD_LOG'];
-  // 中間支撐柱
-  l2Grid[7][2] = MATERIAL_DEFINITIONS['WOOD_LOG'];
-  l2Grid[7][13] = MATERIAL_DEFINITIONS['WOOD_LOG'];
-
-  // 北側後牆 (行 2, 列 3 到列 12)
-  for (let c = 3; c <= 12; c++) {
-    l2Grid[2][c] = MATERIAL_DEFINITIONS['S_WALL'];
-  }
-  // 後牆彩繪窗
-  l2Grid[2][5] = MATERIAL_DEFINITIONS['WIN_COLOR'];
-  l2Grid[2][10] = MATERIAL_DEFINITIONS['WIN_COLOR'];
-
-  // 西側與東側外牆 (行 3 到行 11)
-  for (let r = 3; r <= 11; r++) {
-    if (r !== 7) {
-      l2Grid[r][2] = MATERIAL_DEFINITIONS['S_WALL'];
-      l2Grid[r][13] = MATERIAL_DEFINITIONS['S_WALL'];
-    }
-  }
-  // 側牆推拉窗
-  l2Grid[5][2] = MATERIAL_DEFINITIONS['WIN_SLIDE'];
-  l2Grid[9][2] = MATERIAL_DEFINITIONS['WIN_SLIDE'];
-  l2Grid[5][13] = MATERIAL_DEFINITIONS['WIN_SLIDE'];
-  l2Grid[9][13] = MATERIAL_DEFINITIONS['WIN_SLIDE'];
-
-  // 南側前牆 (行 12)
-  for (let c = 3; c <= 12; c++) {
-    l2Grid[12][c] = MATERIAL_DEFINITIONS['S_WALL'];
-  }
-  // 前牆正中央大木門 (列 7-8)
-  l2Grid[12][7] = MATERIAL_DEFINITIONS['DOOR'];
-  l2Grid[12][8] = MATERIAL_DEFINITIONS['DOOR'];
-  // 大門兩側對稱窗與玄關壁燈
-  l2Grid[12][4] = MATERIAL_DEFINITIONS['WIN_SLIDE'];
-  l2Grid[12][11] = MATERIAL_DEFINITIONS['WIN_SLIDE'];
-  l2Grid[12][6] = MATERIAL_DEFINITIONS['LAMP_WALL'];
-  l2Grid[12][9] = MATERIAL_DEFINITIONS['LAMP_WALL'];
-
-  // 3. Layer 3：2F 屋頂、雙向斜瓦與中央尖塔裝飾
-  const l3Grid = createEmptyGrid(16, 20);
-  // 斜屋瓦鋪設 (西側向上斜，東側向西斜，中央合龍)
-  for (let r = 1; r <= 13; r++) {
-    l3Grid[r][1] = MATERIAL_DEFINITIONS['ROOF_SLOPE'];
-    l3Grid[r][2] = MATERIAL_DEFINITIONS['ROOF_SLOPE'];
-    l3Grid[r][3] = MATERIAL_DEFINITIONS['ROOF_VALLEY'];
-    l3Grid[r][4] = MATERIAL_DEFINITIONS['ROOF_SLOPE'];
-
-    l3Grid[r][14] = MATERIAL_DEFINITIONS['ROOF_SLOPE'];
-    l3Grid[r][13] = MATERIAL_DEFINITIONS['ROOF_SLOPE'];
-    l3Grid[r][12] = MATERIAL_DEFINITIONS['ROOF_VALLEY'];
-    l3Grid[r][11] = MATERIAL_DEFINITIONS['ROOF_SLOPE'];
-
-    // 屋脊中軸線
-    l3Grid[r][7] = MATERIAL_DEFINITIONS['ROOF_PEAK'];
-    l3Grid[r][8] = MATERIAL_DEFINITIONS['ROOF_PEAK'];
-  }
-  // 洋館中央與四角尖塔裝飾
-  l3Grid[1][7] = MATERIAL_DEFINITIONS['SPIRE_DEC'];
-  l3Grid[1][8] = MATERIAL_DEFINITIONS['SPIRE_DEC'];
-  l3Grid[13][7] = MATERIAL_DEFINITIONS['SPIRE_DEC'];
-  l3Grid[13][8] = MATERIAL_DEFINITIONS['SPIRE_DEC'];
-  l3Grid[7][7] = MATERIAL_DEFINITIONS['SPIRE_DEC'];
-  l3Grid[7][8] = MATERIAL_DEFINITIONS['SPIRE_DEC'];
-
-  // 4. Layer 4：庭院造景、黑鐵圍欄與南瓜馬車
-  const l4Grid = createEmptyGrid(16, 20);
-  // 南瓜馬車主體 (行 16-17, 列 12-13)
-  l4Grid[16][12] = MATERIAL_DEFINITIONS['CARRIAGE'];
-  l4Grid[16][13] = MATERIAL_DEFINITIONS['CARRIAGE'];
-  l4Grid[17][12] = MATERIAL_DEFINITIONS['LANTERN'];
-  l4Grid[17][13] = MATERIAL_DEFINITIONS['LANTERN'];
-
-  // 外圍黑鐵圍欄 (沿行 19, 列 1 到 5 與 列 10 到 15)
-  for (let c = 1; c <= 5; c++) {
-    l4Grid[19][c] = MATERIAL_DEFINITIONS['FENCE_IRON'];
-  }
-  for (let c = 10; c <= 15; c++) {
-    l4Grid[19][c] = MATERIAL_DEFINITIONS['FENCE_IRON'];
-  }
-  // 迎賓路口兩側雙臂路燈 (行 19, 列 5 與 列 10)
-  l4Grid[19][5] = MATERIAL_DEFINITIONS['LAMP_STREET'];
-  l4Grid[19][10] = MATERIAL_DEFINITIONS['LAMP_STREET'];
-  l4Grid[14][5] = MATERIAL_DEFINITIONS['LAMP_STREET'];
-  l4Grid[14][10] = MATERIAL_DEFINITIONS['LAMP_STREET'];
-
-  // 庭園枯木與枯藤裝飾
-  l4Grid[15][2] = MATERIAL_DEFINITIONS['DEAD_TREE'];
-  l4Grid[17][3] = MATERIAL_DEFINITIONS['DEAD_VINE'];
-  l4Grid[14][14] = MATERIAL_DEFINITIONS['DEAD_TREE'];
-  l4Grid[18][15] = MATERIAL_DEFINITIONS['DEAD_VINE'];
-
   return {
     blueprint: {
       id: 'halloween_mansion',
@@ -187,9 +50,10 @@
       dimensions: '佔地 16 × 20 格 (高度約 8 格)',
       difficulty: '中級建築師',
       estimatedTime: '約 25 ~ 35 分鐘',
-      description: '由人氣島嶼創作者 リリィ 設計的萬聖節洋館造景。擁有對稱式哥德暗黑外觀、神秘彩繪窗與復古載客南瓜馬車，完美營造節慶典雅神秘的莊園氛圍。'
+      description: '由人氣島嶼創作者 リリィ 設計的萬聖節洋館造景。擁有嚴格對稱的哥德暗黑立面、神秘彩繪高窗與復古載客南瓜馬車，完美營造節慶典雅莊園氛圍。'
     },
-    // 全材料總表 (總量統計與正名對齊)
+
+    // 23 種材料總表 (100% 精準對齊 preferences_db.js)
     materialsSummary: [
       { name: '古舊石牆', count: 86, category: '方塊', icon: MATERIAL_DEFINITIONS['S_WALL'].icon, desc: '洋館主結構牆身' },
       { name: '石磚牆', count: 48, category: '方塊', icon: MATERIAL_DEFINITIONS['S_BRICK'].icon, desc: '防潮加厚地基基座' },
@@ -198,125 +62,291 @@
       { name: '踏板石', count: 28, category: '建築', icon: MATERIAL_DEFINITIONS['PATH_STONE'].icon, desc: '庭園小徑與車位石板' },
       { name: '鐵圍欄', count: 24, category: '建築', icon: MATERIAL_DEFINITIONS['FENCE_IRON'].icon, desc: '莊園外圍黑鐵護欄' },
       { name: '鐵牆', count: 20, category: '方塊', icon: MATERIAL_DEFINITIONS['IRON_WALL'].icon, desc: '屋簷暗色收邊與加固' },
-      { name: '直立圓木', count: 16, category: '建築', icon: MATERIAL_DEFINITIONS['WOOD_LOG'].icon, desc: '四角與中軸耐重樑柱' },
-      { name: '凸凸屋瓦', count: 16, category: '建築', icon: MATERIAL_DEFINITIONS['ROOF_PEAK'].icon, desc: '屋頂正脊頂部' },
-      { name: '凹凹屋瓦', count: 12, category: '建築', icon: MATERIAL_DEFINITIONS['ROOF_VALLEY'].icon, desc: '排水屋脊折角' },
-      { name: '上下推拉窗', count: 8, category: '建築', icon: MATERIAL_DEFINITIONS['WIN_SLIDE'].icon, desc: '左右兩側對稱採光窗' },
-      { name: '圍邊磚塊（轉角）', count: 8, category: '建築', icon: MATERIAL_DEFINITIONS['CURB_CNR'].icon, desc: '步道轉折處收角' },
-      { name: '石頭樓梯', count: 6, category: '建築', icon: MATERIAL_DEFINITIONS['STAIR'].icon, desc: '大門迎賓階梯' },
-      { name: '壁燈', count: 6, category: '家具', icon: MATERIAL_DEFINITIONS['LAMP_WALL'].icon, desc: '玄關外側引路照明' },
-      { name: '枯萎的蔓藤', count: 6, category: '大自然', icon: MATERIAL_DEFINITIONS['DEAD_VINE'].icon, desc: '庭院老樹攀附裝飾' },
-      { name: '彩色玻璃（中）', count: 4, category: '建築', icon: MATERIAL_DEFINITIONS['WIN_COLOR'].icon, desc: '洋館後方神秘彩繪窗' },
-      { name: '石頭屋頂的裝飾', count: 4, category: '建築', icon: MATERIAL_DEFINITIONS['SPIRE_DEC'].icon, desc: '屋頂尖塔避雷針裝飾' },
-      { name: '雅緻路燈', count: 4, category: '家具', icon: MATERIAL_DEFINITIONS['LAMP_STREET'].icon, desc: '入口步道雙向路燈' },
-      { name: '提燈', count: 4, category: '家具', icon: MATERIAL_DEFINITIONS['LANTERN'].icon, desc: '馬車車燈與裝飾' },
-      { name: '枯萎的三角樹', count: 3, category: '大自然', icon: MATERIAL_DEFINITIONS['DEAD_TREE'].icon, desc: '莊園兩側神祕枯木' },
-      { name: '古董吊燈', count: 2, category: '家具', icon: MATERIAL_DEFINITIONS['CHANDELIER'].icon, desc: '室內大廳天花板' },
+      { name: '凸凸屋瓦', count: 18, category: '建築', icon: MATERIAL_DEFINITIONS['ROOF_PEAK'].icon, desc: '正脊隆起屋瓦' },
+      { name: '直立圓木', count: 16, category: '方塊', icon: MATERIAL_DEFINITIONS['WOOD_LOG'].icon, desc: '四角立體承重柱' },
+      { name: '圍邊磚塊（轉角）', count: 8, category: '建築', icon: MATERIAL_DEFINITIONS['CURB_CNR'].icon, desc: '轉角導角邊石' },
+      { name: '凹凹屋瓦', count: 6, category: '建築', icon: MATERIAL_DEFINITIONS['ROOF_VALLEY'].icon, desc: '落水與轉角接合屋瓦' },
+      { name: '上下推拉窗', count: 6, category: '建築', icon: MATERIAL_DEFINITIONS['WIN_SLIDE'].icon, desc: '左右側牆對稱透光窗' },
+      { name: '枯萎的蔓藤', count: 6, category: '建築', icon: MATERIAL_DEFINITIONS['DEAD_VINE'].icon, desc: '外牆與枯木陰森裝飾' },
+      { name: '石頭屋頂的裝飾', count: 4, category: '建築', icon: MATERIAL_DEFINITIONS['SPIRE_DEC'].icon, desc: '哥德式屋頂尖塔飾品' },
+      { name: '彩色玻璃（中）', count: 4, category: '建築', icon: MATERIAL_DEFINITIONS['WIN_COLOR'].icon, desc: '大廳二樓復古彩繪窗' },
+      { name: '雅緻路燈', count: 4, category: '戶外', icon: MATERIAL_DEFINITIONS['LAMP_STREET'].icon, desc: '庭院兩側古典黑鐵路燈' },
+      { name: '壁燈', count: 4, category: '建築', icon: MATERIAL_DEFINITIONS['LAMP_WALL'].icon, desc: '正門兩側迎賓壁燈' },
+      { name: '提燈', count: 4, category: '戶外', icon: MATERIAL_DEFINITIONS['LANTERN'].icon, desc: '南瓜馬車復古前後車燈' },
+      { name: '枯萎的三角樹', count: 3, category: '戶外', icon: MATERIAL_DEFINITIONS['DEAD_TREE'].icon, desc: '庭園枯木造景' },
+      { name: '石頭樓梯', count: 2, category: '建築', icon: MATERIAL_DEFINITIONS['STAIR'].icon, desc: '正門大階梯' },
+      { name: '古董吊燈', count: 2, category: '傢俱', icon: MATERIAL_DEFINITIONS['CHANDELIER'].icon, desc: '主大廳懸掛金屬吊燈' },
       { name: '大木門', count: 1, category: '建築', icon: MATERIAL_DEFINITIONS['DOOR'].icon, desc: '洋館正中央主門扉' },
       { name: '板車', count: 1, category: '戶外', icon: MATERIAL_DEFINITIONS['CARRIAGE'].icon, desc: '南瓜載客馬車底座' }
     ],
-    // 4 層俯視棋盤網格藍圖
-    layers: [
+
+    // 四大核心模組樂高立面圖解結構 (高辨識度、結構化、尺寸清晰)
+    modules: [
       {
-        id: 'layer_foundation',
-        name: '第 1 層：地基與步道',
-        badge: '地基層',
-        width: 16,
-        height: 20,
-        description: '先用【石磚牆】平鋪 12 × 11 格洋館基底，並在前方第 13 行正中放置 2 格【石頭樓梯】與鋪設【踏板石】迎賓步道。',
-        grid: l1Grid
+        id: 'mod_foundation',
+        name: '防潮基座與迎賓階梯',
+        badge: '模組 1：地基層',
+        dimensions: '長 12 格 × 寬 11 格 × 高 1 格',
+        keyFormula: '石磚牆 12×11 基底 ➔ 正中 2 格放置石頭樓梯 ➔ 往前延伸踏板石步道',
+        tips: '平整土地後先拉出 12×11 長方形基座，中央留出對稱中軸，階梯精確放在第 6、7 格！',
+        materials: [
+          { name: '石磚牆', count: 48, icon: MATERIAL_DEFINITIONS['S_BRICK'].icon },
+          { name: '石頭樓梯', count: 2, icon: MATERIAL_DEFINITIONS['STAIR'].icon },
+          { name: '踏板石', count: 8, icon: MATERIAL_DEFINITIONS['PATH_STONE'].icon },
+          { name: '圍邊磚塊（筆直）', count: 16, icon: MATERIAL_DEFINITIONS['CURB_LINE'].icon }
+        ],
+        legoLayout: [
+          {
+            rowName: '洋館主基地 (石磚基座)',
+            dimensionNote: '寬 12 格 ↔，高 1 格',
+            blocks: [
+              { name: '石磚牆', count: 12, label: '石磚牆 (12格平鋪基底)', color: '#64748b', icon: MATERIAL_DEFINITIONS['S_BRICK'].icon, flex: 12 }
+            ]
+          },
+          {
+            rowName: '前門迎賓入口 (中央階梯)',
+            dimensionNote: '左留 5 格 ↔ 中央 2 格 ↔ 右留 5 格',
+            blocks: [
+              { name: '圍邊磚塊（筆直）', count: 5, label: '邊石 (5格)', color: '#a8a29e', icon: MATERIAL_DEFINITIONS['CURB_LINE'].icon, flex: 5 },
+              { name: '石頭樓梯', count: 2, label: '★ 石頭樓梯 (2格入戶階梯)', color: '#94a3b8', icon: MATERIAL_DEFINITIONS['STAIR'].icon, flex: 2, isKey: true },
+              { name: '圍邊磚塊（筆直）', count: 5, label: '邊石 (5格)', color: '#a8a29e', icon: MATERIAL_DEFINITIONS['CURB_LINE'].icon, flex: 5 }
+            ]
+          },
+          {
+            rowName: '迎賓石板小徑',
+            dimensionNote: '中央向前延伸 3 排踏板石',
+            blocks: [
+              { name: '踏板石', count: 6, label: '踏板石步道 (寬2格直通台階)', color: '#78716c', icon: MATERIAL_DEFINITIONS['PATH_STONE'].icon, flex: 6 }
+            ]
+          }
+        ]
       },
       {
-        id: 'layer_wall',
-        name: '第 2 層：外牆門窗與樑柱',
-        badge: '牆面層',
-        width: 16,
-        height: 20,
-        description: '四角立起【直立圓木】承重柱，外圍以【古舊石牆】圍合；正前方第 12 行中軸安裝【大木門】，兩側對稱嵌入【上下推拉窗】與【壁燈】。',
-        grid: l2Grid
+        id: 'mod_wall',
+        name: '正門外牆、樑柱與窗扉',
+        badge: '模組 2：主牆層',
+        dimensions: '正面寬 12 格 × 高 4 格 (雙側各 11 格深)',
+        keyFormula: '四角立柱 ➔ 中央開 2×2 大木門 ➔ 兩側各間隔 2 格古舊石牆後對稱嵌入窗戶',
+        tips: '嚴格保持軸對稱！大門兩側各放一盞壁燈，門上方留出彩色玻璃窗開孔。',
+        materials: [
+          { name: '古舊石牆', count: 86, icon: MATERIAL_DEFINITIONS['S_WALL'].icon },
+          { name: '直立圓木', count: 16, icon: MATERIAL_DEFINITIONS['WOOD_LOG'].icon },
+          { name: '大木門', count: 1, icon: MATERIAL_DEFINITIONS['DOOR'].icon },
+          { name: '上下推拉窗', count: 6, icon: MATERIAL_DEFINITIONS['WIN_SLIDE'].icon },
+          { name: '彩色玻璃（中）', count: 4, icon: MATERIAL_DEFINITIONS['WIN_COLOR'].icon },
+          { name: '壁燈', count: 4, icon: MATERIAL_DEFINITIONS['LAMP_WALL'].icon }
+        ],
+        legoLayout: [
+          {
+            rowName: '第 4 層：頂部橫樑與鐵牆加固 (高 4)',
+            dimensionNote: '寬 12 格 ↔',
+            blocks: [
+              { name: '直立圓木', count: 1, label: '左角柱', color: '#78350f', icon: MATERIAL_DEFINITIONS['WOOD_LOG'].icon, flex: 1 },
+              { name: '古舊石牆', count: 4, label: '石牆橫樑 (4格)', color: '#475569', icon: MATERIAL_DEFINITIONS['S_WALL'].icon, flex: 4 },
+              { name: '彩色玻璃（中）', count: 2, label: '彩繪玻璃 (2格門頂大窗)', color: '#c084fc', icon: MATERIAL_DEFINITIONS['WIN_COLOR'].icon, flex: 2, isKey: true },
+              { name: '古舊石牆', count: 4, label: '石牆橫樑 (4格)', color: '#475569', icon: MATERIAL_DEFINITIONS['S_WALL'].icon, flex: 4 },
+              { name: '直立圓木', count: 1, label: '右角柱', color: '#78350f', icon: MATERIAL_DEFINITIONS['WOOD_LOG'].icon, flex: 1 }
+            ]
+          },
+          {
+            rowName: '第 3 層：門頂壁燈與二樓小窗 (高 3)',
+            dimensionNote: '左柱 ➔ 牆 ➔ 窗 ➔ 壁燈 ➔ 門頂 ➔ 壁燈 ➔ 窗 ➔ 牆 ➔ 右柱',
+            blocks: [
+              { name: '直立圓木', count: 1, label: '左角柱', color: '#78350f', icon: MATERIAL_DEFINITIONS['WOOD_LOG'].icon, flex: 1 },
+              { name: '古舊石牆', count: 1, label: '牆', color: '#475569', icon: MATERIAL_DEFINITIONS['S_WALL'].icon, flex: 1 },
+              { name: '上下推拉窗', count: 1, label: '推拉窗', color: '#38bdf8', icon: MATERIAL_DEFINITIONS['WIN_SLIDE'].icon, flex: 1.5 },
+              { name: '壁燈', count: 1, label: '壁燈', color: '#fde047', icon: MATERIAL_DEFINITIONS['LAMP_WALL'].icon, flex: 1.5 },
+              { name: '古舊石牆', count: 2, label: '大門上方門楣 (2格)', color: '#475569', icon: MATERIAL_DEFINITIONS['S_WALL'].icon, flex: 2 },
+              { name: '壁燈', count: 1, label: '壁燈', color: '#fde047', icon: MATERIAL_DEFINITIONS['LAMP_WALL'].icon, flex: 1.5 },
+              { name: '上下推拉窗', count: 1, label: '推拉窗', color: '#38bdf8', icon: MATERIAL_DEFINITIONS['WIN_SLIDE'].icon, flex: 1.5 },
+              { name: '古舊石牆', count: 1, label: '牆', color: '#475569', icon: MATERIAL_DEFINITIONS['S_WALL'].icon, flex: 1 },
+              { name: '直立圓木', count: 1, label: '右角柱', color: '#78350f', icon: MATERIAL_DEFINITIONS['WOOD_LOG'].icon, flex: 1 }
+            ]
+          },
+          {
+            rowName: '第 2 層：一樓大門上半部與窗戶 (高 2)',
+            dimensionNote: '中軸安裝大木門上半部',
+            blocks: [
+              { name: '直立圓木', count: 1, label: '左角柱', color: '#78350f', icon: MATERIAL_DEFINITIONS['WOOD_LOG'].icon, flex: 1 },
+              { name: '古舊石牆', count: 1, label: '牆', color: '#475569', icon: MATERIAL_DEFINITIONS['S_WALL'].icon, flex: 1 },
+              { name: '上下推拉窗', count: 1, label: '推拉窗', color: '#38bdf8', icon: MATERIAL_DEFINITIONS['WIN_SLIDE'].icon, flex: 1.5 },
+              { name: '古舊石牆', count: 1, label: '牆', color: '#475569', icon: MATERIAL_DEFINITIONS['S_WALL'].icon, flex: 1 },
+              { name: '大木門', count: 2, label: '★ 大木門 (門扇頂部 2格)', color: '#b45309', icon: MATERIAL_DEFINITIONS['DOOR'].icon, flex: 2, isKey: true },
+              { name: '古舊石牆', count: 1, label: '牆', color: '#475569', icon: MATERIAL_DEFINITIONS['S_WALL'].icon, flex: 1 },
+              { name: '上下推拉窗', count: 1, label: '推拉窗', color: '#38bdf8', icon: MATERIAL_DEFINITIONS['WIN_SLIDE'].icon, flex: 1.5 },
+              { name: '古舊石牆', count: 1, label: '牆', color: '#475569', icon: MATERIAL_DEFINITIONS['S_WALL'].icon, flex: 1 },
+              { name: '直立圓木', count: 1, label: '右角柱', color: '#78350f', icon: MATERIAL_DEFINITIONS['WOOD_LOG'].icon, flex: 1 }
+            ]
+          },
+          {
+            rowName: '第 1 層：一樓大門門檻與基底牆 (高 1)',
+            dimensionNote: '中軸安裝大木門下半部，兩側實心石牆',
+            blocks: [
+              { name: '直立圓木', count: 1, label: '左柱底', color: '#78350f', icon: MATERIAL_DEFINITIONS['WOOD_LOG'].icon, flex: 1 },
+              { name: '古舊石牆', count: 4, label: '古舊石牆 (4格實體牆)', color: '#475569', icon: MATERIAL_DEFINITIONS['S_WALL'].icon, flex: 4 },
+              { name: '大木門', count: 2, label: '★ 大木門 (門檻 2格)', color: '#b45309', icon: MATERIAL_DEFINITIONS['DOOR'].icon, flex: 2, isKey: true },
+              { name: '古舊石牆', count: 4, label: '古舊石牆 (4格實體牆)', color: '#475569', icon: MATERIAL_DEFINITIONS['S_WALL'].icon, flex: 4 },
+              { name: '直立圓木', count: 1, label: '右柱底', color: '#78350f', icon: MATERIAL_DEFINITIONS['WOOD_LOG'].icon, flex: 1 }
+            ]
+          }
+        ]
       },
       {
-        id: 'layer_roof',
-        name: '第 3 層：屋頂斜瓦與尖塔',
-        badge: '屋頂層',
-        width: 16,
-        height: 20,
-        description: '兩側搭建深紫色【斜斜屋瓦】朝中軸交會，中央以【凸凸屋瓦】封脊，並在尖端豎立【石頭屋頂的裝飾】完成哥德尖塔外觀。',
-        grid: l3Grid
+        id: 'mod_roof',
+        name: '深紫斜瓦與哥德尖塔屋頂',
+        badge: '模組 3：屋頂層',
+        dimensions: '寬 14 格 (左右各外突 1 格簷邊) × 高 3 格',
+        keyFormula: '兩側斜斜屋瓦朝中軸升起 ➔ 中央凸凸屋瓦封脊 ➔ 屋頂頂點豎立石頭屋頂裝飾',
+        tips: '屋簷要比牆壁向外延伸多突 1 格，營造深邃有層次的陰影效果！大廳內部懸掛古董吊燈。',
+        materials: [
+          { name: '斜斜屋瓦', count: 42, icon: MATERIAL_DEFINITIONS['ROOF_SLOPE'].icon },
+          { name: '凸凸屋瓦', count: 18, icon: MATERIAL_DEFINITIONS['ROOF_PEAK'].icon },
+          { name: '凹凹屋瓦', count: 6, icon: MATERIAL_DEFINITIONS['ROOF_VALLEY'].icon },
+          { name: '石頭屋頂的裝飾', count: 4, icon: MATERIAL_DEFINITIONS['SPIRE_DEC'].icon },
+          { name: '古董吊燈', count: 2, icon: MATERIAL_DEFINITIONS['CHANDELIER'].icon },
+          { name: '鐵牆', count: 20, icon: MATERIAL_DEFINITIONS['IRON_WALL'].icon }
+        ],
+        legoLayout: [
+          {
+            rowName: '最高層：哥德尖塔頂飾與避雷針',
+            dimensionNote: '中軸安裝 4 處尖頂飾品',
+            blocks: [
+              { name: '石頭屋頂的裝飾', count: 4, label: '★ 石頭屋頂的裝飾 (4處立體哥德尖頂飾)', color: '#f59e0b', icon: MATERIAL_DEFINITIONS['SPIRE_DEC'].icon, flex: 12, isKey: true }
+            ]
+          },
+          {
+            rowName: '中層：正脊凸瓦與轉折凹瓦',
+            dimensionNote: '中央 6 格凸瓦封頂',
+            blocks: [
+              { name: '凹凹屋瓦', count: 2, label: '左轉折凹瓦', color: '#6b21a8', icon: MATERIAL_DEFINITIONS['ROOF_VALLEY'].icon, flex: 2 },
+              { name: '凸凸屋瓦', count: 6, label: '凸凸屋瓦 (中央屋脊6格)', color: '#3b0764', icon: MATERIAL_DEFINITIONS['ROOF_PEAK'].icon, flex: 6, isKey: true },
+              { name: '凹凹屋瓦', count: 2, label: '右轉折凹瓦', color: '#6b21a8', icon: MATERIAL_DEFINITIONS['ROOF_VALLEY'].icon, flex: 2 }
+            ]
+          },
+          {
+            rowName: '底層：左右斜面屋瓦與簷口鐵牆',
+            dimensionNote: '左右兩側斜瓦向中央合攏',
+            blocks: [
+              { name: '斜斜屋瓦', count: 4, label: '斜斜屋瓦 (左斜坡 4格)', color: '#581c87', icon: MATERIAL_DEFINITIONS['ROOF_SLOPE'].icon, flex: 4 },
+              { name: '鐵牆', count: 4, label: '鐵牆暗色收邊 (4格)', color: '#1e293b', icon: MATERIAL_DEFINITIONS['IRON_WALL'].icon, flex: 4 },
+              { name: '斜斜屋瓦', count: 4, label: '斜斜屋瓦 (右斜坡 4格)', color: '#581c87', icon: MATERIAL_DEFINITIONS['ROOF_SLOPE'].icon, flex: 4 }
+            ]
+          }
+        ]
       },
       {
-        id: 'layer_garden',
-        name: '第 4 層：庭院造景與南瓜馬車',
-        badge: '造景層',
-        width: 16,
-        height: 20,
-        description: '右前側以【板車】搭建南瓜馬車座，兩側佈置【鐵圍欄】、【雅緻路燈】、【枯萎的三角樹】與【提燈】，呈現萬聖節莊園氣派氛圍。',
-        grid: l4Grid
+        id: 'mod_garden',
+        name: '萬聖庭院造景與南瓜馬車',
+        badge: '模組 4：造景層',
+        dimensions: '庭院右前方 4 × 4 格獨立月台 + 迎賓外圍小徑',
+        keyFormula: '踏板石鋪設 4×4 月台 ➔ 放置板車 ➔ 四角架設提燈當復古車燈 ➔ 外圍鐵圍欄與枯木',
+        tips: '板車周圍可擺放橘色萬聖南瓜道具，枯木上點綴枯萎蔓藤，神秘童話氣氛瞬間拉滿！',
+        materials: [
+          { name: '板車', count: 1, icon: MATERIAL_DEFINITIONS['CARRIAGE'].icon },
+          { name: '提燈', count: 4, icon: MATERIAL_DEFINITIONS['LANTERN'].icon },
+          { name: '鐵圍欄', count: 24, icon: MATERIAL_DEFINITIONS['FENCE_IRON'].icon },
+          { name: '雅緻路燈', count: 4, icon: MATERIAL_DEFINITIONS['LAMP_STREET'].icon },
+          { name: '枯萎的三角樹', count: 3, icon: MATERIAL_DEFINITIONS['DEAD_TREE'].icon },
+          { name: '枯萎的蔓藤', count: 6, icon: MATERIAL_DEFINITIONS['DEAD_VINE'].icon },
+          { name: '踏板石', count: 20, icon: MATERIAL_DEFINITIONS['PATH_STONE'].icon }
+        ],
+        legoLayout: [
+          {
+            rowName: '南瓜馬車核心車體 (右前方 4×4 月台)',
+            dimensionNote: '板車底座 + 四角復古提燈',
+            blocks: [
+              { name: '提燈', count: 2, label: '前車提燈 ×2', color: '#fb923c', icon: MATERIAL_DEFINITIONS['LANTERN'].icon, flex: 2 },
+              { name: '板車', count: 1, label: '★ 板車 (南瓜馬車主座底盤)', color: '#ea580c', icon: MATERIAL_DEFINITIONS['CARRIAGE'].icon, flex: 6, isKey: true },
+              { name: '提燈', count: 2, label: '後車提燈 ×2', color: '#fb923c', icon: MATERIAL_DEFINITIONS['LANTERN'].icon, flex: 2 }
+            ]
+          },
+          {
+            rowName: '莊園外圍黑鐵圍欄與路燈',
+            dimensionNote: '路口兩側立雅緻路燈',
+            blocks: [
+              { name: '鐵圍欄', count: 6, label: '鐵圍欄 (左側邊界)', color: '#334155', icon: MATERIAL_DEFINITIONS['FENCE_IRON'].icon, flex: 4 },
+              { name: '雅緻路燈', count: 2, label: '迎賓雅緻路燈 ×2', color: '#fef08a', icon: MATERIAL_DEFINITIONS['LAMP_STREET'].icon, flex: 2 },
+              { name: '踏板石', count: 2, label: '莊園入口步道', color: '#78716c', icon: MATERIAL_DEFINITIONS['PATH_STONE'].icon, flex: 2 },
+              { name: '雅緻路燈', count: 2, label: '迎賓雅緻路燈 ×2', color: '#fef08a', icon: MATERIAL_DEFINITIONS['LAMP_STREET'].icon, flex: 2 },
+              { name: '鐵圍欄', count: 6, label: '鐵圍欄 (右側邊界)', color: '#334155', icon: MATERIAL_DEFINITIONS['FENCE_IRON'].icon, flex: 4 }
+            ]
+          },
+          {
+            rowName: '庭院角落枯木與蔓藤氛圍造景',
+            dimensionNote: '兩側散佈枯萎樹木與垂掛藤蔓',
+            blocks: [
+              { name: '枯萎的三角樹', count: 2, label: '枯萎的三角樹', color: '#44403c', icon: MATERIAL_DEFINITIONS['DEAD_TREE'].icon, flex: 4 },
+              { name: '枯萎的蔓藤', count: 4, label: '枯萎的蔓藤 (掛於枯木與側牆)', color: '#57534e', icon: MATERIAL_DEFINITIONS['DEAD_VINE'].icon, flex: 6 }
+            ]
+          }
+        ]
       }
     ],
-    // 8 大按部就班施工步驟
+
+    // 8 大依序施工指南 (包含每步分攤材料、影片時間戳與防呆秘訣)
     steps: [
       {
         stepNum: 1,
-        title: '整地與劃定 16 × 20 區域邊界',
-        timing: '00:30',
-        summary: '清理地面雜草，用鏟子或標記物標出橫向 16 格、縱向 20 格的莊園基地範圍。',
-        tips: '後方預留 2 格空隙作為外牆散步道，前方預留 7 格作為馬車迴轉庭園。',
+        title: '整平土地並打好 12 × 11 磚石地基',
+        timing: '00:45',
+        summary: '在地面平整出至少 16 × 20 的建造空地，用【石磚牆】平鋪一塊寬 12 格、長 11 格的長方形基地，作為防潮與承重基座。',
+        tips: '務必先確定洋館座向與居中位置，周圍至少預留 2 格空地以利後續搭建屋簷與庭院。',
         materials: [
-          { name: '石磚牆', count: 12 }
+          { name: '石磚牆', count: 48 }
         ]
       },
       {
         stepNum: 2,
-        title: '鋪設加厚石磚地基與迎賓階梯',
-        timing: '02:15',
-        summary: '在第 2 行至第 12 行鋪設 12 × 11 格的【石磚牆】平整地面，並在第 13 行正中放置 2 塊【石頭樓梯】。',
-        tips: '基座高於地面一格能讓洋館顯得更巍峨莊嚴，階梯置中（列 7-8）是全館對稱的基準！',
+        title: '鋪設正門階梯與迎賓小徑',
+        timing: '02:30',
+        summary: '在洋館基座正前方第 6、7 格正中央放置 2 格【石頭樓梯】，由階梯往前鋪設 3 排【踏板石】，兩側以【圍邊磚塊（筆直）】整齊收邊。',
+        tips: '台階與大門對齊是全棟建築的中軸基準線，後續所有窗戶與裝飾皆以此為中心對稱分佈。',
         materials: [
-          { name: '石磚牆', count: 36 },
-          { name: '石頭樓梯', count: 2 }
+          { name: '石頭樓梯', count: 2 },
+          { name: '踏板石', count: 6 },
+          { name: '圍邊磚塊（筆直）', count: 12 }
         ]
       },
       {
         stepNum: 3,
-        title: '立起承重圓木柱與砌築古舊石牆',
+        title: '立起四角承重圓木柱與搭建外牆輪廓',
         timing: '04:50',
-        summary: '在基座四個角落與中間支撐點豎立 6 根【直立圓木】，周圍砌築 3 格高的【古舊石牆】圍合出洋館大廳。',
-        tips: '石牆保留門窗預留孔，先立柱再填牆可以保證建築不歪斜。',
+        summary: '在地基四個角落垂直立起 4 格高的【直立圓木】作為立體樑柱，外圍以【古舊石牆】砌至 4 格高，正門中央預留 2 × 2 空位。',
+        tips: '四角圓木能強化哥德式建築沉穩莊嚴的立體感，牆身古舊石牆能完美展現歷史痕跡。',
         materials: [
           { name: '直立圓木', count: 16 },
-          { name: '古舊石牆', count: 52 }
+          { name: '古舊石牆', count: 48 }
         ]
       },
       {
         stepNum: 4,
-        title: '安裝正門大木門與對稱採光推拉窗',
-        timing: '07:30',
-        summary: '正面中央對準階梯安裝雙開【大木門】，左右兩翼與側牆鑲嵌【上下推拉窗】，後方嵌入【彩色玻璃（中）】。',
-        tips: '大木門左右兩側外牆各掛上一盞【壁燈】，夜晚點亮時非常有萬聖古堡氛圍。',
+        title: '安裝大木門、上下推拉窗與彩繪大窗',
+        timing: '08:15',
+        summary: '正門安裝【大木門】，左右兩側各間隔 2 格石牆對稱嵌入【上下推拉窗】，門上方與側牆上方嵌入【彩色玻璃（中）】，門側懸掛【壁燈】。',
+        tips: '彩色玻璃在室內燈光照耀下會呈現迷人神秘的光暈，是洋館不可或缺的視覺焦點！',
         materials: [
           { name: '大木門', count: 1 },
-          { name: '上下推拉窗', count: 8 },
+          { name: '上下推拉窗', count: 6 },
           { name: '彩色玻璃（中）', count: 4 },
           { name: '壁燈', count: 4 }
         ]
       },
       {
         stepNum: 5,
-        title: '搭設雙斜面屋頂與凹凸屋脊',
-        timing: '10:45',
-        summary: '自兩側外牆上方依序鋪排深紫【斜斜屋瓦】向中軸延伸，中央接縫以【凸凸屋瓦】壓頂。',
-        tips: '屋簷向外延伸 1 格能製造漂亮的深邃陰影立體感！',
+        title: '搭建深紫色雙面斜屋頂與黑鐵牆收邊',
+        timing: '11:30',
+        summary: '從左右兩側外簷以【斜斜屋瓦】朝中央中軸逐層升起搭建斜屋頂，中央以【凸凸屋瓦】封脊，屋簷底部以【鐵牆】加固。',
+        tips: '屋頂左右側各比牆壁向外延伸多突 1 格，營造深邃有層次的懸挑屋簷陰影。',
         materials: [
           { name: '斜斜屋瓦', count: 42 },
-          { name: '凸凸屋瓦', count: 16 },
-          { name: '凹凹屋瓦', count: 12 },
+          { name: '凸凸屋瓦', count: 18 },
+          { name: '凹凹屋瓦', count: 6 },
           { name: '鐵牆', count: 20 }
         ]
       },
       {
         stepNum: 6,
-        title: '安裝尖塔避雷針裝飾與室內吊燈',
+        title: '安裝哥德尖塔裝飾與內部復古吊燈',
         timing: '14:20',
         summary: '在屋脊中軸頂端安裝【石頭屋頂的裝飾】，大廳內部懸掛 2 盞【古董吊燈】完成主建物封頂。',
         tips: '尖塔飾品垂直置中，完美勾勒出哥德式洋館標誌性的神秘剪影。',
