@@ -19,11 +19,11 @@ const recipeDbCode = fs.readFileSync('recipe_db.js', 'utf8');
 const dataJsCode = fs.readFileSync('data.js', 'utf8');
 const recipeJsCode = fs.readFileSync('recipe.js', 'utf8');
 
-// 2. 驗證 index.html 中是否包含 Modal 結構與正確版號 4.12.17
+// 2. 驗證 index.html 中是否包含 Modal 結構與正確版號 4.12.18
 assert(htmlContent.includes('id="recipeDetailModal"'), 'index.html 必須包含 id="recipeDetailModal" 元素');
-assert(htmlContent.includes('recipe.js?v=4.12.17'), 'index.html 必須將 recipe.js 版號升級至 4.12.17');
-assert(htmlContent.includes('index.css?v=4.12.17'), 'index.html 必須將 index.css 版號升級至 4.12.17');
-console.log('✓ index.html 結構與快取版號 4.12.17 檢查通過');
+assert(htmlContent.includes('recipe.js?v=4.12.18'), 'index.html 必須將 recipe.js 版號升級至 4.12.18');
+assert(htmlContent.includes('index.css?v=4.12.18'), 'index.html 必須將 index.css 版號升級至 4.12.18');
+console.log('✓ index.html 結構與快取版號 4.12.18 檢查通過');
 
 // 3. 驗證 index.css 中包含雙行排版與 Modal 樣式，且採用溫和收斂的 PWA 流體公式
 assert(cssContent.includes('.recipe-modal-backdrop'), 'index.css 必須包含 .recipe-modal-backdrop 樣式');

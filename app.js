@@ -480,10 +480,20 @@
   }
 
   // Floating Back Button Helpers
-  function showFloatingBackBtn(label) {
+  function showFloatingBackBtn(label, extra = {}) {
     if (!DOM.floatingBackBtn) return;
     if (DOM.floatingBackText) {
-      DOM.floatingBackText.textContent = label ? `返回 ${label}` : '返回上一頁';
+      DOM.floatingBackText.textContent = label ? (label.startsWith('返回') ? label : `返回 ${label}`) : '返回上一頁';
+    }
+    if (extra.returnTab) {
+      DOM.floatingBackBtn.dataset.returnTab = extra.returnTab;
+    } else {
+      delete DOM.floatingBackBtn.dataset.returnTab;
+    }
+    if (extra.returnPkmId) {
+      DOM.floatingBackBtn.dataset.returnPkmId = extra.returnPkmId;
+    } else {
+      delete DOM.floatingBackBtn.dataset.returnPkmId;
     }
     DOM.floatingBackBtn.classList.remove('hidden');
     if (typeof document !== 'undefined' && document.body) {
@@ -494,6 +504,8 @@
   function hideFloatingBackBtn() {
     if (!DOM.floatingBackBtn) return;
     DOM.floatingBackBtn.classList.add('hidden');
+    delete DOM.floatingBackBtn.dataset.returnTab;
+    delete DOM.floatingBackBtn.dataset.returnPkmId;
     if (typeof document !== 'undefined' && document.body) {
       document.body.classList.remove('has-floating-back');
     }
@@ -1207,6 +1219,15 @@
     if (DOM.floatingBackBtn) {
       DOM.floatingBackBtn.addEventListener('click', (e) => {
         e.preventDefault();
+        const returnTab = DOM.floatingBackBtn.dataset.returnTab;
+        const returnPkmId = DOM.floatingBackBtn.dataset.returnPkmId;
+        if (returnPkmId) {
+          // 確定性直連保險：直接切回原分頁並彈出卡片
+          if (returnTab) switchTab(returnTab, true);
+          openPkmDetailModal(returnPkmId);
+          hideFloatingBackBtn();
+          return;
+        }
         if (window.history.length > 1) {
           window.history.back();
         } else {
@@ -4365,12 +4386,18 @@
       btn.classList.toggle('active', btn.dataset.prefTab === state.prefTab);
     });
 
-    switchTab('preferences', false);
-    pushNavHistory({ tab: 'preferences' });
+    // 傳入 skipSync = true，避免 switchTab 內部的 syncNavStateToURLAndStorage 抹殺 modal 狀態！
+    switchTab('preferences', true);
 
-    // 3. 懸浮返回按鈕明確指示返回該寶可夢
+    // 明確推入新的歷史項目（pushState）
+    const newHash = `#preferences-${state.currentView || 'table'}`;
+    try {
+      history.pushState({ tab: 'preferences', view: state.currentView }, '', newHash);
+    } catch (e) {}
+
+    // 3. 懸浮返回按鈕明確指示返回該寶可夢，並綁定直連資料保險
     if (pkm) {
-      showFloatingBackBtn(pkm.name);
+      showFloatingBackBtn(pkm.name, { returnTab: fromTab, returnPkmId: pkm.id });
     } else if (fromTab && fromTab !== 'preferences') {
       const tabNameMap = {
         habitat: '寶可夢圖鑑',
