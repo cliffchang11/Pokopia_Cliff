@@ -90,16 +90,21 @@ console.log('✓ 8 大施工步驟指南校驗通過，材料分攤正確無誤'
 // 3. index.html 整合驗證
 const html = fs.readFileSync('index.html', 'utf8');
 assert(html.includes('id="tabBlueprint"'), 'index.html 必須包含 id="tabBlueprint" 目次按鈕');
-assert(html.includes('id="btnBlueprintNav"'), 'index.html 必須包含 id="btnBlueprintNav" 導覽按鈕');
+assert(!html.includes('id="btnBlueprintNav"'), 'index.html Header 絕不能包含 id="btnBlueprintNav" 多餘按鈕');
 assert(html.includes('id="blueprintSection"'), 'index.html 必須包含 id="blueprintSection" 分頁容器');
 assert(html.includes('id="blueprintContainer"'), 'index.html 必須包含 id="blueprintContainer" 渲染容器');
 assert(html.includes('src="building_blueprint_data.js?v=4.13.0"'), 'index.html 必須引入 building_blueprint_data.js?v=4.13.0');
 assert(html.includes('app.js?v=4.13.0'), 'index.html 必須使用 app.js?v=4.13.0');
 assert(html.includes('index.css?v=4.13.0'), 'index.html 必須使用 index.css?v=4.13.0');
-console.log('✓ index.html 導覽、主容器與 4.13.0 快取版本號驗證通過');
+console.log('✓ index.html 導覽、主容器與 4.13.0 快取版本號驗證通過 (Header 已無多餘按鈕)');
 
-// 4. index.css 樣式完整度驗證
+// 4. index.css 樣式完整度與語法校驗
 const css = fs.readFileSync('index.css', 'utf8');
+const openBraces = (css.match(/\{/g) || []).length;
+const closeBraces = (css.match(/\}/g) || []).length;
+assert(openBraces === closeBraces, `index.css 大括號未平衡！開括號: ${openBraces}, 閉括號: ${closeBraces}`);
+console.log(`✓ index.css 語法完整平衡校驗通過 (總括號數對: ${openBraces})`);
+
 const requiredClasses = [
   '.bp-hero-banner',
   '.bp-materials-card',
@@ -114,13 +119,14 @@ const requiredClasses = [
 requiredClasses.forEach(cls => {
   assert(css.includes(cls), `index.css 必須包含核心樣式：${cls}`);
 });
-console.log('✓ index.css 建築藍圖樂高圖解與三合一工作台專用樣式群驗證通過');
+assert(css.includes('border-radius: 9999px'), 'index.css 必須為模組切換鈕定義膠囊圓角 (border-radius: 9999px)');
+console.log('✓ index.css 建築藍圖樂高圖解與三合一工作台專用樣式群及膠囊風格驗證通過');
 
 // 5. app.js 控制邏輯驗證
 const appCode = fs.readFileSync('app.js', 'utf8');
 assert(appCode.includes("validTabs = ['storage', 'habitat', 'habitatCatalog', 'recipe', 'preferences', 'autofarm', 'customStorage', 'regionMap', 'video', 'blueprint']"), 'validTabs 必須包含 blueprint');
 assert(appCode.includes("tabBlueprint: document.getElementById('tabBlueprint')"), 'DOM 物件必須快取 tabBlueprint');
-assert(appCode.includes("btnBlueprintNav: document.getElementById('btnBlueprintNav')"), 'DOM 物件必須快取 btnBlueprintNav');
+assert(!appCode.includes("btnBlueprintNav"), 'app.js 不應包含 btnBlueprintNav');
 assert(appCode.includes("blueprintSection: document.getElementById('blueprintSection')"), 'DOM 物件必須快取 blueprintSection');
 assert(appCode.includes("blueprintContainer: document.getElementById('blueprintContainer')"), 'DOM 物件必須快取 blueprintContainer');
 assert(appCode.includes("} else if (tab === 'blueprint') {"), 'switchTab 必須處理 tab === blueprint');

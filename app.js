@@ -189,7 +189,6 @@
     btnAutoFarmNav: document.getElementById('btnAutoFarmNav'),
     btnCustomStorageNav: document.getElementById('btnCustomStorageNav'),
     btnVideoNav: document.getElementById('btnVideoNav'),
-    btnBlueprintNav: document.getElementById('btnBlueprintNav'),
     autoFarmSection: document.getElementById('autoFarmSection'),
     customStorageSection: document.getElementById('customStorageSection'),
     preferencesSection: document.getElementById('preferencesSection'),
@@ -1263,15 +1262,6 @@
       });
     }
 
-    if (DOM.btnBlueprintNav) {
-      DOM.btnBlueprintNav.addEventListener('click', () => {
-        closeTocDropdown();
-        switchTab('blueprint', true);
-        pushNavHistory({ tab: 'blueprint' });
-        hideFloatingBackBtn();
-      });
-    }
-
     // View mode switching
     DOM.btnCardView.addEventListener('click', () => {
       switchView('card', true);
@@ -1694,7 +1684,6 @@
     if (DOM.tabVideo) DOM.tabVideo.classList.remove('active');
     if (DOM.btnVideoNav) DOM.btnVideoNav.classList.remove('active');
     if (DOM.tabBlueprint) DOM.tabBlueprint.classList.remove('active');
-    if (DOM.btnBlueprintNav) DOM.btnBlueprintNav.classList.remove('active');
 
     DOM.storageSection.classList.add('hidden-section');
     DOM.storageSection.classList.remove('active-section');
@@ -1922,7 +1911,6 @@
       renderPrefDrawerContent();
     } else if (tab === 'blueprint') {
       if (DOM.tabBlueprint) DOM.tabBlueprint.classList.add('active');
-      if (DOM.btnBlueprintNav) DOM.btnBlueprintNav.classList.add('active');
       if (DOM.blueprintSection) {
         DOM.blueprintSection.classList.remove('hidden-section');
         DOM.blueprintSection.classList.add('active-section');

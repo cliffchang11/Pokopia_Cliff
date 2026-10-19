@@ -12377,6 +12377,8 @@ body.has-floating-back .scroll-top-btn {
 
 :root[data-theme="dark"] .bp-material-count-pill {
   color: #818cf8;
+}
+
 /* 4. 核心：四大模組樂高式立面積木圖解 (Lego Visual Blueprint) */
 .bp-modules-section {
   display: flex;
@@ -12393,11 +12395,15 @@ body.has-floating-back .scroll-top-btn {
 }
 
 .bp-module-pill-btn {
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.6rem 1.15rem;
-  font-size: 0.875rem;
+  padding: 0.55rem 1.15rem;
+  font-family: inherit;
+  font-size: 0.84rem;
   font-weight: 800;
   border-radius: 9999px;
   background: var(--bg-card, #ffffff);
@@ -12406,24 +12412,37 @@ body.has-floating-back .scroll-top-btn {
   cursor: pointer;
   transition: all var(--transition-fast);
   box-shadow: 0 0.0625rem 0.25rem rgba(0, 0, 0, 0.04);
+  line-height: 1.2;
 }
 
 :root[data-theme="dark"] .bp-module-pill-btn {
   background: rgba(30, 41, 59, 0.85);
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.12);
   color: #cbd5e1;
 }
 
 .bp-module-pill-btn:hover {
-  border-color: var(--primary-indigo, #4f46e5);
+  border-color: #7c3aed;
+  color: #7c3aed;
   transform: translateY(-0.0625rem);
+  box-shadow: 0 0.2rem 0.5rem rgba(124, 58, 237, 0.15);
+}
+
+:root[data-theme="dark"] .bp-module-pill-btn:hover {
+  color: #d8b4fe;
+  border-color: #a855f7;
 }
 
 .bp-module-pill-btn.active {
-  background: #7c3aed;
-  border-color: #7c3aed;
+  background: linear-gradient(135deg, #7c3aed, #6366f1);
+  border-color: transparent;
   color: #ffffff;
   box-shadow: 0 0.25rem 0.75rem rgba(124, 58, 237, 0.35);
+}
+
+:root[data-theme="dark"] .bp-module-pill-btn.active {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: #ffffff;
 }
 
 .bp-lego-board {
@@ -12793,20 +12812,41 @@ body.has-floating-back .scroll-top-btn {
 }
 
 .bp-reset-btn {
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   background: transparent;
   border: 0.0625rem solid var(--border-color, #cbd5e1);
   color: var(--text-secondary, #64748b);
-  border-radius: 0.45rem;
-  padding: 0.25rem 0.6rem;
+  border-radius: 9999px;
+  padding: 0.3rem 0.8rem;
+  font-family: inherit;
   font-size: 0.75rem;
+  font-weight: 700;
   cursor: pointer;
   transition: all var(--transition-fast);
+  line-height: 1.2;
+}
+
+:root[data-theme="dark"] .bp-reset-btn {
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #94a3b8;
 }
 
 .bp-reset-btn:hover {
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(239, 68, 68, 0.12);
   color: #ef4444;
-  border-color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.4);
+  transform: translateY(-0.0625rem);
+}
+
+:root[data-theme="dark"] .bp-reset-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border-color: #f87171;
 }
 
 /* 樣式別名與卡片相容 */
