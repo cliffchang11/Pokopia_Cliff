@@ -83,11 +83,11 @@ assert(recipeCode.includes('data-pkm-id="${p.id}"'), 'recipe.js 寶可夢卡片�
 assert(recipeCode.includes('window.openPkmDetailModal(pId);'), 'recipe.js 點擊卡片必須呼叫 window.openPkmDetailModal');
 console.log('  ✅ [PASS] recipe.js 寶可夢卡片具備 data-pkm-id 與點擊開啟百科能力');
 
-// 11. 檢驗 index.html 快取版號 4.12.19
-console.log('\n11. 檢驗全站快取版號 (v4.12.19)：');
-assert(htmlCode.includes('index.css?v=4.12.19'), 'index.html 必須使用 index.css?v=4.12.19');
-assert(htmlCode.includes('app.js?v=4.12.19'), 'index.html 必須使用 app.js?v=4.12.19');
-assert(htmlCode.includes('recipe.js?v=4.12.19'), 'index.html 必須使用 recipe.js?v=4.12.19');
-console.log('  ✅ [PASS] 全站資源標籤快取版號 v4.12.19 檢驗通過');
+// 11. 檢驗 index.html 快取版號 4.13.0
+console.log('\n11. 檢驗全站快取版號 (v4.13.0)：');
+assert(htmlCode.includes('index.css?v=4.13.0'), 'index.html 必須使用 index.css?v=4.13.0');
+assert(htmlCode.includes('app.js?v=4.13.0'), 'index.html 必須使用 app.js?v=4.13.0');
+assert(htmlCode.includes('recipe.js?v=4.13.0'), 'index.html 必須使用 recipe.js?v=4.13.0');
+console.log('  ✅ [PASS] 全站資源標籤快取版號 v4.13.0 檢驗通過');
 
 console.log('\n🎉 [驗證成功] 全場景跳轉定位與上一頁定位還原系統 11 項檢驗 100% 通過！');

@@ -162,6 +162,12 @@
       return (typeof saved === 'string' && saved.trim()) ? saved.trim() : null;
     })(),
     selectedVideoTag: '全部',
+    blueprintView: 'grid',
+    blueprintActiveLayer: 'layer_foundation',
+    blueprintChecked: (function() {
+      const saved = loadProgress('pokopia_blueprint_checked', {});
+      return (saved && typeof saved === 'object') ? saved : {};
+    })(),
     isStaggerAnim: true
   };
 
@@ -179,13 +185,17 @@
     tabAutoFarm: document.getElementById('tabAutoFarm'),
     tabCustomStorage: document.getElementById('tabCustomStorage'),
     tabVideo: document.getElementById('tabVideo'),
+    tabBlueprint: document.getElementById('tabBlueprint'),
     btnAutoFarmNav: document.getElementById('btnAutoFarmNav'),
     btnCustomStorageNav: document.getElementById('btnCustomStorageNav'),
     btnVideoNav: document.getElementById('btnVideoNav'),
+    btnBlueprintNav: document.getElementById('btnBlueprintNav'),
     autoFarmSection: document.getElementById('autoFarmSection'),
     customStorageSection: document.getElementById('customStorageSection'),
     preferencesSection: document.getElementById('preferencesSection'),
     videoSection: document.getElementById('videoSection'),
+    blueprintSection: document.getElementById('blueprintSection'),
+    blueprintContainer: document.getElementById('blueprintContainer'),
     videoPlayerIframe: document.getElementById('videoPlayerIframe'),
     videoResumeBanner: document.getElementById('videoResumeBanner'),
     videoResumeText: document.getElementById('videoResumeText'),
@@ -381,7 +391,7 @@
 
   // Navigation State Persistence (URL Hash 絕對第一優先權 + LocalStorage 回退)
   function getInitialNavState() {
-    const validTabs = ['storage', 'habitat', 'habitatCatalog', 'recipe', 'preferences', 'autofarm', 'customStorage', 'regionMap', 'video'];
+    const validTabs = ['storage', 'habitat', 'habitatCatalog', 'recipe', 'preferences', 'autofarm', 'customStorage', 'regionMap', 'video', 'blueprint'];
     const validViews = ['card', 'table'];
 
     let tab = null;
@@ -1244,6 +1254,24 @@
       });
     }
 
+    if (DOM.tabBlueprint) {
+      DOM.tabBlueprint.addEventListener('click', () => {
+        closeTocDropdown();
+        switchTab('blueprint', true);
+        pushNavHistory({ tab: 'blueprint' });
+        hideFloatingBackBtn();
+      });
+    }
+
+    if (DOM.btnBlueprintNav) {
+      DOM.btnBlueprintNav.addEventListener('click', () => {
+        closeTocDropdown();
+        switchTab('blueprint', true);
+        pushNavHistory({ tab: 'blueprint' });
+        hideFloatingBackBtn();
+      });
+    }
+
     // View mode switching
     DOM.btnCardView.addEventListener('click', () => {
       switchView('card', true);
@@ -1665,6 +1693,8 @@
     if (DOM.tabRegionMap) DOM.tabRegionMap.classList.remove('active');
     if (DOM.tabVideo) DOM.tabVideo.classList.remove('active');
     if (DOM.btnVideoNav) DOM.btnVideoNav.classList.remove('active');
+    if (DOM.tabBlueprint) DOM.tabBlueprint.classList.remove('active');
+    if (DOM.btnBlueprintNav) DOM.btnBlueprintNav.classList.remove('active');
 
     DOM.storageSection.classList.add('hidden-section');
     DOM.storageSection.classList.remove('active-section');
@@ -1695,6 +1725,10 @@
     if (DOM.videoSection) {
       DOM.videoSection.classList.add('hidden-section');
       DOM.videoSection.classList.remove('active-section');
+    }
+    if (DOM.blueprintSection) {
+      DOM.blueprintSection.classList.add('hidden-section');
+      DOM.blueprintSection.classList.remove('active-section');
     }
 
     if (tab === 'storage') {
@@ -1886,6 +1920,26 @@
       if (DOM.filterToolbar) DOM.filterToolbar.classList.add('hidden');
       if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.add('hidden');
       renderPrefDrawerContent();
+    } else if (tab === 'blueprint') {
+      if (DOM.tabBlueprint) DOM.tabBlueprint.classList.add('active');
+      if (DOM.btnBlueprintNav) DOM.btnBlueprintNav.classList.add('active');
+      if (DOM.blueprintSection) {
+        DOM.blueprintSection.classList.remove('hidden-section');
+        DOM.blueprintSection.classList.add('active-section');
+      }
+      if (DOM.toolbarContainer) DOM.toolbarContainer.classList.remove('hidden');
+      if (DOM.toolbarHeaderRow) DOM.toolbarHeaderRow.classList.remove('hidden');
+      if (DOM.toolbarTitle) DOM.toolbarTitle.textContent = '建築藍圖';
+      if (DOM.catalogProgressBadge) DOM.catalogProgressBadge.classList.remove('hidden');
+      if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🏛️';
+      const bpData = window.POKOPIA_BLUEPRINT_DATA;
+      const matCount = (bpData && bpData.materialsSummary) ? bpData.materialsSummary.length : 23;
+      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>' + matCount + '</strong> 種正名建材 ‧ 4 層俯視棋盤';
+      if (DOM.searchRow) DOM.searchRow.classList.add('hidden');
+      if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.add('hidden');
+      if (DOM.filterToolbar) DOM.filterToolbar.classList.add('hidden');
+      if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.add('hidden');
+      renderBlueprintSection();
     }
 
     if (!skipSync) {
@@ -6702,6 +6756,380 @@
     recordCurrentVideoProgress,
     restartCurrentVideoFromBeginning,
     getVideoProgress: () => state.videoProgress
+  };
+
+  // ==========================================
+  // 建築藍圖 (Building Blueprint) 專區實作
+  // ==========================================
+  function renderBlueprintSection() {
+    if (!DOM.blueprintContainer) return;
+    const bpData = window.POKOPIA_BLUEPRINT_DATA;
+    if (!bpData || !bpData.blueprint) {
+      DOM.blueprintContainer.innerHTML = `
+        <div class="bp-empty-card" style="padding: 2.5rem; text-align: center; background: var(--bg-card); border-radius: 12px; border: 1px dashed var(--border-color);">
+          <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">⚠️</div>
+          <h3 style="margin: 0 0 0.5rem; color: var(--text-primary);">建築藍圖資料載入中或未找到</h3>
+          <p style="margin: 0; color: var(--text-muted); font-size: 0.95rem;">請確認 building_blueprint_data.js 是否已正確載入。</p>
+        </div>
+      `;
+      return;
+    }
+
+    const { blueprint, materialsSummary, layers, steps } = bpData;
+
+    // 計算備料進度
+    const checkedMap = state.blueprintChecked || {};
+    const totalMats = (materialsSummary && materialsSummary.length) || 0;
+    const checkedCount = materialsSummary ? materialsSummary.filter(m => !!checkedMap[m.name]).length : 0;
+    const progressPercent = totalMats > 0 ? Math.round((checkedCount / totalMats) * 100) : 0;
+
+    // 當前選中的圖層
+    const currentLayer = (layers && layers.find(l => l.id === state.blueprintActiveLayer)) || (layers && layers[0]) || null;
+
+    // HTML 組合
+    let html = `
+      <div class="bp-hero-banner">
+        <div class="bp-hero-badge">🎃 萬聖節限定造景藍圖</div>
+        <h2 class="bp-hero-title">${blueprint.title}</h2>
+        <div class="bp-hero-meta">
+          <span class="bp-meta-pill">創作者：<strong>${blueprint.author}</strong></span>
+          <span class="bp-meta-pill">規格：<strong>${blueprint.dimensions}</strong></span>
+          <span class="bp-meta-pill">難度：<strong>${blueprint.difficulty}</strong></span>
+          <span class="bp-meta-pill">預估工時：<strong>${blueprint.estimatedTime}</strong></span>
+          <a href="${blueprint.videoUrl}" target="_blank" rel="noopener noreferrer" class="bp-video-link-btn">
+            🎬 觀看 YouTube 建造原片 ↗
+          </a>
+        </div>
+        <p class="bp-hero-desc">${blueprint.description}</p>
+      </div>
+
+      <!-- 視圖切換列 -->
+      <div class="bp-view-switcher">
+        <button type="button" class="bp-view-tab-btn ${state.blueprintView === 'grid' ? 'active' : ''}" data-bp-view="grid">
+          📐 分層俯視網格圖 (Grid Plan)
+        </button>
+        <button type="button" class="bp-view-tab-btn ${state.blueprintView === 'steps' ? 'active' : ''}" data-bp-view="steps">
+          🔨 8 大施工步驟指南 (Step-by-Step)
+        </button>
+      </div>
+
+      <!-- 互動備料庫 -->
+      <div class="bp-materials-panel">
+        <div class="bp-mat-header">
+          <div class="bp-mat-title-wrap">
+            <h3 class="bp-mat-title">📦 施工備料檢驗清單 (${totalMats} 種建材)</h3>
+            <span class="bp-mat-subtitle">點擊材料卡片即可打勾記錄進度，自動留存於本地</span>
+          </div>
+          <div class="bp-mat-progress-wrap">
+            <div class="bp-mat-counter">
+              已備妥 <strong id="bpCheckedCount">${checkedCount}</strong> / <span>${totalMats}</span> 種 (${progressPercent}%)
+            </div>
+            <div class="bp-progress-bar-bg">
+              <div class="bp-progress-bar-fill" style="width: ${progressPercent}%;"></div>
+            </div>
+            <button type="button" id="btnResetBpChecked" class="bp-reset-btn" title="重置備料勾選紀錄">
+              🔄 重置勾選
+            </button>
+          </div>
+        </div>
+
+        <div class="bp-mat-grid">
+          ${materialsSummary.map(mat => {
+            const isChecked = !!checkedMap[mat.name];
+            return `
+              <div class="bp-mat-card ${isChecked ? 'checked' : ''}" data-mat-name="${mat.name}">
+                <label class="bp-mat-checkbox-label">
+                  <input type="checkbox" class="bp-mat-checkbox" data-mat-name="${mat.name}" ${isChecked ? 'checked' : ''}>
+                  <span class="bp-custom-checkmark"></span>
+                </label>
+                <img src="${mat.icon}" alt="${mat.name}" class="bp-mat-icon" loading="lazy">
+                <div class="bp-mat-info">
+                  <div class="bp-mat-name-row">
+                    <span class="bp-mat-name">${mat.name}</span>
+                    <span class="bp-mat-qty">×${mat.count}</span>
+                  </div>
+                  <div class="bp-mat-desc">${mat.desc || mat.category}</div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+
+    // 視圖區塊分歧：Grid 俯視圖 vs Steps 步驟指南
+    if (state.blueprintView === 'grid' && currentLayer) {
+      html += `
+        <div class="bp-grid-section">
+          <!-- 分層切換器 -->
+          <div class="bp-layer-pills">
+            ${layers.map(layer => `
+              <button type="button" class="bp-layer-pill-btn ${layer.id === currentLayer.id ? 'active' : ''}" data-layer-id="${layer.id}">
+                <span class="bp-layer-badge">${layer.badge}</span>
+                <span class="bp-layer-name">${layer.name}</span>
+              </button>
+            `).join('')}
+          </div>
+
+          <div class="bp-layer-banner">
+            <div class="bp-layer-banner-title">📍 當前檢視：<strong>${currentLayer.name}</strong> (寬 ${currentLayer.width} × 長 ${currentLayer.height})</div>
+            <p class="bp-layer-banner-desc">${currentLayer.description}</p>
+          </div>
+
+          <!-- 網格與詳情檢視區 (並排工作台) -->
+          <div class="bp-grid-workbench">
+            <div class="bp-grid-viewport">
+              <div class="bp-grid-tip">💡 提示：點擊或滑鼠懸停於方格上，可在右側檢視詳細建材與擺設座標</div>
+              <div class="bp-grid-scroll-wrap">
+                <table class="bp-grid-table">
+                  <thead>
+                    <tr>
+                      <th class="bp-coord-th bp-corner-th">Y \\ X</th>
+                      ${Array.from({ length: currentLayer.width }, (_, i) => `<th class="bp-coord-th">${i + 1}</th>`).join('')}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${currentLayer.grid.map((row, r) => `
+                      <tr>
+                        <th class="bp-coord-th">${r + 1}</th>
+                        ${row.map((cell, c) => {
+                          const cellClass = cell ? 'has-item' : 'empty-cell';
+                          const style = cell ? `background-color: ${cell.color}22; border-color: ${cell.color};` : '';
+                          return `
+                            <td class="bp-grid-cell ${cellClass}" data-r="${r}" data-c="${c}" style="${style}" title="${cell ? `${cell.name} (X:${c+1}, Y:${r+1})` : `空地 (X:${c+1}, Y:${r+1})`}">
+                              ${cell ? `
+                                <img src="${cell.icon}" alt="${cell.name}" class="bp-cell-icon" loading="lazy">
+                                <span class="bp-cell-label">${cell.label}</span>
+                              ` : '<span class="bp-cell-dot">·</span>'}
+                            </td>
+                          `;
+                        }).join('')}
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 格子檢測面板 (Inspector) -->
+            <div class="bp-inspector-panel" id="bpInspectorPanel">
+              <div class="bp-inspector-header">🔍 座標詳情檢視</div>
+              <div class="bp-inspector-body" id="bpInspectorBody">
+                <div class="bp-inspector-empty">請點選或將游標移至左側棋盤上的任一方格</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 分層圖例對照表 -->
+          <div class="bp-legend-card">
+            <h4 class="bp-legend-title">🎨 本層使用材料圖例</h4>
+            <div class="bp-legend-items">
+              ${(function() {
+                const used = new Map();
+                currentLayer.grid.forEach(row => {
+                  row.forEach(cell => {
+                    if (cell && !used.has(cell.name)) {
+                      used.set(cell.name, cell);
+                    }
+                  });
+                });
+                if (used.size === 0) return '<span class="bp-legend-none">此層未放置獨立物件</span>';
+                return Array.from(used.values()).map(item => `
+                  <div class="bp-legend-item">
+                    <span class="bp-legend-color-dot" style="background-color: ${item.color};"></span>
+                    <img src="${item.icon}" alt="${item.name}" class="bp-legend-icon" loading="lazy">
+                    <span class="bp-legend-name">${item.name}</span>
+                    <span class="bp-legend-tag">${item.label}</span>
+                  </div>
+                `).join('');
+              })()}
+            </div>
+          </div>
+        </div>
+      `;
+    } else if (steps && steps.length > 0) {
+      // 8 大分步指南視圖 (Steps View)
+      html += `
+        <div class="bp-steps-section">
+          <div class="bp-steps-intro">
+            <h3>🔨 依序施工指南（共 ${steps.length} 大步驟）</h3>
+            <p>嚴格按照建造工序分解，從最底層平整地基到終極屋頂封頂與庭園氛圍裝飾，一步步帶你完成神級建築！</p>
+          </div>
+          <div class="bp-steps-timeline">
+            ${steps.map(step => `
+              <div class="bp-step-card">
+                <div class="bp-step-card-header">
+                  <div class="bp-step-badge">步驟 ${step.stepNum}</div>
+                  <h4 class="bp-step-title">${step.title}</h4>
+                  <span class="bp-step-time">⏱️ 影片進度：${step.timing}</span>
+                </div>
+                <div class="bp-step-body">
+                  <p class="bp-step-summary">${step.summary}</p>
+                  <div class="bp-step-tips">
+                    <span class="bp-tips-badge">💡 施工秘訣</span>
+                    <span class="bp-tips-text">${step.tips}</span>
+                  </div>
+                  <div class="bp-step-mats">
+                    <div class="bp-step-mats-title">本步驟所需建材：</div>
+                    <div class="bp-step-mat-tags">
+                      ${step.materials.map(sm => {
+                        const matDef = materialsSummary.find(m => m.name === sm.name);
+                        const icon = matDef ? matDef.icon : '';
+                        return `
+                          <span class="bp-step-mat-tag">
+                            ${icon ? `<img src="${icon}" alt="${sm.name}" class="bp-step-mat-icon" loading="lazy">` : ''}
+                            <span class="bp-step-mat-name">${sm.name}</span>
+                            <strong class="bp-step-mat-count">×${sm.count}</strong>
+                          </span>
+                        `;
+                      }).join('')}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    DOM.blueprintContainer.innerHTML = html;
+
+    // 綁定事件監聽
+    bindBlueprintEvents(currentLayer);
+  }
+
+  function bindBlueprintEvents(currentLayer) {
+    if (!DOM.blueprintContainer) return;
+
+    // 1. 視圖切換 (Grid vs Steps)
+    DOM.blueprintContainer.querySelectorAll('.bp-view-tab-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const view = e.currentTarget.dataset.bpView;
+        if (view && view !== state.blueprintView) {
+          state.blueprintView = view;
+          renderBlueprintSection();
+        }
+      });
+    });
+
+    // 2. 材料勾選切換 (點擊整張卡片或 checkbox)
+    DOM.blueprintContainer.querySelectorAll('.bp-mat-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        const matName = card.dataset.matName;
+        if (!matName) return;
+        const chk = card.querySelector('.bp-mat-checkbox');
+        if (e.target !== chk && chk) {
+          chk.checked = !chk.checked;
+        }
+        if (!state.blueprintChecked) state.blueprintChecked = {};
+        const isChecked = chk ? chk.checked : !state.blueprintChecked[matName];
+        state.blueprintChecked[matName] = isChecked;
+        card.classList.toggle('checked', isChecked);
+        saveProgress('pokopia_blueprint_checked', state.blueprintChecked);
+
+        // 更新頂部計數與進度條
+        updateBpChecklistProgress();
+      });
+    });
+
+    // 3. 重置勾選按鈕
+    const btnReset = document.getElementById('btnResetBpChecked');
+    if (btnReset) {
+      btnReset.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (typeof window !== 'undefined' && window.confirm && !window.confirm('確定要清空所有材料備料勾選紀錄嗎？')) {
+          return;
+        }
+        state.blueprintChecked = {};
+        saveProgress('pokopia_blueprint_checked', state.blueprintChecked);
+        renderBlueprintSection();
+      });
+    }
+
+    // 4. 分層切換 (Grid 視圖限定)
+    if (state.blueprintView === 'grid') {
+      DOM.blueprintContainer.querySelectorAll('.bp-layer-pill-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const layerId = e.currentTarget.dataset.layerId;
+          if (layerId && layerId !== state.blueprintActiveLayer) {
+            state.blueprintActiveLayer = layerId;
+            renderBlueprintSection();
+          }
+        });
+      });
+
+      // 5. 棋盤格子懸停與點擊檢測 (Inspector)
+      const inspectorBody = document.getElementById('bpInspectorBody');
+      const cells = DOM.blueprintContainer.querySelectorAll('.bp-grid-cell');
+      cells.forEach(cell => {
+        const handleInspect = () => {
+          cells.forEach(c => c.classList.remove('inspecting'));
+          cell.classList.add('inspecting');
+          const r = parseInt(cell.dataset.r, 10);
+          const c = parseInt(cell.dataset.c, 10);
+          const cellData = currentLayer && currentLayer.grid && currentLayer.grid[r] ? currentLayer.grid[r][c] : null;
+
+          if (inspectorBody) {
+            if (cellData) {
+              inspectorBody.innerHTML = `
+                <div class="bp-inspect-card">
+                  <div class="bp-inspect-coord-badge">座標：X: ${c + 1}，Y: ${r + 1}</div>
+                  <div class="bp-inspect-item-row">
+                    <img src="${cellData.icon}" alt="${cellData.name}" class="bp-inspect-icon">
+                    <div class="bp-inspect-item-info">
+                      <div class="bp-inspect-name">${cellData.name}</div>
+                      <div class="bp-inspect-tag" style="background-color: ${cellData.color}33; color: ${cellData.color}; border: 1px solid ${cellData.color};">
+                        標記：${cellData.label}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="bp-inspect-note">
+                    <strong>施工指引：</strong> 請在此座標精確放置 1 格【${cellData.name}】。
+                  </div>
+                </div>
+              `;
+            } else {
+              inspectorBody.innerHTML = `
+                <div class="bp-inspect-card empty">
+                  <div class="bp-inspect-coord-badge">座標：X: ${c + 1}，Y: ${r + 1}</div>
+                  <div class="bp-inspect-empty-msg">🌿 此格為空地（保留原草皮或走道淨空）</div>
+                </div>
+              `;
+            }
+          }
+        };
+
+        cell.addEventListener('mouseenter', handleInspect);
+        cell.addEventListener('click', handleInspect);
+      });
+    }
+  }
+
+  function updateBpChecklistProgress() {
+    const bpData = window.POKOPIA_BLUEPRINT_DATA;
+    if (!bpData || !bpData.materialsSummary) return;
+    const checkedMap = state.blueprintChecked || {};
+    const total = bpData.materialsSummary.length;
+    const count = bpData.materialsSummary.filter(m => !!checkedMap[m.name]).length;
+    const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+
+    const countEl = document.getElementById('bpCheckedCount');
+    if (countEl) countEl.textContent = count;
+    const barEl = DOM.blueprintContainer ? DOM.blueprintContainer.querySelector('.bp-progress-bar-fill') : null;
+    if (barEl) barEl.style.width = `${pct}%`;
+  }
+
+  // 暴露建築藍圖管理器 API
+  window.PokopiaBlueprint = {
+    renderBlueprintSection,
+    bindBlueprintEvents,
+    updateBpChecklistProgress,
+    getState: () => ({
+      view: state.blueprintView,
+      activeLayer: state.blueprintActiveLayer,
+      checked: state.blueprintChecked
+    })
   };
 
   // 暴露地區地圖 API
