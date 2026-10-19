@@ -444,6 +444,9 @@
     const view = customState.view || state.currentView;
     const targetId = customState.targetId || null;
     const targetType = customState.targetType || null; // 'pokemon' | 'habitat'
+    const modal = customState.modal || null;
+    const pkmId = customState.pkmId || null;
+    const pkmName = customState.pkmName || null;
     const targetHash = `#${tab}-${view}${targetId ? `-${targetId}` : ''}`;
 
     try {
@@ -452,7 +455,7 @@
     } catch (e) {}
 
     try {
-      const stateObj = { tab, view, targetId, targetType, timestamp: Date.now() };
+      const stateObj = { tab, view, targetId, targetType, modal, pkmId, pkmName, timestamp: Date.now() };
       if (window.location.hash !== targetHash) {
         history.pushState(stateObj, '', targetHash);
       } else {
@@ -963,13 +966,19 @@
       if (navState.view && navState.view !== state.currentView) {
         switchView(navState.view, true);
       }
-      if (navState.targetId && navState.targetType) {
+      if (navState.modal === 'pokemonDetail' && navState.pkmId) {
+        openPkmDetailModal(navState.pkmId);
+        hideFloatingBackBtn();
+      } else if (navState.targetId && navState.targetType) {
+        closePkmDetailModal();
         scrollToTarget(navState.targetType, navState.targetId);
         showFloatingBackBtn(navState.targetType === 'pokemon' ? '棲息地總覽' : '寶可夢圖鑑');
       } else {
+        closePkmDetailModal();
         hideFloatingBackBtn();
       }
     } else {
+      closePkmDetailModal();
       handleHashChange();
     }
   }
@@ -1391,7 +1400,7 @@
         rawEnv = rawEnv.replace(/[☀️🔥💧🌵❄️🌙【】維度：]/g, '').trim();
         const matchEnv = ['明亮', '溫暖', '潮濕', '乾燥', '涼爽', '黑暗'].find(en => rawEnv.includes(en));
         const targetEnv = matchEnv || rawEnv;
-        openPrefDrawer('environments', targetEnv);
+        openPrefDrawer('environments', targetEnv, state.activeDetailPkm);
         return;
       }
 
@@ -1406,7 +1415,7 @@
         if (!fav) return;
         const isTaste = TASTE_SET.has(fav) || pill.classList.contains('pkm-pref-taste-link') || pill.classList.contains('taste-pill');
         const targetTab = isTaste ? 'tastes' : 'things';
-        openPrefDrawer(targetTab, fav);
+        openPrefDrawer(targetTab, fav, state.activeDetailPkm);
       }
     });
 
@@ -3972,6 +3981,7 @@
     const allPokemons = (window.POKOPIA_DATA && window.POKOPIA_DATA.pokemons) || [];
     const pkm = allPokemons.find(p => p.id === pkmId || p.number === pkmId || p.name === pkmId);
     if (!pkm) return;
+    state.activeDetailPkm = pkm;
 
     // 1. 設定頂部標題資訊
     if (DOM.pkmDetailAvatar) {
@@ -4326,7 +4336,27 @@
   // ==========================================================================
 
   // 開啟喜好百科抽屜 (可指定目標分頁與高亮項目)
-  function openPrefDrawer(targetTab, highlightItem) {
+  function openPrefDrawer(targetTab, highlightItem, fromPkm) {
+    const pkm = fromPkm || state.activeDetailPkm;
+    const fromTab = state.currentTab;
+
+    // 1. 若當前開著詳情卡片，平滑關閉以完全露出喜好百科
+    closePkmDetailModal();
+    state.activeDetailPkm = null;
+
+    // 2. 記錄原先頁面的寶可夢卡片歷史狀態，讓上一頁能完美自動叫起
+    if (pkm) {
+      try {
+        history.replaceState({
+          tab: fromTab,
+          view: state.currentView,
+          modal: 'pokemonDetail',
+          pkmId: pkm.id,
+          pkmName: pkm.name
+        }, '', window.location.hash);
+      } catch (e) {}
+    }
+
     if (targetTab) {
       state.prefTab = targetTab;
     }
@@ -4335,10 +4365,13 @@
       btn.classList.toggle('active', btn.dataset.prefTab === state.prefTab);
     });
 
-    const fromTab = state.currentTab;
     switchTab('preferences', false);
+    pushNavHistory({ tab: 'preferences' });
 
-    if (fromTab && fromTab !== 'preferences') {
+    // 3. 懸浮返回按鈕明確指示返回該寶可夢
+    if (pkm) {
+      showFloatingBackBtn(pkm.name);
+    } else if (fromTab && fromTab !== 'preferences') {
       const tabNameMap = {
         habitat: '寶可夢圖鑑',
         habitatCatalog: '棲息地總覽',
