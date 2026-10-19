@@ -485,15 +485,16 @@
     if (DOM.floatingBackText) {
       DOM.floatingBackText.textContent = label ? (label.startsWith('返回') ? label : `返回 ${label}`) : '返回上一頁';
     }
-    if (extra.returnTab) {
-      DOM.floatingBackBtn.dataset.returnTab = extra.returnTab;
-    } else {
-      delete DOM.floatingBackBtn.dataset.returnTab;
-    }
+    const fields = ['returnTab', 'returnPkmId', 'returnPrefTab', 'returnHighlightItem', 'returnTargetId', 'returnTargetType', 'returnScrollY'];
+    fields.forEach(field => {
+      if (extra[field] !== undefined && extra[field] !== null) {
+        DOM.floatingBackBtn.dataset[field] = extra[field];
+      } else {
+        delete DOM.floatingBackBtn.dataset[field];
+      }
+    });
     if (extra.returnPkmId) {
       DOM.floatingBackBtn.dataset.returnPkmId = extra.returnPkmId;
-    } else {
-      delete DOM.floatingBackBtn.dataset.returnPkmId;
     }
     DOM.floatingBackBtn.classList.remove('hidden');
     if (typeof document !== 'undefined' && document.body) {
@@ -504,8 +505,8 @@
   function hideFloatingBackBtn() {
     if (!DOM.floatingBackBtn) return;
     DOM.floatingBackBtn.classList.add('hidden');
-    delete DOM.floatingBackBtn.dataset.returnTab;
-    delete DOM.floatingBackBtn.dataset.returnPkmId;
+    const fields = ['returnTab', 'returnPkmId', 'returnPrefTab', 'returnHighlightItem', 'returnTargetId', 'returnTargetType', 'returnScrollY'];
+    fields.forEach(field => delete DOM.floatingBackBtn.dataset[field]);
     if (typeof document !== 'undefined' && document.body) {
       document.body.classList.remove('has-floating-back');
     }
@@ -584,8 +585,8 @@
     document.body.style.overflow = '';
   }
 
-  // Precise Target Scrolling (鎖定可見容器，徹底消除 display:none 阻礙)
-  function scrollToTarget(type, id) {
+  // Precise Target Scrolling (鎖定可見容器，具備短間隔重試確保動態 DOM 就緒)
+  function scrollToTarget(type, id, retryCount = 0) {
     if (!id) return;
     setTimeout(() => {
       let targetEl = null;
@@ -615,24 +616,29 @@
         void targetEl.offsetWidth; // 強制重繪
         targetEl.classList.add('highlight-target');
         setTimeout(() => targetEl.classList.remove('highlight-target'), 2600);
+      } else if (retryCount < 2) {
+        scrollToTarget(type, id, retryCount + 1);
       }
-    }, 120);
+    }, retryCount === 0 ? 120 : 180);
   }
 
   // Bidirectional Navigation Helpers (支援上一頁/下一頁歷史堆疊與來源精準記憶)
   function jumpToHabitat(habId, pushHistory = true, sourcePkmId = null) {
     if (!habId) return;
+    const fromTab = state.currentTab;
+    const fromView = state.currentView;
+    const currentScroll = window.scrollY || 0;
+
     if (pushHistory) {
-      // 1. 先將跳轉前「當前寶可夢」位置記錄到當前歷史節點中
+      // 1. 先將跳轉前「當前寶可夢」位置與 scrollY 記錄到當前歷史節點中
       try {
-        const fromTab = state.currentTab;
-        const fromView = state.currentView;
         const fromHash = `#${fromTab}-${fromView}${sourcePkmId ? `-${sourcePkmId}` : ''}`;
         history.replaceState({
           tab: fromTab,
           view: fromView,
           targetId: sourcePkmId,
-          targetType: 'pokemon'
+          targetType: 'pokemon',
+          scrollY: currentScroll
         }, '', fromHash);
       } catch (e) {}
 
@@ -654,22 +660,30 @@
 
     switchTab('habitatCatalog', true);
     scrollToTarget('habitat', habId);
-    showFloatingBackBtn('寶可夢圖鑑');
+    showFloatingBackBtn('寶可夢圖鑑', {
+      returnTab: fromTab || 'habitat',
+      returnTargetId: sourcePkmId,
+      returnTargetType: 'pokemon',
+      returnScrollY: currentScroll
+    });
   }
 
   function jumpToPokemon(pkmId, pushHistory = true, sourceHabId = null) {
     if (!pkmId) return;
+    const fromTab = state.currentTab;
+    const fromView = state.currentView;
+    const currentScroll = window.scrollY || 0;
+
     if (pushHistory) {
-      // 1. 先將跳轉前「當前棲息地」位置記錄到當前歷史節點中
+      // 1. 先將跳轉前「當前棲息地」位置與 scrollY 記錄到當前歷史節點中
       try {
-        const fromTab = state.currentTab;
-        const fromView = state.currentView;
         const fromHash = `#${fromTab}-${fromView}${sourceHabId ? `-${sourceHabId}` : ''}`;
         history.replaceState({
           tab: fromTab,
           view: fromView,
           targetId: sourceHabId,
-          targetType: 'habitat'
+          targetType: 'habitat',
+          scrollY: currentScroll
         }, '', fromHash);
       } catch (e) {}
 
@@ -694,7 +708,12 @@
 
     switchTab('habitat', true);
     scrollToTarget('pokemon', pkmId);
-    showFloatingBackBtn('棲息地總覽');
+    showFloatingBackBtn('棲息地總覽', {
+      returnTab: fromTab || 'habitatCatalog',
+      returnTargetId: sourceHabId,
+      returnTargetType: 'habitat',
+      returnScrollY: currentScroll
+    });
   }
 
   // 自適應搜尋框提示文字 (避免窄螢幕時文字過長被擠壓)
@@ -974,20 +993,40 @@
   function handlePopState(e) {
     const navState = e.state;
     if (navState && navState.tab) {
-      switchTab(navState.tab, true);
+      switchTab(navState.tab, true, navState.scrollY);
       if (navState.view && navState.view !== state.currentView) {
         switchView(navState.view, true);
       }
       if (navState.modal === 'pokemonDetail' && navState.pkmId) {
+        // 彈窗與底層雙重同步：底層先對齊該寶可夢卡片，同時打開彈窗
+        scrollToTarget('pokemon', navState.pkmId);
         openPkmDetailModal(navState.pkmId);
         hideFloatingBackBtn();
       } else if (navState.targetId && navState.targetType) {
         closePkmDetailModal();
         scrollToTarget(navState.targetType, navState.targetId);
         showFloatingBackBtn(navState.targetType === 'pokemon' ? '棲息地總覽' : '寶可夢圖鑑');
+      } else if (navState.highlightItem) {
+        closePkmDetailModal();
+        if (navState.prefTab) state.prefTab = navState.prefTab;
+        if (typeof scrollHighlightItem === 'function') {
+          scrollHighlightItem(navState.highlightItem);
+        }
+        hideFloatingBackBtn();
       } else {
         closePkmDetailModal();
         hideFloatingBackBtn();
+        if (typeof navState.scrollY === 'number' && typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+          if (typeof setTimeout === 'function') {
+            setTimeout(() => {
+              if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+                window.scrollTo({ top: navState.scrollY, behavior: 'instant' });
+              }
+            }, 40);
+          } else {
+            window.scrollTo({ top: navState.scrollY, behavior: 'instant' });
+          }
+        }
       }
     } else {
       closePkmDetailModal();
@@ -1221,18 +1260,49 @@
         e.preventDefault();
         const returnTab = DOM.floatingBackBtn.dataset.returnTab;
         const returnPkmId = DOM.floatingBackBtn.dataset.returnPkmId;
+        const returnHighlightItem = DOM.floatingBackBtn.dataset.returnHighlightItem;
+        const returnPrefTab = DOM.floatingBackBtn.dataset.returnPrefTab;
+        const returnTargetId = DOM.floatingBackBtn.dataset.returnTargetId;
+        const returnTargetType = DOM.floatingBackBtn.dataset.returnTargetType;
+        const returnScrollY = DOM.floatingBackBtn.dataset.returnScrollY ? parseInt(DOM.floatingBackBtn.dataset.returnScrollY, 10) : null;
+
         if (returnPkmId) {
-          // 確定性直連保險：直接切回原分頁並彈出卡片
-          if (returnTab) switchTab(returnTab, true);
+          // 確定性直連保險：切回原分頁、底層對齊卡片並彈出卡片
+          if (returnTab) switchTab(returnTab, true, returnScrollY);
+          scrollToTarget('pokemon', returnPkmId);
           openPkmDetailModal(returnPkmId);
           hideFloatingBackBtn();
           return;
         }
+
+        if (returnHighlightItem) {
+          if (returnTab) switchTab(returnTab, true, returnScrollY);
+          if (returnPrefTab) state.prefTab = returnPrefTab;
+          if (typeof scrollHighlightItem === 'function') {
+            scrollHighlightItem(returnHighlightItem);
+          }
+          hideFloatingBackBtn();
+          return;
+        }
+
+        if (returnTargetId && returnTargetType) {
+          if (returnTab) switchTab(returnTab, true, returnScrollY);
+          scrollToTarget(returnTargetType, returnTargetId);
+          hideFloatingBackBtn();
+          return;
+        }
+
+        if (returnTab && returnScrollY !== null) {
+          switchTab(returnTab, true, returnScrollY);
+          hideFloatingBackBtn();
+          return;
+        }
+
         if (window.history.length > 1) {
           window.history.back();
         } else {
-          switchTab('habitatCatalog', true);
-          pushNavHistory({ tab: 'habitatCatalog' });
+          switchTab(returnTab || 'habitatCatalog', true, returnScrollY);
+          pushNavHistory({ tab: returnTab || 'habitatCatalog' });
           hideFloatingBackBtn();
         }
       });
@@ -1387,6 +1457,8 @@
           e.stopPropagation();
           const pkmId = pkmSlot.dataset.pkmId;
           const pkmName = pkmSlot.dataset.pkmName;
+          const curScroll = window.scrollY || 0;
+          const fromPrefTab = state.prefTab;
           if (pkmId) {
             jumpToPokemon(pkmId, true);
           } else if (pkmName) {
@@ -1394,7 +1466,11 @@
             const found = pokemons.find(p => p.name === pkmName);
             if (found) jumpToPokemon(found.id, true);
           }
-          showFloatingBackBtn('喜好百科');
+          showFloatingBackBtn('喜好百科', {
+            returnTab: 'preferences',
+            returnPrefTab: fromPrefTab,
+            returnScrollY: curScroll
+          });
           return;
         }
 
@@ -1558,8 +1634,19 @@
     DOM.unlockFilter.value = currentVal;
   }
 
-  // Switch Tab
-  function switchTab(tab, skipSync = false) {
+  // 全域分頁滾動高度記憶池 (Tab Scroll Restoration Cache)
+  const tabScrollPositions = {};
+
+  // Switch Tab (支援精準滾動還原 targetScrollY)
+  function switchTab(tab, skipSync = false, targetScrollY = null) {
+    if (state.currentTab && typeof window !== 'undefined') {
+      tabScrollPositions[state.currentTab] = window.scrollY || 0;
+      try {
+        const curState = history.state || {};
+        history.replaceState({ ...curState, tab: state.currentTab, scrollY: window.scrollY || 0 }, '', window.location.hash);
+      } catch (e) {}
+    }
+
     state.currentTab = tab;
     state.isStaggerAnim = true;
     closeTocDropdown();
@@ -1806,6 +1893,23 @@
     }
     renderStats();
     renderAll();
+
+    // 跨分頁精確滾動高度還原
+    const restoreY = (targetScrollY !== null && typeof targetScrollY === 'number')
+      ? targetScrollY
+      : (typeof tabScrollPositions[tab] === 'number' ? tabScrollPositions[tab] : null);
+
+    if (restoreY !== null && typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+      if (typeof setTimeout === 'function') {
+        setTimeout(() => {
+          if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+            window.scrollTo({ top: restoreY, behavior: 'instant' });
+          }
+        }, 40);
+      } else {
+        window.scrollTo({ top: restoreY, behavior: 'instant' });
+      }
+    }
   }
 
   // Switch View (Card vs Table)
@@ -4365,7 +4469,8 @@
     closePkmDetailModal();
     state.activeDetailPkm = null;
 
-    // 2. 記錄原先頁面的寶可夢卡片歷史狀態，讓上一頁能完美自動叫起
+    // 2. 記錄原先頁面的寶可夢卡片歷史狀態與滾動高度，讓上一頁能完美自動叫起與定位
+    const currentScroll = window.scrollY || 0;
     if (pkm) {
       try {
         history.replaceState({
@@ -4373,7 +4478,16 @@
           view: state.currentView,
           modal: 'pokemonDetail',
           pkmId: pkm.id,
-          pkmName: pkm.name
+          pkmName: pkm.name,
+          scrollY: currentScroll
+        }, '', window.location.hash);
+      } catch (e) {}
+    } else {
+      try {
+        history.replaceState({
+          tab: fromTab,
+          view: state.currentView,
+          scrollY: currentScroll
         }, '', window.location.hash);
       } catch (e) {}
     }
@@ -4397,7 +4511,11 @@
 
     // 3. 懸浮返回按鈕明確指示返回該寶可夢，並綁定直連資料保險
     if (pkm) {
-      showFloatingBackBtn(pkm.name, { returnTab: fromTab, returnPkmId: pkm.id });
+      showFloatingBackBtn(pkm.name, {
+        returnTab: fromTab,
+        returnPkmId: pkm.id,
+        returnScrollY: currentScroll
+      });
     } else if (fromTab && fromTab !== 'preferences') {
       const tabNameMap = {
         habitat: '寶可夢圖鑑',
@@ -4405,7 +4523,10 @@
         recipe: '料理食譜',
         storage: '儲存庫'
       };
-      showFloatingBackBtn(tabNameMap[fromTab] || '上一頁');
+      showFloatingBackBtn(tabNameMap[fromTab] || '上一頁', {
+        returnTab: fromTab,
+        returnScrollY: currentScroll
+      });
     }
 
     if (highlightItem) {
@@ -4524,27 +4645,63 @@
     const recipeDb = window.POKOPIA_RECIPES_DB || [];
     if (recipeDb.length === 0) return false;
 
+    const curScroll = window.scrollY || 0;
+    const fromTab = state.currentTab || 'preferences';
+    const fromPrefTab = state.prefTab;
+
     // 1. 優先精確/包含匹配 34 道料理成品
     const recipe = recipeDb.find(r => r.name === cleanName || r.name.includes(cleanName) || cleanName.includes(r.name));
     if (recipe) {
+      try {
+        history.replaceState({
+          tab: fromTab,
+          view: state.currentView,
+          prefTab: fromPrefTab,
+          highlightItem: cleanName,
+          scrollY: curScroll
+        }, '', window.location.hash);
+      } catch (e) {}
+
       closePrefDrawer();
       switchTab('recipe', true);
-      pushNavHistory({ tab: 'recipe' });
+      pushNavHistory({ tab: 'recipe', recipeName: recipe.name });
       if (window.RecipeModule && window.RecipeModule.scrollToRecipe) {
         window.RecipeModule.scrollToRecipe(recipe.name);
       }
+      showFloatingBackBtn('喜好百科', {
+        returnTab: 'preferences',
+        returnPrefTab: fromPrefTab,
+        returnHighlightItem: cleanName,
+        returnScrollY: curScroll
+      });
       return true;
     }
 
     // 2. 次要匹配食譜中所使用的原料食材 (如 蘋野果, 辣味草, 小麥 等)
     const isIngredient = recipeDb.some(r => r.ingredients && r.ingredients.some(ig => ig.name === cleanName || ig.name.includes(cleanName) || cleanName.includes(ig.name)));
     if (isIngredient) {
+      try {
+        history.replaceState({
+          tab: fromTab,
+          view: state.currentView,
+          prefTab: fromPrefTab,
+          highlightItem: cleanName,
+          scrollY: curScroll
+        }, '', window.location.hash);
+      } catch (e) {}
+
       closePrefDrawer();
       switchTab('recipe', true);
-      pushNavHistory({ tab: 'recipe' });
+      pushNavHistory({ tab: 'recipe', ingredient: cleanName });
       if (window.RecipeModule && window.RecipeModule.filterByIngredient) {
         window.RecipeModule.filterByIngredient(cleanName);
       }
+      showFloatingBackBtn('喜好百科', {
+        returnTab: 'preferences',
+        returnPrefTab: fromPrefTab,
+        returnHighlightItem: cleanName,
+        returnScrollY: curScroll
+      });
       return true;
     }
 
@@ -5211,7 +5368,9 @@
       el.addEventListener('click', (e) => {
         e.stopPropagation();
         const pkmId = el.getAttribute('data-pkm-id');
-        if (pkmId) showPokemonModal(pkmId);
+        if (pkmId && typeof openPkmDetailModal === 'function') {
+          openPkmDetailModal(pkmId);
+        }
       });
     });
 

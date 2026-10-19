@@ -329,7 +329,7 @@
       const specIcon = (window.SPECIALTY_ICONS && window.SPECIALTY_ICONS[specName]) || (specialtyConfig[specName] && specialtyConfig[specName].icon) || '✨';
       const specPkmGridHtml = specPokemons.length > 0
         ? specPokemons.map(p => `
-            <div class="recipe-modal-pkm-card" title="${p.number} ${p.name}">
+            <div class="recipe-modal-pkm-card" data-pkm-id="${p.id}" title="${p.number} ${p.name}">
               <img class="recipe-modal-pkm-sprite" src="${p.sprite}" alt="${p.name}" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'44\\' height=\\'44\\' viewBox=\\'0 0 24 24\\' fill=\\'%2394a3b8\\'><circle cx=\\'12\\' cy=\\'12\\' r=\\'10\\'/></svg>'">
               <span class="recipe-modal-pkm-num">${p.number.replace('No. ', '#')}</span>
               <span class="recipe-modal-pkm-name">${p.name}</span>
@@ -363,7 +363,7 @@
 
     const likedPkmGridHtml = likedPokemons.length > 0
       ? likedPokemons.map(p => `
-          <div class="recipe-modal-pkm-card" title="${p.number} ${p.name}">
+          <div class="recipe-modal-pkm-card" data-pkm-id="${p.id}" title="${p.number} ${p.name}">
             <img class="recipe-modal-pkm-sprite" src="${p.sprite}" alt="${p.name}" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'44\\' height=\\'44\\' viewBox=\\'0 0 24 24\\' fill=\\'%2394a3b8\\'><circle cx=\\'12\\' cy=\\'12\\' r=\\'10\\'/></svg>'">
             <span class="recipe-modal-pkm-num">${(p.number || '').replace('No. ', '#')}</span>
             <span class="recipe-modal-pkm-name">${p.name}</span>
@@ -421,6 +421,17 @@
       <!-- 喜愛該菜的寶可夢 -->
       ${likedSectionHtml}
     `;
+
+    // 點擊寶可夢卡片開啟該寶可夢詳情彈窗
+    body.querySelectorAll('.recipe-modal-pkm-card').forEach(card => {
+      card.style.cursor = 'pointer';
+      card.addEventListener('click', () => {
+        const pId = card.dataset.pkmId;
+        if (pId && typeof window.openPkmDetailModal === 'function') {
+          window.openPkmDetailModal(pId);
+        }
+      });
+    });
 
     // 顯示 Modal
     modal.classList.remove('hidden');
