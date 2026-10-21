@@ -94,22 +94,37 @@
     } else if (local && local.regionAssignments && typeof local.regionAssignments === 'object') {
       merged.regionAssignments = local.regionAssignments;
     }
+    // 刪除影片黑名單聯集合併 (防跨裝置增補復活)
+    const delVideoIdSet = new Set();
+    if (cloud && cloud.deletedVideoIds && Array.isArray(cloud.deletedVideoIds)) {
+      cloud.deletedVideoIds.forEach(id => delVideoIdSet.add(id));
+    }
+    if (local && local.deletedVideoIds && Array.isArray(local.deletedVideoIds)) {
+      local.deletedVideoIds.forEach(id => delVideoIdSet.add(id));
+    }
+    merged.deletedVideoIds = Array.from(delVideoIdSet);
+
     if (cloud && cloud.customVideos && Array.isArray(cloud.customVideos)) {
       const localList = (local && local.customVideos && Array.isArray(local.customVideos)) ? local.customVideos : [];
       const videoMap = new Map();
       cloud.customVideos.forEach(v => {
-        if (v && v.id) videoMap.set(v.id, v);
+        if (v && v.id && !delVideoIdSet.has(v.id)) {
+          const migratedTags = Array.isArray(v.tags) ? v.tags.map(t => t === '建築造景' ? '建築' : t) : [];
+          videoMap.set(v.id, { ...v, tags: Array.from(new Set(migratedTags)) });
+        }
       });
       localList.forEach(v => {
-        if (v && v.id) {
+        if (v && v.id && !delVideoIdSet.has(v.id)) {
+          const migratedTags = Array.isArray(v.tags) ? v.tags.map(t => t === '建築造景' ? '建築' : t) : [];
+          const normV = { ...v, tags: Array.from(new Set(migratedTags)) };
           if (!videoMap.has(v.id)) {
-            videoMap.set(v.id, v);
+            videoMap.set(v.id, normV);
           } else {
             const cloudV = videoMap.get(v.id);
             const localTime = new Date(v.updatedAt || v.createdAt || 0).getTime();
             const cloudTime = new Date(cloudV.updatedAt || cloudV.createdAt || 0).getTime();
             if (localTime >= cloudTime) {
-              videoMap.set(v.id, v);
+              videoMap.set(v.id, normV);
             }
           }
         }
@@ -117,8 +132,9 @@
       const defaultVideos = (typeof global !== 'undefined' && global.POKOPIA_DEFAULT_VIDEOS) ||
                             (typeof window !== 'undefined' && window.POKOPIA_DEFAULT_VIDEOS) || [];
       defaultVideos.forEach(def => {
-        if (def && def.id && !videoMap.has(def.id)) {
-          videoMap.set(def.id, def);
+        if (def && def.id && !videoMap.has(def.id) && !delVideoIdSet.has(def.id)) {
+          const defTags = Array.isArray(def.tags) ? def.tags.map(t => t === '建築造景' ? '建築' : t) : [];
+          videoMap.set(def.id, { ...def, tags: Array.from(new Set(defTags)) });
         }
       });
       const mergedList = Array.from(videoMap.values());
@@ -130,13 +146,20 @@
       });
       merged.customVideos = mergedList;
     } else if (local && local.customVideos && Array.isArray(local.customVideos)) {
-      const sortedLocal = [...local.customVideos];
+      const sortedLocal = [];
+      local.customVideos.forEach(v => {
+        if (v && v.id && !delVideoIdSet.has(v.id)) {
+          const migratedTags = Array.isArray(v.tags) ? v.tags.map(t => t === '建築造景' ? '建築' : t) : [];
+          sortedLocal.push({ ...v, tags: Array.from(new Set(migratedTags)) });
+        }
+      });
       const defaultVideos = (typeof global !== 'undefined' && global.POKOPIA_DEFAULT_VIDEOS) ||
                             (typeof window !== 'undefined' && window.POKOPIA_DEFAULT_VIDEOS) || [];
       const existingIds = new Set(sortedLocal.map(v => v.id));
       defaultVideos.forEach(def => {
-        if (def && def.id && !existingIds.has(def.id)) {
-          sortedLocal.push(def);
+        if (def && def.id && !existingIds.has(def.id) && !delVideoIdSet.has(def.id)) {
+          const defTags = Array.isArray(def.tags) ? def.tags.map(t => t === '建築造景' ? '建築' : t) : [];
+          sortedLocal.push({ ...def, tags: Array.from(new Set(defTags)) });
           existingIds.add(def.id);
         }
       });
@@ -149,13 +172,13 @@
       merged.customVideos = sortedLocal;
     }
     if (cloud && cloud.customVideoTags && Array.isArray(cloud.customVideoTags)) {
-      const tagSet = new Set(cloud.customVideoTags);
+      const tagSet = new Set(cloud.customVideoTags.map(t => t === '建築造景' ? '建築' : t));
       if (local && local.customVideoTags && Array.isArray(local.customVideoTags)) {
-        local.customVideoTags.forEach(t => tagSet.add(t));
+        local.customVideoTags.forEach(t => tagSet.add(t === '建築造景' ? '建築' : t));
       }
       merged.customVideoTags = Array.from(tagSet);
     } else if (local && local.customVideoTags && Array.isArray(local.customVideoTags)) {
-      merged.customVideoTags = local.customVideoTags;
+      merged.customVideoTags = Array.from(new Set(local.customVideoTags.map(t => t === '建築造景' ? '建築' : t)));
     }
     if (cloud && cloud.deletedVideoTags && Array.isArray(cloud.deletedVideoTags)) {
       const delSet = new Set(cloud.deletedVideoTags);

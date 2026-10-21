@@ -16,9 +16,9 @@ assert.ok(Array.isArray(defaultVideos), 'POKOPIA_DEFAULT_VIDEOS 必須為陣列'
 assert.strictEqual(defaultVideos.length, 16, `精選影片總數應為 16 部，目前為 ${defaultVideos.length}`);
 console.log(`✅ [PASS] 預設精選影片數精確為 16 部 (既有 5 部 + 新增 11 部)`);
 
-// 2. 驗證標籤清單中包含「建築造景」
-assert.ok(defaultTags.includes('建築造景'), '預設標籤必須包含「建築造景」');
-console.log(`✅ [PASS] 預設標籤庫成功收錄「建築造景」分類標籤`);
+// 2. 驗證標籤清單中包含「建築」
+assert.ok(defaultTags.includes('建築'), '預設標籤必須包含「建築」');
+console.log(`✅ [PASS] 預設標籤庫成功收錄「建築」分類標籤`);
 
 // 3. 驗證 11 部新影片全數存在且欄位齊全
 const expectedNewVideoIds = [
@@ -42,7 +42,7 @@ expectedNewVideoIds.forEach((vid, idx) => {
   assert.ok(found.title && found.title.trim().length > 0, `影片 ${vid} 缺少標題`);
   assert.ok(found.author && found.author.trim().length > 0, `影片 ${vid} 缺少作者`);
   assert.ok(found.url && found.url.includes(vid), `影片 ${vid} 網址不合規: ${found.url}`);
-  assert.ok(Array.isArray(found.tags) && found.tags.includes('建築造景'), `影片 ${vid} 必須標有「建築造景」標籤`);
+  assert.ok(Array.isArray(found.tags) && found.tags.includes('建築'), `影片 ${vid} 必須標有「建築」標籤`);
   assert.ok(found.note && found.note.trim().length > 0, `影片 ${vid} 缺少中文備註說明`);
   assert.strictEqual(found.isDefault, true, `影片 ${vid} isDefault 必須為 true`);
 });

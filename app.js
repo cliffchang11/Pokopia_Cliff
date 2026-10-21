@@ -20,6 +20,7 @@
   const STORAGE_KEY_CUSTOM_VIDEOS = 'pokopia_custom_videos_v1';
   const STORAGE_KEY_CUSTOM_VIDEO_TAGS = 'pokopia_custom_video_tags_v1';
   const STORAGE_KEY_DELETED_VIDEO_TAGS = 'pokopia_deleted_video_tags_v1';
+  const STORAGE_KEY_DELETED_VIDEO_IDS = 'pokopia_deleted_video_ids_v1';
   const STORAGE_KEY_VIDEO_PLAYBACK_PROGRESS = 'pokopia_video_progress_v1';
   const STORAGE_KEY_ACTIVE_VIDEO = 'pokopia_active_video_id_v1';
 
@@ -140,13 +141,26 @@
     customVideos: (function() {
       const saved = loadProgress(STORAGE_KEY_CUSTOM_VIDEOS, null);
       const defaults = (window.POKOPIA_DEFAULT_VIDEOS || []);
+      const deletedIds = new Set(loadProgress(STORAGE_KEY_DELETED_VIDEO_IDS, []));
+
+      // 若為全新裝置，載入預設影片（過濾黑名單）
       if (!Array.isArray(saved) || saved.length === 0) {
-        return JSON.parse(JSON.stringify(defaults));
+        return JSON.parse(JSON.stringify(defaults.filter(d => !deletedIds.has(d.id))));
       }
-      const list = [...saved];
+
+      // 平滑遷移舊資料標籤（將「建築造景」自動轉為「建築」）
+      const list = saved.map(v => {
+        if (v && Array.isArray(v.tags)) {
+          const newTags = v.tags.map(t => t === '建築造景' ? '建築' : t);
+          return { ...v, tags: Array.from(new Set(newTags)) };
+        }
+        return v;
+      });
+
       const existingIds = new Set(list.map(v => v.id));
       defaults.forEach(def => {
-        if (def && def.id && !existingIds.has(def.id)) {
+        // 關鍵防復活：命中 deletedIds 黑名單的影片絕不自動增補
+        if (def && def.id && !existingIds.has(def.id) && !deletedIds.has(def.id)) {
           list.push(JSON.parse(JSON.stringify(def)));
           existingIds.add(def.id);
         }
@@ -155,12 +169,20 @@
     })(),
     customVideoTags: (function() {
       const saved = loadProgress(STORAGE_KEY_CUSTOM_VIDEO_TAGS, null);
-      if (Array.isArray(saved)) return saved;
-      const defaultTags = (window.POKOPIA_DEFAULT_TAGS || ['建築造景', '終局農場', '環境等級', '自動化', '資源收集', '傢俱攻略']);
+      if (Array.isArray(saved)) {
+        // 平滑遷移標籤庫中的「建築造景」為「建築」
+        const migrated = saved.map(t => t === '建築造景' ? '建築' : t);
+        return Array.from(new Set(migrated));
+      }
+      const defaultTags = (window.POKOPIA_DEFAULT_TAGS || ['建築', '終局農場', '環境等級', '自動化', '資源收集', '傢俱攻略']);
       return defaultTags.filter(t => t !== '全部' && t !== '我的自訂');
     })(),
     deletedVideoTags: (function() {
       const saved = loadProgress(STORAGE_KEY_DELETED_VIDEO_TAGS, null);
+      return (Array.isArray(saved)) ? saved : [];
+    })(),
+    deletedVideoIds: (function() {
+      const saved = loadProgress(STORAGE_KEY_DELETED_VIDEO_IDS, null);
       return (Array.isArray(saved)) ? saved : [];
     })(),
     videoProgress: (function() {
@@ -896,6 +918,11 @@
             merged.deletedVideoTags.forEach(t => currentDels.add(t));
             state.deletedVideoTags = Array.from(currentDels);
           }
+          if (merged.deletedVideoIds && Array.isArray(merged.deletedVideoIds)) {
+            const currentDelIds = new Set(state.deletedVideoIds || []);
+            merged.deletedVideoIds.forEach(id => currentDelIds.add(id));
+            state.deletedVideoIds = Array.from(currentDelIds);
+          }
           saveProgress(STORAGE_KEY_CAT,            state.catChecked);
           saveProgress(STORAGE_KEY_PKM,            state.pkmChecked);
           saveProgress(STORAGE_KEY_HAB,            state.habChecked);
@@ -905,6 +932,7 @@
           saveProgress(STORAGE_KEY_CUSTOM_VIDEOS,  state.customVideos);
           saveProgress(STORAGE_KEY_CUSTOM_VIDEO_TAGS, state.customVideoTags);
           saveProgress(STORAGE_KEY_DELETED_VIDEO_TAGS, state.deletedVideoTags);
+          saveProgress(STORAGE_KEY_DELETED_VIDEO_IDS, state.deletedVideoIds);
 
           await fb.saveCloudProgress(user.uid, merged);
           if (elSync) elSync.classList.add('hidden');
@@ -928,6 +956,7 @@
               customVideos:      state.customVideos      || [],
               customVideoTags:   state.customVideoTags   || [],
               deletedVideoTags:  state.deletedVideoTags  || [],
+              deletedVideoIds:   state.deletedVideoIds   || [],
               regionAssignments: state.regionAssignments || (typeof getRegionAssignments === 'function' ? getRegionAssignments() : {})
             };
             const updated = fb.mergeProgressUnion(currentSnap, remoteData);
@@ -939,6 +968,7 @@
                               !areVideoListsEqual(state.customVideos, updated.customVideos) ||
                               JSON.stringify(state.customVideoTags) !== JSON.stringify(updated.customVideoTags) ||
                               JSON.stringify(state.deletedVideoTags) !== JSON.stringify(updated.deletedVideoTags) ||
+                              JSON.stringify(state.deletedVideoIds) !== JSON.stringify(updated.deletedVideoIds) ||
                               JSON.stringify(state.regionAssignments) !== JSON.stringify(updated.regionAssignments);
             if (isChanged) {
               state.catChecked      = updated.catChecked      || {};
@@ -958,6 +988,9 @@
               if (updated.deletedVideoTags && Array.isArray(updated.deletedVideoTags)) {
                 state.deletedVideoTags = updated.deletedVideoTags;
               }
+              if (updated.deletedVideoIds && Array.isArray(updated.deletedVideoIds)) {
+                state.deletedVideoIds = updated.deletedVideoIds;
+              }
               if (updated.regionAssignments && typeof updated.regionAssignments === 'object') {
                 state.regionAssignments = updated.regionAssignments;
                 try {
@@ -974,6 +1007,7 @@
                 localStorage.setItem(STORAGE_KEY_CUSTOM_VIDEOS,  JSON.stringify(state.customVideos));
                 localStorage.setItem(STORAGE_KEY_CUSTOM_VIDEO_TAGS, JSON.stringify(state.customVideoTags));
                 localStorage.setItem(STORAGE_KEY_DELETED_VIDEO_TAGS, JSON.stringify(state.deletedVideoTags));
+                localStorage.setItem(STORAGE_KEY_DELETED_VIDEO_IDS, JSON.stringify(state.deletedVideoIds));
               } catch (e) {}
               renderStats();
               if (state.currentTab === 'customStorage') {
@@ -5592,7 +5626,7 @@
 
   function getAllVideoTags() {
     const deleted = new Set(state.deletedVideoTags || []);
-    const defaultTags = (window.POKOPIA_DEFAULT_TAGS || ['全部', '建築造景', '終局農場', '環境等級', '自動化', '資源收集', '傢俱攻略']);
+    const defaultTags = (window.POKOPIA_DEFAULT_TAGS || ['全部', '建築', '終局農場', '環境等級', '自動化', '資源收集', '傢俱攻略']);
     
     // 優先以 state.customVideoTags 為準，若尚未有 customVideoTags 則使用 defaultTags
     let baseList = [];
@@ -5640,6 +5674,7 @@
       localStorage.setItem(STORAGE_KEY_CUSTOM_VIDEOS, JSON.stringify(state.customVideos));
       localStorage.setItem(STORAGE_KEY_CUSTOM_VIDEO_TAGS, JSON.stringify(state.customVideoTags));
       localStorage.setItem(STORAGE_KEY_DELETED_VIDEO_TAGS, JSON.stringify(state.deletedVideoTags));
+      localStorage.setItem(STORAGE_KEY_DELETED_VIDEO_IDS, JSON.stringify(state.deletedVideoIds));
     } catch (e) {
       console.warn('Failed to save custom videos to LocalStorage:', e);
     }
@@ -5650,7 +5685,8 @@
         fb.saveCloudProgress(user.uid, {
           customVideos: state.customVideos,
           customVideoTags: state.customVideoTags,
-          deletedVideoTags: state.deletedVideoTags
+          deletedVideoTags: state.deletedVideoTags,
+          deletedVideoIds: state.deletedVideoIds
         });
       }
     }
@@ -6624,13 +6660,19 @@
       });
     }
 
-    // 刪除自訂影片
+    // 刪除參考影片
     if (DOM.btnVideoDelete) {
       DOM.btnVideoDelete.addEventListener('click', () => {
         const idToDelete = DOM.videoFormId.value;
         if (!idToDelete) return;
-        if (confirm('確定要刪除這部自訂參考影片嗎？')) {
+        if (confirm('確定要刪除這部參考影片嗎？')) {
           state.customVideos = state.customVideos.filter(v => v.id !== idToDelete);
+          if (!Array.isArray(state.deletedVideoIds)) {
+            state.deletedVideoIds = [];
+          }
+          if (!state.deletedVideoIds.includes(idToDelete)) {
+            state.deletedVideoIds.push(idToDelete);
+          }
           if (state.currentVideoId === idToDelete) {
             state.currentVideoId = null;
             try { localStorage.removeItem(STORAGE_KEY_ACTIVE_VIDEO); } catch (e) {}
@@ -6678,6 +6720,11 @@
           isDefault: false,
           updatedAt: new Date().toISOString()
         };
+
+        // 若該影片曾存在於已刪除黑名單中，自動解禁
+        if (Array.isArray(state.deletedVideoIds)) {
+          state.deletedVideoIds = state.deletedVideoIds.filter(id => id !== videoData.id && id !== editId);
+        }
 
         if (editId) {
           const idx = state.customVideos.findIndex(v => v.id === editId);
