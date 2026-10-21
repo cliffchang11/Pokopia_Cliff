@@ -114,6 +114,13 @@
           }
         }
       });
+      const defaultVideos = (typeof global !== 'undefined' && global.POKOPIA_DEFAULT_VIDEOS) ||
+                            (typeof window !== 'undefined' && window.POKOPIA_DEFAULT_VIDEOS) || [];
+      defaultVideos.forEach(def => {
+        if (def && def.id && !videoMap.has(def.id)) {
+          videoMap.set(def.id, def);
+        }
+      });
       const mergedList = Array.from(videoMap.values());
       mergedList.sort((a, b) => {
         const timeA = new Date(a.updatedAt || a.createdAt || 0).getTime();
@@ -124,6 +131,15 @@
       merged.customVideos = mergedList;
     } else if (local && local.customVideos && Array.isArray(local.customVideos)) {
       const sortedLocal = [...local.customVideos];
+      const defaultVideos = (typeof global !== 'undefined' && global.POKOPIA_DEFAULT_VIDEOS) ||
+                            (typeof window !== 'undefined' && window.POKOPIA_DEFAULT_VIDEOS) || [];
+      const existingIds = new Set(sortedLocal.map(v => v.id));
+      defaultVideos.forEach(def => {
+        if (def && def.id && !existingIds.has(def.id)) {
+          sortedLocal.push(def);
+          existingIds.add(def.id);
+        }
+      });
       sortedLocal.sort((a, b) => {
         const timeA = new Date(a.updatedAt || a.createdAt || 0).getTime();
         const timeB = new Date(b.updatedAt || b.createdAt || 0).getTime();

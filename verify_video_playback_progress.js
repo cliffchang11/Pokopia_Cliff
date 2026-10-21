@@ -17,8 +17,8 @@ requiredIds.forEach(id => {
 });
 console.log('✓ index.html 續播提示條與從頭播放按鈕元素完整');
 
-assert(html.includes('v=4.8.8'), 'index.html 靜態資源版本號應已升級為 v=4.8.8');
-console.log('✓ index.html 資源快取版本號 v=4.8.8 驗證通過');
+assert(html.includes('v=4.13.2'), 'index.html 靜態資源版本號應已升級為 v=4.13.2');
+console.log('✓ index.html 資源快取版本號 v=4.13.2 驗證通過');
 
 // 2. 驗證 index.css 樣式
 const css = fs.readFileSync('./index.css', 'utf-8');
@@ -27,10 +27,10 @@ assert(css.includes('.btn-video-restart'), 'index.css 應包含 .btn-video-resta
 assert(css.includes('.btn-video-resume-dismiss'), 'index.css 應包含 .btn-video-resume-dismiss');
 console.log('✓ index.css 續播膠囊美觀樣式驗證通過');
 
-// 3. 驗證 firebase.js 包含 videoProgress 合併
+// 3. 驗證 videoProgress 脫鉤雲端各裝置獨立儲存
 const firebaseCode = fs.readFileSync('./firebase.js', 'utf-8');
-assert(firebaseCode.includes('videoProgress'), 'firebase.js 應包含 videoProgress 合併');
-console.log('✓ firebase.js 多裝置雲端同步 videoProgress 邏輯驗證通過');
+assert(!firebaseCode.includes('merged.videoProgress ='), 'firebase.js 不應包含 videoProgress 雲端合併');
+console.log('✓ firebase.js videoProgress 脫鉤雲端、各裝置獨立儲存驗證通過');
 
 // 4. 驗證 app.js 常數與核心函式
 const appCode = fs.readFileSync('./app.js', 'utf-8');

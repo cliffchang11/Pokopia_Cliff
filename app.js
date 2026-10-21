@@ -139,9 +139,19 @@
     activeAssignRegionId: null,
     customVideos: (function() {
       const saved = loadProgress(STORAGE_KEY_CUSTOM_VIDEOS, null);
-      if (Array.isArray(saved) && saved.length > 0) return saved;
       const defaults = (window.POKOPIA_DEFAULT_VIDEOS || []);
-      return JSON.parse(JSON.stringify(defaults));
+      if (!Array.isArray(saved) || saved.length === 0) {
+        return JSON.parse(JSON.stringify(defaults));
+      }
+      const list = [...saved];
+      const existingIds = new Set(list.map(v => v.id));
+      defaults.forEach(def => {
+        if (def && def.id && !existingIds.has(def.id)) {
+          list.push(JSON.parse(JSON.stringify(def)));
+          existingIds.add(def.id);
+        }
+      });
+      return list;
     })(),
     customVideoTags: (function() {
       const saved = loadProgress(STORAGE_KEY_CUSTOM_VIDEO_TAGS, null);
@@ -542,6 +552,9 @@
           benchOverrides:    state.benchOverrides    || {},
           autoFarmChecked:   state.autoFarmChecked   || {},
           customBoxes:       state.customBoxes       || [],
+          customVideos:      state.customVideos      || [],
+          customVideoTags:   state.customVideoTags   || [],
+          deletedVideoTags:  state.deletedVideoTags  || [],
           regionAssignments: state.regionAssignments || {}
         };
         fb.debouncedSave(user.uid, snapshot);
@@ -5623,14 +5636,18 @@
   }
 
   function saveCustomVideosAndSync() {
-    saveProgress(STORAGE_KEY_CUSTOM_VIDEOS, state.customVideos);
-    saveProgress(STORAGE_KEY_CUSTOM_VIDEO_TAGS, state.customVideoTags);
-    saveProgress(STORAGE_KEY_DELETED_VIDEO_TAGS, state.deletedVideoTags);
+    try {
+      localStorage.setItem(STORAGE_KEY_CUSTOM_VIDEOS, JSON.stringify(state.customVideos));
+      localStorage.setItem(STORAGE_KEY_CUSTOM_VIDEO_TAGS, JSON.stringify(state.customVideoTags));
+      localStorage.setItem(STORAGE_KEY_DELETED_VIDEO_TAGS, JSON.stringify(state.deletedVideoTags));
+    } catch (e) {
+      console.warn('Failed to save custom videos to LocalStorage:', e);
+    }
     const fb = window.PokopiaFirebase;
     if (fb && typeof fb.getCurrentUser === 'function') {
       const user = fb.getCurrentUser();
-      if (user && user.uid && isAutoFarmAuthorized(user)) {
-        fb.debouncedSave(user.uid, {
+      if (user && user.uid) {
+        fb.saveCloudProgress(user.uid, {
           customVideos: state.customVideos,
           customVideoTags: state.customVideoTags,
           deletedVideoTags: state.deletedVideoTags

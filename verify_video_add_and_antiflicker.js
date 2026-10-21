@@ -117,10 +117,10 @@ console.log('✓ 驗證通過：渲染指紋守衛生效，相同清單 100% 阻
 
 // 3. 檢查 index.html 快取版本
 const indexHtml = fs.readFileSync('index.html', 'utf8');
-assert.ok(indexHtml.includes('app.js?v=4.10.1'), 'index.html 未更新至 v=4.10.1');
-assert.ok(indexHtml.includes('index.css?v=4.10.1'), 'index.css 未更新至 v=4.10.1');
-assert.ok(indexHtml.includes('firebase.js?v=4.10.1'), 'firebase.js 未更新至 v=4.10.1');
-console.log('✓ 驗證通過：index.html 快取標籤確認為 v=4.10.1');
+assert.ok(indexHtml.includes('app.js?v=4.13.2'), 'index.html 未更新至 v=4.13.2');
+assert.ok(indexHtml.includes('index.css?v=4.13.2'), 'index.css 未更新至 v=4.13.2');
+assert.ok(indexHtml.includes('firebase.js?v=4.13.2'), 'firebase.js 未更新至 v=4.13.2');
+console.log('✓ 驗證通過：index.html 快取標籤確認為 v=4.13.2');
 
 // 4. 驗證任務 3：videoProgress 徹底脫鉤雲端，各裝置各自獨立儲存
 assert.ok(
