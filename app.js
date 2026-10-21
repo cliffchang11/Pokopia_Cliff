@@ -156,7 +156,7 @@
     customVideoTags: (function() {
       const saved = loadProgress(STORAGE_KEY_CUSTOM_VIDEO_TAGS, null);
       if (Array.isArray(saved)) return saved;
-      const defaultTags = (window.POKOPIA_DEFAULT_TAGS || ['終局農場', '環境等級', '自動化', '資源收集', '傢俱攻略']);
+      const defaultTags = (window.POKOPIA_DEFAULT_TAGS || ['建築造景', '終局農場', '環境等級', '自動化', '資源收集', '傢俱攻略']);
       return defaultTags.filter(t => t !== '全部' && t !== '我的自訂');
     })(),
     deletedVideoTags: (function() {
@@ -5592,7 +5592,7 @@
 
   function getAllVideoTags() {
     const deleted = new Set(state.deletedVideoTags || []);
-    const defaultTags = (window.POKOPIA_DEFAULT_TAGS || ['全部', '終局農場', '環境等級', '自動化', '資源收集', '傢俱攻略']);
+    const defaultTags = (window.POKOPIA_DEFAULT_TAGS || ['全部', '建築造景', '終局農場', '環境等級', '自動化', '資源收集', '傢俱攻略']);
     
     // 優先以 state.customVideoTags 為準，若尚未有 customVideoTags 則使用 defaultTags
     let baseList = [];

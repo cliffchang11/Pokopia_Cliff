@@ -85,8 +85,8 @@ assert(appCode.includes('clients5.google.com/translate_a/t?client=dict-chrome-ex
 assert(appCode.includes('btn-tag-edit') && appCode.includes('btn-tag-del'), 'app.js 應包含標籤改名與刪除按鈕');
 console.log('✓ app.js 標籤就地編輯 (改名/刪除/黑名單防復活) 與 Chrome 擴充專用翻譯端點驗證通過');
 
-// 7. 驗證 index.html 版本號已升級為 v=4.13.2
-assert(html.includes('v=4.13.2'), 'index.html 應已全面升級為 v=4.13.2');
-console.log('✓ index.html 靜態資源快取版本號 v=4.13.2 驗證通過');
+// 7. 驗證 index.html 版本號已升級為 v=4.13.3
+assert(html.includes('v=4.13.3'), 'index.html 應已全面升級為 v=4.13.3');
+console.log('✓ index.html 靜態資源快取版本號 v=4.13.3 驗證通過');
 
 console.log('所有單元邏輯驗證全部成功！');
