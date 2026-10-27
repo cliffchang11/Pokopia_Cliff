@@ -12059,16 +12059,16 @@ body.has-floating-back .scroll-top-btn {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   巴斯光年 1×1×1 樂高立體雕塑逐層拼砌藍圖專區 (Buzz Lightyear Builder)
+   3D 巴斯光年極簡沉浸檢視器專區 (3D Buzz Lightyear Model Viewer)
    ═══════════════════════════════════════════════════════════════════ */
 
-/* 1. Header 專屬膠囊按鈕 */
-.buzz-nav-btn {
+/* 1. Header 專屬膠囊導航按鈕 */
+.buzz3d-nav-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
   padding: 0.4375rem 0.875rem;
-  background: linear-gradient(135deg, rgba(107, 63, 160, 0.85) 0%, rgba(88, 185, 54, 0.85) 100%);
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.85) 0%, rgba(34, 197, 94, 0.85) 100%);
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 9999px;
@@ -12076,362 +12076,79 @@ body.has-floating-back .scroll-top-btn {
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 6px rgba(107, 63, 160, 0.35);
+  box-shadow: 0 2px 8px rgba(147, 51, 234, 0.35);
+  backdrop-filter: blur(8px);
 }
-.buzz-nav-btn:hover {
+.buzz3d-nav-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(88, 185, 54, 0.45);
+  box-shadow: 0 4px 14px rgba(34, 197, 94, 0.45);
   border-color: #ffffff;
 }
-.buzz-nav-btn.active {
-  background: linear-gradient(135deg, #6B3FA0 0%, #58B936 100%);
+.buzz3d-nav-btn.active {
+  background: linear-gradient(135deg, #7e22ce 0%, #16a34a 100%);
   border-color: #ffffff;
-  box-shadow: 0 0 0 2px rgba(88, 185, 54, 0.6), 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.6), 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+.buzz3d-nav-btn-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+.buzz3d-nav-btn-text {
+  letter-spacing: 0.02em;
 }
 
 /* 2. 專區主容器 */
-.buzz-section {
+.buzz3d-section {
   width: 100%;
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 1rem 0.75rem 3rem;
+  padding: 0.75rem 0.75rem 2rem;
   box-sizing: border-box;
 }
 
-/* 3. 未授權鎖定橫幅 */
-.buzz-locked-banner {
-  text-align: center;
-  padding: 4rem 1.5rem;
-  background: rgba(30, 41, 59, 0.5);
-  border: 1px dashed rgba(255, 255, 255, 0.15);
-  border-radius: 1rem;
-  margin: 2rem auto;
-  max-width: 600px;
-}
-.buzz-locked-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-.buzz-locked-banner h2 {
-  font-size: 1.5rem;
-  color: var(--text-main, #ffffff);
-  margin: 0 0 0.5rem;
-}
-.buzz-locked-banner p {
-  font-size: 0.95rem;
-  color: var(--text-muted, #94a3b8);
-  margin: 0;
-}
-
-/* 4. 頂部儀表與部位快速切換 */
-.buzz-top-panel {
-  background: var(--surface, #1e293b);
-  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
-  border-radius: 1rem;
-  padding: 1.25rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-}
-.buzz-header-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-.buzz-title-badge {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-}
-.buzz-badge-icon {
-  font-size: 1.5rem;
-}
-.buzz-badge-title {
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: var(--text-main, #ffffff);
-}
-.buzz-badge-scale {
-  font-size: 0.8rem;
-  color: #58B936;
-  background: rgba(88, 185, 54, 0.12);
-  padding: 0.2rem 0.5rem;
-  border-radius: 0.375rem;
-  font-weight: 600;
-}
-
-/* 部位切換膠囊按鈕群 */
-.buzz-section-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-.buzz-section-pill-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.375rem 0.75rem;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 9999px;
-  color: var(--text-muted, #94a3b8);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-.buzz-section-pill-btn:hover {
-  background: rgba(88, 185, 54, 0.15);
-  border-color: #58B936;
-  color: #ffffff;
-}
-.buzz-section-pill-btn.active {
-  background: #58B936;
-  border-color: #58B936;
-  color: #ffffff;
-  box-shadow: 0 2px 8px rgba(88, 185, 54, 0.35);
-}
-
-/* 樓層控制器 */
-.buzz-layer-controller {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-.buzz-layer-btn {
-  flex-shrink: 0;
-  padding: 0.625rem 1rem;
-  background: rgba(107, 63, 160, 0.2);
-  border: 1px solid rgba(107, 63, 160, 0.5);
-  border-radius: 0.5rem;
-  color: #c084fc;
-  font-size: 0.875rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-.buzz-layer-btn:hover {
-  background: #6B3FA0;
-  color: #ffffff;
-}
-.buzz-slider-wrap {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-.buzz-layer-slider {
+.buzz3d-container {
   width: 100%;
-  accent-color: #58B936;
-  cursor: pointer;
-  height: 6px;
-}
-.buzz-layer-readout {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 0.875rem;
-}
-.buzz-current-layer-num {
-  font-weight: 800;
-  color: #58B936;
-  font-size: 1rem;
-}
-.buzz-current-section-name {
-  color: #c084fc;
-  font-weight: 700;
-}
-.buzz-current-layer-blocks {
-  color: var(--text-muted, #94a3b8);
-  font-size: 0.8125rem;
+  margin: 0 auto;
 }
 
-/* 5. 雙欄工作區 */
-.buzz-workspace-grid {
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 1rem;
+/* 3. 3D 滿版外框與視窗 */
+.buzz3d-frame-wrap {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 190px);
+  min-height: 560px;
+  max-height: 920px;
+  background: #0f172a;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 20px rgba(147, 51, 234, 0.15);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
-@media (max-width: 992px) {
-  .buzz-workspace-grid {
-    grid-template-columns: 1fr;
+
+.buzz3d-frame-wrap:hover {
+  border-color: rgba(147, 51, 234, 0.35);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55), 0 0 25px rgba(34, 197, 94, 0.2);
+}
+
+.buzz3d-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* RWD 響應式優化 */
+@media (max-width: 768px) {
+  .buzz3d-section {
+    padding: 0.5rem 0.5rem 1.5rem;
+  }
+  .buzz3d-frame-wrap {
+    height: calc(100vh - 210px);
+    min-height: 440px;
+    border-radius: 1rem;
   }
 }
-
-/* 6. 網格視圖 */
-.buzz-grid-viewport {
-  background: #0f172a;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
-}
-.buzz-grid-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  font-size: 0.8125rem;
-}
-.buzz-view-hint {
-  color: var(--text-muted, #64748b);
-  font-family: monospace;
-}
-.buzz-hover-info {
-  color: #38bdf8;
-  font-weight: 600;
-}
-
-.buzz-canvas-wrapper {
-  flex: 1;
-  min-height: 520px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: radial-gradient(circle, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.95) 100%);
-  border-radius: 0.75rem;
-  overflow: auto;
-  padding: 1.5rem;
-}
-.buzz-voxel-grid {
-  display: grid;
-  gap: 2px;
-  background: rgba(255, 255, 255, 0.04);
-  padding: 8px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-.buzz-voxel-cell {
-  width: 18px;
-  height: 18px;
-  border-radius: 2px;
-  transition: transform 0.1s ease, filter 0.1s ease;
-  cursor: pointer;
-  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-.buzz-voxel-cell:hover {
-  transform: scale(1.35);
-  z-index: 10;
-  filter: brightness(1.25);
-  outline: 2px solid #ffffff;
-}
-
-/* 7. 右側材料與圖例面板 */
-.buzz-sidebar-panel {
-  background: var(--surface, #1e293b);
-  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
-  border-radius: 1rem;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-}
-.buzz-sidebar-tabs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-.buzz-side-tab {
-  padding: 0.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
-  color: var(--text-muted, #94a3b8);
-  font-size: 0.8125rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-.buzz-side-tab.active {
-  background: rgba(107, 63, 160, 0.25);
-  border-color: #6B3FA0;
-  color: #ffffff;
-}
-.buzz-materials-body {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  max-height: 520px;
-  overflow-y: auto;
-  padding-right: 0.25rem;
-}
-.buzz-mat-item,
-.buzz-mat-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.375rem;
-  padding: 0.625rem 0.75rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 0.5rem;
-  font-size: 0.8125rem;
-  transition: background 0.15s ease, border-color 0.15s ease;
-}
-.buzz-mat-item:hover,
-.buzz-mat-card:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.15);
-}
-.buzz-mat-header,
-.buzz-mat-left {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.625rem;
-}
-.buzz-mat-color-dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 3px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  flex-shrink: 0;
-}
-.buzz-mat-name {
-  font-weight: 700;
-  color: var(--text-main, #ffffff);
-  flex-grow: 1;
-}
-.buzz-mat-qty,
-.buzz-mat-count {
-  font-weight: 800;
-  color: #58B936;
-  white-space: nowrap;
-}
-.buzz-mat-sub {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 0.75rem;
-  color: var(--text-muted, #94a3b8);
-}
-.buzz-mat-block-type,
-.buzz-mat-block {
-  color: var(--text-muted, #64748b);
-}
-.buzz-mat-pct {
-  font-weight: 600;
-  color: #a855f7;
-}
-.buzz-mat-bar-track {
-  width: 100%;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 9999px;
-  overflow: hidden;
-}
-.buzz-mat-bar-fill {
-  height: 100%;
-  border-radius: 9999px;
-  transition: width 0.3s ease;
-}
-

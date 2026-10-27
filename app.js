@@ -211,31 +211,17 @@
     tabAutoFarm: document.getElementById('tabAutoFarm'),
     tabCustomStorage: document.getElementById('tabCustomStorage'),
     tabVideo: document.getElementById('tabVideo'),
-    tabBuzz: document.getElementById('tabBuzz'),
+    tabBuzz3d: document.getElementById('tabBuzz3d'),
     btnAutoFarmNav: document.getElementById('btnAutoFarmNav'),
     btnCustomStorageNav: document.getElementById('btnCustomStorageNav'),
     btnVideoNav: document.getElementById('btnVideoNav'),
-    btnBuzzNav: document.getElementById('btnBuzzNav'),
+    btnBuzz3dNav: document.getElementById('btnBuzz3dNav'),
     autoFarmSection: document.getElementById('autoFarmSection'),
     customStorageSection: document.getElementById('customStorageSection'),
     preferencesSection: document.getElementById('preferencesSection'),
     videoSection: document.getElementById('videoSection'),
-    buzzSection: document.getElementById('buzzSection'),
-    buzzLockedBanner: document.getElementById('buzzLockedBanner'),
-    buzzBuilderContainer: document.getElementById('buzzBuilderContainer'),
-    buzzSectionPills: document.getElementById('buzzSectionPills'),
-    btnBuzzPrevLayer: document.getElementById('btnBuzzPrevLayer'),
-    buzzLayerSlider: document.getElementById('buzzLayerSlider'),
-    buzzCurrentLayerNum: document.getElementById('buzzCurrentLayerNum'),
-    buzzCurrentSectionName: document.getElementById('buzzCurrentSectionName'),
-    buzzCurrentLayerBlocks: document.getElementById('buzzCurrentLayerBlocks'),
-    btnBuzzNextLayer: document.getElementById('btnBuzzNextLayer'),
-    buzzHoverInfo: document.getElementById('buzzHoverInfo'),
-    buzzCanvasWrapper: document.getElementById('buzzCanvasWrapper'),
-    buzzVoxelGrid: document.getElementById('buzzVoxelGrid'),
-    tabBuzzLayerMaterials: document.getElementById('tabBuzzLayerMaterials'),
-    tabBuzzTotalMaterials: document.getElementById('tabBuzzTotalMaterials'),
-    buzzMaterialsBody: document.getElementById('buzzMaterialsBody'),
+    buzz3dSection: document.getElementById('buzz3dSection'),
+    buzz3dIframe: document.getElementById('buzz3dIframe'),
     videoPlayerIframe: document.getElementById('videoPlayerIframe'),
     videoResumeBanner: document.getElementById('videoResumeBanner'),
     videoResumeText: document.getElementById('videoResumeText'),
@@ -431,25 +417,25 @@
 
   // Navigation State Persistence (URL Hash 絕對第一優先權 + LocalStorage 回退)
   function getInitialNavState() {
-    const validTabs = ['storage', 'habitat', 'habitatCatalog', 'recipe', 'preferences', 'autofarm', 'customStorage', 'regionMap', 'video', 'buzz'];
+    const validTabs = ['storage', 'habitat', 'habitatCatalog', 'recipe', 'preferences', 'autofarm', 'customStorage', 'regionMap', 'video', 'buzz3d'];
     const validViews = ['card', 'table'];
 
     let tab = null;
     let view = null;
     let targetId = null;
 
-    // 1. 嚴格優先讀取 URL Hash (如 #habitatCatalog-table 或 #customStorage-card 或 #video-card 或 #buzz)
+    // 1. 嚴格優先讀取 URL Hash (如 #habitatCatalog-table 或 #customStorage-card 或 #video-card 或 #buzz3d-card)
     try {
       const hash = (window.location.hash || '').replace(/^#/, '');
       if (hash) {
         const parts = hash.split('-');
         if (validTabs.includes(parts[0])) {
           tab = parts[0];
-          // 專屬安全攔截：未授權使用者直接輸入 #autofarm, #customStorage, #video 或 #buzz 時強制跳轉回首頁
-          if ((tab === 'autofarm' || tab === 'customStorage' || tab === 'video' || tab === 'buzz') && !isAutoFarmAuthorized()) {
+          // 專屬安全攔截：未授權使用者直接輸入 #autofarm, #customStorage, #video 或 #buzz3d 時強制跳轉回首頁
+          if ((tab === 'autofarm' || tab === 'customStorage' || tab === 'video' || tab === 'buzz3d') && !isAutoFarmAuthorized()) {
             tab = 'habitat';
             try {
-              if (window.location.hash.includes('autofarm') || window.location.hash.includes('customStorage') || window.location.hash.includes('video') || window.location.hash.includes('buzz')) {
+              if (window.location.hash.includes('autofarm') || window.location.hash.includes('customStorage') || window.location.hash.includes('video') || window.location.hash.includes('buzz3d')) {
                 history.replaceState(null, '', '#habitat-table');
               }
             } catch (e) {}
@@ -1291,6 +1277,15 @@
       });
     }
 
+    if (DOM.tabBuzz3d) {
+      DOM.tabBuzz3d.addEventListener('click', () => {
+        closeTocDropdown();
+        switchTab('buzz3d', true);
+        pushNavHistory({ tab: 'buzz3d' });
+        hideFloatingBackBtn();
+      });
+    }
+
     if (DOM.btnCustomStorageNav) {
       DOM.btnCustomStorageNav.addEventListener('click', () => {
         closeTocDropdown();
@@ -1309,20 +1304,11 @@
       });
     }
 
-    if (DOM.tabBuzz) {
-      DOM.tabBuzz.addEventListener('click', () => {
+    if (DOM.btnBuzz3dNav) {
+      DOM.btnBuzz3dNav.addEventListener('click', () => {
         closeTocDropdown();
-        switchTab('buzz', true);
-        pushNavHistory({ tab: 'buzz' });
-        hideFloatingBackBtn();
-      });
-    }
-
-    if (DOM.btnBuzzNav) {
-      DOM.btnBuzzNav.addEventListener('click', () => {
-        closeTocDropdown();
-        switchTab('buzz', true);
-        pushNavHistory({ tab: 'buzz' });
+        switchTab('buzz3d', true);
+        pushNavHistory({ tab: 'buzz3d' });
         hideFloatingBackBtn();
       });
     }
@@ -1748,8 +1734,8 @@
     if (DOM.tabRegionMap) DOM.tabRegionMap.classList.remove('active');
     if (DOM.tabVideo) DOM.tabVideo.classList.remove('active');
     if (DOM.btnVideoNav) DOM.btnVideoNav.classList.remove('active');
-    if (DOM.tabBuzz) DOM.tabBuzz.classList.remove('active');
-    if (DOM.btnBuzzNav) DOM.btnBuzzNav.classList.remove('active');
+    if (DOM.tabBuzz3d) DOM.tabBuzz3d.classList.remove('active');
+    if (DOM.btnBuzz3dNav) DOM.btnBuzz3dNav.classList.remove('active');
 
     DOM.storageSection.classList.add('hidden-section');
     DOM.storageSection.classList.remove('active-section');
@@ -1781,9 +1767,9 @@
       DOM.videoSection.classList.add('hidden-section');
       DOM.videoSection.classList.remove('active-section');
     }
-    if (DOM.buzzSection) {
-      DOM.buzzSection.classList.add('hidden-section');
-      DOM.buzzSection.classList.remove('active-section');
+    if (DOM.buzz3dSection) {
+      DOM.buzz3dSection.classList.add('hidden-section');
+      DOM.buzz3dSection.classList.remove('active-section');
     }
 
     if (tab === 'storage') {
@@ -1957,30 +1943,27 @@
       if (typeof renderVideoSection === 'function') {
         renderVideoSection();
       }
-    } else if (tab === 'buzz') {
+    } else if (tab === 'buzz3d') {
       if (!isAutoFarmAuthorized()) {
         switchTab('habitat', skipSync);
         return;
       }
-      if (DOM.tabBuzz) DOM.tabBuzz.classList.add('active');
-      if (DOM.btnBuzzNav) DOM.btnBuzzNav.classList.add('active');
-      if (DOM.buzzSection) {
-        DOM.buzzSection.classList.remove('hidden-section');
-        DOM.buzzSection.classList.add('active-section');
+      if (DOM.tabBuzz3d) DOM.tabBuzz3d.classList.add('active');
+      if (DOM.btnBuzz3dNav) DOM.btnBuzz3dNav.classList.add('active');
+      if (DOM.buzz3dSection) {
+        DOM.buzz3dSection.classList.remove('hidden-section');
+        DOM.buzz3dSection.classList.add('active-section');
       }
       if (DOM.toolbarContainer) DOM.toolbarContainer.classList.remove('hidden');
       if (DOM.toolbarHeaderRow) DOM.toolbarHeaderRow.classList.remove('hidden');
-      if (DOM.toolbarTitle) DOM.toolbarTitle.textContent = '巴斯光年 1×1×1 拼砌藍圖';
+      if (DOM.toolbarTitle) DOM.toolbarTitle.textContent = '3D 巴斯光年';
       if (DOM.catalogProgressBadge) DOM.catalogProgressBadge.classList.remove('hidden');
       if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🚀';
-      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>75</strong> 層手冊立體胸像 ‧ 9,557 塊磚';
+      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>3D</strong> 互動模型檢視';
       if (DOM.searchRow) DOM.searchRow.classList.add('hidden');
       if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.add('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.add('hidden');
       if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.add('hidden');
-      if (typeof renderBuzzSection === 'function') {
-        renderBuzzSection();
-      }
     } else if (tab === 'preferences') {
       if (DOM.tabPreferences) DOM.tabPreferences.classList.add('active');
       if (DOM.btnPrefDrawer) DOM.btnPrefDrawer.classList.add('active');
@@ -3050,23 +3033,23 @@
         DOM.btnVideoNav.classList.add('hidden');
       }
     }
-    if (DOM.tabBuzz) {
+    if (DOM.tabBuzz3d) {
       if (isAuth) {
-        DOM.tabBuzz.classList.remove('hidden');
+        DOM.tabBuzz3d.classList.remove('hidden');
       } else {
-        DOM.tabBuzz.classList.add('hidden');
+        DOM.tabBuzz3d.classList.add('hidden');
       }
     }
-    if (DOM.btnBuzzNav) {
+    if (DOM.btnBuzz3dNav) {
       if (isAuth) {
-        DOM.btnBuzzNav.classList.remove('hidden');
+        DOM.btnBuzz3dNav.classList.remove('hidden');
       } else {
-        DOM.btnBuzzNav.classList.add('hidden');
+        DOM.btnBuzz3dNav.classList.add('hidden');
       }
     }
 
-    // 若未授權但當前在 autofarm, customStorage, video 或 buzz 分頁，立即跳轉回首頁
-    if (!isAuth && (state.currentTab === 'autofarm' || state.currentTab === 'customStorage' || state.currentTab === 'video' || state.currentTab === 'buzz')) {
+    // 若未授權但當前在 autofarm, customStorage, video 或 buzz3d 分頁，立即跳轉回首頁
+    if (!isAuth && (state.currentTab === 'autofarm' || state.currentTab === 'customStorage' || state.currentTab === 'video' || state.currentTab === 'buzz3d')) {
       switchTab('habitat', true);
       pushNavHistory({ tab: 'habitat', view: state.currentView || 'table' });
     }
@@ -6833,378 +6816,6 @@
       }
     });
   }
-
-  /* ==========================================================================
-     巴斯光年 1×1×1 樂高立體雕塑逐層拼砌工作台 (JEKCA 73cm 原型 1:1 Voxel 化)
-     ========================================================================== */
-  let buzzState = {
-    currentLayer: 1,
-    activeMaterialTab: 'layer', // 'layer' | 'total'
-    isEventsBound: false
-  };
-
-  function initBuzzEvents() {
-    if (buzzState.isEventsBound) return;
-    buzzState.isEventsBound = true;
-
-    // 滑桿事件
-    if (DOM.buzzLayerSlider) {
-      DOM.buzzLayerSlider.addEventListener('input', (e) => {
-        const layerNum = parseInt(e.target.value, 10);
-        setBuzzLayer(layerNum);
-      });
-    }
-
-    // 上一層 / 下一層按鈕
-    if (DOM.btnBuzzPrevLayer) {
-      DOM.btnBuzzPrevLayer.addEventListener('click', () => {
-        setBuzzLayer(buzzState.currentLayer - 1);
-      });
-    }
-    if (DOM.btnBuzzNextLayer) {
-      DOM.btnBuzzNextLayer.addEventListener('click', () => {
-        setBuzzLayer(buzzState.currentLayer + 1);
-      });
-    }
-
-    // 材料標籤切換
-    if (DOM.tabBuzzLayerMaterials) {
-      DOM.tabBuzzLayerMaterials.addEventListener('click', () => {
-        buzzState.activeMaterialTab = 'layer';
-        DOM.tabBuzzLayerMaterials.classList.add('active');
-        if (DOM.tabBuzzTotalMaterials) DOM.tabBuzzTotalMaterials.classList.remove('active');
-        renderBuzzMaterials();
-      });
-    }
-    if (DOM.tabBuzzTotalMaterials) {
-      DOM.tabBuzzTotalMaterials.addEventListener('click', () => {
-        buzzState.activeMaterialTab = 'total';
-        DOM.tabBuzzTotalMaterials.classList.add('active');
-        if (DOM.tabBuzzLayerMaterials) DOM.tabBuzzLayerMaterials.classList.remove('active');
-        renderBuzzMaterials();
-      });
-    }
-
-    // 鍵盤左右鍵切換樓層 (當前在 buzz 標籤時)
-    window.addEventListener('keydown', (e) => {
-      if (state.currentTab !== 'buzz') return;
-      if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
-        e.preventDefault();
-        setBuzzLayer(buzzState.currentLayer - 1);
-      } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
-        e.preventDefault();
-        setBuzzLayer(buzzState.currentLayer + 1);
-      }
-    });
-  }
-
-  function setBuzzLayer(layerNum) {
-    const data = window.BUZZ_LIGHTYEAR_DATA;
-    if (!data) return;
-    const maxLayer = data.totalLayers || 75;
-    layerNum = Math.max(1, Math.min(maxLayer, layerNum));
-    buzzState.currentLayer = layerNum;
-
-    if (DOM.buzzLayerSlider) {
-      DOM.buzzLayerSlider.value = layerNum;
-    }
-
-    renderBuzzLayer();
-  }
-
-  let buzzDataLoadingPromise = null;
-
-  function ensureBuzzDataLoaded() {
-    if (window.BUZZ_LIGHTYEAR_DATA) {
-      return Promise.resolve(window.BUZZ_LIGHTYEAR_DATA);
-    }
-    if (buzzDataLoadingPromise) {
-      return buzzDataLoadingPromise;
-    }
-
-    buzzDataLoadingPromise = new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = 'buzz_lightyear_data.js?v=4.15.0';
-      script.async = true;
-      script.onload = () => {
-        if (window.BUZZ_LIGHTYEAR_DATA) {
-          resolve(window.BUZZ_LIGHTYEAR_DATA);
-        } else {
-          reject(new Error('BUZZ_LIGHTYEAR_DATA not found after script load'));
-        }
-      };
-      script.onerror = (err) => {
-        buzzDataLoadingPromise = null;
-        reject(err);
-      };
-      document.body.appendChild(script);
-    });
-
-    return buzzDataLoadingPromise;
-  }
-
-  function renderBuzzSection() {
-    initBuzzEvents();
-
-    if (!window.BUZZ_LIGHTYEAR_DATA) {
-      if (DOM.buzzVoxelGrid) {
-        DOM.buzzVoxelGrid.innerHTML = `
-          <div style="grid-column: 1 / -1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 3rem 1rem; color: #a855f7; gap: 0.75rem;">
-            <div style="font-size: 2rem;">🚀</div>
-            <div style="font-size: 1rem; font-weight: 700; color: #ffffff;">正在非同步載入 JEKCA 原廠藍圖模型中...</div>
-            <div style="font-size: 0.8125rem; color: #94a3b8;">首頁零阻塞秒開 ‧ 93KB 輕量化模型極速加載</div>
-          </div>
-        `;
-      }
-      ensureBuzzDataLoaded()
-        .then(() => {
-          renderBuzzSection();
-        })
-        .catch(err => {
-          console.error('載入巴斯光年模型失敗:', err);
-          if (DOM.buzzVoxelGrid) {
-            DOM.buzzVoxelGrid.innerHTML = '<div style="grid-column: 1 / -1; padding: 2rem; color: #ef4444; text-align: center;">載入模型失敗，請重新整理後再試</div>';
-          }
-        });
-      return;
-    }
-
-    const data = window.BUZZ_LIGHTYEAR_DATA;
-
-    // 渲染五大部位膠囊按鈕
-    renderBuzzSectionPills();
-
-    // 渲染當前層
-    renderBuzzLayer();
-  }
-
-  function renderBuzzSectionPills() {
-    if (!DOM.buzzSectionPills) return;
-    const data = window.BUZZ_LIGHTYEAR_DATA;
-    if (!data || !Array.isArray(data.sections)) return;
-
-    const currentLayer = buzzState.currentLayer;
-    DOM.buzzSectionPills.innerHTML = data.sections.map(sec => {
-      const start = sec.startLayer !== undefined ? sec.startLayer : (sec.range ? sec.range[0] : 1);
-      const end = sec.endLayer !== undefined ? sec.endLayer : (sec.range ? sec.range[1] : 75);
-      const isCurrent = currentLayer >= start && currentLayer <= end;
-      return `
-        <button class="buzz-section-pill-btn buzz-pill-btn ${isCurrent ? 'active' : ''}" data-start-layer="${start}" title="${sec.name} (第 ${start}~${end} 層)">
-          <span class="buzz-pill-icon">${sec.icon}</span>
-          <span class="buzz-pill-name">${sec.name}</span>
-          <span class="buzz-pill-range">L${start}-L${end}</span>
-        </button>
-      `;
-    }).join('');
-
-    // 綁定部位切換點擊事件
-    DOM.buzzSectionPills.querySelectorAll('.buzz-section-pill-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const startLayer = parseInt(btn.dataset.startLayer, 10);
-        setBuzzLayer(startLayer);
-      });
-    });
-  }
-
-  function renderBuzzLayer() {
-    const data = window.BUZZ_LIGHTYEAR_DATA;
-    if (!data) return;
-
-    const layerIdx = buzzState.currentLayer - 1;
-    const layerData = data.layers[layerIdx];
-    if (!layerData) return;
-
-    const blockCount = layerData.blockCount !== undefined ? layerData.blockCount : (layerData.count !== undefined ? layerData.count : (layerData.blocks ? layerData.blocks.length : 0));
-
-    // 1. 更新讀數 (包含手冊對應 Step 與詳細部位動作)
-    if (DOM.buzzCurrentLayerNum) {
-      const stepStr = layerData.step ? `【手冊 ${layerData.step}】` : '';
-      DOM.buzzCurrentLayerNum.textContent = `第 ${buzzState.currentLayer} 層 ${stepStr} (進度 ${buzzState.currentLayer} / ${data.totalLayers})`;
-    }
-    if (DOM.buzzCurrentSectionName) {
-      const descStr = layerData.stepDesc ? ` ‧ ${layerData.stepDesc}` : '';
-      DOM.buzzCurrentSectionName.textContent = `【${layerData.sectionName || ''}】${descStr}`;
-    }
-    if (DOM.buzzCurrentLayerBlocks) {
-      DOM.buzzCurrentLayerBlocks.textContent = `本層方塊數：${blockCount} 塊`;
-    }
-
-    // 更新五大部位按鈕的 active 狀態
-    if (DOM.buzzSectionPills) {
-      DOM.buzzSectionPills.querySelectorAll('.buzz-section-pill-btn').forEach(btn => {
-        const start = parseInt(btn.dataset.startLayer, 10);
-        const sec = data.sections.find(s => (s.startLayer !== undefined ? s.startLayer : s.range[0]) === start);
-        if (sec) {
-          const sStart = sec.startLayer !== undefined ? sec.startLayer : sec.range[0];
-          const sEnd = sec.endLayer !== undefined ? sec.endLayer : sec.range[1];
-          const isCurrent = buzzState.currentLayer >= sStart && buzzState.currentLayer <= sEnd;
-          btn.classList.toggle('active', isCurrent);
-        }
-      });
-    }
-
-    // 2. 渲染 1x1x1 俯視網格畫布 (X: -14 ~ +14, Y: -7 ~ +7)
-    renderBuzzVoxelGrid(layerData, data);
-
-    // 3. 渲染右側材料清單
-    renderBuzzMaterials();
-  }
-
-  function renderBuzzVoxelGrid(layerData, data) {
-    if (!DOM.buzzVoxelGrid) return;
-    const blocks = layerData.blocks || [];
-    const colors = data.colors || {};
-
-    // 建立 (x, y) 快速映射
-    const blockMap = new Map();
-    blocks.forEach(b => {
-      blockMap.set(`${b.x},${b.y}`, b);
-    });
-
-    const dims = data.dimensions || { xMin: -33, xMax: 33, yMin: -18, yMax: 15 };
-    const minX = dims.xMin !== undefined ? dims.xMin : -33;
-    const maxX = dims.xMax !== undefined ? dims.xMax : 33;
-    const minY = dims.yMin !== undefined ? dims.yMin : -18;
-    const maxY = dims.yMax !== undefined ? dims.yMax : 15;
-    const totalCols = maxX - minX + 1;
-    const totalRows = maxY - minY + 1;
-
-    // 根據欄數動態調整格線大小 (欄位多時縮小格線保持視野完整)
-    const cellSize = totalCols > 40 ? 15 : 22;
-    DOM.buzzVoxelGrid.style.gridTemplateColumns = `repeat(${totalCols}, ${cellSize}px)`;
-    DOM.buzzVoxelGrid.style.gridTemplateRows = `repeat(${totalRows}, ${cellSize}px)`;
-
-    let cellsHtml = '';
-    // Y 從 maxY 往下遍歷到 minY (使視圖 Y+ 向上為前方)
-    for (let y = maxY; y >= minY; y--) {
-      for (let x = minX; x <= maxX; x++) {
-        const key = `${x},${y}`;
-        const b = blockMap.get(key);
-        if (b) {
-          const colInfo = colors[b.c] || { name: '未知顏色', hex: '#CCCCCC', block: '預設磚' };
-          cellsHtml += `<div class="buzz-voxel-cell buzz-grid-cell buzz-cell-filled" data-x="${x}" data-y="${y}" data-color-name="${colInfo.name}" data-block-name="${colInfo.block}" style="background-color: ${colInfo.hex};"></div>`;
-        } else {
-          cellsHtml += `<div class="buzz-voxel-cell buzz-grid-cell buzz-cell-empty" data-x="${x}" data-y="${y}"></div>`;
-        }
-      }
-    }
-
-    DOM.buzzVoxelGrid.innerHTML = cellsHtml;
-
-    // 滑鼠 hover 事件
-    const hoverInfo = DOM.buzzHoverInfo;
-    DOM.buzzVoxelGrid.querySelectorAll('.buzz-voxel-cell').forEach(cell => {
-      cell.addEventListener('mouseenter', () => {
-        const x = cell.dataset.x;
-        const y = cell.dataset.y;
-        if (cell.classList.contains('buzz-cell-filled')) {
-          const colorName = cell.dataset.colorName;
-          const blockName = cell.dataset.blockName;
-          if (hoverInfo) {
-            hoverInfo.innerHTML = `座標 <strong>(X: ${x}, Y: ${y})</strong> ‧ 【<span class="buzz-hover-color-tag">${colorName}</span>】${blockName}`;
-          }
-        } else {
-          if (hoverInfo) {
-            hoverInfo.innerHTML = `座標 <strong>(X: ${x}, Y: ${y})</strong> ‧ <span class="buzz-hover-empty">此處無方塊</span>`;
-          }
-        }
-      });
-    });
-
-    DOM.buzzVoxelGrid.addEventListener('mouseleave', () => {
-      if (hoverInfo) {
-        hoverInfo.innerHTML = '滑鼠懸停方塊查看座標與材料';
-      }
-    });
-  }
-
-  function renderBuzzMaterials() {
-    if (!DOM.buzzMaterialsBody) return;
-    const data = window.BUZZ_LIGHTYEAR_DATA;
-    if (!data) return;
-
-    const colors = data.colors || {};
-
-    if (buzzState.activeMaterialTab === 'layer') {
-      // 當前層材料統計
-      const layerIdx = buzzState.currentLayer - 1;
-      const layerData = data.layers[layerIdx];
-      if (!layerData) return;
-
-      const layerCount = layerData.blockCount !== undefined ? layerData.blockCount : (layerData.count !== undefined ? layerData.count : (layerData.blocks ? layerData.blocks.length : 0));
-      const counts = {};
-      (layerData.blocks || []).forEach(b => {
-        counts[b.c] = (counts[b.c] || 0) + 1;
-      });
-
-      const sortedColors = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
-
-      if (sortedColors.length === 0) {
-        DOM.buzzMaterialsBody.innerHTML = '<div class="buzz-empty-materials">本層無方塊</div>';
-        return;
-      }
-
-      DOM.buzzMaterialsBody.innerHTML = sortedColors.map(cKey => {
-        const colInfo = colors[cKey] || { name: cKey, hex: '#CCCCCC', block: '方塊' };
-        const cnt = counts[cKey];
-        const pct = layerCount > 0 ? ((cnt / layerCount) * 100).toFixed(1) : '0';
-        return `
-          <div class="buzz-mat-card buzz-mat-item">
-            <div class="buzz-mat-header buzz-mat-left">
-              <span class="buzz-mat-color-dot" style="background-color: ${colInfo.hex};"></span>
-              <span class="buzz-mat-name">${colInfo.name}</span>
-              <span class="buzz-mat-qty buzz-mat-count">${cnt} 塊</span>
-            </div>
-            <div class="buzz-mat-sub">
-              <span class="buzz-mat-block-type buzz-mat-block">材質：${colInfo.block}</span>
-              <span class="buzz-mat-pct">${pct}%</span>
-            </div>
-            <div class="buzz-mat-bar-track">
-              <div class="buzz-mat-bar-fill" style="width: ${pct}%; background-color: ${colInfo.hex};"></div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    } else {
-      // 全機 75 層統計
-      const totalBlocks = data.totalBlocks || 13969;
-      const dist = data.totalMaterials || (data.summary && data.summary.color_distribution) || {};
-      const sortedColors = Object.keys(dist).filter(k => dist[k] > 0).sort((a, b) => dist[b] - dist[a]);
-
-      DOM.buzzMaterialsBody.innerHTML = sortedColors.map(cKey => {
-        const colInfo = colors[cKey] || { name: cKey, hex: '#CCCCCC', block: '方塊' };
-        const cnt = dist[cKey];
-        const pct = totalBlocks > 0 ? ((cnt / totalBlocks) * 100).toFixed(1) : '0';
-        return `
-          <div class="buzz-mat-card buzz-mat-item">
-            <div class="buzz-mat-header buzz-mat-left">
-              <span class="buzz-mat-color-dot" style="background-color: ${colInfo.hex};"></span>
-              <span class="buzz-mat-name">${colInfo.name}</span>
-              <span class="buzz-mat-qty buzz-mat-count">${cnt} 塊</span>
-            </div>
-            <div class="buzz-mat-sub">
-              <span class="buzz-mat-block-type buzz-mat-block">材質：${colInfo.block}</span>
-              <span class="buzz-mat-pct">${pct}%</span>
-            </div>
-            <div class="buzz-mat-bar-track">
-              <div class="buzz-mat-bar-fill" style="width: ${pct}%; background-color: ${colInfo.hex};"></div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-  }
-
-  // 暴露巴斯光年工作台 API
-  window.PokopiaBuzz = {
-    renderBuzzSection,
-    setBuzzLayer,
-    ensureBuzzDataLoaded,
-    getBuzzState: () => ({ ...buzzState }),
-    renderBuzzLayer,
-    renderBuzzMaterials
-  };
 
   // 暴露參考影片管理器 API
   window.PokopiaVideoManager = {

@@ -82,9 +82,9 @@
                 <span class="toc-item-text">參考影片</span>
                 <span class="toc-item-badge">攻略影音</span>
               </button>
-              <button id="tabBuzz" class="toc-menu-item hidden" data-tab="buzz">
-                <span class="toc-item-text">巴斯光年</span>
-                <span class="toc-item-badge">1×1 藍圖</span>
+              <button id="tabBuzz3d" class="toc-menu-item hidden" data-tab="buzz3d">
+                <span class="toc-item-text">3D 巴斯光年</span>
+                <span class="toc-item-badge">3D 模組</span>
               </button>
             </div>
           </div>
@@ -117,10 +117,10 @@
           <span class="video-nav-btn-icon">🎬</span>
           <span class="video-nav-btn-text">參考影片</span>
         </button>
-        <!-- 巴斯光年專屬入口按鈕（僅授權帳號顯示） -->
-        <button id="btnBuzzNav" class="buzz-nav-btn hidden" data-tab="buzz" title="巴斯光年 1×1×1 樂高立體雕塑逐層拼砌藍圖 (限專屬權限)">
-          <span class="buzz-nav-btn-icon">🚀</span>
-          <span class="buzz-nav-btn-text">巴斯光年</span>
+        <!-- 3D 巴斯光年專屬入口按鈕（僅授權帳號顯示） -->
+        <button id="btnBuzz3dNav" class="buzz3d-nav-btn hidden" data-tab="buzz3d" title="3D 巴斯光年模型檢視 (限專屬權限)">
+          <span class="buzz3d-nav-btn-icon">🚀</span>
+          <span class="buzz3d-nav-btn-text">3D 巴斯</span>
         </button>
 
         <!-- 喜好與物品百科入口按鈕 (切換至獨立主分頁) -->
@@ -551,75 +551,28 @@
         <div id="prefDrawerBody" class="pref-page-body"></div>
       </div>
     </section>
-    
-    <!-- Buzz Lightyear 1x1x1 Builder Section (巴斯光年 1×1×1 樂高立體雕塑逐層拼砌工作台) -->
-    <section id="buzzSection" class="view-section hidden-section buzz-section">
-      <!-- 權限未解鎖時的鎖定提示 (非授權帳號) -->
-      <div id="buzzLockedBanner" class="buzz-locked-banner hidden">
-        <div class="buzz-locked-icon">🔒</div>
-        <h2>專屬私人拼砌藍圖</h2>
-        <p>此專區僅限專屬擁有者帳號登入後查看。請使用授權帳號登入 Google。</p>
-      </div>
 
-      <!-- 授權後的完整工作台內容 -->
-      <div id="buzzBuilderContainer" class="buzz-builder-container">
-        <!-- 頂部控制列：五大部位快速錨點、層數指示、滑桿與按鈕 -->
-        <div class="buzz-top-panel">
-          <div class="buzz-header-row">
-            <div class="buzz-title-badge">
-              <span class="buzz-badge-icon">🚀</span>
-              <span class="buzz-badge-title">巴斯光年 1×1×1 拼砌藍圖</span>
-              <span class="buzz-badge-scale">75 層手冊立體胸像 ‧ JEKCA 原廠還原</span>
-            </div>
-            <!-- 五大部位切換膠囊 -->
-            <div class="buzz-section-pills" id="buzzSectionPills">
-              <!-- 由 JS 動態渲染部位按鈕 -->
-            </div>
-          </div>
-
-          <!-- 逐層控制儀表 -->
-          <div class="buzz-layer-controller">
-            <button id="btnBuzzPrevLayer" class="buzz-layer-btn" title="上一層 (快捷鍵: 方向鍵左/下)">◀ 上一層</button>
-            <div class="buzz-slider-wrap">
-              <input type="range" id="buzzLayerSlider" min="1" max="75" value="1" class="buzz-layer-slider">
-              <div class="buzz-layer-readout">
-                <span class="buzz-layer-num-label">當前樓層：</span>
-                <span id="buzzCurrentLayerNum" class="buzz-current-layer-num">第 1 層 (Layer 01 / 75)</span>
-                <span id="buzzCurrentSectionName" class="buzz-current-section-name">【胸像專用展示基座】</span>
-                <span id="buzzCurrentLayerBlocks" class="buzz-current-layer-blocks">方塊數：153 塊</span>
-              </div>
-            </div>
-            <button id="btnBuzzNextLayer" class="buzz-layer-btn" title="下一層 (快捷鍵: 方向鍵右/上)">下一層 ▶</button>
-          </div>
-        </div>
-
-        <!-- 主體雙欄排版：左側為 1x1x1 俯視網格畫布，右側為材料清單與色彩圖例 -->
-        <div class="buzz-workspace-grid">
-          <!-- 左側：網格視圖 -->
-          <div class="buzz-grid-viewport">
-            <div class="buzz-grid-toolbar">
-              <div class="buzz-view-hint">俯視座標 (X: 左右 -14 ~ +14, Y: 前後 -8 ~ +8)</div>
-              <div class="buzz-hover-info" id="buzzHoverInfo">滑鼠懸停方塊查看座標與材料</div>
-            </div>
-            <div class="buzz-canvas-wrapper" id="buzzCanvasWrapper">
-              <div id="buzzVoxelGrid" class="buzz-voxel-grid"></div>
-            </div>
-          </div>
-
-          <!-- 右側：材料清單與色彩圖例面板 -->
-          <div class="buzz-sidebar-panel">
-            <div class="buzz-sidebar-tabs">
-              <button id="tabBuzzLayerMaterials" class="buzz-side-tab active">本層材料</button>
-              <button id="tabBuzzTotalMaterials" class="buzz-side-tab">全機統計</button>
-            </div>
-            <div id="buzzMaterialsBody" class="buzz-materials-body">
-              <!-- 由 JS 動態渲染各顏色材料進度卡片 -->
-            </div>
-          </div>
+    <!-- 3D Buzz Lightyear Section (巴斯光年 3D 模型純淨沉浸檢視) -->
+    <section id="buzz3dSection" class="view-section hidden-section buzz3d-section">
+      <div class="buzz3d-container">
+        <div class="buzz3d-frame-wrap">
+          <iframe
+            id="buzz3dIframe"
+            class="buzz3d-iframe"
+            title="Toy Story Buzz 3D model"
+            src="https://sketchfab.com/models/1c48aeec16154595b6a0ea3f6c20985f/embed?autostart=1&autospin=0.2&ui_theme=dark&ui_infos=0&ui_watermark=0"
+            frameborder="0"
+            allow="autoplay; fullscreen; xr-spatial-tracking"
+            xr-spatial-tracking="true"
+            execution-while-out-of-viewport="true"
+            execution-while-not-rendered="true"
+            web-share="true"
+            allowfullscreen>
+          </iframe>
         </div>
       </div>
     </section>
-
+    
     <!-- Empty State Result Notice -->
     <div id="emptyResult" class="empty-state hidden">
       <div class="empty-icon">🔎</div>
