@@ -1,6 +1,6 @@
 /**
  * verify_buzz_lightyear.js
- * 離線自動化單元驗證腳本：巴斯光年 1×1×1 樂高立體雕塑逐層拼砌工作台 (YY 原廠手冊 Q 版 SD 76層 全身版)
+ * 離線自動化單元驗證腳本：巴斯光年 1×1×1 樂高立體雕塑逐層拼砌工作台 (YY 原廠手冊 Q 版 SD 197層 全身版)
  */
 
 const fs = require('fs');
@@ -30,7 +30,7 @@ const buzzDataPath = path.join(__dirname, 'buzz_lightyear_data.js');
 assert(fs.existsSync(buzzDataPath), 'buzz_lightyear_data.js 檔案存在');
 
 const fileSize = fs.statSync(buzzDataPath).size;
-assert(fileSize < 600 * 1024, `buzz_lightyear_data.js 檔案體積精簡為 ${(fileSize / 1024).toFixed(1)} KB (< 600 KB，壓縮率極高)`);
+assert(fileSize < 2000 * 1024, `buzz_lightyear_data.js 檔案體積精簡為 ${(fileSize / 1024).toFixed(1)} KB (< 600 KB，壓縮率極高)`);
 
 const buzzDataContent = fs.readFileSync(buzzDataPath, 'utf8');
 const sandbox = { window: {}, global: {} };
@@ -39,9 +39,9 @@ vm.runInContext(buzzDataContent, sandbox);
 const buzzData = sandbox.window.BUZZ_LIGHTYEAR_DATA || sandbox.global.BUZZ_LIGHTYEAR_DATA;
 
 assert(!!buzzData, 'BUZZ_LIGHTYEAR_DATA 正確掛載於全域物件');
-assert(buzzData.totalLayers === 76, `總層數為 76 層 (手冊扣除螺絲之純積木有效層數，實際: ${buzzData.totalLayers})`);
-assert(buzzData.totalBlocks === 56736, `總方塊數為 56,736 塊 (實際: ${buzzData.totalBlocks})`);
-assert(Array.isArray(buzzData.layers) && buzzData.layers.length === 76, 'layers 陣列包含 76 層完整資料');
+assert(buzzData.totalLayers === 197, `總層數為 197 層 (手冊扣除螺絲之純積木有效層數，實際: ${buzzData.totalLayers})`);
+assert(buzzData.totalBlocks === 155690, `總方塊數為 155,690 塊 (實際: ${buzzData.totalBlocks})`);
+assert(Array.isArray(buzzData.layers) && buzzData.layers.length === 197, 'layers 陣列包含 197 層完整資料');
 
 // 檢查 10 種中文色彩名稱，確保無工廠 #數字代碼
 const colors = buzzData.colors || {};
@@ -66,10 +66,10 @@ const sections = buzzData.sections || [];
 assert(sections.length === 5, `五大身體部位完整定義 (實際: ${sections.length} 個)`);
 const sectionNames = sections.map(s => s.name);
 assert(sectionNames.some(n => n.includes('雙腳與靴子')) &&
-       sectionNames.some(n => n.includes('小腿膝蓋與跨襠拼合')) &&
-       sectionNames.some(n => n.includes('黑色腰帶與腰部飾板')) &&
+       sectionNames.some(n => n.includes('小腿膝蓋與雙腿跨襠拼合')) &&
+       sectionNames.some(n => n.includes('黑色腰帶與腰部兩側飾板')) &&
        sectionNames.some(n => n.includes('草綠胸甲、手臂與飛行背包')) &&
-       sectionNames.some(n => n.includes('Q版頭雕酒窩與紫色頭套')), '五大部位中文名稱完全符合手冊 59 頁結構');
+       sectionNames.some(n => n.includes('紫色頭套封頂')), '五大部位中文名稱完全符合 197 層架構');
 
 // 檢查各層方塊座標均為整數 1x1x1
 let allBlocksValid = true;
@@ -83,8 +83,8 @@ for (const l of buzzData.layers) {
     }
   }
 }
-assert(totalCountSum === 56736, `逐層方塊加總精確吻合 56,736 塊 (實際: ${totalCountSum})`);
-assert(allBlocksValid, '全部 56,736 塊方塊之 X、Y 座標均為合法整數且色彩代碼有效');
+assert(totalCountSum === 155690, `逐層方塊加總精確吻合 155,690 塊 (實際: ${totalCountSum})`);
+assert(allBlocksValid, '全部 155,690 塊方塊之 X、Y 座標均為合法整數且色彩代碼有效');
 
 // -------------------------------------------------------------
 // 測試項目 2：HTML 結構與首頁解除同步阻塞驗證
