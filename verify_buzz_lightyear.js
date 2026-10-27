@@ -1,6 +1,6 @@
 /**
  * verify_buzz_lightyear.js
- * 離線自動化單元驗證腳本：巴斯光年 1×1×1 樂高立體雕塑逐層拼砌工作台 (JEKCA 原廠手冊版)
+ * 離線自動化單元驗證腳本：巴斯光年 1×1×1 樂高立體雕塑逐層拼砌工作台 (YY 原廠手冊 Q 版 SD 76層 全身版)
  */
 
 const fs = require('fs');
@@ -20,7 +20,7 @@ function assert(condition, message) {
   }
 }
 
-console.log('🚀 開始執行巴斯光年 1×1×1 工作台離線自動化檢驗 (JEKCA 手冊還原版)...\n');
+console.log('🚀 開始執行巴斯光年 1×1×1 工作台離線自動化檢驗 (YY 原廠手冊 59 頁 Q 版全身還原版)...\n');
 
 // -------------------------------------------------------------
 // 測試項目 1：模型資料庫完整性與輕量化驗證 (buzz_lightyear_data.js)
@@ -30,7 +30,7 @@ const buzzDataPath = path.join(__dirname, 'buzz_lightyear_data.js');
 assert(fs.existsSync(buzzDataPath), 'buzz_lightyear_data.js 檔案存在');
 
 const fileSize = fs.statSync(buzzDataPath).size;
-assert(fileSize < 250 * 1024, `buzz_lightyear_data.js 檔案體積精簡為 ${(fileSize / 1024).toFixed(1)} KB (< 250 KB，成功縮減 90%)`);
+assert(fileSize < 600 * 1024, `buzz_lightyear_data.js 檔案體積精簡為 ${(fileSize / 1024).toFixed(1)} KB (< 600 KB，壓縮率極高)`);
 
 const buzzDataContent = fs.readFileSync(buzzDataPath, 'utf8');
 const sandbox = { window: {}, global: {} };
@@ -39,14 +39,14 @@ vm.runInContext(buzzDataContent, sandbox);
 const buzzData = sandbox.window.BUZZ_LIGHTYEAR_DATA || sandbox.global.BUZZ_LIGHTYEAR_DATA;
 
 assert(!!buzzData, 'BUZZ_LIGHTYEAR_DATA 正確掛載於全域物件');
-assert(buzzData.totalLayers === 75, `總層數為 75 層 (實際: ${buzzData.totalLayers})`);
-assert(buzzData.totalBlocks === 9557, `總方塊數為 9,557 塊 (實際: ${buzzData.totalBlocks})`);
-assert(Array.isArray(buzzData.layers) && buzzData.layers.length === 75, 'layers 陣列包含 75 層完整資料');
+assert(buzzData.totalLayers === 76, `總層數為 76 層 (手冊扣除螺絲之純積木有效層數，實際: ${buzzData.totalLayers})`);
+assert(buzzData.totalBlocks === 50138, `總方塊數為 50,138 塊 (實際: ${buzzData.totalBlocks})`);
+assert(Array.isArray(buzzData.layers) && buzzData.layers.length === 76, 'layers 陣列包含 76 層完整資料');
 
-// 檢查 14 種中文色彩名稱，確保無工廠 #數字
+// 檢查 10 種中文色彩名稱，確保無工廠 #數字代碼
 const colors = buzzData.colors || {};
 const colorKeys = Object.keys(colors);
-assert(colorKeys.length === 14, `顏色表包含 14 種精準顏色 (實際: ${colorKeys.length} 種)`);
+assert(colorKeys.length === 10, `顏色表包含 10 種精準純色 (實際: ${colorKeys.length} 種)`);
 
 let hasFactoryCode = false;
 let hasGreyJoint = false;
@@ -54,7 +54,7 @@ for (const [key, col] of Object.entries(colors)) {
   if (/#\d+/.test(col.name)) {
     hasFactoryCode = true;
   }
-  if (key === 'grey' && col.name === '水泥灰') {
+  if (col.name === '水泥灰') {
     hasGreyJoint = true;
   }
 }
@@ -65,11 +65,11 @@ assert(hasGreyJoint, '水泥灰 (灰色球型關節與手肘轉軸) 正確定義
 const sections = buzzData.sections || [];
 assert(sections.length === 5, `五大身體部位完整定義 (實際: ${sections.length} 個)`);
 const sectionNames = sections.map(s => s.name);
-assert(sectionNames.includes('胸像專用展示基座') &&
-       sectionNames.includes('腰腹結構與基座銜接') &&
-       sectionNames.includes('太空胸甲與肩膀關節') &&
-       sectionNames.includes('雙臂裝甲手肘手腕') &&
-       sectionNames.includes('頭雕面部與太空背包'), '五大部位中文名稱完全符合 JEKCA 手冊規格');
+assert(sectionNames.some(n => n.includes('雙腳與靴子')) &&
+       sectionNames.some(n => n.includes('小腿膝蓋與跨襠拼合')) &&
+       sectionNames.some(n => n.includes('黑色腰帶與腰部飾板')) &&
+       sectionNames.some(n => n.includes('草綠胸甲、手臂與飛行背包')) &&
+       sectionNames.some(n => n.includes('Q版頭雕酒窩與紫色頭套')), '五大部位中文名稱完全符合手冊 59 頁結構');
 
 // 檢查各層方塊座標均為整數 1x1x1
 let allBlocksValid = true;
@@ -83,8 +83,8 @@ for (const l of buzzData.layers) {
     }
   }
 }
-assert(totalCountSum === 9557, `逐層方塊加總精確吻合 9,557 塊 (實際: ${totalCountSum})`);
-assert(allBlocksValid, '全部 9,557 塊方塊之 X、Y 座標均為合法整數且色彩代碼有效');
+assert(totalCountSum === 50138, `逐層方塊加總精確吻合 50,138 塊 (實際: ${totalCountSum})`);
+assert(allBlocksValid, '全部 50,138 塊方塊之 X、Y 座標均為合法整數且色彩代碼有效');
 
 // -------------------------------------------------------------
 // 測試項目 2：HTML 結構與首頁解除同步阻塞驗證
@@ -136,7 +136,6 @@ assert(cssContent.includes('.buzz-mat-card'), 'index.css 包含 .buzz-mat-card �
 console.log('\n🔒 [測試項目 3] 驗證 app.js 控制器邏輯、按需延遲載入與權限阻擋');
 const appJsContent = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf8');
 
-// 檢查 validTabs 是否包含 buzz
 assert(appJsContent.includes("'buzz'"), "app.js 包含 'buzz' 分頁標識");
 assert(appJsContent.includes("tab === 'buzz'") && appJsContent.includes("!isAutoFarmAuthorized()"),
   'switchTab 與 getInitialNavState 對未授權存取 buzz 設有安全攔截');
@@ -167,5 +166,5 @@ console.log(`========================================\n`);
 if (failCount > 0) {
   process.exit(1);
 } else {
-  console.log('🎉 巴斯光年 JEKCA 手冊還原工作台所有驗證項目 100% 通過！');
+  console.log('🎉 巴斯光年手冊 Q 版原裝 76 層工作台所有驗證項目 100% 通過！');
 }

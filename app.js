@@ -7060,13 +7060,18 @@
       blockMap.set(`${b.x},${b.y}`, b);
     });
 
-    const minX = -14, maxX = 14;
-    const minY = -8, maxY = 8;
-    const totalCols = maxX - minX + 1; // 29
-    const totalRows = maxY - minY + 1; // 17
+    const dims = data.dimensions || { xMin: -33, xMax: 33, yMin: -18, yMax: 15 };
+    const minX = dims.xMin !== undefined ? dims.xMin : -33;
+    const maxX = dims.xMax !== undefined ? dims.xMax : 33;
+    const minY = dims.yMin !== undefined ? dims.yMin : -18;
+    const maxY = dims.yMax !== undefined ? dims.yMax : 15;
+    const totalCols = maxX - minX + 1;
+    const totalRows = maxY - minY + 1;
 
-    DOM.buzzVoxelGrid.style.gridTemplateColumns = `repeat(${totalCols}, 22px)`;
-    DOM.buzzVoxelGrid.style.gridTemplateRows = `repeat(${totalRows}, 22px)`;
+    // 根據欄數動態調整格線大小 (欄位多時縮小格線保持視野完整)
+    const cellSize = totalCols > 40 ? 15 : 22;
+    DOM.buzzVoxelGrid.style.gridTemplateColumns = `repeat(${totalCols}, ${cellSize}px)`;
+    DOM.buzzVoxelGrid.style.gridTemplateRows = `repeat(${totalRows}, ${cellSize}px)`;
 
     let cellsHtml = '';
     // Y 從 maxY 往下遍歷到 minY (使視圖 Y+ 向上為前方)
