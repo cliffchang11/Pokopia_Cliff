@@ -7017,15 +7017,17 @@
 
     const blockCount = layerData.blockCount !== undefined ? layerData.blockCount : (layerData.count !== undefined ? layerData.count : (layerData.blocks ? layerData.blocks.length : 0));
 
-    // 1. 更新讀數
+    // 1. 更新讀數 (包含手冊對應 Step 與詳細部位動作)
     if (DOM.buzzCurrentLayerNum) {
-      DOM.buzzCurrentLayerNum.textContent = `第 ${buzzState.currentLayer} 層 (Layer ${String(buzzState.currentLayer).padStart(2, '0')} / ${data.totalLayers})`;
+      const stepStr = layerData.step ? `【手冊 ${layerData.step}】` : '';
+      DOM.buzzCurrentLayerNum.textContent = `第 ${buzzState.currentLayer} 層 ${stepStr} (進度 ${buzzState.currentLayer} / ${data.totalLayers})`;
     }
     if (DOM.buzzCurrentSectionName) {
-      DOM.buzzCurrentSectionName.textContent = `【${layerData.sectionName || ''}】`;
+      const descStr = layerData.stepDesc ? ` ‧ ${layerData.stepDesc}` : '';
+      DOM.buzzCurrentSectionName.textContent = `【${layerData.sectionName || ''}】${descStr}`;
     }
     if (DOM.buzzCurrentLayerBlocks) {
-      DOM.buzzCurrentLayerBlocks.textContent = `方塊數：${blockCount} 塊`;
+      DOM.buzzCurrentLayerBlocks.textContent = `本層方塊數：${blockCount} 塊`;
     }
 
     // 更新五大部位按鈕的 active 狀態
