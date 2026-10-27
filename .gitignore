@@ -4,6 +4,7 @@ ngrok
 *.pid
 ngrok.pid
 server.pid
+*.pdf
 
 # Python 快取
 __pycache__/
