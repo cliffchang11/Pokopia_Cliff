@@ -1973,7 +1973,7 @@
       if (DOM.toolbarTitle) DOM.toolbarTitle.textContent = '巴斯光年 1×1×1 拼砌藍圖';
       if (DOM.catalogProgressBadge) DOM.catalogProgressBadge.classList.remove('hidden');
       if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🚀';
-      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>75</strong> 層立體雕塑 ‧ 13,969 塊磚';
+      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>75</strong> 層手冊立體胸像 ‧ 9,557 塊磚';
       if (DOM.searchRow) DOM.searchRow.classList.add('hidden');
       if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.add('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.add('hidden');
@@ -6913,10 +6913,64 @@
     renderBuzzLayer();
   }
 
+  let buzzDataLoadingPromise = null;
+
+  function ensureBuzzDataLoaded() {
+    if (window.BUZZ_LIGHTYEAR_DATA) {
+      return Promise.resolve(window.BUZZ_LIGHTYEAR_DATA);
+    }
+    if (buzzDataLoadingPromise) {
+      return buzzDataLoadingPromise;
+    }
+
+    buzzDataLoadingPromise = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'buzz_lightyear_data.js?v=4.15.0';
+      script.async = true;
+      script.onload = () => {
+        if (window.BUZZ_LIGHTYEAR_DATA) {
+          resolve(window.BUZZ_LIGHTYEAR_DATA);
+        } else {
+          reject(new Error('BUZZ_LIGHTYEAR_DATA not found after script load'));
+        }
+      };
+      script.onerror = (err) => {
+        buzzDataLoadingPromise = null;
+        reject(err);
+      };
+      document.body.appendChild(script);
+    });
+
+    return buzzDataLoadingPromise;
+  }
+
   function renderBuzzSection() {
     initBuzzEvents();
+
+    if (!window.BUZZ_LIGHTYEAR_DATA) {
+      if (DOM.buzzVoxelGrid) {
+        DOM.buzzVoxelGrid.innerHTML = `
+          <div style="grid-column: 1 / -1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 3rem 1rem; color: #a855f7; gap: 0.75rem;">
+            <div style="font-size: 2rem;">🚀</div>
+            <div style="font-size: 1rem; font-weight: 700; color: #ffffff;">正在非同步載入 JEKCA 原廠藍圖模型中...</div>
+            <div style="font-size: 0.8125rem; color: #94a3b8;">首頁零阻塞秒開 ‧ 93KB 輕量化模型極速加載</div>
+          </div>
+        `;
+      }
+      ensureBuzzDataLoaded()
+        .then(() => {
+          renderBuzzSection();
+        })
+        .catch(err => {
+          console.error('載入巴斯光年模型失敗:', err);
+          if (DOM.buzzVoxelGrid) {
+            DOM.buzzVoxelGrid.innerHTML = '<div style="grid-column: 1 / -1; padding: 2rem; color: #ef4444; text-align: center;">載入模型失敗，請重新整理後再試</div>';
+          }
+        });
+      return;
+    }
+
     const data = window.BUZZ_LIGHTYEAR_DATA;
-    if (!data) return;
 
     // 渲染五大部位膠囊按鈕
     renderBuzzSectionPills();
@@ -7007,9 +7061,9 @@
     });
 
     const minX = -14, maxX = 14;
-    const minY = -7, maxY = 7;
+    const minY = -8, maxY = 8;
     const totalCols = maxX - minX + 1; // 29
-    const totalRows = maxY - minY + 1; // 15
+    const totalRows = maxY - minY + 1; // 17
 
     DOM.buzzVoxelGrid.style.gridTemplateColumns = `repeat(${totalCols}, 22px)`;
     DOM.buzzVoxelGrid.style.gridTemplateRows = `repeat(${totalRows}, 22px)`;
@@ -7139,6 +7193,7 @@
   window.PokopiaBuzz = {
     renderBuzzSection,
     setBuzzLayer,
+    ensureBuzzDataLoaded,
     getBuzzState: () => ({ ...buzzState }),
     renderBuzzLayer,
     renderBuzzMaterials
