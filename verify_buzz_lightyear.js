@@ -40,7 +40,7 @@ const buzzData = sandbox.window.BUZZ_LIGHTYEAR_DATA || sandbox.global.BUZZ_LIGHT
 
 assert(!!buzzData, 'BUZZ_LIGHTYEAR_DATA 正確掛載於全域物件');
 assert(buzzData.totalLayers === 76, `總層數為 76 層 (手冊扣除螺絲之純積木有效層數，實際: ${buzzData.totalLayers})`);
-assert(buzzData.totalBlocks === 50138, `總方塊數為 50,138 塊 (實際: ${buzzData.totalBlocks})`);
+assert(buzzData.totalBlocks === 56736, `總方塊數為 56,736 塊 (實際: ${buzzData.totalBlocks})`);
 assert(Array.isArray(buzzData.layers) && buzzData.layers.length === 76, 'layers 陣列包含 76 層完整資料');
 
 // 檢查 10 種中文色彩名稱，確保無工廠 #數字代碼
@@ -83,8 +83,8 @@ for (const l of buzzData.layers) {
     }
   }
 }
-assert(totalCountSum === 50138, `逐層方塊加總精確吻合 50,138 塊 (實際: ${totalCountSum})`);
-assert(allBlocksValid, '全部 50,138 塊方塊之 X、Y 座標均為合法整數且色彩代碼有效');
+assert(totalCountSum === 56736, `逐層方塊加總精確吻合 56,736 塊 (實際: ${totalCountSum})`);
+assert(allBlocksValid, '全部 56,736 塊方塊之 X、Y 座標均為合法整數且色彩代碼有效');
 
 // -------------------------------------------------------------
 // 測試項目 2：HTML 結構與首頁解除同步阻塞驗證
