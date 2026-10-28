@@ -2001,7 +2001,7 @@
       if (DOM.catalogProgressBadge) DOM.catalogProgressBadge.classList.remove('hidden');
       if (bulbaState.curChar === 'bulba') {
         if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🍃';
-        if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>8,415</strong> 顆方塊 ‧ 92 層切片';
+        if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>8,415</strong> 顆方塊 ‧ 53 層切片';
         if (typeof renderBulbaLayer === 'function') renderBulbaLayer(bulbaState.curLayer);
         if (typeof initBulbaThreeEngine === 'function') setTimeout(initBulbaThreeEngine, 60);
       } else {
@@ -6913,7 +6913,7 @@
       if (DOM.paneBuzz) DOM.paneBuzz.classList.add('hidden');
       if (DOM.paneBulba) DOM.paneBulba.classList.remove('hidden');
       if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🍃';
-      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>8,415</strong> 顆方塊 ‧ 92 層切片';
+      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>8,415</strong> 顆方塊 ‧ 53 層切片';
       renderBulbaLayer(bulbaState.curLayer);
       setTimeout(initBulbaThreeEngine, 60);
     }

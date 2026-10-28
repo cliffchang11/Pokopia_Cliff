@@ -12175,7 +12175,7 @@ body.has-floating-back .scroll-top-btn {
   display: block;
 }
 
-/* 6. 妙蛙種子雙欄工作台佈局 (雙欄: 左 3D 方塊雕像 + 右 92 層逐層切片) */
+/* 6. 妙蛙種子雙欄工作台佈局 (雙欄: 左 3D 方塊雕像 + 右 53 層逐層切片) */
 .bulba-builder-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.25fr);
