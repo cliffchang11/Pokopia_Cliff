@@ -582,16 +582,27 @@
       <!-- 胡迪警長 Pane (雙模工作台) -->
       <div id="paneWoody" class="char-pane hidden">
         <div class="woody-builder-layout">
-          <!-- 左欄：3D 原生展示視窗 -->
+          <!-- 左欄：3D 視窗 (預設: 3D 方塊完成品 / 可切換原版模型) -->
           <div class="woody-3d-card">
             <div class="woody-card-header">
-              <span class="woody-card-title">🤠 胡迪 3D 原生展示</span>
-              <span class="woody-card-badge">Sketchfab 官方模型</span>
+              <span id="woodyViewerTitle" class="woody-card-title">🤠 3D 方塊立體完成品</span>
+              <div class="woody-toggle-pills">
+                <button type="button" id="btnWoodyModeVoxel" class="woody-mode-btn active" title="查看 3,617 顆方塊實際組裝的體素 3D 完成品">🧊 方塊完成品</button>
+                <button type="button" id="btnWoodyModeGame" class="woody-mode-btn" title="查看遊戲原版平滑模型對照">🎮 原版模型</button>
+              </div>
             </div>
             <div class="woody-frame-wrap">
+              <!-- 3D 體素完成品 Canvas 容器 (預設顯示) -->
+              <div id="woodyVoxelCanvasWrap" class="woody-voxel-canvas-wrap">
+                <canvas id="woodyVoxelCanvas" class="woody-voxel-canvas"></canvas>
+                <div class="woody-voxel-hints">
+                  <span>🖱️ 360° 拖曳旋轉 ‧ 滾輪縮放 ‧ 3,617 顆方塊立體雕塑</span>
+                </div>
+              </div>
+              <!-- 原版 Sketchfab iframe (預設隱藏) -->
               <iframe
                 id="woody3dIframe"
-                class="buzz3d-iframe"
+                class="buzz3d-iframe hidden"
                 title="Woody Toy Story 3D model"
                 src="https://sketchfab.com/models/f88d8092b28d4a5d9e3cc4db99ca3aff/embed?autostart=1&autospin=0.2&ui_theme=dark&ui_infos=0&ui_watermark=0"
                 frameborder="0"
@@ -818,6 +829,10 @@
   <button id="btnScrollTop" class="scroll-top-btn hidden" title="返回頁面頂端" aria-label="返回頁面頂端">
     <span class="scroll-top-icon">⬆</span>
   </button>
+
+  <!-- 3D 體素立體渲染引擎 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
   <!-- Scripts -->
   <script src="data.js?v=4.15.0"></script>
