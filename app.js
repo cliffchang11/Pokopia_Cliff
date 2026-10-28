@@ -6975,7 +6975,10 @@
 
         const spanX = maxX - minX + 1;
         const spanZ = maxZ - minZ + 1;
-        const cellSize = Math.min(22, Math.max(9, Math.floor(280 / Math.max(spanX, spanZ))));
+        // 滿版全寬佈局：依容器實際寬度動態適配單元格尺寸，確保完整呈現無捲軸
+        const containerWidth = DOM.bulbaVoxelGrid.parentElement.clientWidth || 1000;
+        const maxCellByWidth = Math.floor((containerWidth - 60) / spanX);
+        const cellSize = Math.min(24, Math.max(11, maxCellByWidth));
         DOM.bulbaVoxelGrid.style.gridTemplateColumns = `repeat(${spanX}, ${cellSize}px)`;
 
         const frag = document.createDocumentFragment();
@@ -6990,6 +6993,8 @@
             if (bid) {
               const pItem = data.palette[bid] || { name: '方塊', color: '#64a395' };
               cell.style.backgroundColor = pItem.color;
+              cell.style.border = '1px solid rgba(255, 255, 255, 0.3)';
+              cell.style.boxShadow = '0 1px 4px rgba(0, 0, 0, 0.4)';
               cell.dataset.x = x;
               cell.dataset.z = z;
               cell.dataset.name = pItem.name;
@@ -7007,7 +7012,9 @@
                 if (DOM.bulbaHoverTooltip) DOM.bulbaHoverTooltip.classList.add('hidden');
               });
             } else {
-              cell.style.backgroundColor = 'rgba(255, 255, 255, 0.02)';
+              // 清新草系工程藍圖座標格線（不再黑死一團）
+              cell.style.backgroundColor = 'rgba(52, 211, 153, 0.04)';
+              cell.style.border = '1px solid rgba(52, 211, 153, 0.1)';
             }
             frag.appendChild(cell);
           }
@@ -7044,8 +7051,8 @@
 
     const wrap = DOM.bulba3dCanvas.parentElement;
     if (!wrap) return;
-    const width = wrap.clientWidth || 500;
-    const height = wrap.clientHeight || 560;
+    const width = wrap.clientWidth || 800;
+    const height = wrap.clientHeight || 420;
 
     const t = bulbaState.three;
     if (t.isInit) {
@@ -7059,9 +7066,9 @@
     const scene = new THREE.Scene();
     scene.background = null;
 
-    // 2. Camera
-    const camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
-    camera.position.set(65, 55, 80);
+    // 2. Camera (寬闊橫版適配)
+    const camera = new THREE.PerspectiveCamera(38, width / height, 1, 1000);
+    camera.position.set(52, 38, 62);
 
     // 3. Renderer
     const renderer = new THREE.WebGLRenderer({
@@ -7072,14 +7079,14 @@
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
-    // 4. Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    // 4. Lights (清新自然草系打光)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
     scene.add(ambientLight);
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.7);
-    dirLight1.position.set(50, 80, 50);
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.75);
+    dirLight1.position.set(40, 70, 40);
     scene.add(dirLight1);
-    const dirLight2 = new THREE.DirectionalLight(0x60a5fa, 0.35);
-    dirLight2.position.set(-50, -30, -50);
+    const dirLight2 = new THREE.DirectionalLight(0x34d399, 0.38);
+    dirLight2.position.set(-40, -20, -40);
     scene.add(dirLight2);
 
     // 5. Controls
