@@ -83,8 +83,8 @@
                 <span class="toc-item-badge">攻略影音</span>
               </button>
               <button id="tabBuzz3d" class="toc-menu-item hidden" data-tab="buzz3d">
-                <span class="toc-item-text">3D 巴斯光年</span>
-                <span class="toc-item-badge">3D 模組</span>
+                <span class="toc-item-text">3D 角色藍圖</span>
+                <span class="toc-item-badge">雙角色</span>
               </button>
             </div>
           </div>
@@ -117,10 +117,10 @@
           <span class="video-nav-btn-icon">🎬</span>
           <span class="video-nav-btn-text">參考影片</span>
         </button>
-        <!-- 3D 巴斯光年專屬入口按鈕（僅授權帳號顯示） -->
-        <button id="btnBuzz3dNav" class="buzz3d-nav-btn hidden" data-tab="buzz3d" title="3D 巴斯光年模型檢視 (限專屬權限)">
+        <!-- 3D 角色藍圖專屬入口按鈕（僅授權帳號顯示） -->
+        <button id="btnBuzz3dNav" class="buzz3d-nav-btn hidden" data-tab="buzz3d" title="3D 角色藍圖 (限專屬權限)">
           <span class="buzz3d-nav-btn-icon">🚀</span>
-          <span class="buzz3d-nav-btn-text">3D 巴斯</span>
+          <span class="buzz3d-nav-btn-text">3D藍圖</span>
         </button>
 
         <!-- 喜好與物品百科入口按鈕 (切換至獨立主分頁) -->
@@ -552,9 +552,16 @@
       </div>
     </section>
 
-    <!-- 3D Buzz Lightyear Section (巴斯光年 3D 模型純淨沉浸檢視) -->
+    <!-- 3D Character Blueprint Section (3D 角色藍圖館) -->
     <section id="buzz3dSection" class="view-section hidden-section buzz3d-section">
-      <div class="buzz3d-container">
+      <!-- 角色切換分頁導航 (Sub Navigation Pills) -->
+      <div class="char-pill-bar">
+        <button id="btnSubBuzz" class="char-pill-btn active" data-char="buzz">🚀 巴斯光年</button>
+        <button id="btnSubWoody" class="char-pill-btn" data-char="woody">🤠 胡迪警長</button>
+      </div>
+
+      <!-- 巴斯光年 Pane -->
+      <div id="paneBuzz" class="char-pane active">
         <div class="buzz3d-frame-wrap">
           <iframe
             id="buzz3dIframe"
@@ -569,6 +576,73 @@
             web-share="true"
             allowfullscreen>
           </iframe>
+        </div>
+      </div>
+
+      <!-- 胡迪警長 Pane (雙模工作台) -->
+      <div id="paneWoody" class="char-pane hidden">
+        <div class="woody-builder-layout">
+          <!-- 左欄：3D 原生展示視窗 -->
+          <div class="woody-3d-card">
+            <div class="woody-card-header">
+              <span class="woody-card-title">🤠 胡迪 3D 原生展示</span>
+              <span class="woody-card-badge">Sketchfab 官方模型</span>
+            </div>
+            <div class="woody-frame-wrap">
+              <iframe
+                id="woody3dIframe"
+                class="buzz3d-iframe"
+                title="Woody Toy Story 3D model"
+                src="https://sketchfab.com/models/f88d8092b28d4a5d9e3cc4db99ca3aff/embed?autostart=1&autospin=0.2&ui_theme=dark&ui_infos=0&ui_watermark=0"
+                frameborder="0"
+                allow="autoplay; fullscreen; xr-spatial-tracking"
+                xr-spatial-tracking="true"
+                execution-while-out-of-viewport="true"
+                execution-while-not-rendered="true"
+                web-share="true"
+                allowfullscreen>
+              </iframe>
+            </div>
+          </div>
+
+          <!-- 右欄：胡迪 68 層逐層切片拼砌工作台 -->
+          <div class="woody-slice-card">
+            <!-- 頂部資訊與層級控制器 -->
+            <div class="woody-stepper-row">
+              <button id="btnWoodyPrevLayer" class="woody-step-btn" title="上一層">◀ 上一層</button>
+              <div class="woody-layer-display">
+                <span class="woody-layer-prefix">第</span>
+                <span id="woodyCurLayerNum" class="woody-layer-num">1</span>
+                <span class="woody-layer-total">/ 68 層</span>
+              </div>
+              <button id="btnWoodyNextLayer" class="woody-step-btn" title="下一層">下一層 ▶</button>
+            </div>
+
+            <!-- 滑桿 -->
+            <div class="woody-slider-wrap">
+              <input type="range" id="woodyLayerSlider" class="woody-layer-slider" min="1" max="68" value="1">
+            </div>
+
+            <!-- 當層部位資訊 -->
+            <div class="woody-layer-info-bar">
+              <span id="woodyPartName" class="woody-part-name">牛仔長靴 - 靴底與馬刺</span>
+              <span id="woodyLayerBlockCount" class="woody-layer-count">56 顆方塊</span>
+            </div>
+
+            <!-- 22x22 點陣網格俯視圖 -->
+            <div class="woody-grid-wrapper">
+              <div id="woodyVoxelGrid" class="woody-voxel-grid"></div>
+            </div>
+
+            <!-- 當層材料清單與總材料進度 -->
+            <div class="woody-materials-section">
+              <div class="woody-mat-title">
+                <span>📦 8 大標準方塊材料需求</span>
+                <span id="woodyTotalBlockStat" class="woody-mat-stat">總計 3,617 顆</span>
+              </div>
+              <div id="woodyMatList" class="woody-mat-list"></div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -753,6 +827,7 @@
   <script src="autofarm_data.js?v=4.15.0"></script>
   <script src="region_data.js?v=4.15.0"></script>
   <script src="video_data.js?v=4.15.0"></script>
+  <script src="woody_voxel_data.js?v=4.15.0"></script>
   <script src="firebase.js?v=4.15.0"></script>
   <script src="app.js?v=4.15.0"></script>
 </body>

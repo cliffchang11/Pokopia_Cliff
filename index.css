@@ -2650,6 +2650,7 @@ body {
   .autofarm-nav-btn,
   .custom-storage-nav-btn,
   .video-nav-btn,
+  .buzz3d-nav-btn,
   .pref-drawer-btn {
     width: 2.25rem !important;
     height: 2.25rem !important;
@@ -2661,7 +2662,8 @@ body {
   }
   .autofarm-nav-btn-text,
   .custom-storage-nav-btn-text,
-  .video-nav-btn-text {
+  .video-nav-btn-text,
+  .buzz3d-nav-btn-text {
     display: none !important;
   }
   .pref-drawer-btn-text {
@@ -2669,7 +2671,8 @@ body {
   }
   .autofarm-nav-btn-icon,
   .custom-storage-nav-btn-icon,
-  .video-nav-btn-icon {
+  .video-nav-btn-icon,
+  .buzz3d-nav-btn-icon {
     display: inline-flex !important;
     font-size: 1.15rem !important;
     margin: 0 !important;
@@ -12059,10 +12062,10 @@ body.has-floating-back .scroll-top-btn {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   3D 巴斯光年極簡沉浸檢視器專區 (3D Buzz Lightyear Model Viewer)
+   3D 角色藍圖館專區 (3D Character Blueprint Gallery)
    ═══════════════════════════════════════════════════════════════════ */
 
-/* 1. Header 專屬膠囊導航按鈕 */
+/* 1. Header 專屬膠囊導航按鈕 (大螢幕: 純4字文字，無 emoji) */
 .buzz3d-nav-btn {
   display: inline-flex;
   align-items: center;
@@ -12089,12 +12092,15 @@ body.has-floating-back .scroll-top-btn {
   border-color: #ffffff;
   box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.6), 0 4px 12px rgba(0, 0, 0, 0.4);
 }
+/* 頁面大時不需要 emoji */
 .buzz3d-nav-btn-icon {
-  font-size: 1rem;
-  line-height: 1;
+  display: none !important;
 }
 .buzz3d-nav-btn-text {
-  letter-spacing: 0.02em;
+  display: inline-block;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  line-height: 1;
 }
 
 /* 2. 專區主容器 */
@@ -12102,20 +12108,55 @@ body.has-floating-back .scroll-top-btn {
   width: 100%;
   max-width: 1600px;
   margin: 0 auto;
-  padding: 0.75rem 0.75rem 2rem;
+  padding: 0.75rem 0.75rem 2.5rem;
   box-sizing: border-box;
 }
 
-.buzz3d-container {
-  width: 100%;
-  margin: 0 auto;
+/* 3. 次級角色切換膠囊列 (Sub Navigation Pills) */
+.char-pill-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.char-pill-btn {
+  padding: 0.5rem 1.25rem;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  color: var(--text-muted, #94a3b8);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+.char-pill-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+.char-pill-btn.active {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.3) 0%, rgba(34, 197, 94, 0.3) 100%);
+  border-color: rgba(34, 197, 94, 0.6);
+  color: #4ade80;
+  box-shadow: 0 0 16px rgba(34, 197, 94, 0.25);
 }
 
-/* 3. 3D 滿版外框與視窗 */
+/* 4. 角色窗格 (Pane) 切換控制 */
+.char-pane {
+  width: 100%;
+}
+.char-pane.hidden {
+  display: none !important;
+}
+
+/* 5. 巴斯光年滿版視窗 */
 .buzz3d-frame-wrap {
   position: relative;
   width: 100%;
-  height: calc(100vh - 190px);
+  height: calc(100vh - 210px);
   min-height: 560px;
   max-height: 920px;
   background: #0f172a;
@@ -12123,14 +12164,7 @@ body.has-floating-back .scroll-top-btn {
   border: 1px solid rgba(255, 255, 255, 0.12);
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 20px rgba(147, 51, 234, 0.15);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
-
-.buzz3d-frame-wrap:hover {
-  border-color: rgba(147, 51, 234, 0.35);
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55), 0 0 25px rgba(34, 197, 94, 0.2);
-}
-
 .buzz3d-iframe {
   position: absolute;
   top: 0;
@@ -12141,14 +12175,265 @@ body.has-floating-back .scroll-top-btn {
   display: block;
 }
 
-/* RWD 響應式優化 */
+/* 6. 胡迪雙模工作台佈局 (雙欄: 左 3D 原生檢視 + 右 68 層逐層切片) */
+.woody-builder-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.25fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+/* 左欄：3D 展示卡片 */
+.woody-3d-card {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.25rem;
+  padding: 1rem;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+.woody-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  padding: 0 0.25rem;
+}
+.woody-card-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+.woody-card-badge {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  background: rgba(147, 51, 234, 0.2);
+  border: 1px solid rgba(147, 51, 234, 0.4);
+  color: #c4b5fd;
+  border-radius: 9999px;
+  font-weight: 600;
+}
+.woody-frame-wrap {
+  position: relative;
+  width: 100%;
+  height: 640px;
+  background: #090d16;
+  border-radius: 0.875rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+/* 右欄：逐層切片工作台卡片 */
+.woody-slice-card {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.25rem;
+  padding: 1.25rem;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+/* 層級步進按鈕列 */
+.woody-stepper-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.woody-step-btn {
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.625rem;
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.woody-step-btn:hover:not(:disabled) {
+  background: rgba(34, 197, 94, 0.25);
+  border-color: #22c55e;
+  transform: translateY(-1px);
+}
+.woody-step-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.woody-layer-display {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+}
+.woody-layer-prefix {
+  font-size: 0.875rem;
+  color: var(--text-muted, #94a3b8);
+}
+.woody-layer-num {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #22c55e;
+}
+.woody-layer-total {
+  font-size: 0.875rem;
+  color: var(--text-muted, #94a3b8);
+}
+
+/* 滑桿 */
+.woody-slider-wrap {
+  width: 100%;
+  margin-bottom: 0.875rem;
+}
+.woody-layer-slider {
+  width: 100%;
+  accent-color: #22c55e;
+  cursor: pointer;
+  height: 6px;
+}
+
+/* 部位提示條 */
+.woody-layer-info-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.875rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+.woody-part-name {
+  font-weight: 700;
+  color: #e2e8f0;
+  font-size: 0.9rem;
+}
+.woody-layer-count {
+  font-weight: 700;
+  color: #22c55e;
+  font-size: 0.875rem;
+}
+
+/* 22x22 方塊點陣網格視圖 */
+.woody-grid-wrapper {
+  width: 100%;
+  background: #090d16;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.75rem;
+  padding: 0.875rem;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 380px;
+  overflow: auto;
+  margin-bottom: 1rem;
+}
+.woody-voxel-grid {
+  display: grid;
+  grid-template-columns: repeat(22, 1fr);
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 6px;
+  border-radius: 6px;
+}
+.woody-cell {
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  position: relative;
+}
+.woody-cell.empty {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.04);
+}
+.woody-cell.filled:hover {
+  transform: scale(1.4);
+  z-index: 10;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+}
+
+/* 材料清單區塊 */
+.woody-materials-section {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0.75rem;
+  padding: 0.875rem 1rem;
+}
+.woody-mat-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.75rem;
+}
+.woody-mat-stat {
+  font-weight: 800;
+  color: #22c55e;
+}
+.woody-mat-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+.woody-mat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0.375rem;
+  font-size: 0.8125rem;
+}
+.woody-mat-chip {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  flex-shrink: 0;
+}
+.woody-mat-name {
+  color: var(--text-main, #ffffff);
+  font-weight: 600;
+  flex-grow: 1;
+}
+.woody-mat-count {
+  font-weight: 700;
+  color: #22c55e;
+}
+
+/* RWD 適配 */
+@media (max-width: 1024px) {
+  .woody-builder-layout {
+    grid-template-columns: 1fr;
+  }
+  .woody-frame-wrap {
+    height: 480px;
+  }
+}
 @media (max-width: 768px) {
   .buzz3d-section {
     padding: 0.5rem 0.5rem 1.5rem;
   }
   .buzz3d-frame-wrap {
-    height: calc(100vh - 210px);
-    min-height: 440px;
+    height: calc(100vh - 230px);
+    min-height: 420px;
     border-radius: 1rem;
+  }
+  .woody-frame-wrap {
+    height: 380px;
+  }
+  .woody-cell {
+    width: 11px;
+    height: 11px;
+  }
+  .woody-mat-list {
+    grid-template-columns: 1fr;
   }
 }
