@@ -222,6 +222,24 @@
     videoSection: document.getElementById('videoSection'),
     buzz3dSection: document.getElementById('buzz3dSection'),
     buzz3dIframe: document.getElementById('buzz3dIframe'),
+    btnSubBuzz: document.getElementById('btnSubBuzz'),
+    btnSubBulba: document.getElementById('btnSubBulba'),
+    paneBuzz: document.getElementById('paneBuzz'),
+    paneBulba: document.getElementById('paneBulba'),
+    btnBulbaModeFull: document.getElementById('btnBulbaModeFull'),
+    btnBulbaModeSlice: document.getElementById('btnBulbaModeSlice'),
+    bulba3dCanvas: document.getElementById('bulba3dCanvas'),
+    bulbaLayerBadge: document.getElementById('bulbaLayerBadge'),
+    bulbaLayerBlockCount: document.getElementById('bulbaLayerBlockCount'),
+    btnBulbaPrevLayer: document.getElementById('btnBulbaPrevLayer'),
+    btnBulbaNextLayer: document.getElementById('btnBulbaNextLayer'),
+    bulbaLayerSlider: document.getElementById('bulbaLayerSlider'),
+    bulbaVoxelGrid: document.getElementById('bulbaVoxelGrid'),
+    bulbaHoverTooltip: document.getElementById('bulbaHoverTooltip'),
+    bulbaTooltipColor: document.getElementById('bulbaTooltipColor'),
+    bulbaTooltipText: document.getElementById('bulbaTooltipText'),
+    bulbaMatTypesCount: document.getElementById('bulbaMatTypesCount'),
+    bulbaMatList: document.getElementById('bulbaMatList'),
     videoPlayerIframe: document.getElementById('videoPlayerIframe'),
     videoResumeBanner: document.getElementById('videoResumeBanner'),
     videoResumeText: document.getElementById('videoResumeText'),
@@ -1313,6 +1331,29 @@
       });
     }
 
+    // 3D 藍圖次級角色切換與妙蛙種子工作台事件綁定
+    if (DOM.btnSubBuzz) {
+      DOM.btnSubBuzz.addEventListener('click', () => switchCharacterBlueprint('buzz'));
+    }
+    if (DOM.btnSubBulba) {
+      DOM.btnSubBulba.addEventListener('click', () => switchCharacterBlueprint('bulba'));
+    }
+    if (DOM.btnBulbaModeFull) {
+      DOM.btnBulbaModeFull.addEventListener('click', () => switchBulba3DMode('full'));
+    }
+    if (DOM.btnBulbaModeSlice) {
+      DOM.btnBulbaModeSlice.addEventListener('click', () => switchBulba3DMode('slice'));
+    }
+    if (DOM.btnBulbaPrevLayer) {
+      DOM.btnBulbaPrevLayer.addEventListener('click', () => setBulbaLayer(bulbaState.curLayer - 1));
+    }
+    if (DOM.btnBulbaNextLayer) {
+      DOM.btnBulbaNextLayer.addEventListener('click', () => setBulbaLayer(bulbaState.curLayer + 1));
+    }
+    if (DOM.bulbaLayerSlider) {
+      DOM.bulbaLayerSlider.addEventListener('input', (e) => setBulbaLayer(Number(e.target.value)));
+    }
+
     // View mode switching
     DOM.btnCardView.addEventListener('click', () => {
       switchView('card', true);
@@ -1958,8 +1999,15 @@
       if (DOM.toolbarHeaderRow) DOM.toolbarHeaderRow.classList.remove('hidden');
       if (DOM.toolbarTitle) DOM.toolbarTitle.textContent = '3D 藍圖';
       if (DOM.catalogProgressBadge) DOM.catalogProgressBadge.classList.remove('hidden');
-      if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🚀';
-      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>3D</strong> 互動模型檢視';
+      if (bulbaState.curChar === 'bulba') {
+        if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🍃';
+        if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>8,415</strong> 顆方塊 ‧ 92 層切片';
+        if (typeof renderBulbaLayer === 'function') renderBulbaLayer(bulbaState.curLayer);
+        if (typeof initBulbaThreeEngine === 'function') setTimeout(initBulbaThreeEngine, 60);
+      } else {
+        if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🚀';
+        if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>3D</strong> 互動模型檢視';
+      }
       if (DOM.searchRow) DOM.searchRow.classList.add('hidden');
       if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.add('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.add('hidden');
@@ -6829,6 +6877,330 @@
     recordCurrentVideoProgress,
     restartCurrentVideoFromBeginning,
     getVideoProgress: () => state.videoProgress
+  };
+
+  /* ═══════════════════════════════════════════════════════════════════
+     3D 角色藍圖館 (3D Character Blueprint Gallery) - 妙蛙種子工作台
+     ═══════════════════════════════════════════════════════════════════ */
+  const bulbaState = {
+    curChar: 'buzz',
+    curMode: 'full', // 'full' | 'slice'
+    curLayer: 1,
+    three: {
+      isInit: false,
+      scene: null,
+      camera: null,
+      renderer: null,
+      controls: null,
+      instancedMesh: null,
+      blockDataList: [],
+      animFrameId: null
+    }
+  };
+
+  function switchCharacterBlueprint(char) {
+    bulbaState.curChar = char;
+    if (char === 'buzz') {
+      if (DOM.btnSubBuzz) DOM.btnSubBuzz.classList.add('active');
+      if (DOM.btnSubBulba) DOM.btnSubBulba.classList.remove('active');
+      if (DOM.paneBuzz) DOM.paneBuzz.classList.remove('hidden');
+      if (DOM.paneBulba) DOM.paneBulba.classList.add('hidden');
+      if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🚀';
+      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>3D</strong> 互動模型檢視';
+    } else {
+      if (DOM.btnSubBuzz) DOM.btnSubBuzz.classList.remove('active');
+      if (DOM.btnSubBulba) DOM.btnSubBulba.classList.add('active');
+      if (DOM.paneBuzz) DOM.paneBuzz.classList.add('hidden');
+      if (DOM.paneBulba) DOM.paneBulba.classList.remove('hidden');
+      if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🍃';
+      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>8,415</strong> 顆方塊 ‧ 92 層切片';
+      renderBulbaLayer(bulbaState.curLayer);
+      setTimeout(initBulbaThreeEngine, 60);
+    }
+  }
+
+  function switchBulba3DMode(mode) {
+    bulbaState.curMode = mode;
+    if (DOM.btnBulbaModeFull) {
+      DOM.btnBulbaModeFull.classList.toggle('active', mode === 'full');
+    }
+    if (DOM.btnBulbaModeSlice) {
+      DOM.btnBulbaModeSlice.classList.toggle('active', mode === 'slice');
+    }
+    updateBulba3DSliceFilter();
+  }
+
+  function setBulbaLayer(layerIndex) {
+    if (typeof BULBASAUR_VOXEL_DATA === 'undefined') return;
+    const maxLayer = BULBASAUR_VOXEL_DATA.layers.length;
+    const target = Math.max(1, Math.min(maxLayer, layerIndex));
+    bulbaState.curLayer = target;
+    if (DOM.bulbaLayerSlider) DOM.bulbaLayerSlider.value = target;
+    renderBulbaLayer(target);
+    if (bulbaState.curMode === 'slice') {
+      updateBulba3DSliceFilter();
+    }
+  }
+
+  function renderBulbaLayer(layerIndex) {
+    if (typeof BULBASAUR_VOXEL_DATA === 'undefined') return;
+    const data = BULBASAUR_VOXEL_DATA;
+    const layer = data.layers[layerIndex - 1];
+    if (!layer) return;
+
+    if (DOM.bulbaLayerBadge) {
+      DOM.bulbaLayerBadge.textContent = `第 ${layerIndex} / ${data.layers.length} 層`;
+    }
+    const blockCount = layer.blocks.length;
+    if (DOM.bulbaLayerBlockCount) {
+      DOM.bulbaLayerBlockCount.textContent = `本層 ${blockCount} 顆`;
+    }
+
+    // 2D 點陣網格智慧邊界聚焦
+    if (DOM.bulbaVoxelGrid) {
+      DOM.bulbaVoxelGrid.innerHTML = '';
+      if (blockCount === 0) {
+        DOM.bulbaVoxelGrid.innerHTML = '<div class="bulba-empty-hint" style="color:#94a3b8;font-size:0.875rem;padding:2rem;">本層無方塊（可跳至下一層）</div>';
+      } else {
+        let minX = Infinity, maxX = -Infinity;
+        let minZ = Infinity, maxZ = -Infinity;
+        const blockMap = new Map();
+        layer.blocks.forEach(([x, z, bid]) => {
+          if (x < minX) minX = x;
+          if (x > maxX) maxX = x;
+          if (z < minZ) minZ = z;
+          if (z > maxZ) maxZ = z;
+          blockMap.set(`${x},${z}`, bid);
+        });
+
+        const spanX = maxX - minX + 1;
+        const spanZ = maxZ - minZ + 1;
+        const cellSize = Math.min(22, Math.max(9, Math.floor(280 / Math.max(spanX, spanZ))));
+        DOM.bulbaVoxelGrid.style.gridTemplateColumns = `repeat(${spanX}, ${cellSize}px)`;
+
+        const frag = document.createDocumentFragment();
+        for (let z = minZ; z <= maxZ; z++) {
+          for (let x = minX; x <= maxX; x++) {
+            const bid = blockMap.get(`${x},${z}`);
+            const cell = document.createElement('div');
+            cell.className = 'bulba-cell';
+            cell.style.width = `${cellSize}px`;
+            cell.style.height = `${cellSize}px`;
+
+            if (bid) {
+              const pItem = data.palette[bid] || { name: '方塊', color: '#64a395' };
+              cell.style.backgroundColor = pItem.color;
+              cell.dataset.x = x;
+              cell.dataset.z = z;
+              cell.dataset.name = pItem.name;
+              cell.dataset.color = pItem.color;
+
+              cell.addEventListener('mouseenter', (e) => {
+                if (!DOM.bulbaHoverTooltip) return;
+                DOM.bulbaHoverTooltip.classList.remove('hidden');
+                if (DOM.bulbaTooltipColor) DOM.bulbaTooltipColor.style.backgroundColor = pItem.color;
+                if (DOM.bulbaTooltipText) {
+                  DOM.bulbaTooltipText.textContent = `${pItem.name} (X: ${x}, Z: ${z})`;
+                }
+              });
+              cell.addEventListener('mouseleave', () => {
+                if (DOM.bulbaHoverTooltip) DOM.bulbaHoverTooltip.classList.add('hidden');
+              });
+            } else {
+              cell.style.backgroundColor = 'rgba(255, 255, 255, 0.02)';
+            }
+            frag.appendChild(cell);
+          }
+        }
+        DOM.bulbaVoxelGrid.appendChild(frag);
+      }
+    }
+
+    // 本層材料清單
+    if (DOM.bulbaMatList) {
+      DOM.bulbaMatList.innerHTML = '';
+      const matEntries = Object.entries(layer.materials);
+      if (DOM.bulbaMatTypesCount) {
+        DOM.bulbaMatTypesCount.textContent = `${matEntries.length} 種建材`;
+      }
+      matEntries.sort((a, b) => b[1] - a[1]);
+      matEntries.forEach(([bid, count]) => {
+        const pItem = data.palette[bid] || { name: '方塊', color: '#64a395' };
+        const item = document.createElement('div');
+        item.className = 'bulba-mat-item';
+        item.innerHTML = `
+          <span class="bulba-mat-chip" style="background-color: ${pItem.color};"></span>
+          <span class="bulba-mat-name" title="${pItem.name}">${pItem.name}</span>
+          <span class="bulba-mat-count">×${count}</span>
+        `;
+        DOM.bulbaMatList.appendChild(item);
+      });
+    }
+  }
+
+  function initBulbaThreeEngine() {
+    if (typeof THREE === 'undefined' || typeof BULBASAUR_VOXEL_DATA === 'undefined') return;
+    if (!DOM.bulba3dCanvas) return;
+
+    const wrap = DOM.bulba3dCanvas.parentElement;
+    if (!wrap) return;
+    const width = wrap.clientWidth || 500;
+    const height = wrap.clientHeight || 560;
+
+    const t = bulbaState.three;
+    if (t.isInit) {
+      t.renderer.setSize(width, height);
+      t.camera.aspect = width / height;
+      t.camera.updateProjectionMatrix();
+      return;
+    }
+
+    // 1. Scene
+    const scene = new THREE.Scene();
+    scene.background = null;
+
+    // 2. Camera
+    const camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
+    camera.position.set(65, 55, 80);
+
+    // 3. Renderer
+    const renderer = new THREE.WebGLRenderer({
+      canvas: DOM.bulba3dCanvas,
+      antialias: true,
+      alpha: true
+    });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+    // 4. Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambientLight);
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.7);
+    dirLight1.position.set(50, 80, 50);
+    scene.add(dirLight1);
+    const dirLight2 = new THREE.DirectionalLight(0x60a5fa, 0.35);
+    dirLight2.position.set(-50, -30, -50);
+    scene.add(dirLight2);
+
+    // 5. Controls
+    let controls = null;
+    if (typeof THREE.OrbitControls !== 'undefined') {
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.08;
+      controls.target.set(0, 0, 0);
+      controls.maxDistance = 250;
+      controls.minDistance = 15;
+    }
+
+    // 6. Build InstancedMesh
+    const data = BULBASAUR_VOXEL_DATA;
+    const totalCount = data.totalBlocks;
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const material = new THREE.MeshStandardMaterial({
+      roughness: 0.5,
+      metalness: 0.1
+    });
+
+    const instancedMesh = new THREE.InstancedMesh(geometry, material, totalCount);
+    const dummy = new THREE.Object3D();
+    const color = new THREE.Color();
+
+    const cx = data.dimensions.width / 2;
+    const cy = data.dimensions.height / 2;
+    const cz = data.dimensions.length / 2;
+
+    const blockDataList = [];
+    let idx = 0;
+
+    data.layers.forEach((layer) => {
+      const y = layer.layerIndex - 1;
+      layer.blocks.forEach(([x, z, bid]) => {
+        dummy.position.set(x - cx, y - cy, z - cz);
+        dummy.scale.set(1, 1, 1);
+        dummy.updateMatrix();
+
+        instancedMesh.setMatrixAt(idx, dummy.matrix);
+        const pItem = data.palette[bid] || { color: '#64a395' };
+        color.set(pItem.color);
+        instancedMesh.setColorAt(idx, color);
+
+        blockDataList.push({
+          index: idx,
+          layerIndex: layer.layerIndex,
+          defaultMatrix: dummy.matrix.clone(),
+          posX: x - cx,
+          posY: y - cy,
+          posZ: z - cz
+        });
+        idx++;
+      });
+    });
+
+    instancedMesh.instanceMatrix.needsUpdate = true;
+    if (instancedMesh.instanceColor) instancedMesh.instanceColor.needsUpdate = true;
+    scene.add(instancedMesh);
+
+    t.isInit = true;
+    t.scene = scene;
+    t.camera = camera;
+    t.renderer = renderer;
+    t.controls = controls;
+    t.instancedMesh = instancedMesh;
+    t.blockDataList = blockDataList;
+
+    // Animation Loop
+    function animate() {
+      t.animFrameId = requestAnimationFrame(animate);
+      if (controls) controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // RWD Resize
+    window.addEventListener('resize', () => {
+      if (!t.isInit || !DOM.bulba3dCanvas) return;
+      const curWrap = DOM.bulba3dCanvas.parentElement;
+      if (!curWrap) return;
+      const nw = curWrap.clientWidth || 500;
+      const nh = curWrap.clientHeight || 560;
+      camera.aspect = nw / nh;
+      camera.updateProjectionMatrix();
+      renderer.setSize(nw, nh);
+    });
+  }
+
+  function updateBulba3DSliceFilter() {
+    const t = bulbaState.three;
+    if (!t.isInit || !t.instancedMesh || !t.blockDataList.length) return;
+
+    const isSlice = bulbaState.curMode === 'slice';
+    const curLayer = bulbaState.curLayer;
+    const dummy = new THREE.Object3D();
+
+    for (let i = 0; i < t.blockDataList.length; i++) {
+      const item = t.blockDataList[i];
+      if (!isSlice || item.layerIndex <= curLayer) {
+        t.instancedMesh.setMatrixAt(item.index, item.defaultMatrix);
+      } else {
+        dummy.position.set(item.posX, item.posY, item.posZ);
+        dummy.scale.set(0, 0, 0); // 縮至 0 隱藏
+        dummy.updateMatrix();
+        t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
+      }
+    }
+    t.instancedMesh.instanceMatrix.needsUpdate = true;
+  }
+
+  // 暴露妙蛙種子 API
+  window.PokopiaBulba = {
+    getState: () => bulbaState,
+    switchCharacterBlueprint,
+    switchBulba3DMode,
+    setBulbaLayer,
+    renderBulbaLayer,
+    initBulbaThreeEngine,
+    updateBulba3DSliceFilter
   };
 
   // 暴露地區地圖 API

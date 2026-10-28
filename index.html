@@ -555,20 +555,94 @@
     <!-- 3D Blueprint Section (3D 藍圖) -->
     <section id="buzz3dSection" class="view-section hidden-section buzz3d-section">
       <div class="buzz3d-container">
-        <div class="buzz3d-frame-wrap">
-          <iframe
-            id="buzz3dIframe"
-            class="buzz3d-iframe"
-            title="Toy Story Buzz 3D model"
-            src="https://sketchfab.com/models/1c48aeec16154595b6a0ea3f6c20985f/embed?autostart=1&autospin=0.2&ui_theme=dark&ui_infos=0&ui_watermark=0"
-            frameborder="0"
-            allow="autoplay; fullscreen; xr-spatial-tracking"
-            xr-spatial-tracking="true"
-            execution-while-out-of-viewport="true"
-            execution-while-not-rendered="true"
-            web-share="true"
-            allowfullscreen>
-          </iframe>
+        <!-- 次級角色切換膠囊列 -->
+        <div class="char-pill-bar">
+          <button id="btnSubBuzz" class="char-pill-btn active" data-char="buzz">🚀 巴斯光年</button>
+          <button id="btnSubBulba" class="char-pill-btn" data-char="bulba">🍃 妙蛙種子</button>
+        </div>
+
+        <!-- 角色 1：巴斯光年視窗 -->
+        <div id="paneBuzz" class="char-pane">
+          <div class="buzz3d-frame-wrap">
+            <iframe
+              id="buzz3dIframe"
+              class="buzz3d-iframe"
+              title="Toy Story Buzz 3D model"
+              src="https://sketchfab.com/models/1c48aeec16154595b6a0ea3f6c20985f/embed?autostart=1&autospin=0.2&ui_theme=dark&ui_infos=0&ui_watermark=0"
+              frameborder="0"
+              allow="autoplay; fullscreen; xr-spatial-tracking"
+              xr-spatial-tracking="true"
+              execution-while-out-of-viewport="true"
+              execution-while-not-rendered="true"
+              web-share="true"
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+
+        <!-- 角色 2：妙蛙種子 3D 方塊建造工作台 -->
+        <div id="paneBulba" class="char-pane hidden">
+          <div class="bulba-builder-layout">
+            <!-- 左欄：3D 立體模型展示與剖面連動 -->
+            <div class="bulba-3d-card">
+              <div class="bulba-card-header">
+                <div class="bulba-card-title">
+                  <span>🍃 妙蛙種子 3D 方塊雕像</span>
+                  <span class="bulba-total-stat">8,415 顆方塊</span>
+                </div>
+                <div class="bulba-mode-switch">
+                  <button id="btnBulbaModeFull" class="bulba-mode-btn active" title="查看完整 3D 完成品">完整全貌</button>
+                  <button id="btnBulbaModeSlice" class="bulba-mode-btn" title="隨右側切片進度動態過濾顯示">動態剖面</button>
+                </div>
+              </div>
+              <div class="bulba-canvas-wrap">
+                <canvas id="bulba3dCanvas" class="bulba-3d-canvas"></canvas>
+                <div class="bulba-canvas-hint">滑鼠拖曳旋轉 / 滾輪縮放視角</div>
+              </div>
+            </div>
+
+            <!-- 右欄：92 層逐層切片控制器與材料清單 -->
+            <div class="bulba-slice-card">
+              <div class="bulba-card-header">
+                <div class="bulba-card-title">
+                  <span>📐 92 層建造切片指南</span>
+                  <span id="bulbaLayerBadge" class="bulba-layer-badge">第 1 / 92 層</span>
+                </div>
+                <span id="bulbaLayerBlockCount" class="bulba-count-stat">本層 0 顆</span>
+              </div>
+
+              <!-- 樓層滑桿與控制按鈕 -->
+              <div class="bulba-slice-ctrl">
+                <div class="bulba-slider-row">
+                  <button id="btnBulbaPrevLayer" class="bulba-step-btn" title="上一層">◀</button>
+                  <input type="range" id="bulbaLayerSlider" class="bulba-slider" min="1" max="92" value="1" step="1">
+                  <button id="btnBulbaNextLayer" class="bulba-step-btn" title="下一層">▶</button>
+                </div>
+              </div>
+
+              <!-- 2D 點陣切片網格容器 -->
+              <div class="bulba-grid-container">
+                <div id="bulbaVoxelGrid" class="bulba-voxel-grid">
+                  <!-- 動態注入該層方塊元素 -->
+                </div>
+                <div id="bulbaHoverTooltip" class="bulba-hover-tooltip hidden">
+                  <span id="bulbaTooltipColor" class="bulba-tooltip-color"></span>
+                  <span id="bulbaTooltipText">海晶石磚 (X: 0, Z: 0)</span>
+                </div>
+              </div>
+
+              <!-- 本層所需材料清單 -->
+              <div class="bulba-materials-section">
+                <div class="bulba-mat-header">
+                  <span class="bulba-mat-title">📦 本層所需材料</span>
+                  <span id="bulbaMatTypesCount" class="bulba-mat-count-badge">0 種建材</span>
+                </div>
+                <div id="bulbaMatList" class="bulba-mat-list">
+                  <!-- 動態注入本層方塊材料項目 -->
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -754,6 +828,10 @@
   <script src="region_data.js?v=4.15.0"></script>
   <script src="video_data.js?v=4.15.0"></script>
   <script src="firebase.js?v=4.15.0"></script>
+  <!-- 3D Voxel Engine & Bulbasaur Blueprint Data -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="bulbasaur_voxel_data.js?v=4.15.0"></script>
   <script src="app.js?v=4.15.0"></script>
 </body>
 </html>
