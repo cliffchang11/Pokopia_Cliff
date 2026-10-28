@@ -222,25 +222,6 @@
     videoSection: document.getElementById('videoSection'),
     buzz3dSection: document.getElementById('buzz3dSection'),
     buzz3dIframe: document.getElementById('buzz3dIframe'),
-    btnSubBuzz: document.getElementById('btnSubBuzz'),
-    btnSubWoody: document.getElementById('btnSubWoody'),
-    paneBuzz: document.getElementById('paneBuzz'),
-    paneWoody: document.getElementById('paneWoody'),
-    woodyViewerTitle: document.getElementById('woodyViewerTitle'),
-    btnWoodyModeVoxel: document.getElementById('btnWoodyModeVoxel'),
-    btnWoodyModeGame: document.getElementById('btnWoodyModeGame'),
-    woodyVoxelCanvasWrap: document.getElementById('woodyVoxelCanvasWrap'),
-    woodyVoxelCanvas: document.getElementById('woodyVoxelCanvas'),
-    woody3dIframe: document.getElementById('woody3dIframe'),
-    btnWoodyPrevLayer: document.getElementById('btnWoodyPrevLayer'),
-    btnWoodyNextLayer: document.getElementById('btnWoodyNextLayer'),
-    woodyCurLayerNum: document.getElementById('woodyCurLayerNum'),
-    woodyLayerSlider: document.getElementById('woodyLayerSlider'),
-    woodyPartName: document.getElementById('woodyPartName'),
-    woodyLayerBlockCount: document.getElementById('woodyLayerBlockCount'),
-    woodyVoxelGrid: document.getElementById('woodyVoxelGrid'),
-    woodyMatList: document.getElementById('woodyMatList'),
-    woodyTotalBlockStat: document.getElementById('woodyTotalBlockStat'),
     videoPlayerIframe: document.getElementById('videoPlayerIframe'),
     videoResumeBanner: document.getElementById('videoResumeBanner'),
     videoResumeText: document.getElementById('videoResumeText'),
@@ -1332,29 +1313,6 @@
       });
     }
 
-    // 3D 角色藍圖館 (巴斯光年 / 胡迪警長次級標籤切換)
-    if (DOM.btnSubBuzz) {
-      DOM.btnSubBuzz.addEventListener('click', () => switchCharacterBlueprint('buzz'));
-    }
-    if (DOM.btnSubWoody) {
-      DOM.btnSubWoody.addEventListener('click', () => switchCharacterBlueprint('woody'));
-    }
-    if (DOM.btnWoodyModeVoxel) {
-      DOM.btnWoodyModeVoxel.addEventListener('click', () => switchWoody3DMode('voxel'));
-    }
-    if (DOM.btnWoodyModeGame) {
-      DOM.btnWoodyModeGame.addEventListener('click', () => switchWoody3DMode('game'));
-    }
-    if (DOM.btnWoodyPrevLayer) {
-      DOM.btnWoodyPrevLayer.addEventListener('click', () => setWoodyLayer(woodyState.currentLayer - 1));
-    }
-    if (DOM.btnWoodyNextLayer) {
-      DOM.btnWoodyNextLayer.addEventListener('click', () => setWoodyLayer(woodyState.currentLayer + 1));
-    }
-    if (DOM.woodyLayerSlider) {
-      DOM.woodyLayerSlider.addEventListener('input', (e) => setWoodyLayer(parseInt(e.target.value, 10)));
-    }
-
     // View mode switching
     DOM.btnCardView.addEventListener('click', () => {
       switchView('card', true);
@@ -1998,17 +1956,14 @@
       }
       if (DOM.toolbarContainer) DOM.toolbarContainer.classList.remove('hidden');
       if (DOM.toolbarHeaderRow) DOM.toolbarHeaderRow.classList.remove('hidden');
-      if (DOM.toolbarTitle) DOM.toolbarTitle.textContent = '3D 角色藍圖';
+      if (DOM.toolbarTitle) DOM.toolbarTitle.textContent = '3D 藍圖';
       if (DOM.catalogProgressBadge) DOM.catalogProgressBadge.classList.remove('hidden');
       if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🚀';
-      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>巴斯 & 胡迪</strong> 雙角色藍圖';
+      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>3D</strong> 互動模型檢視';
       if (DOM.searchRow) DOM.searchRow.classList.add('hidden');
       if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.add('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.add('hidden');
       if (DOM.unlockFilterGroup) DOM.unlockFilterGroup.classList.add('hidden');
-      if (woodyState.currentChar === 'woody') {
-        renderWoodyLayer(woodyState.currentLayer);
-      }
     } else if (tab === 'preferences') {
       if (DOM.tabPreferences) DOM.tabPreferences.classList.add('active');
       if (DOM.btnPrefDrawer) DOM.btnPrefDrawer.classList.add('active');
@@ -6916,260 +6871,6 @@
       return state;
     }
   };
-
-  // ═══════════════════════════════════════════════════════════════════
-  // 胡迪體素雙模工作台控制器 (Woody Voxel Builder Controller)
-  // ═══════════════════════════════════════════════════════════════════
-  const woodyState = {
-    currentLayer: 1,
-    currentChar: 'buzz',
-    threeInited: false,
-    threeRenderer: null,
-    threeScene: null,
-    threeCamera: null,
-    threeControls: null,
-    threeAnimId: null,
-    current3DMode: 'voxel'
-  };
-
-  function switchCharacterBlueprint(char) {
-    woodyState.currentChar = char;
-    if (char === 'buzz') {
-      if (DOM.btnSubBuzz) DOM.btnSubBuzz.classList.add('active');
-      if (DOM.btnSubWoody) DOM.btnSubWoody.classList.remove('active');
-      if (DOM.paneBuzz) DOM.paneBuzz.classList.remove('hidden');
-      if (DOM.paneWoody) DOM.paneWoody.classList.add('hidden');
-    } else {
-      if (DOM.btnSubBuzz) DOM.btnSubBuzz.classList.remove('active');
-      if (DOM.btnSubWoody) DOM.btnSubWoody.classList.add('active');
-      if (DOM.paneBuzz) DOM.paneBuzz.classList.add('hidden');
-      if (DOM.paneWoody) DOM.paneWoody.classList.remove('hidden');
-      renderWoodyLayer(woodyState.currentLayer);
-      if (woodyState.current3DMode === 'voxel') {
-        setTimeout(initWoodyThreeVoxel, 60);
-      }
-    }
-  }
-
-  function switchWoody3DMode(mode) {
-    woodyState.current3DMode = mode;
-    if (mode === 'voxel') {
-      if (DOM.woodyViewerTitle) DOM.woodyViewerTitle.textContent = '🤠 3D 方塊立體完成品';
-      if (DOM.btnWoodyModeVoxel) DOM.btnWoodyModeVoxel.classList.add('active');
-      if (DOM.btnWoodyModeGame) DOM.btnWoodyModeGame.classList.remove('active');
-      if (DOM.woodyVoxelCanvasWrap) DOM.woodyVoxelCanvasWrap.classList.remove('hidden');
-      if (DOM.woody3dIframe) DOM.woody3dIframe.classList.add('hidden');
-      setTimeout(initWoodyThreeVoxel, 40);
-    } else {
-      if (DOM.woodyViewerTitle) DOM.woodyViewerTitle.textContent = '🤠 胡迪 3D 原版遊戲模型';
-      if (DOM.btnWoodyModeVoxel) DOM.btnWoodyModeVoxel.classList.remove('active');
-      if (DOM.btnWoodyModeGame) DOM.btnWoodyModeGame.classList.add('active');
-      if (DOM.woodyVoxelCanvasWrap) DOM.woodyVoxelCanvasWrap.classList.add('hidden');
-      if (DOM.woody3dIframe) DOM.woody3dIframe.classList.remove('hidden');
-    }
-  }
-
-  function initWoodyThreeVoxel() {
-    if (typeof window === 'undefined' || typeof THREE === 'undefined') {
-      setTimeout(initWoodyThreeVoxel, 100);
-      return;
-    }
-    const canvas = DOM.woodyVoxelCanvas;
-    if (!canvas) return;
-
-    const data = window.WOODY_VOXEL_DATA;
-    if (!data || !data.layers) return;
-
-    const wrap = canvas.parentElement;
-    const width = (wrap && wrap.clientWidth > 0) ? wrap.clientWidth : 560;
-    const height = (wrap && wrap.clientHeight > 0) ? wrap.clientHeight : 640;
-
-    // 若已建立渲染器，僅更新相機投影與渲染尺寸
-    if (woodyState.threeInited && woodyState.threeRenderer) {
-      woodyState.threeCamera.aspect = width / height;
-      woodyState.threeCamera.updateProjectionMatrix();
-      woodyState.threeRenderer.setSize(width, height);
-      return;
-    }
-
-    // 建立場景
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x090d16);
-
-    // 建立相機 (稍微仰視偏上，全貌呈現)
-    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
-    camera.position.set(38, 48, 68);
-
-    // 建立渲染器
-    const renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: true,
-      powerPreference: 'high-performance'
-    });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.setSize(width, height);
-
-    // 燈光系統 (溫暖立體光照)
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-    scene.add(ambientLight);
-
-    const dirLight1 = new THREE.DirectionalLight(0xfffaed, 0.85);
-    dirLight1.position.set(40, 70, 50);
-    scene.add(dirLight1);
-
-    const dirLight2 = new THREE.DirectionalLight(0x93c5fd, 0.4);
-    dirLight2.position.set(-30, 20, -40);
-    scene.add(dirLight2);
-
-    // 建立 OrbitControls
-    let controls = null;
-    if (typeof THREE.OrbitControls !== 'undefined') {
-      controls = new THREE.OrbitControls(camera, renderer.domElement);
-      controls.target.set(0, 34, 0); // 注視模型腰胸中心
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.05;
-      controls.autoRotate = true;
-      controls.autoRotateSpeed = 1.0;
-      controls.maxDistance = 160;
-      controls.minDistance = 20;
-    }
-
-    // 8 種材質對應
-    const materialMap = {};
-    for (const mId in data.materials) {
-      const mat = data.materials[mId];
-      materialMap[mId] = new THREE.MeshLambertMaterial({
-        color: new THREE.Color(mat.hex)
-      });
-    }
-
-    // 統計各材質方塊位置，使用 InstancedMesh 進行極速流暢渲染
-    const boxGeometry = new THREE.BoxGeometry(0.95, 0.95, 0.95);
-    const dummy = new THREE.Object3D();
-
-    for (const mId in data.materials) {
-      const targetMatId = parseInt(mId, 10);
-      const totalCount = data.materialCounts[mId] || 0;
-      if (totalCount === 0) continue;
-
-      const instMesh = new THREE.InstancedMesh(boxGeometry, materialMap[mId], totalCount);
-      let instanceIdx = 0;
-
-      for (let y = 0; y < data.totalLayers; y++) {
-        const layer = data.layers[y];
-        if (!layer || !layer.grid) continue;
-        for (let z = 0; z < data.gridDepth; z++) {
-          for (let x = 0; x < data.gridWidth; x++) {
-            if (layer.grid[z][x] === targetMatId) {
-              // 坐標置中：(x - 11, y, z - 11)
-              dummy.position.set(x - 11, y, z - 11);
-              dummy.updateMatrix();
-              instMesh.setMatrixAt(instanceIdx++, dummy.matrix);
-            }
-          }
-        }
-      }
-      instMesh.instanceMatrix.needsUpdate = true;
-      scene.add(instMesh);
-    }
-
-    woodyState.threeInited = true;
-    woodyState.threeRenderer = renderer;
-    woodyState.threeScene = scene;
-    woodyState.threeCamera = camera;
-    woodyState.threeControls = controls;
-
-    // 動畫循環
-    function animate() {
-      woodyState.threeAnimId = requestAnimationFrame(animate);
-      if (controls) controls.update();
-      renderer.render(scene, camera);
-    }
-    animate();
-
-    // 視窗 resize 處理
-    window.addEventListener('resize', () => {
-      if (!woodyState.threeInited || !DOM.woodyVoxelCanvas) return;
-      const p = DOM.woodyVoxelCanvas.parentElement;
-      if (!p) return;
-      const w = p.clientWidth;
-      const h = p.clientHeight;
-      if (w > 0 && h > 0) {
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-        renderer.setSize(w, h);
-      }
-    });
-  }
-
-  function setWoodyLayer(layerNum) {
-    const data = window.WOODY_VOXEL_DATA;
-    if (!data || !data.layers) return;
-    const total = data.totalLayers || 68;
-    const clamped = Math.max(1, Math.min(total, layerNum));
-    woodyState.currentLayer = clamped;
-    renderWoodyLayer(clamped);
-  }
-
-  function renderWoodyLayer(layerNum) {
-    const data = window.WOODY_VOXEL_DATA;
-    if (!data || !data.layers) return;
-    const total = data.totalLayers || 68;
-    const layer = data.layers[layerNum - 1];
-    if (!layer) return;
-
-    if (DOM.woodyCurLayerNum) DOM.woodyCurLayerNum.textContent = layerNum;
-    if (DOM.woodyLayerSlider) DOM.woodyLayerSlider.value = layerNum;
-    if (DOM.woodyPartName) DOM.woodyPartName.textContent = layer.partName || `第 ${layerNum} 層`;
-    if (DOM.woodyLayerBlockCount) DOM.woodyLayerBlockCount.textContent = `${layer.blockCount} 顆方塊`;
-    if (DOM.btnWoodyPrevLayer) DOM.btnWoodyPrevLayer.disabled = layerNum <= 1;
-    if (DOM.btnWoodyNextLayer) DOM.btnWoodyNextLayer.disabled = layerNum >= total;
-
-    // 渲染 22x22 點陣網格
-    if (DOM.woodyVoxelGrid) {
-      const grid = layer.grid;
-      const frag = document.createDocumentFragment();
-      for (let z = 0; z < data.gridDepth; z++) {
-        for (let x = 0; x < data.gridWidth; x++) {
-          const matId = grid[z][x];
-          const cell = document.createElement('div');
-          if (matId > 0 && data.materials[matId]) {
-            const mat = data.materials[matId];
-            cell.className = 'woody-cell filled';
-            cell.style.backgroundColor = mat.hex;
-            cell.title = `(${x + 1}, ${z + 1}) - ${mat.name} [${mat.block}]`;
-          } else {
-            cell.className = 'woody-cell empty';
-          }
-          frag.appendChild(cell);
-        }
-      }
-      DOM.woodyVoxelGrid.innerHTML = '';
-      DOM.woodyVoxelGrid.appendChild(frag);
-    }
-
-    // 渲染材料清單
-    if (DOM.woodyMatList) {
-      const breakdown = layer.materialsBreakdown || {};
-      const frag = document.createDocumentFragment();
-      for (const mId in data.materials) {
-        const mat = data.materials[mId];
-        const count = breakdown[mId] || 0;
-        const totalCount = data.materialCounts[mId] || 0;
-        const item = document.createElement('div');
-        item.className = 'woody-mat-item';
-        item.style.opacity = count > 0 ? '1' : '0.4';
-        item.innerHTML = `
-          <span class="woody-mat-chip" style="background-color: ${mat.hex};"></span>
-          <span class="woody-mat-name">${mat.name}</span>
-          <span class="woody-mat-count">${count} <small style="color:var(--text-muted);font-weight:normal;">/ ${totalCount}</small></span>
-        `;
-        frag.appendChild(item);
-      }
-      DOM.woodyMatList.innerHTML = '';
-      DOM.woodyMatList.appendChild(frag);
-    }
-  }
 
   // Kickoff App on DOM Ready
   if (document.readyState === 'loading') {

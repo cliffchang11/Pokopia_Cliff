@@ -552,16 +552,9 @@
       </div>
     </section>
 
-    <!-- 3D Character Blueprint Section (3D 角色藍圖館) -->
+    <!-- 3D Blueprint Section (3D 藍圖) -->
     <section id="buzz3dSection" class="view-section hidden-section buzz3d-section">
-      <!-- 角色切換分頁導航 (Sub Navigation Pills) -->
-      <div class="char-pill-bar">
-        <button id="btnSubBuzz" class="char-pill-btn active" data-char="buzz">🚀 巴斯光年</button>
-        <button id="btnSubWoody" class="char-pill-btn" data-char="woody">🤠 胡迪警長</button>
-      </div>
-
-      <!-- 巴斯光年 Pane -->
-      <div id="paneBuzz" class="char-pane active">
+      <div class="buzz3d-container">
         <div class="buzz3d-frame-wrap">
           <iframe
             id="buzz3dIframe"
@@ -576,84 +569,6 @@
             web-share="true"
             allowfullscreen>
           </iframe>
-        </div>
-      </div>
-
-      <!-- 胡迪警長 Pane (雙模工作台) -->
-      <div id="paneWoody" class="char-pane hidden">
-        <div class="woody-builder-layout">
-          <!-- 左欄：3D 視窗 (預設: 3D 方塊完成品 / 可切換原版模型) -->
-          <div class="woody-3d-card">
-            <div class="woody-card-header">
-              <span id="woodyViewerTitle" class="woody-card-title">🤠 3D 方塊立體完成品</span>
-              <div class="woody-toggle-pills">
-                <button type="button" id="btnWoodyModeVoxel" class="woody-mode-btn active" title="查看 3,617 顆方塊實際組裝的體素 3D 完成品">🧊 方塊完成品</button>
-                <button type="button" id="btnWoodyModeGame" class="woody-mode-btn" title="查看遊戲原版平滑模型對照">🎮 原版模型</button>
-              </div>
-            </div>
-            <div class="woody-frame-wrap">
-              <!-- 3D 體素完成品 Canvas 容器 (預設顯示) -->
-              <div id="woodyVoxelCanvasWrap" class="woody-voxel-canvas-wrap">
-                <canvas id="woodyVoxelCanvas" class="woody-voxel-canvas"></canvas>
-                <div class="woody-voxel-hints">
-                  <span>🖱️ 360° 拖曳旋轉 ‧ 滾輪縮放 ‧ 3,617 顆方塊立體雕塑</span>
-                </div>
-              </div>
-              <!-- 原版 Sketchfab iframe (預設隱藏) -->
-              <iframe
-                id="woody3dIframe"
-                class="buzz3d-iframe hidden"
-                title="Woody Toy Story 3D model"
-                src="https://sketchfab.com/models/f88d8092b28d4a5d9e3cc4db99ca3aff/embed?autostart=1&autospin=0.2&ui_theme=dark&ui_infos=0&ui_watermark=0"
-                frameborder="0"
-                allow="autoplay; fullscreen; xr-spatial-tracking"
-                xr-spatial-tracking="true"
-                execution-while-out-of-viewport="true"
-                execution-while-not-rendered="true"
-                web-share="true"
-                allowfullscreen>
-              </iframe>
-            </div>
-          </div>
-
-          <!-- 右欄：胡迪 68 層逐層切片拼砌工作台 -->
-          <div class="woody-slice-card">
-            <!-- 頂部資訊與層級控制器 -->
-            <div class="woody-stepper-row">
-              <button id="btnWoodyPrevLayer" class="woody-step-btn" title="上一層">◀ 上一層</button>
-              <div class="woody-layer-display">
-                <span class="woody-layer-prefix">第</span>
-                <span id="woodyCurLayerNum" class="woody-layer-num">1</span>
-                <span class="woody-layer-total">/ 68 層</span>
-              </div>
-              <button id="btnWoodyNextLayer" class="woody-step-btn" title="下一層">下一層 ▶</button>
-            </div>
-
-            <!-- 滑桿 -->
-            <div class="woody-slider-wrap">
-              <input type="range" id="woodyLayerSlider" class="woody-layer-slider" min="1" max="68" value="1">
-            </div>
-
-            <!-- 當層部位資訊 -->
-            <div class="woody-layer-info-bar">
-              <span id="woodyPartName" class="woody-part-name">牛仔長靴 - 靴底與馬刺</span>
-              <span id="woodyLayerBlockCount" class="woody-layer-count">56 顆方塊</span>
-            </div>
-
-            <!-- 22x22 點陣網格俯視圖 -->
-            <div class="woody-grid-wrapper">
-              <div id="woodyVoxelGrid" class="woody-voxel-grid"></div>
-            </div>
-
-            <!-- 當層材料清單與總材料進度 -->
-            <div class="woody-materials-section">
-              <div class="woody-mat-title">
-                <span>📦 8 大標準方塊材料需求</span>
-                <span id="woodyTotalBlockStat" class="woody-mat-stat">總計 3,617 顆</span>
-              </div>
-              <div id="woodyMatList" class="woody-mat-list"></div>
-            </div>
-          </div>
         </div>
       </div>
     </section>
@@ -830,10 +745,6 @@
     <span class="scroll-top-icon">⬆</span>
   </button>
 
-  <!-- 3D 體素立體渲染引擎 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-
   <!-- Scripts -->
   <script src="data.js?v=4.15.0"></script>
   <script src="preferences_db.js?v=4.15.0"></script>
@@ -842,7 +753,6 @@
   <script src="autofarm_data.js?v=4.15.0"></script>
   <script src="region_data.js?v=4.15.0"></script>
   <script src="video_data.js?v=4.15.0"></script>
-  <script src="woody_voxel_data.js?v=4.15.0"></script>
   <script src="firebase.js?v=4.15.0"></script>
   <script src="app.js?v=4.15.0"></script>
 </body>
