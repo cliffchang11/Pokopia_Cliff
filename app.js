@@ -235,6 +235,10 @@
     btnBulbaNextLayer: document.getElementById('btnBulbaNextLayer'),
     bulbaLayerSlider: document.getElementById('bulbaLayerSlider'),
     bulbaVoxelGrid: document.getElementById('bulbaVoxelGrid'),
+    bulbaDimTop: document.getElementById('bulbaDimTop'),
+    bulbaDimWidth: document.getElementById('bulbaDimWidth'),
+    bulbaDimRight: document.getElementById('bulbaDimRight'),
+    bulbaDimDepth: document.getElementById('bulbaDimDepth'),
     bulbaHoverTooltip: document.getElementById('bulbaHoverTooltip'),
     bulbaTooltipColor: document.getElementById('bulbaTooltipColor'),
     bulbaTooltipText: document.getElementById('bulbaTooltipText'),
@@ -6956,11 +6960,13 @@
       DOM.bulbaLayerBlockCount.textContent = `本層 ${blockCount} 顆`;
     }
 
-    // 2D 點陣網格智慧邊界聚焦
+    // 2D 點陣網格智慧邊界聚焦與工程長寬雙軸尺寸標註
     if (DOM.bulbaVoxelGrid) {
       DOM.bulbaVoxelGrid.innerHTML = '';
       if (blockCount === 0) {
         DOM.bulbaVoxelGrid.innerHTML = '<div class="bulba-empty-hint" style="color:#94a3b8;font-size:0.875rem;padding:2rem;">本層無方塊（可跳至下一層）</div>';
+        if (DOM.bulbaDimTop) DOM.bulbaDimTop.style.display = 'none';
+        if (DOM.bulbaDimRight) DOM.bulbaDimRight.style.display = 'none';
       } else {
         let minX = Infinity, maxX = -Infinity;
         let minZ = Infinity, maxZ = -Infinity;
@@ -6975,26 +6981,49 @@
 
         const spanX = maxX - minX + 1;
         const spanZ = maxZ - minZ + 1;
+
+        // 更新頂部寬度與側邊長度尺寸標註文字
+        if (DOM.bulbaDimWidth) {
+          DOM.bulbaDimWidth.textContent = `寬 ${spanX} 格`;
+        }
+        if (DOM.bulbaDimDepth) {
+          DOM.bulbaDimDepth.textContent = `長 ${spanZ} 格`;
+        }
+        if (DOM.bulbaDimTop) DOM.bulbaDimTop.style.display = 'flex';
+        if (DOM.bulbaDimRight) DOM.bulbaDimRight.style.display = 'flex';
+
         // 智能適配：手機版 100% 完美全覽零裁切，桌面版寬高雙約束一屏全覽
-        const parent = DOM.bulbaVoxelGrid.parentElement;
+        const parent = DOM.bulbaVoxelGrid.closest('.bulba-grid-container') || DOM.bulbaVoxelGrid.parentElement;
         const containerWidth = parent ? (parent.clientWidth || 800) : 800;
         const isMobile = window.innerWidth <= 768;
 
         let cellSize;
         if (isMobile) {
-          // 手機版：扣除容器與網格內距及間距，精準計算單元格尺寸，確保 100% 完整收納零裁切
-          const netWidth = containerWidth - 36 - (spanX - 1);
-          cellSize = Math.max(3.5, Math.floor(netWidth / spanX));
+          // 手機版：扣除容器內距 (約 24px) + 右側長度標註線 (24px) + 網格內邊距 (16px) + (spanX - 1) 間距
+          // 確保「網格 + 右側標註線」100% 完整收納於螢幕寬度內，絕不產生橫向捲軸或裁切
+          const rightDimReserved = 28;
+          const netWidth = containerWidth - 36 - rightDimReserved - (spanX - 1);
+          cellSize = Math.max(3, Math.floor(netWidth / spanX));
           cellSize = Math.min(10, cellSize);
         } else {
-          // 桌面版：寬高雙向約束，扣除間距後將總高度嚴格收斂在約 340px 內，一屏全覽
-          const cellByHeight = Math.floor((330 - (spanZ - 1)) / spanZ);
-          const cellByWidth = Math.floor((containerWidth - 60 - (spanX - 1)) / spanX);
+          // 桌面版：寬高雙向約束，扣除頂部標註 (22px) 與右側標註 (26px)
+          const cellByHeight = Math.floor((320 - 24 - (spanZ - 1)) / spanZ);
+          const cellByWidth = Math.floor((containerWidth - 60 - 28 - (spanX - 1)) / spanX);
           cellSize = Math.min(cellByHeight, cellByWidth, 12);
-          cellSize = Math.max(6, cellSize);
+          cellSize = Math.max(5, cellSize);
         }
         DOM.bulbaVoxelGrid.style.gap = '1px';
         DOM.bulbaVoxelGrid.style.gridTemplateColumns = `repeat(${spanX}, ${cellSize}px)`;
+
+        // 動態將頂部標註線寬度與側邊長度標註高度，精準對齊網格本體邊緣
+        const gridTotalWidth = spanX * cellSize + (spanX - 1) + 16;
+        const gridTotalHeight = spanZ * cellSize + (spanZ - 1) + 16;
+        if (DOM.bulbaDimTop) {
+          DOM.bulbaDimTop.style.width = `${gridTotalWidth}px`;
+        }
+        if (DOM.bulbaDimRight) {
+          DOM.bulbaDimRight.style.height = `${gridTotalHeight}px`;
+        }
 
         const frag = document.createDocumentFragment();
         for (let z = minZ; z <= maxZ; z++) {
