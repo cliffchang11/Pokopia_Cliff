@@ -226,6 +226,22 @@
     btnSubBulba: document.getElementById('btnSubBulba'),
     paneBuzz: document.getElementById('paneBuzz'),
     paneBulba: document.getElementById('paneBulba'),
+    btnBuzzModeFull: document.getElementById('btnBuzzModeFull'),
+    btnBuzzModeSlice: document.getElementById('btnBuzzModeSlice'),
+    buzz3dCanvas: document.getElementById('buzz3dCanvas'),
+    buzzLayerBadge: document.getElementById('buzzLayerBadge'),
+    buzzLayerBlockCount: document.getElementById('buzzLayerBlockCount'),
+    btnBuzzPrevLayer: document.getElementById('btnBuzzPrevLayer'),
+    btnBuzzNextLayer: document.getElementById('btnBuzzNextLayer'),
+    buzzLayerSlider: document.getElementById('buzzLayerSlider'),
+    buzzVoxelGrid: document.getElementById('buzzVoxelGrid'),
+    buzzDimTop: document.getElementById('buzzDimTop'),
+    buzzDimRight: document.getElementById('buzzDimRight'),
+    buzzHoverTooltip: document.getElementById('buzzHoverTooltip'),
+    buzzTooltipColor: document.getElementById('buzzTooltipColor'),
+    buzzTooltipText: document.getElementById('buzzTooltipText'),
+    buzzMatTypesCount: document.getElementById('buzzMatTypesCount'),
+    buzzMatList: document.getElementById('buzzMatList'),
     btnBulbaModeFull: document.getElementById('btnBulbaModeFull'),
     btnBulbaModeSlice: document.getElementById('btnBulbaModeSlice'),
     bulba3dCanvas: document.getElementById('bulba3dCanvas'),
@@ -1333,13 +1349,30 @@
       });
     }
 
-    // 3D 藍圖次級角色切換與妙蛙種子工作台事件綁定
+    // 3D 藍圖次級角色切換與巴斯光年 / 妙蛙種子雙工作台事件綁定
     if (DOM.btnSubBuzz) {
       DOM.btnSubBuzz.addEventListener('click', () => switchCharacterBlueprint('buzz'));
     }
     if (DOM.btnSubBulba) {
       DOM.btnSubBulba.addEventListener('click', () => switchCharacterBlueprint('bulba'));
     }
+    // 巴斯光年事件
+    if (DOM.btnBuzzModeFull) {
+      DOM.btnBuzzModeFull.addEventListener('click', () => switchBuzz3DMode('full'));
+    }
+    if (DOM.btnBuzzModeSlice) {
+      DOM.btnBuzzModeSlice.addEventListener('click', () => switchBuzz3DMode('slice'));
+    }
+    if (DOM.btnBuzzPrevLayer) {
+      DOM.btnBuzzPrevLayer.addEventListener('click', () => setBuzzLayer(buzzState.curLayer - 1));
+    }
+    if (DOM.btnBuzzNextLayer) {
+      DOM.btnBuzzNextLayer.addEventListener('click', () => setBuzzLayer(buzzState.curLayer + 1));
+    }
+    if (DOM.buzzLayerSlider) {
+      DOM.buzzLayerSlider.addEventListener('input', (e) => setBuzzLayer(Number(e.target.value)));
+    }
+    // 妙蛙種子事件
     if (DOM.btnBulbaModeFull) {
       DOM.btnBulbaModeFull.addEventListener('click', () => switchBulba3DMode('full'));
     }
@@ -6882,8 +6915,23 @@
   };
 
   /* ═══════════════════════════════════════════════════════════════════
-     3D 角色藍圖館 (3D Character Blueprint Gallery) - 妙蛙種子工作台
+     3D 角色藍圖館 (3D Character Blueprint Gallery) - 雙角色體素工作台
      ═══════════════════════════════════════════════════════════════════ */
+  const buzzState = {
+    curMode: 'full', // 'full' | 'slice'
+    curLayer: 1,
+    three: {
+      isInit: false,
+      scene: null,
+      camera: null,
+      renderer: null,
+      controls: null,
+      instancedMesh: null,
+      blockDataList: [],
+      animFrameId: null
+    }
+  };
+
   const bulbaState = {
     curChar: 'buzz',
     curMode: 'full', // 'full' | 'slice'
@@ -6908,7 +6956,9 @@
       if (DOM.paneBuzz) DOM.paneBuzz.classList.remove('hidden');
       if (DOM.paneBulba) DOM.paneBulba.classList.add('hidden');
       if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🚀';
-      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>3D</strong> 互動模型檢視';
+      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>10,305</strong> 顆方塊 ‧ 52 層切片';
+      renderBuzzLayer(buzzState.curLayer);
+      setTimeout(initBuzzThreeEngine, 60);
     } else {
       if (DOM.btnSubBuzz) DOM.btnSubBuzz.classList.remove('active');
       if (DOM.btnSubBulba) DOM.btnSubBulba.classList.add('active');
@@ -6918,6 +6968,29 @@
       if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>8,415</strong> 顆方塊 ‧ 53 層切片';
       renderBulbaLayer(bulbaState.curLayer);
       setTimeout(initBulbaThreeEngine, 60);
+    }
+  }
+
+  function switchBuzz3DMode(mode) {
+    buzzState.curMode = mode;
+    if (DOM.btnBuzzModeFull) {
+      DOM.btnBuzzModeFull.classList.toggle('active', mode === 'full');
+    }
+    if (DOM.btnBuzzModeSlice) {
+      DOM.btnBuzzModeSlice.classList.toggle('active', mode === 'slice');
+    }
+    updateBuzz3DSliceFilter();
+  }
+
+  function setBuzzLayer(layerIndex) {
+    if (typeof BUZZ_VOXEL_DATA === 'undefined') return;
+    const maxLayer = BUZZ_VOXEL_DATA.layers.length;
+    const target = Math.max(1, Math.min(maxLayer, layerIndex));
+    buzzState.curLayer = target;
+    if (DOM.buzzLayerSlider) DOM.buzzLayerSlider.value = target;
+    renderBuzzLayer(target);
+    if (buzzState.curMode === 'slice') {
+      updateBuzz3DSliceFilter();
     }
   }
 
@@ -7151,6 +7224,317 @@
     }
   }
 
+  // ═══════════════════════════════════════════════════════════════════
+  // 巴斯光年 52 層建造切片指南與材料渲染
+  // ═══════════════════════════════════════════════════════════════════
+  function renderBuzzLayer(layerIndex) {
+    if (typeof BUZZ_VOXEL_DATA === 'undefined') return;
+    const data = BUZZ_VOXEL_DATA;
+    const layer = data.layers[layerIndex - 1];
+    if (!layer) return;
+
+    if (DOM.buzzLayerBadge) {
+      DOM.buzzLayerBadge.textContent = `第 ${layerIndex} / ${data.layers.length} 層`;
+    }
+    const blockCount = layer.blocks.length;
+    if (DOM.buzzLayerBlockCount) {
+      DOM.buzzLayerBlockCount.textContent = `本層 ${blockCount} 顆`;
+    }
+
+    if (DOM.buzzVoxelGrid) {
+      DOM.buzzVoxelGrid.innerHTML = '';
+      if (blockCount === 0) {
+        DOM.buzzVoxelGrid.innerHTML = '<div class="bulba-empty-hint" style="color:#94a3b8;font-size:0.875rem;padding:2rem;">本層無方塊（可跳至下一層）</div>';
+        if (DOM.buzzDimTop) DOM.buzzDimTop.style.display = 'none';
+        if (DOM.buzzDimRight) DOM.buzzDimRight.style.display = 'none';
+      } else {
+        let minX = Infinity, maxX = -Infinity;
+        let minZ = Infinity, maxZ = -Infinity;
+        const blockMap = new Map();
+        const xOccupied = new Set();
+        const zOccupied = new Set();
+
+        layer.blocks.forEach(([x, z, bid]) => {
+          if (x < minX) minX = x;
+          if (x > maxX) maxX = x;
+          if (z < minZ) minZ = z;
+          if (z > maxZ) maxZ = z;
+          blockMap.set(`${x},${z}`, bid);
+          xOccupied.add(x);
+          zOccupied.add(z);
+        });
+
+        const spanX = maxX - minX + 1;
+        const spanZ = maxZ - minZ + 1;
+
+        // 計算 X 軸與 Z 軸實體與中空間隙純數字分段
+        const xSegments = getVoxelAxisSegments(minX, maxX, xOccupied);
+        const zSegments = getVoxelAxisSegments(minZ, maxZ, zOccupied);
+
+        // 智能自適應：手機版預留標註線防破版
+        const parent = DOM.buzzVoxelGrid.closest('.bulba-grid-container') || DOM.buzzVoxelGrid.parentElement;
+        const containerWidth = parent ? (parent.clientWidth || 800) : 800;
+        const isMobile = window.innerWidth <= 768;
+
+        let cellSize;
+        if (isMobile) {
+          const rightDimReserved = 28;
+          const netWidth = containerWidth - 36 - rightDimReserved - (spanX - 1);
+          cellSize = Math.max(3, Math.floor(netWidth / spanX));
+          cellSize = Math.min(10, cellSize);
+        } else {
+          const cellByHeight = Math.floor((320 - 24 - (spanZ - 1)) / spanZ);
+          const cellByWidth = Math.floor((containerWidth - 60 - 28 - (spanX - 1)) / spanX);
+          cellSize = Math.min(cellByHeight, cellByWidth, 12);
+          cellSize = Math.max(5, cellSize);
+        }
+        DOM.buzzVoxelGrid.style.gap = '1px';
+        DOM.buzzVoxelGrid.style.gridTemplateColumns = `repeat(${spanX}, ${cellSize}px)`;
+
+        const gridTotalWidth = spanX * cellSize + (spanX - 1) + 16;
+        const gridTotalHeight = spanZ * cellSize + (spanZ - 1) + 16;
+        renderDimTopSegments(DOM.buzzDimTop, xSegments, cellSize, gridTotalWidth);
+        renderDimRightSegments(DOM.buzzDimRight, zSegments, cellSize, gridTotalHeight);
+
+        const frag = document.createDocumentFragment();
+        for (let z = minZ; z <= maxZ; z++) {
+          for (let x = minX; x <= maxX; x++) {
+            const bid = blockMap.get(`${x},${z}`);
+            const cell = document.createElement('div');
+            cell.className = 'bulba-cell';
+            cell.style.width = `${cellSize}px`;
+            cell.style.height = `${cellSize}px`;
+
+            if (bid !== undefined) {
+              const pItem = data.palette[bid] || { name: '方塊', color: '#f1f5f9' };
+              cell.style.backgroundColor = pItem.color;
+              cell.style.border = '1px solid rgba(15, 23, 42, 0.65)';
+              cell.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.35)';
+              cell.dataset.x = x;
+              cell.dataset.z = z;
+              cell.dataset.name = pItem.name;
+              cell.dataset.color = pItem.color;
+
+              cell.addEventListener('mouseenter', () => {
+                if (!DOM.buzzHoverTooltip) return;
+                DOM.buzzHoverTooltip.classList.remove('hidden');
+                if (DOM.buzzTooltipColor) DOM.buzzTooltipColor.style.backgroundColor = pItem.color;
+                if (DOM.buzzTooltipText) {
+                  DOM.buzzTooltipText.textContent = `${pItem.name} (X: ${x}, Z: ${z})`;
+                }
+              });
+              cell.addEventListener('mouseleave', () => {
+                if (DOM.buzzHoverTooltip) DOM.buzzHoverTooltip.classList.add('hidden');
+              });
+            } else {
+              cell.style.backgroundColor = 'rgba(56, 189, 248, 0.04)';
+              cell.style.border = '1px solid rgba(56, 189, 248, 0.1)';
+            }
+            frag.appendChild(cell);
+          }
+        }
+        DOM.buzzVoxelGrid.appendChild(frag);
+      }
+    }
+
+    // 本層材料清單
+    if (DOM.buzzMatList) {
+      DOM.buzzMatList.innerHTML = '';
+      const matEntries = Object.entries(layer.materials);
+      if (DOM.buzzMatTypesCount) {
+        DOM.buzzMatTypesCount.textContent = `${matEntries.length} 種建材`;
+      }
+      matEntries.sort((a, b) => b[1] - a[1]);
+      matEntries.forEach(([bid, count]) => {
+        const pItem = data.palette[bid] || { name: '方塊', color: '#f1f5f9' };
+        const item = document.createElement('div');
+        item.className = 'bulba-mat-item';
+        item.innerHTML = `
+          <span class="bulba-mat-chip" style="background-color: ${pItem.color};"></span>
+          <span class="bulba-mat-name" title="${pItem.name}">${pItem.name}</span>
+          <span class="bulba-mat-count">×${count}</span>
+        `;
+        DOM.buzzMatList.appendChild(item);
+      });
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // 3D 體素外框微紋理產生器 (通用 Cel-outline Texture)
+  // ═══════════════════════════════════════════════════════════════════
+  function createVoxelOutlineTexture() {
+    if (typeof document === 'undefined') return null;
+    const canvas = document.createElement('canvas');
+    canvas.width = 64;
+    canvas.height = 64;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, 64, 64);
+    ctx.strokeStyle = 'rgba(25, 25, 25, 0.72)';
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(1, 1, 62, 62);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.magFilter = THREE.NearestFilter;
+    texture.minFilter = THREE.NearestFilter;
+    return texture;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // 巴斯光年 原生 3D Three.js 展台引擎
+  // ═══════════════════════════════════════════════════════════════════
+  function initBuzzThreeEngine() {
+    if (typeof THREE === 'undefined' || typeof BUZZ_VOXEL_DATA === 'undefined') return;
+    if (!DOM.buzz3dCanvas) return;
+
+    const wrap = DOM.buzz3dCanvas.parentElement;
+    if (!wrap) return;
+    const width = wrap.clientWidth || 800;
+    const height = wrap.clientHeight || 480;
+
+    const t = buzzState.three;
+    if (t.isInit) {
+      t.renderer.setSize(width, height);
+      t.camera.aspect = width / height;
+      t.camera.updateProjectionMatrix();
+      return;
+    }
+
+    const scene = new THREE.Scene();
+    scene.background = null;
+
+    const camera = new THREE.PerspectiveCamera(40, width / height, 1, 1000);
+    camera.position.set(48, 38, 54);
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas: DOM.buzz3dCanvas,
+      antialias: true,
+      alpha: true
+    });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+    scene.add(ambientLight);
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.05);
+    dirLight1.position.set(45, 80, 45);
+    scene.add(dirLight1);
+    const dirLight2 = new THREE.DirectionalLight(0xa78bfa, 0.45);
+    dirLight2.position.set(-45, 30, -45);
+    scene.add(dirLight2);
+    const dirLight3 = new THREE.DirectionalLight(0x0f172a, 0.15);
+    dirLight3.position.set(0, -50, 0);
+    scene.add(dirLight3);
+
+    let controls = null;
+    if (typeof THREE.OrbitControls !== 'undefined') {
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.08;
+      controls.target.set(0, 0, 0);
+      controls.maxDistance = 250;
+      controls.minDistance = 15;
+    }
+
+    const data = BUZZ_VOXEL_DATA;
+    const totalCount = data.totalBlocks;
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const outlineTexture = createVoxelOutlineTexture();
+    const material = new THREE.MeshStandardMaterial({
+      map: outlineTexture || null,
+      roughness: 0.3,
+      metalness: 0.05
+    });
+
+    const instancedMesh = new THREE.InstancedMesh(geometry, material, totalCount);
+    const dummy = new THREE.Object3D();
+    const color = new THREE.Color();
+
+    const cx = data.dimensions.width / 2;
+    const cy = data.dimensions.height / 2;
+    const cz = data.dimensions.length / 2;
+
+    const blockDataList = [];
+    let idx = 0;
+
+    data.layers.forEach((layer) => {
+      const y = layer.layerIndex - 1;
+      layer.blocks.forEach(([x, z, bid]) => {
+        dummy.position.set(x - cx, y - cy, z - cz);
+        dummy.scale.set(1, 1, 1);
+        dummy.updateMatrix();
+
+        instancedMesh.setMatrixAt(idx, dummy.matrix);
+        const pItem = data.palette[bid] || { color: '#f1f5f9' };
+        color.set(pItem.color);
+        instancedMesh.setColorAt(idx, color);
+
+        blockDataList.push({
+          index: idx,
+          layerIndex: layer.layerIndex,
+          defaultMatrix: dummy.matrix.clone(),
+          posX: x - cx,
+          posY: y - cy,
+          posZ: z - cz
+        });
+        idx++;
+      });
+    });
+
+    instancedMesh.instanceMatrix.needsUpdate = true;
+    if (instancedMesh.instanceColor) instancedMesh.instanceColor.needsUpdate = true;
+    scene.add(instancedMesh);
+
+    t.isInit = true;
+    t.scene = scene;
+    t.camera = camera;
+    t.renderer = renderer;
+    t.controls = controls;
+    t.instancedMesh = instancedMesh;
+    t.blockDataList = blockDataList;
+
+    function animate() {
+      t.animFrameId = requestAnimationFrame(animate);
+      if (controls) controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      if (!t.isInit || !DOM.buzz3dCanvas) return;
+      const curWrap = DOM.buzz3dCanvas.parentElement;
+      if (!curWrap) return;
+      const nw = curWrap.clientWidth || 500;
+      const nh = curWrap.clientHeight || 480;
+      camera.aspect = nw / nh;
+      camera.updateProjectionMatrix();
+      renderer.setSize(nw, nh);
+    });
+  }
+
+  function updateBuzz3DSliceFilter() {
+    const t = buzzState.three;
+    if (!t.isInit || !t.instancedMesh || !t.blockDataList.length) return;
+
+    const isSlice = buzzState.curMode === 'slice';
+    const curLayer = buzzState.curLayer;
+    const dummy = new THREE.Object3D();
+
+    for (let i = 0; i < t.blockDataList.length; i++) {
+      const item = t.blockDataList[i];
+      if (!isSlice || item.layerIndex <= curLayer) {
+        t.instancedMesh.setMatrixAt(item.index, item.defaultMatrix);
+      } else {
+        dummy.position.set(item.posX, item.posY, item.posZ);
+        dummy.scale.set(0, 0, 0);
+        dummy.updateMatrix();
+        t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
+      }
+    }
+    t.instancedMesh.instanceMatrix.needsUpdate = true;
+  }
+
   function initBulbaThreeEngine() {
     if (typeof THREE === 'undefined' || typeof BULBASAUR_VOXEL_DATA === 'undefined') return;
     if (!DOM.bulba3dCanvas) return;
@@ -7212,27 +7596,6 @@
       controls.minDistance = 15;
     }
 
-    // 動態產生方塊細微深黑外框紋理 (Cel-outline Texture)
-    function createVoxelOutlineTexture() {
-      if (typeof document === 'undefined') return null;
-      const canvas = document.createElement('canvas');
-      canvas.width = 64;
-      canvas.height = 64;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return null;
-      // 內部為純白 (WebGL 渲染時頂點顏色與紋理相乘，白色即原色)
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, 64, 64);
-      // 邊緣細小微黑描邊（約 70% 深度黑，既有清晰分界又保留方塊通透感）
-      ctx.strokeStyle = 'rgba(25, 25, 25, 0.72)';
-      ctx.lineWidth = 2.5;
-      ctx.strokeRect(1, 1, 62, 62);
-
-      const texture = new THREE.CanvasTexture(canvas);
-      texture.magFilter = THREE.NearestFilter;
-      texture.minFilter = THREE.NearestFilter;
-      return texture;
-    }
 
     // 6. Build InstancedMesh (緊密貼合 1.0，細微深黑描邊雕刻方塊輪廓)
     const data = BULBASAUR_VOXEL_DATA;
@@ -7335,7 +7698,15 @@
     t.instancedMesh.instanceMatrix.needsUpdate = true;
   }
 
-  // 暴露妙蛙種子 API
+  // 暴露巴斯光年與妙蛙種子 API
+  window.PokopiaBuzz = {
+    getState: () => buzzState,
+    switchBuzz3DMode,
+    setBuzzLayer,
+    renderBuzzLayer,
+    initBuzzThreeEngine,
+    updateBuzz3DSliceFilter
+  };
   window.PokopiaBulba = {
     getState: () => bulbaState,
     switchCharacterBlueprint,

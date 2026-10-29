@@ -561,22 +561,77 @@
           <button id="btnSubBulba" class="char-pill-btn" data-char="bulba">🍃 妙蛙種子</button>
         </div>
 
-        <!-- 角色 1：巴斯光年視窗 -->
+        <!-- 角色 1：巴斯光年 3D 方塊建造工作台 -->
         <div id="paneBuzz" class="char-pane">
-          <div class="buzz3d-frame-wrap">
-            <iframe
-              id="buzz3dIframe"
-              class="buzz3d-iframe"
-              title="Toy Story Buzz 3D model"
-              src="https://sketchfab.com/models/1c48aeec16154595b6a0ea3f6c20985f/embed?autostart=1&autospin=0.2&ui_theme=dark&ui_infos=0&ui_watermark=0"
-              frameborder="0"
-              allow="autoplay; fullscreen; xr-spatial-tracking"
-              xr-spatial-tracking="true"
-              execution-while-out-of-viewport="true"
-              execution-while-not-rendered="true"
-              web-share="true"
-              allowfullscreen>
-            </iframe>
+          <div class="bulba-builder-layout buzz-builder-layout">
+            <!-- 上欄：3D 立體模型展示與剖面連動 -->
+            <div class="bulba-3d-card buzz-3d-card">
+              <div class="bulba-card-header">
+                <div class="bulba-card-title">
+                  <span>🚀 玩具總動員 巴斯光年</span>
+                  <span class="bulba-total-stat">10,305 顆方塊</span>
+                </div>
+                <div class="bulba-mode-switch">
+                  <button id="btnBuzzModeFull" class="bulba-mode-btn active" title="查看完整 3D 完成品">完整全貌</button>
+                  <button id="btnBuzzModeSlice" class="bulba-mode-btn" title="隨下方切片進度動態過濾顯示">動態剖面</button>
+                </div>
+              </div>
+              <div class="bulba-canvas-wrap buzz-canvas-wrap">
+                <canvas id="buzz3dCanvas" class="bulba-3d-canvas"></canvas>
+                <div class="bulba-canvas-hint">滑鼠拖曳旋轉 / 滾輪縮放視角</div>
+              </div>
+            </div>
+
+            <!-- 下欄：52 層逐層切片控制器與材料清單 -->
+            <div class="bulba-slice-card buzz-slice-card">
+              <div class="bulba-card-header">
+                <div class="bulba-card-title">
+                  <span>📐 52 層建造切片指南</span>
+                  <span id="buzzLayerBadge" class="bulba-layer-badge buzz-layer-badge">第 1 / 52 層</span>
+                </div>
+                <span id="buzzLayerBlockCount" class="bulba-count-stat">本層 0 顆</span>
+              </div>
+
+              <!-- 樓層滑桿與控制按鈕 -->
+              <div class="bulba-slice-ctrl">
+                <div class="bulba-slider-row">
+                  <button id="btnBuzzPrevLayer" class="bulba-step-btn" title="上一層">◀</button>
+                  <input type="range" id="buzzLayerSlider" class="bulba-slider buzz-slider" min="1" max="52" value="1" step="1">
+                  <button id="btnBuzzNextLayer" class="bulba-step-btn" title="下一層">▶</button>
+                </div>
+              </div>
+
+              <!-- 2D 點陣切片網格容器 (含工程雙軸長寬分段標註線) -->
+              <div class="bulba-grid-container buzz-grid-container">
+                <div class="bulba-grid-workspace">
+                  <!-- 頂部寬度分段標註線 (純數字) -->
+                  <div id="buzzDimTop" class="bulba-dim-top"></div>
+                  <!-- 主體網格與右側長度分段標註線行 -->
+                  <div class="bulba-grid-row">
+                    <div id="buzzVoxelGrid" class="bulba-voxel-grid">
+                      <!-- 動態注入該層方塊元素 -->
+                    </div>
+                    <!-- 右側長度分段標註線 (純數字) -->
+                    <div id="buzzDimRight" class="bulba-dim-right"></div>
+                  </div>
+                </div>
+                <div id="buzzHoverTooltip" class="bulba-hover-tooltip hidden">
+                  <span id="buzzTooltipColor" class="bulba-tooltip-color"></span>
+                  <span id="buzzTooltipText">白色混凝土 (X: 0, Z: 0)</span>
+                </div>
+              </div>
+
+              <!-- 本層所需材料清單 -->
+              <div class="bulba-materials-section">
+                <div class="bulba-mat-header">
+                  <span class="bulba-mat-title">📦 本層所需材料</span>
+                  <span id="buzzMatTypesCount" class="bulba-mat-count-badge">0 種建材</span>
+                </div>
+                <div id="buzzMatList" class="bulba-mat-list">
+                  <!-- 動態注入本層方塊材料項目 -->
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -837,9 +892,10 @@
   <script src="region_data.js?v=4.15.0"></script>
   <script src="video_data.js?v=4.15.0"></script>
   <script src="firebase.js?v=4.15.0"></script>
-  <!-- 3D Voxel Engine & Bulbasaur Blueprint Data -->
+  <!-- 3D Voxel Engine & Character Blueprint Data -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="buzz_voxel_data.js?v=4.15.0"></script>
   <script src="bulbasaur_voxel_data.js?v=4.15.0"></script>
   <script src="app.js?v=4.15.0"></script>
 </body>
