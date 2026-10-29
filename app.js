@@ -7134,7 +7134,8 @@
     if (mode === 'sketchfab') {
       if (DOM.buzz3dCanvasWrap) DOM.buzz3dCanvasWrap.style.display = 'none';
       if (DOM.buzz3dIframeWrap) DOM.buzz3dIframeWrap.classList.add('active');
-      if (DOM.buzzSliceCard) DOM.buzzSliceCard.style.display = 'none';
+      if (DOM.buzzSliceCard) DOM.buzzSliceCard.style.display = 'block';
+      renderBuzzLayer(buzzState.curLayer);
     } else {
       if (DOM.buzz3dCanvasWrap) DOM.buzz3dCanvasWrap.style.display = 'block';
       if (DOM.buzz3dIframeWrap) DOM.buzz3dIframeWrap.classList.remove('active');

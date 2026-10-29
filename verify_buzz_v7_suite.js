@@ -114,11 +114,11 @@ it('1.5 腹部黑色腰帶水平橫貫連貫性', () => {
 // 2. 檢驗 index.html
 const indexHtml = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
 
-it('2.1 index.html 版本號全站升級至 v=4.20.0', () => {
-  assert.ok(indexHtml.includes('index.css?v=4.20.0'));
-  assert.ok(indexHtml.includes('buzz_voxel_data.js?v=4.20.0'));
-  assert.ok(indexHtml.includes('app.js?v=4.20.0'));
-  assert.ok(!indexHtml.includes('buzz_voxel_data.js?v=4.19.0'));
+it('2.1 index.html 版本號全站升級至 v=4.21.0', () => {
+  assert.ok(indexHtml.includes('index.css?v=4.21.0'));
+  assert.ok(indexHtml.includes('buzz_voxel_data.js?v=4.21.0'));
+  assert.ok(indexHtml.includes('app.js?v=4.21.0'));
+  assert.ok(!indexHtml.includes('buzz_voxel_data.js?v=4.20.0'));
 });
 
 it('2.2 index.html 切片指南與滑桿更新為 36 層', () => {
@@ -129,20 +129,26 @@ it('2.2 index.html 切片指南與滑桿更新為 36 層', () => {
 // 3. 檢驗 sw.js
 const swJs = fs.readFileSync(path.join(__dirname, 'sw.js'), 'utf8');
 
-it('3.1 sw.js 快取名稱與版本號對齊 v4.20.0', () => {
-  assert.ok(swJs.includes("const CACHE_NAME = 'pokopia-cache-v4.20.0';"));
-  assert.ok(swJs.includes("'./index.css?v=4.20.0'"));
-  assert.ok(swJs.includes("'./buzz_voxel_data.js?v=4.20.0'"));
-  assert.ok(swJs.includes("'./app.js?v=4.20.0'"));
+it('3.1 sw.js 快取名稱與版本號對齊 v4.21.0', () => {
+  assert.ok(swJs.includes("const CACHE_NAME = 'pokopia-cache-v4.21.0';"));
+  assert.ok(swJs.includes("'./index.css?v=4.21.0'"));
+  assert.ok(swJs.includes("'./buzz_voxel_data.js?v=4.21.0'"));
+  assert.ok(swJs.includes("'./app.js?v=4.21.0'"));
 });
 
-// 4. 檢驗 app.js 3D 渲染與黑線邊框
+// 4. 檢驗 app.js 3D 渲染、黑線邊框與 Sketchfab 切片常駐對帳
 const appJs = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf8');
 
 it('4.1 app.js 包含巴斯光年黑線邊框貼圖與立體渲染管道', () => {
   assert.ok(appJs.includes('function initBuzzThreeEngine'));
   assert.ok(appJs.includes('createVoxelOutlineTexture'));
   assert.ok(appJs.includes('fitWorkspaceToContainer'));
+});
+
+it('4.2 app.js 在 Sketchfab 模式下切片卡片常駐顯示以供對帳', () => {
+  // 驗證 switchBuzz3DMode 中 mode === 'sketchfab' 時 buzzSliceCard display 為 block 且不再為 none
+  assert.ok(appJs.includes("if (DOM.buzzSliceCard) DOM.buzzSliceCard.style.display = 'block';"));
+  assert.ok(!appJs.includes("if (DOM.buzzSliceCard) DOM.buzzSliceCard.style.display = 'none';"));
 });
 
 console.log('\n========================================================');
