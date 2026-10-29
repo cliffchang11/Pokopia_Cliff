@@ -12251,11 +12251,11 @@ body.has-floating-back .scroll-top-btn {
   box-shadow: 0 0 12px rgba(16, 185, 129, 0.55);
 }
 
-/* 3D 畫布容器 (精緻緊湊展台，高 320px，手機版 240px) */
+/* 3D 畫布容器 (黃金比例大器展台，高 480px，手機版 320px) */
 .bulba-canvas-wrap {
   position: relative;
   width: 100%;
-  height: 320px;
+  height: 480px;
   background: radial-gradient(circle at center, #1b383d 0%, #0c1a1d 100%);
   border-radius: 0.875rem;
   overflow: hidden;
@@ -12495,7 +12495,7 @@ body.has-floating-back .scroll-top-btn {
     border-radius: 1rem;
   }
   .bulba-canvas-wrap {
-    height: 240px;
+    height: 320px;
   }
   .bulba-grid-container {
     padding: 0.75rem 0.5rem;

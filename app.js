@@ -7067,7 +7067,7 @@
     const wrap = DOM.bulba3dCanvas.parentElement;
     if (!wrap) return;
     const width = wrap.clientWidth || 800;
-    const height = wrap.clientHeight || 320;
+    const height = wrap.clientHeight || 480;
 
     const t = bulbaState.three;
     if (t.isInit) {
@@ -7081,9 +7081,9 @@
     const scene = new THREE.Scene();
     scene.background = null;
 
-    // 2. Camera (寬闊橫版適配)
-    const camera = new THREE.PerspectiveCamera(38, width / height, 1, 1000);
-    camera.position.set(52, 38, 62);
+    // 2. Camera (480px 黃金比例舒展視野)
+    const camera = new THREE.PerspectiveCamera(40, width / height, 1, 1000);
+    camera.position.set(56, 42, 68);
 
     // 3. Renderer
     const renderer = new THREE.WebGLRenderer({
