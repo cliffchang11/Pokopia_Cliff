@@ -7094,15 +7094,21 @@
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
-    // 4. Lights (清新自然草系打光)
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+    // 4. Lights (三點式立體方塊光影系統)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.42);
     scene.add(ambientLight);
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.75);
-    dirLight1.position.set(40, 70, 40);
+    // 主光：右前方高角度，形成頂面鮮明亮部
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.9);
+    dirLight1.position.set(50, 80, 50);
     scene.add(dirLight1);
-    const dirLight2 = new THREE.DirectionalLight(0x34d399, 0.38);
-    dirLight2.position.set(-40, -20, -40);
+    // 側光：左後方草系薄荷微光，形成側面柔和半影
+    const dirLight2 = new THREE.DirectionalLight(0x86efac, 0.45);
+    dirLight2.position.set(-50, 30, -50);
     scene.add(dirLight2);
+    // 仰光：底部微弱環境反光
+    const dirLight3 = new THREE.DirectionalLight(0x0f3b38, 0.2);
+    dirLight3.position.set(0, -60, 0);
+    scene.add(dirLight3);
 
     // 5. Controls
     let controls = null;
@@ -7115,13 +7121,13 @@
       controls.minDistance = 15;
     }
 
-    // 6. Build InstancedMesh
+    // 6. Build InstancedMesh (0.94 微縮接縫工藝，每顆方塊邊緣立體凸顯)
     const data = BULBASAUR_VOXEL_DATA;
     const totalCount = data.totalBlocks;
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const geometry = new THREE.BoxGeometry(0.94, 0.94, 0.94);
     const material = new THREE.MeshStandardMaterial({
-      roughness: 0.5,
-      metalness: 0.1
+      roughness: 0.35,
+      metalness: 0.05
     });
 
     const instancedMesh = new THREE.InstancedMesh(geometry, material, totalCount);
