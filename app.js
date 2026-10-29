@@ -1415,7 +1415,7 @@
       DOM.btnBuzzZoomOut.addEventListener('click', () => changeSliceZoom(buzzWorkspace, buzzState.zoom, 0.8));
     }
     if (DOM.btnBuzzZoomReset) {
-      DOM.btnBuzzZoomReset.addEventListener('click', () => changeSliceZoom(buzzWorkspace, buzzState.zoom, 1.0, true));
+      DOM.btnBuzzZoomReset.addEventListener('click', () => changeSliceZoom(buzzWorkspace, buzzState.zoom, 1.0, true, buzzContainer));
     }
 
     const bulbaContainer = DOM.bulbaVoxelGrid ? DOM.bulbaVoxelGrid.closest('.bulba-grid-container') : null;
@@ -1430,7 +1430,7 @@
       DOM.btnBulbaZoomOut.addEventListener('click', () => changeSliceZoom(bulbaWorkspace, bulbaState.zoom, 0.8));
     }
     if (DOM.btnBulbaZoomReset) {
-      DOM.btnBulbaZoomReset.addEventListener('click', () => changeSliceZoom(bulbaWorkspace, bulbaState.zoom, 1.0, true));
+      DOM.btnBulbaZoomReset.addEventListener('click', () => changeSliceZoom(bulbaWorkspace, bulbaState.zoom, 1.0, true, bulbaContainer));
     }
 
     // View mode switching
@@ -7003,14 +7003,43 @@
     workspace.style.transform = `translate(${zoomObj.panX}px, ${zoomObj.panY}px) scale(${zoomObj.scale})`;
   }
 
-  function changeSliceZoom(workspace, zoomObj, factor, isReset = false) {
+  // 自適應全覽引擎 (Fit to View)：動態計算最適合框框的縮放比例，保證尺規與方塊 100% 完整無裁切
+  function fitWorkspaceToContainer(workspace, container, zoomObj) {
+    if (!workspace || !container || !zoomObj) return;
+    const containerW = container.clientWidth || 800;
+    const containerH = container.clientHeight || 420;
+
+    // 取得工作區未經過 CSS scale 轉換時的實際寬高
+    const wsW = workspace.offsetWidth || workspace.scrollWidth || 600;
+    const wsH = workspace.offsetHeight || workspace.scrollHeight || 350;
+
+    // 預留四周安全邊距 (防切到尺規邊框)
+    const availW = Math.max(80, containerW - 32);
+    const availH = Math.max(80, containerH - 32);
+
+    const scaleW = availW / wsW;
+    const scaleH = availH / wsH;
+    let fitScale = Math.min(scaleW, scaleH, 1.0);
+    fitScale = Math.max(0.35, Number(fitScale.toFixed(2)));
+
+    zoomObj.scale = fitScale;
+    zoomObj.panX = 0;
+    zoomObj.panY = 0;
+    applyWorkspaceZoomPan(workspace, zoomObj);
+  }
+
+  function changeSliceZoom(workspace, zoomObj, factor, isReset = false, container = null) {
     if (isReset) {
+      if (container) {
+        fitWorkspaceToContainer(workspace, container, zoomObj);
+        return;
+      }
       zoomObj.scale = 1.0;
       zoomObj.panX = 0;
       zoomObj.panY = 0;
     } else {
       const newScale = zoomObj.scale * factor;
-      zoomObj.scale = Math.min(3.5, Math.max(0.6, Number(newScale.toFixed(2))));
+      zoomObj.scale = Math.min(3.5, Math.max(0.35, Number(newScale.toFixed(2))));
     }
     applyWorkspaceZoomPan(workspace, zoomObj);
   }
@@ -7333,7 +7362,11 @@
         }
         DOM.bulbaVoxelGrid.appendChild(frag);
         const workspace = DOM.bulbaVoxelGrid.closest('.bulba-grid-workspace');
-        applyWorkspaceZoomPan(workspace, bulbaState.zoom);
+        if (workspace && parent && bulbaState.zoom.panX === 0 && bulbaState.zoom.panY === 0) {
+          fitWorkspaceToContainer(workspace, parent, bulbaState.zoom);
+        } else {
+          applyWorkspaceZoomPan(workspace, bulbaState.zoom);
+        }
       }
     }
 
@@ -7472,7 +7505,11 @@
         }
         DOM.buzzVoxelGrid.appendChild(frag);
         const workspace = DOM.buzzVoxelGrid.closest('.bulba-grid-workspace');
-        applyWorkspaceZoomPan(workspace, buzzState.zoom);
+        if (workspace && parent && buzzState.zoom.panX === 0 && buzzState.zoom.panY === 0) {
+          fitWorkspaceToContainer(workspace, parent, buzzState.zoom);
+        } else {
+          applyWorkspaceZoomPan(workspace, buzzState.zoom);
+        }
       }
     }
 
@@ -7544,7 +7581,7 @@
     scene.background = null;
 
     const camera = new THREE.PerspectiveCamera(40, width / height, 1, 1000);
-    camera.position.set(48, 38, 54);
+    camera.position.set(0, 10, 56);
 
     const renderer = new THREE.WebGLRenderer({
       canvas: DOM.buzz3dCanvas,
@@ -7578,10 +7615,8 @@
 
     const data = BUZZ_VOXEL_DATA;
     const totalCount = data.totalBlocks;
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const outlineTexture = createVoxelOutlineTexture();
+    const geometry = new THREE.BoxGeometry(0.96, 0.96, 0.96);
     const material = new THREE.MeshStandardMaterial({
-      map: outlineTexture || null,
       roughness: 0.88,
       metalness: 0.0
     });
@@ -7736,13 +7771,11 @@
     }
 
 
-    // 6. Build InstancedMesh (緊密貼合 1.0，自然啞光陶土質感，細微深黑描邊雕刻方塊輪廓)
+    // 6. Build InstancedMesh (自然啞光陶土質感，精準 0.96 體素方塊細微立體縫隙)
     const data = BULBASAUR_VOXEL_DATA;
     const totalCount = data.totalBlocks;
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const outlineTexture = createVoxelOutlineTexture();
+    const geometry = new THREE.BoxGeometry(0.96, 0.96, 0.96);
     const material = new THREE.MeshStandardMaterial({
-      map: outlineTexture || null,
       roughness: 0.88,
       metalness: 0.0
     });
