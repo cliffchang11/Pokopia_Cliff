@@ -569,7 +569,7 @@
               <div class="bulba-card-header">
                 <div class="bulba-card-title">
                   <span>🚀 玩具總動員 巴斯光年</span>
-                  <span class="bulba-total-stat">8,933 顆方塊</span>
+                  <span class="bulba-total-stat">7,927 顆方塊</span>
                 </div>
                 <div class="bulba-mode-switch">
                   <button id="btnBuzzModeFull" class="bulba-mode-btn active" title="查看完整 3D 完成品">完整全貌</button>
@@ -582,12 +582,12 @@
               </div>
             </div>
 
-            <!-- 下欄：52 層逐層切片控制器與材料清單 -->
+            <!-- 下欄：42 層逐層切片控制器與材料清單 -->
             <div class="bulba-slice-card buzz-slice-card">
               <div class="bulba-card-header">
                 <div class="bulba-card-title">
-                  <span>📐 52 層建造切片指南</span>
-                  <span id="buzzLayerBadge" class="bulba-layer-badge buzz-layer-badge">第 1 / 52 層</span>
+                  <span>📐 42 層建造切片指南</span>
+                  <span id="buzzLayerBadge" class="bulba-layer-badge buzz-layer-badge">第 1 / 42 層</span>
                 </div>
                 <span id="buzzLayerBlockCount" class="bulba-count-stat">本層 0 顆</span>
               </div>
@@ -596,8 +596,17 @@
               <div class="bulba-slice-ctrl">
                 <div class="bulba-slider-row">
                   <button id="btnBuzzPrevLayer" class="bulba-step-btn" title="上一層">◀</button>
-                  <input type="range" id="buzzLayerSlider" class="bulba-slider buzz-slider" min="1" max="52" value="1" step="1">
+                  <input type="range" id="buzzLayerSlider" class="bulba-slider buzz-slider" min="1" max="42" value="1" step="1">
                   <button id="btnBuzzNextLayer" class="bulba-step-btn" title="下一層">▶</button>
+                </div>
+                <!-- 2D 切片縮放與平移工具列 -->
+                <div class="bulba-zoom-toolbar buzz-zoom-toolbar">
+                  <div class="bulba-zoom-btn-group">
+                    <button id="btnBuzzZoomOut" class="bulba-zoom-btn" title="縮小 (或滾輪向下)">🔍−</button>
+                    <button id="btnBuzzZoomReset" class="bulba-zoom-btn bulba-zoom-reset" title="重設為 100% 居中">100%</button>
+                    <button id="btnBuzzZoomIn" class="bulba-zoom-btn" title="放大 (或滾輪向上)">🔍+</button>
+                  </div>
+                  <span class="bulba-zoom-tip">可按住拖曳平移 ‧ 滾輪縮放</span>
                 </div>
               </div>
 
@@ -672,6 +681,15 @@
                   <button id="btnBulbaPrevLayer" class="bulba-step-btn" title="上一層">◀</button>
                   <input type="range" id="bulbaLayerSlider" class="bulba-slider" min="1" max="53" value="1" step="1">
                   <button id="btnBulbaNextLayer" class="bulba-step-btn" title="下一層">▶</button>
+                </div>
+                <!-- 2D 切片縮放與平移工具列 -->
+                <div class="bulba-zoom-toolbar">
+                  <div class="bulba-zoom-btn-group">
+                    <button id="btnBulbaZoomOut" class="bulba-zoom-btn" title="縮小 (或滾輪向下)">🔍−</button>
+                    <button id="btnBulbaZoomReset" class="bulba-zoom-btn bulba-zoom-reset" title="重設為 100% 居中">100%</button>
+                    <button id="btnBulbaZoomIn" class="bulba-zoom-btn" title="放大 (或滾輪向上)">🔍+</button>
+                  </div>
+                  <span class="bulba-zoom-tip">可按住拖曳平移 ‧ 滾輪縮放</span>
                 </div>
               </div>
 
@@ -895,8 +913,8 @@
   <!-- 3D Voxel Engine & Character Blueprint Data -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-  <script src="buzz_voxel_data.js?v=4.16.0"></script>
+  <script src="buzz_voxel_data.js?v=4.17.0"></script>
   <script src="bulbasaur_voxel_data.js?v=4.15.0"></script>
-  <script src="app.js?v=4.15.0"></script>
+  <script src="app.js?v=4.17.0"></script>
 </body>
 </html>

@@ -242,6 +242,9 @@
     buzzTooltipText: document.getElementById('buzzTooltipText'),
     buzzMatTypesCount: document.getElementById('buzzMatTypesCount'),
     buzzMatList: document.getElementById('buzzMatList'),
+    btnBuzzZoomIn: document.getElementById('btnBuzzZoomIn'),
+    btnBuzzZoomOut: document.getElementById('btnBuzzZoomOut'),
+    btnBuzzZoomReset: document.getElementById('btnBuzzZoomReset'),
     btnBulbaModeFull: document.getElementById('btnBulbaModeFull'),
     btnBulbaModeSlice: document.getElementById('btnBulbaModeSlice'),
     bulba3dCanvas: document.getElementById('bulba3dCanvas'),
@@ -258,6 +261,9 @@
     bulbaTooltipText: document.getElementById('bulbaTooltipText'),
     bulbaMatTypesCount: document.getElementById('bulbaMatTypesCount'),
     bulbaMatList: document.getElementById('bulbaMatList'),
+    btnBulbaZoomIn: document.getElementById('btnBulbaZoomIn'),
+    btnBulbaZoomOut: document.getElementById('btnBulbaZoomOut'),
+    btnBulbaZoomReset: document.getElementById('btnBulbaZoomReset'),
     videoPlayerIframe: document.getElementById('videoPlayerIframe'),
     videoResumeBanner: document.getElementById('videoResumeBanner'),
     videoResumeText: document.getElementById('videoResumeText'),
@@ -1389,6 +1395,37 @@
       DOM.bulbaLayerSlider.addEventListener('input', (e) => setBulbaLayer(Number(e.target.value)));
     }
 
+    // 切片指南縮放按鈕與拖曳平移 (Zoom & Pan)
+    const buzzContainer = DOM.buzzVoxelGrid ? DOM.buzzVoxelGrid.closest('.bulba-grid-container') : null;
+    const buzzWorkspace = DOM.buzzVoxelGrid ? DOM.buzzVoxelGrid.closest('.bulba-grid-workspace') : null;
+    if (buzzContainer && buzzWorkspace) {
+      setupSliceZoomPan(buzzContainer, buzzWorkspace, buzzState.zoom);
+    }
+    if (DOM.btnBuzzZoomIn) {
+      DOM.btnBuzzZoomIn.addEventListener('click', () => changeSliceZoom(buzzWorkspace, buzzState.zoom, 1.25));
+    }
+    if (DOM.btnBuzzZoomOut) {
+      DOM.btnBuzzZoomOut.addEventListener('click', () => changeSliceZoom(buzzWorkspace, buzzState.zoom, 0.8));
+    }
+    if (DOM.btnBuzzZoomReset) {
+      DOM.btnBuzzZoomReset.addEventListener('click', () => changeSliceZoom(buzzWorkspace, buzzState.zoom, 1.0, true));
+    }
+
+    const bulbaContainer = DOM.bulbaVoxelGrid ? DOM.bulbaVoxelGrid.closest('.bulba-grid-container') : null;
+    const bulbaWorkspace = DOM.bulbaVoxelGrid ? DOM.bulbaVoxelGrid.closest('.bulba-grid-workspace') : null;
+    if (bulbaContainer && bulbaWorkspace) {
+      setupSliceZoomPan(bulbaContainer, bulbaWorkspace, bulbaState.zoom);
+    }
+    if (DOM.btnBulbaZoomIn) {
+      DOM.btnBulbaZoomIn.addEventListener('click', () => changeSliceZoom(bulbaWorkspace, bulbaState.zoom, 1.25));
+    }
+    if (DOM.btnBulbaZoomOut) {
+      DOM.btnBulbaZoomOut.addEventListener('click', () => changeSliceZoom(bulbaWorkspace, bulbaState.zoom, 0.8));
+    }
+    if (DOM.btnBulbaZoomReset) {
+      DOM.btnBulbaZoomReset.addEventListener('click', () => changeSliceZoom(bulbaWorkspace, bulbaState.zoom, 1.0, true));
+    }
+
     // View mode switching
     DOM.btnCardView.addEventListener('click', () => {
       switchView('card', true);
@@ -2041,7 +2078,11 @@
         if (typeof initBulbaThreeEngine === 'function') setTimeout(initBulbaThreeEngine, 60);
       } else {
         if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🚀';
-        if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>3D</strong> 互動模型檢視';
+        const buzzTotal = (typeof BUZZ_VOXEL_DATA !== 'undefined' && BUZZ_VOXEL_DATA.totalBlocks) ? BUZZ_VOXEL_DATA.totalBlocks.toLocaleString() : '8,933';
+        const buzzLayers = (typeof BUZZ_VOXEL_DATA !== 'undefined' && BUZZ_VOXEL_DATA.layers) ? BUZZ_VOXEL_DATA.layers.length : '52';
+        if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = `<strong>${buzzTotal}</strong> 顆方塊 ‧ ${buzzLayers} 層切片`;
+        if (typeof renderBuzzLayer === 'function') renderBuzzLayer(buzzState.curLayer);
+        if (typeof initBuzzThreeEngine === 'function') setTimeout(initBuzzThreeEngine, 60);
       }
       if (DOM.searchRow) DOM.searchRow.classList.add('hidden');
       if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.add('hidden');
@@ -6920,6 +6961,7 @@
   const buzzState = {
     curMode: 'full', // 'full' | 'slice'
     curLayer: 1,
+    zoom: { scale: 1.0, panX: 0, panY: 0 },
     three: {
       isInit: false,
       scene: null,
@@ -6936,6 +6978,7 @@
     curChar: 'buzz',
     curMode: 'full', // 'full' | 'slice'
     curLayer: 1,
+    zoom: { scale: 1.0, panX: 0, panY: 0 },
     three: {
       isInit: false,
       scene: null,
@@ -6948,6 +6991,73 @@
     }
   };
 
+  function applyWorkspaceZoomPan(workspace, zoomObj) {
+    if (!workspace) return;
+    workspace.style.transform = `translate(${zoomObj.panX}px, ${zoomObj.panY}px) scale(${zoomObj.scale})`;
+  }
+
+  function changeSliceZoom(workspace, zoomObj, factor, isReset = false) {
+    if (isReset) {
+      zoomObj.scale = 1.0;
+      zoomObj.panX = 0;
+      zoomObj.panY = 0;
+    } else {
+      const newScale = zoomObj.scale * factor;
+      zoomObj.scale = Math.min(3.5, Math.max(0.6, Number(newScale.toFixed(2))));
+    }
+    applyWorkspaceZoomPan(workspace, zoomObj);
+  }
+
+  function setupSliceZoomPan(container, workspace, zoomObj) {
+    if (!container || !workspace) return;
+
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    let initialPanX = 0;
+    let initialPanY = 0;
+
+    // 滾輪平滑縮放 (依滑鼠位置中心)
+    container.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const factor = e.deltaY < 0 ? 1.15 : 0.87;
+      const newScale = Math.min(3.5, Math.max(0.6, Number((zoomObj.scale * factor).toFixed(2))));
+      zoomObj.scale = newScale;
+      applyWorkspaceZoomPan(workspace, zoomObj);
+    }, { passive: false });
+
+    // 拖曳平移 (Pointer Events: 滑鼠與觸控完全相容)
+    container.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('button, input')) return;
+      isDragging = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      initialPanX = zoomObj.panX;
+      initialPanY = zoomObj.panY;
+      container.classList.add('is-panning');
+      try { container.setPointerCapture(e.pointerId); } catch (_) {}
+    });
+
+    container.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      zoomObj.panX = Math.round(initialPanX + dx);
+      zoomObj.panY = Math.round(initialPanY + dy);
+      applyWorkspaceZoomPan(workspace, zoomObj);
+    });
+
+    const stopPan = (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      container.classList.remove('is-panning');
+      try { container.releasePointerCapture(e.pointerId); } catch (_) {}
+    };
+
+    container.addEventListener('pointerup', stopPan);
+    container.addEventListener('pointercancel', stopPan);
+  }
+
   function switchCharacterBlueprint(char) {
     bulbaState.curChar = char;
     if (char === 'buzz') {
@@ -6956,7 +7066,9 @@
       if (DOM.paneBuzz) DOM.paneBuzz.classList.remove('hidden');
       if (DOM.paneBulba) DOM.paneBulba.classList.add('hidden');
       if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🚀';
-      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>10,305</strong> 顆方塊 ‧ 52 層切片';
+      const bTotal = (typeof BUZZ_VOXEL_DATA !== 'undefined' && BUZZ_VOXEL_DATA.totalBlocks) ? BUZZ_VOXEL_DATA.totalBlocks.toLocaleString() : '7,927';
+      const bLayers = (typeof BUZZ_VOXEL_DATA !== 'undefined' && BUZZ_VOXEL_DATA.layers) ? BUZZ_VOXEL_DATA.layers.length : '42';
+      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = `<strong>${bTotal}</strong> 顆方塊 ‧ ${bLayers} 層切片`;
       renderBuzzLayer(buzzState.curLayer);
       setTimeout(initBuzzThreeEngine, 60);
     } else {
@@ -7199,6 +7311,8 @@
           }
         }
         DOM.bulbaVoxelGrid.appendChild(frag);
+        const workspace = DOM.bulbaVoxelGrid.closest('.bulba-grid-workspace');
+        applyWorkspaceZoomPan(workspace, bulbaState.zoom);
       }
     }
 
@@ -7336,6 +7450,8 @@
           }
         }
         DOM.buzzVoxelGrid.appendChild(frag);
+        const workspace = DOM.buzzVoxelGrid.closest('.bulba-grid-workspace');
+        applyWorkspaceZoomPan(workspace, buzzState.zoom);
       }
     }
 
