@@ -7271,7 +7271,7 @@
         const xSegments = getVoxelAxisSegments(minX, maxX, xOccupied);
         const zSegments = getVoxelAxisSegments(minZ, maxZ, zOccupied);
 
-        // 智能自適應：手機版預留標註線防破版
+        // 智能自適應：手機版預留標註線防破版，且每層動態緊縮邊界最大化放大顯示
         const parent = DOM.buzzVoxelGrid.closest('.bulba-grid-container') || DOM.buzzVoxelGrid.parentElement;
         const containerWidth = parent ? (parent.clientWidth || 800) : 800;
         const isMobile = window.innerWidth <= 768;
@@ -7280,13 +7280,15 @@
         if (isMobile) {
           const rightDimReserved = 28;
           const netWidth = containerWidth - 36 - rightDimReserved - (spanX - 1);
+          // 手機版：若當層寬度小（如腿部），方塊可放大至最高 18px，機翼全寬時自動適配
           cellSize = Math.max(3, Math.floor(netWidth / spanX));
-          cellSize = Math.min(10, cellSize);
+          cellSize = Math.min(18, cellSize);
         } else {
-          const cellByHeight = Math.floor((320 - 24 - (spanZ - 1)) / spanZ);
+          // 桌機版：依畫布高度與寬度動態放寬上限至 22px
+          const cellByHeight = Math.floor((340 - 24 - (spanZ - 1)) / spanZ);
           const cellByWidth = Math.floor((containerWidth - 60 - 28 - (spanX - 1)) / spanX);
-          cellSize = Math.min(cellByHeight, cellByWidth, 12);
-          cellSize = Math.max(5, cellSize);
+          cellSize = Math.min(cellByHeight, cellByWidth, 22);
+          cellSize = Math.max(6, cellSize);
         }
         DOM.buzzVoxelGrid.style.gap = '1px';
         DOM.buzzVoxelGrid.style.gridTemplateColumns = `repeat(${spanX}, ${cellSize}px)`;
