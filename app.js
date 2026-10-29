@@ -6975,22 +6975,25 @@
 
         const spanX = maxX - minX + 1;
         const spanZ = maxZ - minZ + 1;
-        // 智能寬高雙約束適配：桌面版嚴格限高一屏全覽，手機版防爆版平滑滑動
+        // 智能適配：手機版 100% 完美全覽零裁切，桌面版寬高雙約束一屏全覽
         const parent = DOM.bulbaVoxelGrid.parentElement;
         const containerWidth = parent ? (parent.clientWidth || 800) : 800;
         const isMobile = window.innerWidth <= 768;
 
         let cellSize;
         if (isMobile) {
-          // 手機版：設定精緻易讀尺寸 (8px)，由容器 overflow-x 平滑承接，絕不撐破卡片外框
-          cellSize = 8;
+          // 手機版：扣除容器與網格內距及間距，精準計算單元格尺寸，確保 100% 完整收納零裁切
+          const netWidth = containerWidth - 36 - (spanX - 1);
+          cellSize = Math.max(3.5, Math.floor(netWidth / spanX));
+          cellSize = Math.min(10, cellSize);
         } else {
-          // 桌面版：寬高雙向約束，將 41 格高度嚴格收斂在約 340px 內，免滾輪一屏看清全貌
-          const cellByHeight = Math.floor(340 / spanZ);
-          const cellByWidth = Math.floor((containerWidth - 60) / spanX);
-          cellSize = Math.min(cellByHeight, cellByWidth, 13);
-          cellSize = Math.max(7, cellSize);
+          // 桌面版：寬高雙向約束，扣除間距後將總高度嚴格收斂在約 340px 內，一屏全覽
+          const cellByHeight = Math.floor((330 - (spanZ - 1)) / spanZ);
+          const cellByWidth = Math.floor((containerWidth - 60 - (spanX - 1)) / spanX);
+          cellSize = Math.min(cellByHeight, cellByWidth, 12);
+          cellSize = Math.max(6, cellSize);
         }
+        DOM.bulbaVoxelGrid.style.gap = '1px';
         DOM.bulbaVoxelGrid.style.gridTemplateColumns = `repeat(${spanX}, ${cellSize}px)`;
 
         const frag = document.createDocumentFragment();
