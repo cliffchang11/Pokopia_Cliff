@@ -12387,7 +12387,7 @@ body.has-floating-back .scroll-top-btn {
   box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.4);
 }
 
-/* 2D 點陣切片工作區與工程長寬雙軸標註系統 (如 Minecraft 建築施工圖) */
+/* 2D 點陣切片工作區與工程長寬雙軸分段標註系統 (如 Minecraft 施工藍圖) */
 .bulba-grid-workspace {
   display: flex;
   flex-direction: column;
@@ -12398,38 +12398,60 @@ body.has-floating-back .scroll-top-btn {
 .bulba-dim-top {
   display: flex;
   align-items: center;
-  justify-content: center;
   height: 20px;
   margin-bottom: 5px;
   box-sizing: border-box;
+  padding: 0 8px; /* 精準對齊 bulba-voxel-grid 左右 8px 內距 */
+  gap: 1px;
 }
-.dim-tick-left,
-.dim-tick-right {
-  width: 2px;
-  height: 10px;
+.dim-seg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 100%;
+  box-sizing: border-box;
+}
+.dim-tick {
+  width: 1.5px;
+  height: 9px;
   background: #34d399;
   border-radius: 1px;
   flex-shrink: 0;
 }
-.dim-line-segment {
+.dim-seg-gap .dim-tick {
+  background: #94a3b8;
+}
+.dim-line {
   flex-grow: 1;
   height: 1.5px;
   background: rgba(52, 211, 153, 0.45);
 }
-.dim-badge {
-  padding: 1px 7px;
-  background: rgba(6, 44, 40, 0.92);
-  border: 1px solid rgba(52, 211, 153, 0.7);
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #a7f3d0;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-  margin: 0 4px;
-  line-height: 1.25;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+.dim-seg-gap .dim-line {
+  height: 0;
+  border-top: 1.5px dashed rgba(148, 163, 184, 0.5);
+  background: transparent;
 }
+.dim-num {
+  padding: 0 4px;
+  background: rgba(6, 44, 40, 0.95);
+  border: 1px solid rgba(52, 211, 153, 0.7);
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #a7f3d0;
+  white-space: nowrap;
+  line-height: 1.15;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  margin: 0 2px;
+  z-index: 1;
+}
+.dim-seg-gap .dim-num {
+  background: rgba(15, 23, 42, 0.9);
+  border-color: rgba(148, 163, 184, 0.5);
+  color: #cbd5e1;
+}
+
 .bulba-grid-row {
   display: flex;
   align-items: center;
@@ -12440,40 +12462,60 @@ body.has-floating-back .scroll-top-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   margin-left: 6px;
   width: 22px;
   flex-shrink: 0;
   box-sizing: border-box;
+  padding: 8px 0; /* 精準對齊 bulba-voxel-grid 上下 8px 內距 */
+  gap: 1px;
 }
-.dim-tick-top,
-.dim-tick-bottom {
-  width: 10px;
-  height: 2px;
+.dim-seg-v {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+.dim-tick-v {
+  width: 9px;
+  height: 1.5px;
   background: #34d399;
   border-radius: 1px;
   flex-shrink: 0;
 }
-.dim-line-segment-v {
+.dim-seg-gap .dim-tick-v {
+  background: #94a3b8;
+}
+.dim-line-v {
   flex-grow: 1;
   width: 1.5px;
   background: rgba(52, 211, 153, 0.45);
 }
-.dim-badge-v {
-  padding: 5px 2px;
-  background: rgba(6, 44, 40, 0.92);
+.dim-seg-gap .dim-line-v {
+  width: 0;
+  border-left: 1.5px dashed rgba(148, 163, 184, 0.5);
+  background: transparent;
+}
+.dim-num-v {
+  padding: 2px 2px;
+  background: rgba(6, 44, 40, 0.95);
   border: 1px solid rgba(52, 211, 153, 0.7);
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 700;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 800;
   color: #a7f3d0;
-  margin: 4px 0;
-  line-height: 1.2;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+  line-height: 1.1;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  margin: 2px 0;
+  z-index: 1;
   white-space: nowrap;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  letter-spacing: 0.08em;
+}
+.dim-seg-gap .dim-num-v {
+  background: rgba(15, 23, 42, 0.9);
+  border-color: rgba(148, 163, 184, 0.5);
+  color: #cbd5e1;
 }
 
 .bulba-voxel-grid {

@@ -623,27 +623,15 @@
               <!-- 2D 點陣切片網格容器 (含工程雙軸長寬標註線) -->
               <div class="bulba-grid-container">
                 <div class="bulba-grid-workspace">
-                  <!-- 頂部寬度標註線 (Width Dimension) -->
-                  <div id="bulbaDimTop" class="bulba-dim-top">
-                    <span class="dim-tick-left"></span>
-                    <span class="dim-line-segment"></span>
-                    <span id="bulbaDimWidth" class="dim-badge">寬 -- 格</span>
-                    <span class="dim-line-segment"></span>
-                    <span class="dim-tick-right"></span>
-                  </div>
-                  <!-- 主體網格與右側長度標註線行 -->
+                  <!-- 頂部寬度分段標註線 (動態注入實體段與間隔純數字) -->
+                  <div id="bulbaDimTop" class="bulba-dim-top"></div>
+                  <!-- 主體網格與右側長度分段標註線行 -->
                   <div class="bulba-grid-row">
                     <div id="bulbaVoxelGrid" class="bulba-voxel-grid">
                       <!-- 動態注入該層方塊元素 -->
                     </div>
-                    <!-- 右側長度標註線 (Length/Depth Dimension) -->
-                    <div id="bulbaDimRight" class="bulba-dim-right">
-                      <span class="dim-tick-top"></span>
-                      <span class="dim-line-segment-v"></span>
-                      <span id="bulbaDimDepth" class="dim-badge-v">長 -- 格</span>
-                      <span class="dim-line-segment-v"></span>
-                      <span class="dim-tick-bottom"></span>
-                    </div>
+                    <!-- 右側長度分段標註線 (動態注入實體段與間隔純數字) -->
+                    <div id="bulbaDimRight" class="bulba-dim-right"></div>
                   </div>
                 </div>
                 <div id="bulbaHoverTooltip" class="bulba-hover-tooltip hidden">

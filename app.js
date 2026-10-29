@@ -236,9 +236,7 @@
     bulbaLayerSlider: document.getElementById('bulbaLayerSlider'),
     bulbaVoxelGrid: document.getElementById('bulbaVoxelGrid'),
     bulbaDimTop: document.getElementById('bulbaDimTop'),
-    bulbaDimWidth: document.getElementById('bulbaDimWidth'),
     bulbaDimRight: document.getElementById('bulbaDimRight'),
-    bulbaDimDepth: document.getElementById('bulbaDimDepth'),
     bulbaHoverTooltip: document.getElementById('bulbaHoverTooltip'),
     bulbaTooltipColor: document.getElementById('bulbaTooltipColor'),
     bulbaTooltipText: document.getElementById('bulbaTooltipText'),
@@ -6946,6 +6944,75 @@
     }
   }
 
+  // 分析軸向投影的實體段落與中空間隔段落
+  function getVoxelAxisSegments(minVal, maxVal, occupiedSet) {
+    const segments = [];
+    let currentType = occupiedSet.has(minVal) ? 'block' : 'gap';
+    let count = 0;
+    for (let i = minVal; i <= maxVal; i++) {
+      const type = occupiedSet.has(i) ? 'block' : 'gap';
+      if (type === currentType) {
+        count++;
+      } else {
+        segments.push({ type: currentType, count });
+        currentType = type;
+        count = 1;
+      }
+    }
+    segments.push({ type: currentType, count });
+    return segments;
+  }
+
+  // 渲染頂部水平分段標註線 (純數字，區分實體段與間隔虛線段)
+  function renderDimTopSegments(container, segments, cellSize, totalGridWidth) {
+    if (!container) return;
+    container.innerHTML = '';
+    container.style.width = `${totalGridWidth}px`;
+    container.style.display = 'flex';
+    const frag = document.createDocumentFragment();
+
+    segments.forEach((seg) => {
+      const segWidth = seg.count * cellSize + (seg.count - 1);
+      const el = document.createElement('div');
+      el.className = `dim-seg ${seg.type === 'gap' ? 'dim-seg-gap' : 'dim-seg-block'}`;
+      el.style.width = `${segWidth}px`;
+      el.innerHTML = `
+        <span class="dim-tick"></span>
+        <span class="dim-line"></span>
+        <span class="dim-num" title="${seg.type === 'gap' ? '間隔 ' + seg.count + ' 格' : '實體 ' + seg.count + ' 格'}">${seg.count}</span>
+        <span class="dim-line"></span>
+        <span class="dim-tick"></span>
+      `;
+      frag.appendChild(el);
+    });
+    container.appendChild(frag);
+  }
+
+  // 渲染右側垂直分段標註線 (純數字，區分實體段與間隔虛線段)
+  function renderDimRightSegments(container, segments, cellSize, totalGridHeight) {
+    if (!container) return;
+    container.innerHTML = '';
+    container.style.height = `${totalGridHeight}px`;
+    container.style.display = 'flex';
+    const frag = document.createDocumentFragment();
+
+    segments.forEach((seg) => {
+      const segHeight = seg.count * cellSize + (seg.count - 1);
+      const el = document.createElement('div');
+      el.className = `dim-seg-v ${seg.type === 'gap' ? 'dim-seg-gap' : 'dim-seg-block'}`;
+      el.style.height = `${segHeight}px`;
+      el.innerHTML = `
+        <span class="dim-tick-v"></span>
+        <span class="dim-line-v"></span>
+        <span class="dim-num-v" title="${seg.type === 'gap' ? '間隔 ' + seg.count + ' 格' : '實體 ' + seg.count + ' 格'}">${seg.count}</span>
+        <span class="dim-line-v"></span>
+        <span class="dim-tick-v"></span>
+      `;
+      frag.appendChild(el);
+    });
+    container.appendChild(frag);
+  }
+
   function renderBulbaLayer(layerIndex) {
     if (typeof BULBASAUR_VOXEL_DATA === 'undefined') return;
     const data = BULBASAUR_VOXEL_DATA;
@@ -6960,7 +7027,7 @@
       DOM.bulbaLayerBlockCount.textContent = `本層 ${blockCount} 顆`;
     }
 
-    // 2D 點陣網格智慧邊界聚焦與工程長寬雙軸尺寸標註
+    // 2D 點陣網格智慧邊界聚焦與工程長寬雙軸尺寸標註 (純數字分段)
     if (DOM.bulbaVoxelGrid) {
       DOM.bulbaVoxelGrid.innerHTML = '';
       if (blockCount === 0) {
@@ -6971,26 +7038,25 @@
         let minX = Infinity, maxX = -Infinity;
         let minZ = Infinity, maxZ = -Infinity;
         const blockMap = new Map();
+        const xOccupied = new Set();
+        const zOccupied = new Set();
+
         layer.blocks.forEach(([x, z, bid]) => {
           if (x < minX) minX = x;
           if (x > maxX) maxX = x;
           if (z < minZ) minZ = z;
           if (z > maxZ) maxZ = z;
           blockMap.set(`${x},${z}`, bid);
+          xOccupied.add(x);
+          zOccupied.add(z);
         });
 
         const spanX = maxX - minX + 1;
         const spanZ = maxZ - minZ + 1;
 
-        // 更新頂部寬度與側邊長度尺寸標註文字
-        if (DOM.bulbaDimWidth) {
-          DOM.bulbaDimWidth.textContent = `寬 ${spanX} 格`;
-        }
-        if (DOM.bulbaDimDepth) {
-          DOM.bulbaDimDepth.textContent = `長 ${spanZ} 格`;
-        }
-        if (DOM.bulbaDimTop) DOM.bulbaDimTop.style.display = 'flex';
-        if (DOM.bulbaDimRight) DOM.bulbaDimRight.style.display = 'flex';
+        // 計算 X 軸與 Z 軸的實體與間隔段落 (如左腳 10、中空 15、右腳 11)
+        const xSegments = getVoxelAxisSegments(minX, maxX, xOccupied);
+        const zSegments = getVoxelAxisSegments(minZ, maxZ, zOccupied);
 
         // 智能適配：手機版 100% 完美全覽零裁切，桌面版寬高雙約束一屏全覽
         const parent = DOM.bulbaVoxelGrid.closest('.bulba-grid-container') || DOM.bulbaVoxelGrid.parentElement;
@@ -7015,15 +7081,11 @@
         DOM.bulbaVoxelGrid.style.gap = '1px';
         DOM.bulbaVoxelGrid.style.gridTemplateColumns = `repeat(${spanX}, ${cellSize}px)`;
 
-        // 動態將頂部標註線寬度與側邊長度標註高度，精準對齊網格本體邊緣
+        // 動態將頂部標註線寬度與側邊長度標註高度，精準對齊網格本體邊緣並注入分段純數字
         const gridTotalWidth = spanX * cellSize + (spanX - 1) + 16;
         const gridTotalHeight = spanZ * cellSize + (spanZ - 1) + 16;
-        if (DOM.bulbaDimTop) {
-          DOM.bulbaDimTop.style.width = `${gridTotalWidth}px`;
-        }
-        if (DOM.bulbaDimRight) {
-          DOM.bulbaDimRight.style.height = `${gridTotalHeight}px`;
-        }
+        renderDimTopSegments(DOM.bulbaDimTop, xSegments, cellSize, gridTotalWidth);
+        renderDimRightSegments(DOM.bulbaDimRight, zSegments, cellSize, gridTotalHeight);
 
         const frag = document.createDocumentFragment();
         for (let z = minZ; z <= maxZ; z++) {
