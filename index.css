@@ -12251,11 +12251,11 @@ body.has-floating-back .scroll-top-btn {
   box-shadow: 0 0 12px rgba(16, 185, 129, 0.55);
 }
 
-/* 3D 畫布容器 (寬闊展台，高 420px) */
+/* 3D 畫布容器 (精緻緊湊展台，高 320px，手機版 240px) */
 .bulba-canvas-wrap {
   position: relative;
   width: 100%;
-  height: 420px;
+  height: 320px;
   background: radial-gradient(circle at center, #1b383d 0%, #0c1a1d 100%);
   border-radius: 0.875rem;
   overflow: hidden;
@@ -12283,7 +12283,13 @@ body.has-floating-back .scroll-top-btn {
   backdrop-filter: blur(8px);
 }
 
-/* 下半部：53 層建造切片指南 (滿版展開) */
+/* 下半部：53 層建造切片指南 (防爆版外框) */
+.bulba-slice-card {
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
 .bulba-layer-badge {
   background: rgba(16, 185, 129, 0.2);
   color: #34d399;
@@ -12303,8 +12309,8 @@ body.has-floating-back .scroll-top-btn {
   background: rgba(6, 18, 20, 0.45);
   border: 1px solid rgba(52, 211, 153, 0.18);
   border-radius: 0.75rem;
-  padding: 0.875rem 1.25rem;
-  margin-bottom: 1rem;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 0.875rem;
 }
 .bulba-slider-row {
   display: flex;
@@ -12334,11 +12340,13 @@ body.has-floating-back .scroll-top-btn {
   height: 8px;
 }
 
-/* 2D 點陣切片網格容器 (清新藍圖風：明亮座標格線 + 自適應高度無截斷) */
+/* 2D 點陣切片網格容器 (防爆版＋雙向自適應＋平滑橫向滾動) */
 .bulba-grid-container {
   position: relative;
   width: 100%;
-  min-height: 420px;
+  max-width: 100%;
+  min-height: 260px;
+  max-height: 390px;
   height: auto;
   background: #0d1e22;
   background-image: 
@@ -12347,12 +12355,14 @@ body.has-floating-back .scroll-top-btn {
   background-size: 18px 18px;
   border: 1px solid rgba(52, 211, 153, 0.25);
   border-radius: 0.875rem;
-  padding: 1.5rem;
+  padding: 1rem;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: visible;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
   box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.4);
 }
 .bulba-voxel-grid {
@@ -12363,6 +12373,8 @@ body.has-floating-back .scroll-top-btn {
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
   border: 1px solid rgba(52, 211, 153, 0.15);
+  margin: 0 auto;
+  flex-shrink: 0;
 }
 .bulba-cell {
   border-radius: 2px;
@@ -12486,11 +12498,12 @@ body.has-floating-back .scroll-top-btn {
     border-radius: 1rem;
   }
   .bulba-canvas-wrap {
-    height: 320px;
+    height: 240px;
   }
   .bulba-grid-container {
-    padding: 0.75rem;
-    min-height: 300px;
+    padding: 0.5rem;
+    min-height: 220px;
+    max-height: 320px;
   }
   .bulba-mat-list {
     grid-template-columns: 1fr;

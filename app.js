@@ -6975,10 +6975,22 @@
 
         const spanX = maxX - minX + 1;
         const spanZ = maxZ - minZ + 1;
-        // 滿版全寬佈局：依容器實際寬度動態適配單元格尺寸，確保完整呈現無捲軸
-        const containerWidth = DOM.bulbaVoxelGrid.parentElement.clientWidth || 1000;
-        const maxCellByWidth = Math.floor((containerWidth - 60) / spanX);
-        const cellSize = Math.min(24, Math.max(11, maxCellByWidth));
+        // 智能寬高雙約束適配：桌面版嚴格限高一屏全覽，手機版防爆版平滑滑動
+        const parent = DOM.bulbaVoxelGrid.parentElement;
+        const containerWidth = parent ? (parent.clientWidth || 800) : 800;
+        const isMobile = window.innerWidth <= 768;
+
+        let cellSize;
+        if (isMobile) {
+          // 手機版：設定精緻易讀尺寸 (8px)，由容器 overflow-x 平滑承接，絕不撐破卡片外框
+          cellSize = 8;
+        } else {
+          // 桌面版：寬高雙向約束，將 41 格高度嚴格收斂在約 340px 內，免滾輪一屏看清全貌
+          const cellByHeight = Math.floor(340 / spanZ);
+          const cellByWidth = Math.floor((containerWidth - 60) / spanX);
+          cellSize = Math.min(cellByHeight, cellByWidth, 13);
+          cellSize = Math.max(7, cellSize);
+        }
         DOM.bulbaVoxelGrid.style.gridTemplateColumns = `repeat(${spanX}, ${cellSize}px)`;
 
         const frag = document.createDocumentFragment();
@@ -7052,7 +7064,7 @@
     const wrap = DOM.bulba3dCanvas.parentElement;
     if (!wrap) return;
     const width = wrap.clientWidth || 800;
-    const height = wrap.clientHeight || 420;
+    const height = wrap.clientHeight || 320;
 
     const t = bulbaState.three;
     if (t.isInit) {
