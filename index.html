@@ -571,19 +571,36 @@
                   <span>🚀 玩具總動員 巴斯光年</span>
                   <span class="bulba-total-stat">7,927 顆方塊</span>
                 </div>
-                <div class="bulba-mode-switch">
-                  <button id="btnBuzzModeFull" class="bulba-mode-btn active" title="查看完整 3D 完成品">完整全貌</button>
+                <div class="bulba-mode-switch buzz-mode-switch">
+                  <button id="btnBuzzModeFull" class="bulba-mode-btn active" title="查看原生 Three.js 3D 方塊展台">原生 3D</button>
                   <button id="btnBuzzModeSlice" class="bulba-mode-btn" title="隨下方切片進度動態過濾顯示">動態剖面</button>
+                  <button id="btnBuzzModeSketchfab" class="bulba-mode-btn" title="查看原作者 Mike.Nicholson 官方 Sketchfab 3D 原作視窗">Sketchfab 原作</button>
                 </div>
               </div>
-              <div class="bulba-canvas-wrap buzz-canvas-wrap">
+              <div id="buzz3dCanvasWrap" class="bulba-canvas-wrap buzz-canvas-wrap">
                 <canvas id="buzz3dCanvas" class="bulba-3d-canvas"></canvas>
                 <div class="bulba-canvas-hint">上下左右 360° 拖曳旋轉 / 滾輪縮放視角</div>
+              </div>
+              <!-- 原作者 Mike.Nicholson 官方 Sketchfab 沉浸展示視窗 -->
+              <div id="buzz3dIframeWrap" class="buzz-iframe-wrap">
+                <iframe
+                  id="buzz3dIframe"
+                  class="buzz-iframe"
+                  title="Toy Story Buzz 3D model by Mike.Nicholson"
+                  src="https://sketchfab.com/models/1c48aeec16154595b6a0ea3f6c20985f/embed?autostart=1&autospin=0.2&ui_theme=dark&ui_infos=0&ui_watermark=0"
+                  frameborder="0"
+                  allow="autoplay; fullscreen; xr-spatial-tracking"
+                  xr-spatial-tracking="true"
+                  execution-while-out-of-viewport="true"
+                  execution-while-not-rendered="true"
+                  web-share="true"
+                  allowfullscreen>
+                </iframe>
               </div>
             </div>
 
             <!-- 下欄：42 層逐層切片控制器與材料清單 -->
-            <div class="bulba-slice-card buzz-slice-card">
+            <div id="buzzSliceCard" class="bulba-slice-card buzz-slice-card">
               <div class="bulba-card-header">
                 <div class="bulba-card-title">
                   <span>📐 42 層建造切片指南</span>

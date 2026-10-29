@@ -12417,13 +12417,12 @@ body.has-floating-back .scroll-top-btn {
   user-select: none;
 }
 
-/* 2D 點陣切片網格容器 (支援平移與縮放視野) */
+/* 2D 點陣切片網格容器 (固定觀察鏡頭框＋強制防溢出裁切) */
 .bulba-grid-container {
   position: relative;
   width: 100%;
   max-width: 100%;
-  min-height: 240px;
-  height: auto;
+  height: 400px;
   background: #0d1e22;
   background-image: 
     linear-gradient(rgba(52, 211, 153, 0.08) 1px, transparent 1px),
@@ -12431,12 +12430,12 @@ body.has-floating-back .scroll-top-btn {
   background-size: 18px 18px;
   border: 1px solid rgba(52, 211, 153, 0.25);
   border-radius: 0.875rem;
-  padding: 1.25rem;
+  padding: 1rem;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  overflow: hidden !important;
   box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.4);
   cursor: grab;
   user-select: none;
@@ -12445,6 +12444,27 @@ body.has-floating-back .scroll-top-btn {
 }
 .bulba-grid-container.is-panning {
   cursor: grabbing;
+}
+
+/* 巴斯光年 Sketchfab 原作者官方視窗容器 */
+.buzz-iframe-wrap {
+  position: relative;
+  width: 100%;
+  height: 560px;
+  border-radius: 0.875rem;
+  overflow: hidden;
+  border: 1px solid rgba(167, 139, 250, 0.35);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  display: none;
+}
+.buzz-iframe-wrap.active {
+  display: block;
+}
+.buzz-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
 }
 
 /* 2D 點陣切片工作區與工程長寬雙軸分段標註系統 (如 Minecraft 施工藍圖) */
@@ -12718,10 +12738,9 @@ body.has-floating-back .scroll-top-btn {
   }
   .bulba-grid-container {
     padding: 0.75rem 0.5rem;
-    min-height: 180px;
-    max-height: none;
-    height: auto;
-    overflow: visible;
+    height: 320px !important;
+    max-height: 320px !important;
+    overflow: hidden !important;
   }
   .bulba-voxel-grid {
     padding: 4px;

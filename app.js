@@ -228,7 +228,11 @@
     paneBulba: document.getElementById('paneBulba'),
     btnBuzzModeFull: document.getElementById('btnBuzzModeFull'),
     btnBuzzModeSlice: document.getElementById('btnBuzzModeSlice'),
+    btnBuzzModeSketchfab: document.getElementById('btnBuzzModeSketchfab'),
+    buzz3dCanvasWrap: document.getElementById('buzz3dCanvasWrap'),
     buzz3dCanvas: document.getElementById('buzz3dCanvas'),
+    buzz3dIframeWrap: document.getElementById('buzz3dIframeWrap'),
+    buzzSliceCard: document.getElementById('buzzSliceCard'),
     buzzLayerBadge: document.getElementById('buzzLayerBadge'),
     buzzLayerBlockCount: document.getElementById('buzzLayerBlockCount'),
     btnBuzzPrevLayer: document.getElementById('btnBuzzPrevLayer'),
@@ -1368,6 +1372,9 @@
     }
     if (DOM.btnBuzzModeSlice) {
       DOM.btnBuzzModeSlice.addEventListener('click', () => switchBuzz3DMode('slice'));
+    }
+    if (DOM.btnBuzzModeSketchfab) {
+      DOM.btnBuzzModeSketchfab.addEventListener('click', () => switchBuzz3DMode('sketchfab'));
     }
     if (DOM.btnBuzzPrevLayer) {
       DOM.btnBuzzPrevLayer.addEventListener('click', () => setBuzzLayer(buzzState.curLayer - 1));
@@ -7091,7 +7098,21 @@
     if (DOM.btnBuzzModeSlice) {
       DOM.btnBuzzModeSlice.classList.toggle('active', mode === 'slice');
     }
-    updateBuzz3DSliceFilter();
+    if (DOM.btnBuzzModeSketchfab) {
+      DOM.btnBuzzModeSketchfab.classList.toggle('active', mode === 'sketchfab');
+    }
+
+    if (mode === 'sketchfab') {
+      if (DOM.buzz3dCanvasWrap) DOM.buzz3dCanvasWrap.style.display = 'none';
+      if (DOM.buzz3dIframeWrap) DOM.buzz3dIframeWrap.classList.add('active');
+      if (DOM.buzzSliceCard) DOM.buzzSliceCard.style.display = 'none';
+    } else {
+      if (DOM.buzz3dCanvasWrap) DOM.buzz3dCanvasWrap.style.display = 'block';
+      if (DOM.buzz3dIframeWrap) DOM.buzz3dIframeWrap.classList.remove('active');
+      if (DOM.buzzSliceCard) DOM.buzzSliceCard.style.display = 'block';
+      updateBuzz3DSliceFilter();
+      setTimeout(initBuzzThreeEngine, 30);
+    }
   }
 
   function setBuzzLayer(layerIndex) {
@@ -7533,12 +7554,12 @@
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
     scene.add(ambientLight);
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.05);
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.65);
     dirLight1.position.set(45, 80, 45);
     scene.add(dirLight1);
-    const dirLight2 = new THREE.DirectionalLight(0xa78bfa, 0.45);
+    const dirLight2 = new THREE.DirectionalLight(0xa78bfa, 0.35);
     dirLight2.position.set(-45, 30, -45);
     scene.add(dirLight2);
     const dirLight3 = new THREE.DirectionalLight(0x0f172a, 0.15);
@@ -7561,8 +7582,8 @@
     const outlineTexture = createVoxelOutlineTexture();
     const material = new THREE.MeshStandardMaterial({
       map: outlineTexture || null,
-      roughness: 0.3,
-      metalness: 0.05
+      roughness: 0.88,
+      metalness: 0.0
     });
 
     const instancedMesh = new THREE.InstancedMesh(geometry, material, totalCount);
@@ -7687,15 +7708,15 @@
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
-    // 4. Lights (高角度強對比立體光影系統，雕刻方塊階梯明暗)
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.38);
+    // 4. Lights (柔和漫射立體光影，消除刺眼金屬光斑)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
     scene.add(ambientLight);
-    // 主光：右前方高角度，形成頂面強烈高光與階梯立體陰影
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.05);
+    // 主光：右前方高角度柔和光，形成自然階梯陰影
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.65);
     dirLight1.position.set(50, 85, 50);
     scene.add(dirLight1);
-    // 側光：左後方草系薄荷微光，形成側面柔和半影
-    const dirLight2 = new THREE.DirectionalLight(0x86efac, 0.45);
+    // 側光：左後方草系薄荷微光
+    const dirLight2 = new THREE.DirectionalLight(0x86efac, 0.35);
     dirLight2.position.set(-50, 30, -50);
     scene.add(dirLight2);
     // 仰光：底部微弱環境反光
@@ -7715,15 +7736,15 @@
     }
 
 
-    // 6. Build InstancedMesh (緊密貼合 1.0，細微深黑描邊雕刻方塊輪廓)
+    // 6. Build InstancedMesh (緊密貼合 1.0，自然啞光陶土質感，細微深黑描邊雕刻方塊輪廓)
     const data = BULBASAUR_VOXEL_DATA;
     const totalCount = data.totalBlocks;
     const geometry = new THREE.BoxGeometry(1, 1, 1);
     const outlineTexture = createVoxelOutlineTexture();
     const material = new THREE.MeshStandardMaterial({
       map: outlineTexture || null,
-      roughness: 0.3,
-      metalness: 0.05
+      roughness: 0.88,
+      metalness: 0.0
     });
 
     const instancedMesh = new THREE.InstancedMesh(geometry, material, totalCount);
