@@ -7615,8 +7615,10 @@
 
     const data = BUZZ_VOXEL_DATA;
     const totalCount = data.totalBlocks;
-    const geometry = new THREE.BoxGeometry(0.96, 0.96, 0.96);
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const outlineTexture = createVoxelOutlineTexture();
     const material = new THREE.MeshStandardMaterial({
+      map: outlineTexture || null,
       roughness: 0.88,
       metalness: 0.0
     });
@@ -7771,11 +7773,13 @@
     }
 
 
-    // 6. Build InstancedMesh (自然啞光陶土質感，精準 0.96 體素方塊細微立體縫隙)
+    // 6. Build InstancedMesh (緊密貼合 1.0，自然啞光陶土質感，細微深黑描邊雕刻方塊輪廓)
     const data = BULBASAUR_VOXEL_DATA;
     const totalCount = data.totalBlocks;
-    const geometry = new THREE.BoxGeometry(0.96, 0.96, 0.96);
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const outlineTexture = createVoxelOutlineTexture();
     const material = new THREE.MeshStandardMaterial({
+      map: outlineTexture || null,
       roughness: 0.88,
       metalness: 0.0
     });
