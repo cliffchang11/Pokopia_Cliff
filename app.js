@@ -7094,19 +7094,19 @@
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
-    // 4. Lights (三點式立體方塊光影系統)
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.42);
+    // 4. Lights (高角度強對比立體光影系統，雕刻方塊階梯明暗)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.38);
     scene.add(ambientLight);
-    // 主光：右前方高角度，形成頂面鮮明亮部
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.9);
-    dirLight1.position.set(50, 80, 50);
+    // 主光：右前方高角度，形成頂面強烈高光與階梯立體陰影
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.05);
+    dirLight1.position.set(50, 85, 50);
     scene.add(dirLight1);
     // 側光：左後方草系薄荷微光，形成側面柔和半影
     const dirLight2 = new THREE.DirectionalLight(0x86efac, 0.45);
     dirLight2.position.set(-50, 30, -50);
     scene.add(dirLight2);
     // 仰光：底部微弱環境反光
-    const dirLight3 = new THREE.DirectionalLight(0x0f3b38, 0.2);
+    const dirLight3 = new THREE.DirectionalLight(0x0f3b38, 0.15);
     dirLight3.position.set(0, -60, 0);
     scene.add(dirLight3);
 
@@ -7121,12 +7121,12 @@
       controls.minDistance = 15;
     }
 
-    // 6. Build InstancedMesh (0.94 微縮接縫工藝，每顆方塊邊緣立體凸顯)
+    // 6. Build InstancedMesh (緊密貼合 1.0，純靠高角度光源雕刻方塊立體明暗)
     const data = BULBASAUR_VOXEL_DATA;
     const totalCount = data.totalBlocks;
-    const geometry = new THREE.BoxGeometry(0.94, 0.94, 0.94);
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
     const material = new THREE.MeshStandardMaterial({
-      roughness: 0.35,
+      roughness: 0.3,
       metalness: 0.05
     });
 
