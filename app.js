@@ -7008,8 +7008,8 @@
             if (bid) {
               const pItem = data.palette[bid] || { name: '方塊', color: '#64a395' };
               cell.style.backgroundColor = pItem.color;
-              cell.style.border = '1px solid rgba(255, 255, 255, 0.3)';
-              cell.style.boxShadow = '0 1px 4px rgba(0, 0, 0, 0.4)';
+              cell.style.border = '1px solid rgba(15, 23, 42, 0.65)';
+              cell.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.35)';
               cell.dataset.x = x;
               cell.dataset.z = z;
               cell.dataset.name = pItem.name;
@@ -7121,11 +7121,35 @@
       controls.minDistance = 15;
     }
 
-    // 6. Build InstancedMesh (緊密貼合 1.0，純靠高角度光源雕刻方塊立體明暗)
+    // 動態產生方塊細微深黑外框紋理 (Cel-outline Texture)
+    function createVoxelOutlineTexture() {
+      if (typeof document === 'undefined') return null;
+      const canvas = document.createElement('canvas');
+      canvas.width = 64;
+      canvas.height = 64;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return null;
+      // 內部為純白 (WebGL 渲染時頂點顏色與紋理相乘，白色即原色)
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 64, 64);
+      // 邊緣細小微黑描邊（約 70% 深度黑，既有清晰分界又保留方塊通透感）
+      ctx.strokeStyle = 'rgba(25, 25, 25, 0.72)';
+      ctx.lineWidth = 2.5;
+      ctx.strokeRect(1, 1, 62, 62);
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.magFilter = THREE.NearestFilter;
+      texture.minFilter = THREE.NearestFilter;
+      return texture;
+    }
+
+    // 6. Build InstancedMesh (緊密貼合 1.0，細微深黑描邊雕刻方塊輪廓)
     const data = BULBASAUR_VOXEL_DATA;
     const totalCount = data.totalBlocks;
     const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const outlineTexture = createVoxelOutlineTexture();
     const material = new THREE.MeshStandardMaterial({
+      map: outlineTexture || null,
       roughness: 0.3,
       metalness: 0.05
     });
