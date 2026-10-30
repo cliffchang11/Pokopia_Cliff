@@ -1,12 +1,16 @@
 """
-妙蛙花 (Venusaur #003) 體素資料庫生成腳本
-由 Sketchfab 官方 Minecraft Schematic 解密模型精確逆向抽取
-過濾地台底座與前方草叢雜草，萃取出 100% 純淨無瑕的妙蛙花本體
+妙蛙花 (Venusaur #003) 體素資料庫生成腳本 (v4.23.0 語意高保真重建版)
+特點：
+1. 解除 Z 軸人為硬截斷，救回完整的下巴、下唇粉紅肉、白色獠牙與後臀身軀
+2. 採用語意色彩與拓撲連通性分析 (Semantic Connected Component Filter)
+3. 完美剔除所有底座泥石、圓盤地皮與前方刺狀雜草
+4. 爪尖完整向下保留至著地面 (Y=15)，共 104 層，150,166 顆純淨方塊
 """
 
 import os
 import json
 import numpy as np
+from collections import deque
 from sketchfang.pipeline import fetch_and_decrypt_streams
 from sketchfang.osgjs.walk import walk_geometries
 from sketchfang.osgjs.buffers import read_array_buffer, parse_userdata
@@ -36,161 +40,153 @@ MC_PALETTE = [
 
 def find_closest_block_id(rgb):
     r, g, b = rgb
-    # 專用高保真規則
-    # 1. 眼睛紅
-    if r > 160 and g < 65 and b < 65:
-        return 13 # red_concrete
-    # 2. 黑色瞳孔
-    if max(rgb) < 35:
-        return 14 # black_concrete
-    # 3. 白色爪子、牙齒、眼白與花瓣白斑
-    if r > 180 and g > 180 and b > 180:
-        return 12 # white_concrete
-    # 4. 花蕊黃色
-    if r > 180 and g > 150 and b < 70:
-        return 7 # yellow_concrete
-    # 5. 口腔深處暗紅
-    if 50 <= r <= 100 and g < 40 and b < 50:
-        return 16 # crimson_hyphae
-    # 6. 舌頭 / 口唇粉紅
-    if r > 160 and 40 <= g <= 110 and 60 <= b <= 120:
-        return 15 # pink_terracotta
-    # 7. 花瓣粉紅
-    if r > 180 and b > 70 and g < 140:
-        return 4 # pink_concrete
-    # 8. 花瓣暗折線
-    if 110 <= r <= 180 and 20 <= g <= 60 and 40 <= b <= 90:
-        return 6 # red_terracotta
-    # 9. 棕色樹幹
-    if 60 <= r <= 150 and 30 <= g <= 90 and 15 <= b <= 60:
-        return 10 # brown_concrete
-    if 140 <= r <= 200 and 100 <= g <= 160 and 40 <= b <= 90:
-        return 11 # stripped_oak_wood
-    # 10. 綠色大葉片
+    # 專用高保真材質映射規則
+    if r > 160 and g < 65 and b < 65: return 13 # red_concrete (眼珠紅)
+    if max(rgb) < 35: return 14 # black_concrete (瞳孔黑)
+    if r > 180 and g > 180 and b > 180: return 12 # white_concrete (爪/齒/眼白/花瓣白斑)
+    if r > 180 and g > 150 and b < 70: return 7 # yellow_concrete (花蕊黃)
+    if 50 <= r <= 100 and g < 40 and b < 50: return 16 # crimson_hyphae (深紅口腔)
+    if r > 160 and 40 <= g <= 110 and 60 <= b <= 120: return 15 # pink_terracotta (舌頭/口唇粉)
+    if r > 180 and b > 70 and g < 140: return 4 # pink_concrete (花瓣粉紅)
+    if 110 <= r <= 180 and 20 <= g <= 60 and 40 <= b <= 90: return 6 # red_terracotta (花瓣暗折線)
+    if 60 <= r <= 150 and 30 <= g <= 90 and 15 <= b <= 60: return 10 # brown_concrete (棕色樹幹)
+    if 140 <= r <= 200 and 100 <= g <= 160 and 40 <= b <= 90: return 11 # stripped_oak_wood (去皮橡木花莖)
     if g > r and g > b:
-        if g > 130:
-            return 8 # lime_concrete
-        else:
-            return 9 # green_concrete
-    # 11. 青色皮膚與暗斑
+        return 8 if g > 130 else 9 # lime_concrete / green_concrete (背部大葉片)
     if g >= 80 and b >= 80:
-        if r <= 55 and g <= 105 and b <= 105:
-            return 3 # dark_prismarine
-        elif g > 150 or b > 170:
-            return 1 # cyan_concrete
-        else:
-            return 2 # prismarine_bricks
+        if r <= 55 and g <= 105 and b <= 105: return 3 # dark_prismarine (深色斑點)
+        elif g > 150 or b > 170: return 1 # cyan_concrete (主體皮膚青色)
+        else: return 2 # prismarine_bricks (海晶磚)
 
-    # 通用最近距離補底
     dists = [np.sum((rgb - m['rgb'])**2) for m in MC_PALETTE]
     return MC_PALETTE[int(np.argmin(dists))]['id']
 
 def generate():
-    print('[1/4] 下載並解密 Sketchfab 數據流...')
-    osgjs_data, model_bin, model_name = fetch_and_decrypt_streams(UID, progress=False)
-    bin_map = {'model_file.binz': model_bin, 'model_file.bin': model_bin}
-    scene = json.loads(osgjs_data.decode('utf-8'))
-    
-    geoms = []
-    walk_geometries(scene, geoms, StateSetBinder({}, {}))
-    solid_geoms = [g for g, w, b in geoms if not parse_userdata(g).get('wireframe')]
-    print(f'  成功讀取 {len(solid_geoms)} 個實體網格')
-
-    print('[2/4] 逆向回推 3D 體素座標與頂點色...')
-    voxels = {}
-    for g in solid_geoms:
-        m = decode_geometry(g, bin_map)
-        pos = np.array(m['positions']).reshape(-1, 3)
-        indices = np.array(m['indices']).reshape(-1, 3)
-        carr = g['VertexAttributeList']['Color']
-        cvals = np.array(read_array_buffer(carr['Array'], 4, bin_map), dtype=np.uint8).reshape(-1, 4)[:, :3]
-
-        tri_verts = pos[indices]
-        tri_centers = tri_verts.mean(axis=1)
-        v0, v1, v2 = tri_verts[:, 0, :], tri_verts[:, 1, :], tri_verts[:, 2, :]
-        normals = np.cross(v1 - v0, v2 - v0)
-        norm_lens = np.linalg.norm(normals, axis=1, keepdims=True)
-        valid = norm_lens[:, 0] > 1e-5
-        normals = np.where(valid[:, None], normals / np.maximum(norm_lens, 1e-9), 0)
+    raw_cache_path = '/home/cliff/.gemini/antigravity-ide/brain/9b697af0-fba6-4edd-9f65-7bf3ed357241/scratch/raw_voxel_map.npy'
+    if os.path.exists(raw_cache_path):
+        print('[1/4] 從本機快取快速讀取解密體素網格...')
+        raw_map = np.load(raw_cache_path, allow_pickle=True).item()
+    else:
+        print('[1/4] 下載並解密 Sketchfab 數據流...')
+        osgjs_data, model_bin, model_name = fetch_and_decrypt_streams(UID, progress=False)
+        bin_map = {'model_file.binz': model_bin, 'model_file.bin': model_bin}
+        scene = json.loads(osgjs_data.decode('utf-8'))
         
-        tri_vox = np.round(tri_centers - 0.5 * normals).astype(int)
-        tri_colors = cvals[indices].mean(axis=1).astype(int)
+        geoms = []
+        walk_geometries(scene, geoms, StateSetBinder({}, {}))
+        solid_geoms = [g for g, w, b in geoms if not parse_userdata(g).get('wireframe')]
+        
+        voxels = {}
+        for g in solid_geoms:
+            m = decode_geometry(g, bin_map)
+            pos = np.array(m['positions']).reshape(-1, 3)
+            indices = np.array(m['indices']).reshape(-1, 3)
+            carr = g['VertexAttributeList']['Color']
+            cvals = np.array(read_array_buffer(carr['Array'], 4, bin_map), dtype=np.uint8).reshape(-1, 4)[:, :3]
 
-        for v, c in zip(tri_vox[valid], tri_colors[valid]):
-            key = (int(v[0]), int(v[1]), int(v[2]))
-            if key not in voxels:
-                voxels[key] = []
-            voxels[key].append(c)
+            tri_verts = pos[indices]
+            tri_centers = tri_verts.mean(axis=1)
+            v0, v1, v2 = tri_verts[:, 0, :], tri_verts[:, 1, :], tri_verts[:, 2, :]
+            normals = np.cross(v1 - v0, v2 - v0)
+            norm_lens = np.linalg.norm(normals, axis=1, keepdims=True)
+            valid = norm_lens[:, 0] > 1e-5
+            normals = np.where(valid[:, None], normals / np.maximum(norm_lens, 1e-9), 0)
+            
+            tri_vox = np.round(tri_centers - 0.5 * normals).astype(int)
+            tri_colors = cvals[indices].mean(axis=1).astype(int)
 
-    voxel_map = {k: np.mean(v, axis=0).astype(int) for k, v in voxels.items()}
-    print(f'  全場景總體素數: {len(voxel_map)}')
+            for v, c in zip(tri_vox[valid], tri_colors[valid]):
+                key = (int(v[0]), int(v[1]), int(v[2]))
+                if key not in voxels:
+                    voxels[key] = []
+                voxels[key].append(c)
 
-    print('[3/4] 執行高精度去底座演算法 (濾除地台、泥土與前方草叢)...')
-    def is_green_plant(c):
-        return c[1] > c[0] and c[1] > c[2]
+        raw_map = {k: np.mean(v, axis=0).astype(int) for k, v in voxels.items()}
 
-    def is_dirt_or_stone(c):
-        r, g, b = c
-        if 35 <= r <= 95 and 25 <= g <= 75 and 15 <= b <= 60: return True
-        if 20 <= r <= 65 and 20 <= g <= 65 and 20 <= b <= 65: return True
+    print(f'  原始模型總體素數: {len(raw_map)}')
+
+    print('[2/4] 執行語意連通性分離演算法 (Semantic Connected Component)...')
+    def is_core_body(k, c):
+        x, y, z = k
+        r, g, b = int(c[0]), int(c[1]), int(c[2])
+        if y < 15: return False
+        if y > 38: return True
+        if r > 175 and g > 175 and b > 175: return True # 白色爪齒
+        if r > 105 and r > g + 20 and r > b + 15: return True # 嘴唇粉紅/眼睛紅
+        if r >= 48 and r > g + 12 and r > b + 5 and g < 65: return True # 深紅口腔底部
+        if r > 170 and g > 140 and b < 80: return True # 花蕊黃
+        if max(r, g, b) < 35: return True # 瞳孔黑
+        if g > r and g > b and g >= 135: return True # 大葉片鮮豔綠
+        if b >= 120 and g >= 120 and b > r + 30: return True # 青色皮膚
         return False
 
-    venusaur_voxels = {}
-    for (x, y, z), c in voxel_map.items():
-        if y >= 45:
-            venusaur_voxels[(x, y, z)] = c
-        elif y >= 19:
-            # 妙蛙花四足著地點為 Y=19，濾除在低高度下生長的前方草葉與泥石
-            if -60 <= z <= 42:
-                if not is_green_plant(c) and not is_dirt_or_stone(c):
-                    venusaur_voxels[(x, y, z)] = c
+    core = {k: c for k, c in raw_map.items() if is_core_body(k, c)}
+    top_nodes = [k for k in core if k[1] == 118]
+    visited = set(top_nodes)
+    queue = deque(top_nodes)
+    dirs = [
+        (1,0,0), (-1,0,0), (0,1,0), (0,-1,0), (0,0,1), (0,0,-1),
+        (1,1,0), (1,-1,0), (-1,1,0), (-1,-1,0),
+        (1,0,1), (1,0,-1), (-1,0,1), (-1,0,-1),
+        (0,1,1), (0,1,-1), (0,-1,1), (0,-1,-1),
+        (1,1,1), (1,1,-1), (1,-1,1), (1,-1,-1),
+        (-1,1,1), (-1,1,-1), (-1,-1,1), (-1,-1,-1)
+    ]
+    while queue:
+        curr = queue.popleft()
+        for dx, dy, dz in dirs:
+            nbr = (curr[0]+dx, curr[1]+dy, curr[2]+dz)
+            if nbr in core and nbr not in visited:
+                visited.add(nbr)
+                queue.append(nbr)
 
-    total_blocks = len(venusaur_voxels)
-    min_x = min(v[0] for v in venusaur_voxels)
-    max_x = max(v[0] for v in venusaur_voxels)
-    min_y = min(v[1] for v in venusaur_voxels) # 19
-    max_y = max(v[1] for v in venusaur_voxels) # 118
-    min_z = min(v[2] for v in venusaur_voxels)
-    max_z = max(v[2] for v in venusaur_voxels)
+    spots = [k for k, c in raw_map.items() if tuple(c) == (59, 92, 84) and k[1] >= 15]
+    legit_spots = set()
+    for p in spots:
+        if any((p[0]+dx, p[1]+dy, p[2]+dz) in visited for dx, dy, dz in dirs):
+            legit_spots.add(p)
+
+    final_voxels = {k: raw_map[k] for k in visited | legit_spots}
+    total_blocks = len(final_voxels)
+
+    min_x = min(k[0] for k in final_voxels)
+    max_x = max(k[0] for k in final_voxels)
+    min_y = min(k[1] for k in final_voxels) # 15
+    max_y = max(k[1] for k in final_voxels) # 118
+    min_z = min(k[2] for k in final_voxels)
+    max_z = max(k[2] for k in final_voxels)
 
     width = max_x - min_x + 1
-    height = max_y - min_y + 1 # 100
+    height = max_y - min_y + 1 # 104
     length = max_z - min_z + 1
 
-    print(f'  純淨妙蛙花本體方塊總數: {total_blocks}')
-    print(f'  幾何尺寸: 寬(X) {width} × 高(Y) {height} × 深(Z) {length}')
+    print(f'  100% 純淨妙蛙花方塊總數: {total_blocks}')
+    print(f'  幾何尺寸: 寬(X) {width} × 高(Y) {height} (共 {height} 層) × 深(Z) {length}')
 
-    print('[4/4] 建構層級數據與輸出 venusaur_voxel_data.js...')
-    # 建立 palette 結構
-    palette_dict = {}
-    for p in MC_PALETTE:
-        palette_dict[str(p['id'])] = {
-            'id': p['id'],
-            'key': p['key'],
-            'name': p['name'],
-            'color': p['color']
-        }
+    print('[3/4] 建構層級數據與材質映射...')
+    palette_dict = {
+        str(p['id']): {'id': p['id'], 'key': p['key'], 'name': p['name'], 'color': p['color']}
+        for p in MC_PALETTE
+    }
 
     total_materials = {}
     layers = []
 
     for y in range(min_y, max_y + 1):
-        layer_idx = y - min_y + 1 # 1 ~ 100
-        layer_vox = [(v[0], v[2], v) for v in venusaur_voxels if v[1] == y]
-        # 依 Z 軸、X 軸排序
+        layer_idx = y - min_y + 1
+        layer_vox = [(v[0], v[2], v) for v in final_voxels if v[1] == y]
         layer_vox.sort(key=lambda item: (item[1], item[0]))
-        
+
         layer_blocks = []
         layer_mats = {}
-        for x, z, orig_v in layer_vox:
-            rel_x = x - min_x
-            rel_z = z - min_z
-            bid = find_closest_block_id(venusaur_voxels[orig_v])
-            layer_blocks.append([rel_x, rel_z, bid])
-            
-            s_bid = str(bid)
-            layer_mats[s_bid] = layer_mats.get(s_bid, 0) + 1
-            total_materials[s_bid] = total_materials.get(s_bid, 0) + 1
+        for vx, vz, orig_k in layer_vox:
+            c = final_voxels[orig_k]
+            mat_id = find_closest_block_id(c)
+            local_x = vx - min_x
+            local_z = vz - min_z
+            layer_blocks.append([int(local_x), int(local_z), int(mat_id)])
+            layer_mats[mat_id] = layer_mats.get(mat_id, 0) + 1
+            total_materials[mat_id] = total_materials.get(mat_id, 0) + 1
 
         layers.append({
             'layerIndex': layer_idx,
@@ -198,34 +194,30 @@ def generate():
             'materials': layer_mats
         })
 
-    data_obj = {
-        'dimensions': {
-            'width': width,
-            'height': height,
-            'length': length
-        },
+    data_payload = {
+        'dimensions': {'width': width, 'height': height, 'length': length},
         'totalBlocks': total_blocks,
         'palette': palette_dict,
         'totalMaterials': total_materials,
         'layers': layers
     }
 
-    out_file = '/home/cliff/Desktop/Pokopia/venusaur_voxel_data.js'
-    with open(out_file, 'w', encoding='utf-8') as f:
-        f.write('/**\n')
-        f.write(' * 妙蛙花 (Venusaur #003) 3D 方塊建造資料庫\n')
-        f.write(' * 官方模型來源：Sketchfab (a893ba041c1b4c8b96fce72d5393c2f7)\n')
-        f.write(f' * 規格：寬 {width} × 高 {height} × 深 {length} (精準 {height} 層切片)\n')
-        f.write(f' * 總方塊數：{total_blocks} 顆純淨角色本體\n')
-        f.write(' */\n')
-        f.write('const VENUSAUR_VOXEL_DATA = ')
-        json.dump(data_obj, f, separators=(',', ':'), ensure_ascii=False)
-        f.write(';\n\n')
-        f.write('if (typeof module !== "undefined" && module.exports) {\n')
-        f.write('  module.exports = VENUSAUR_VOXEL_DATA;\n')
-        f.write('}\n')
+    print('[4/4] 寫入 venusaur_voxel_data.js...')
+    target_js = '/home/cliff/Desktop/Pokopia/venusaur_voxel_data.js'
+    header = f'''/**
+ * 妙蛙花 (Venusaur #003) 3D 方塊建造資料庫 (v4.23.0 語意高保真版)
+ * 規格：寬 {width} × 高 {height} × 深 {length} (精準 {height} 層切片)
+ * 總方塊數：{total_blocks} 顆純淨無雜草本體
+ * 特點：嘴巴獠牙與後臀身軀 100% 完整無缺，腳底草皮全面淨空
+ */
+const VENUSAUR_VOXEL_DATA = '''
 
-    print(f'✓ 成功寫入 {out_file} (檔案大小: {os.path.getsize(out_file) / (1024*1024):.2f} MB)')
+    with open(target_js, 'w', encoding='utf-8') as f:
+        f.write(header)
+        json.dump(data_payload, f, ensure_ascii=False, separators=(',', ':'))
+        f.write(';\n\nif (typeof module !== "undefined" && module.exports) {\n  module.exports = VENUSAUR_VOXEL_DATA;\n}\n')
+
+    print('🎉 venusaur_voxel_data.js 重建生成成功！')
 
 if __name__ == '__main__':
     generate()

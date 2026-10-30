@@ -37,10 +37,10 @@ const venusaurData = require(venusaurDataPath);
 
 it('1.1 資料庫存在且基本屬性完整', () => {
   assert.strictEqual(venusaurData.dimensions.width, 145);
-  assert.strictEqual(venusaurData.dimensions.height, 100);
+  assert.strictEqual(venusaurData.dimensions.height, 104);
   assert.strictEqual(venusaurData.dimensions.length, 144);
-  assert.strictEqual(venusaurData.totalBlocks, 142996);
-  assert.strictEqual(venusaurData.layers.length, 100);
+  assert.strictEqual(venusaurData.totalBlocks, 150166);
+  assert.strictEqual(venusaurData.layers.length, 104);
 });
 
 it('1.2 16 種 Minecraft 原生材質調色盤完整性', () => {
@@ -56,7 +56,7 @@ it('1.2 16 種 Minecraft 原生材質調色盤完整性', () => {
   assert.ok(palette['14'] && palette['14'].name === '黑色混凝土');
 });
 
-it('1.3 100 層切片方塊計數與座標邊界合法性', () => {
+it('1.3 104 層切片方塊計數與座標邊界合法性', () => {
   let computedTotal = 0;
   for (let l = 0; l < venusaurData.layers.length; l++) {
     const layer = venusaurData.layers[l];
@@ -70,7 +70,7 @@ it('1.3 100 層切片方塊計數與座標邊界合法性', () => {
       assert.ok(venusaurData.palette[mat.toString()] !== undefined, `未定義材質: ${mat}`);
     }
   }
-  assert.strictEqual(computedTotal, 142996);
+  assert.strictEqual(computedTotal, 150166);
   assert.strictEqual(computedTotal, venusaurData.totalBlocks);
 });
 
@@ -92,13 +92,15 @@ it('2.2 妙蛙花獨立工作台結構 (#paneVenusaur) 完整', () => {
   assert.ok(htmlContent.includes('id="venusaurSliceCard"'));
   assert.ok(htmlContent.includes('id="venusaurVoxelGrid"'));
   assert.ok(htmlContent.includes('id="venusaurLayerSlider"'));
+  assert.ok(htmlContent.includes('min="1" max="104"'));
   assert.ok(htmlContent.includes('id="venusaurMatList"'));
+  assert.ok(htmlContent.includes('150,166 顆方塊 (角色本體)'));
 });
 
-it('2.3 靜態資源引入與版本破壞標籤正確對齊 (v=4.22.0)', () => {
-  assert.ok(htmlContent.includes('index.css?v=4.22.0'));
-  assert.ok(htmlContent.includes('venusaur_voxel_data.js?v=4.22.0'));
-  assert.ok(htmlContent.includes('app.js?v=4.22.0'));
+it('2.3 靜態資源引入與版本破壞標籤正確對齊 (v=4.23.0)', () => {
+  assert.ok(htmlContent.includes('index.css?v=4.23.0'));
+  assert.ok(htmlContent.includes('venusaur_voxel_data.js?v=4.23.0'));
+  assert.ok(htmlContent.includes('app.js?v=4.23.0'));
 });
 
 // 3. app.js 邏輯與 API 導出驗證
@@ -130,12 +132,12 @@ it('3.3 材料勾選追蹤持久化 key 隔離命名 (pokopia_venusaur_layer_che
 const swPath = path.join(__dirname, 'sw.js');
 const swContent = fs.readFileSync(swPath, 'utf8');
 
-it('4.1 sw.js 快取名稱升級至 pokopia-cache-v4.22.0', () => {
-  assert.ok(swContent.includes("CACHE_NAME = 'pokopia-cache-v4.22.0'"));
+it('4.1 sw.js 快取名稱升級至 pokopia-cache-v4.23.0', () => {
+  assert.ok(swContent.includes("CACHE_NAME = 'pokopia-cache-v4.23.0'"));
 });
 
 it('4.2 sw.js 包含 venusaur_voxel_data.js 靜態離線預載入', () => {
-  assert.ok(swContent.includes("'./venusaur_voxel_data.js?v=4.22.0'"));
+  assert.ok(swContent.includes("'./venusaur_voxel_data.js?v=4.23.0'"));
 });
 
 console.log('\n--------------------------------------------------------');
