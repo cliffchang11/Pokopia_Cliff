@@ -43,20 +43,22 @@ def find_closest_block_id(rgb):
     # 專用高保真材質映射規則
     if r > 160 and g < 65 and b < 65: return 13 # red_concrete (眼珠紅)
     if max(rgb) < 35: return 14 # black_concrete (瞳孔黑)
-    if r > 180 and g > 180 and b > 180: return 12 # white_concrete (爪/齒/眼白/花瓣白斑)
+    if r > 175 and g > 175 and b > 175: return 12 # white_concrete (爪/齒/眼白/花瓣白斑)
     if r > 180 and g > 150 and b < 70: return 7 # yellow_concrete (花蕊黃)
     if 50 <= r <= 100 and g < 40 and b < 50: return 16 # crimson_hyphae (深紅口腔)
     if r > 160 and 40 <= g <= 110 and 60 <= b <= 120: return 15 # pink_terracotta (舌頭/口唇粉)
     if r > 180 and b > 70 and g < 140: return 4 # pink_concrete (花瓣粉紅)
     if 110 <= r <= 180 and 20 <= g <= 60 and 40 <= b <= 90: return 6 # red_terracotta (花瓣暗折線)
     if 60 <= r <= 150 and 30 <= g <= 90 and 15 <= b <= 60: return 10 # brown_concrete (棕色樹幹)
-    if 140 <= r <= 200 and 100 <= g <= 160 and 40 <= b <= 90: return 11 # stripped_oak_wood (去皮橡木花莖)
-    if g > r and g > b:
-        return 8 if g > 130 else 9 # lime_concrete / green_concrete (背部大葉片)
-    if g >= 80 and b >= 80:
+    # 青色皮膚與海晶石 (Cyan / Prismarine)：藍綠雙通道皆高，遠大於紅
+    if g >= 80 and b >= 80 and (b > r + 15 or g > r + 15):
         if r <= 55 and g <= 105 and b <= 105: return 3 # dark_prismarine (深色斑點)
         elif g > 150 or b > 170: return 1 # cyan_concrete (主體皮膚青色)
         else: return 2 # prismarine_bricks (海晶磚)
+
+    # 背部大葉片 (綠色混凝土 / 淺綠色混凝土)
+    if g > r and g > b:
+        return 8 if g > 130 else 9 # lime_concrete / green_concrete
 
     dists = [np.sum((rgb - m['rgb'])**2) for m in MC_PALETTE]
     return MC_PALETTE[int(np.argmin(dists))]['id']
@@ -110,13 +112,20 @@ def generate():
         x, y, z = k
         r, g, b = int(c[0]), int(c[1]), int(c[2])
         if y < 15: return False
+        
+        # 腳底著地層 (Y <= 20) 純淨足部約束：只允許「白色爪子」與「青色皮膚」，嚴禁草皮綠與陰影黑
+        if y <= 20:
+            if r > 175 and g > 175 and b > 175: return True # 白色爪子
+            if b >= 120 and g >= 120 and b > r + 30: return True # 青色腳掌皮膚
+            return False # 徹底剔除底層的綠色草皮與黑色泥石
+            
         if y > 38: return True
-        if r > 175 and g > 175 and b > 175: return True # 白色爪齒
+        if r > 175 and g > 175 and b > 175: return True # 白色齒/眼
         if r > 105 and r > g + 20 and r > b + 15: return True # 嘴唇粉紅/眼睛紅
         if r >= 48 and r > g + 12 and r > b + 5 and g < 65: return True # 深紅口腔底部
         if r > 170 and g > 140 and b < 80: return True # 花蕊黃
-        if max(r, g, b) < 35: return True # 瞳孔黑
-        if g > r and g > b and g >= 135: return True # 大葉片鮮豔綠
+        if max(r, g, b) < 35: return True # 瞳孔黑 (Y > 20)
+        if g > r and g > b and g >= 135: return True # 大葉片鮮豔綠 (Y > 20)
         if b >= 120 and g >= 120 and b > r + 30: return True # 青色皮膚
         return False
 
@@ -140,7 +149,8 @@ def generate():
                 visited.add(nbr)
                 queue.append(nbr)
 
-    spots = [k for k, c in raw_map.items() if tuple(c) == (59, 92, 84) and k[1] >= 15]
+    # 斑點吸附亦限於 Y > 20（身軀以上），絕不混入腳底
+    spots = [k for k, c in raw_map.items() if tuple(c) == (59, 92, 84) and k[1] > 20]
     legit_spots = set()
     for p in spots:
         if any((p[0]+dx, p[1]+dy, p[2]+dz) in visited for dx, dy, dz in dirs):
