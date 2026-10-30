@@ -268,6 +268,31 @@
     btnBulbaZoomIn: document.getElementById('btnBulbaZoomIn'),
     btnBulbaZoomOut: document.getElementById('btnBulbaZoomOut'),
     btnBulbaZoomReset: document.getElementById('btnBulbaZoomReset'),
+    btnSubVenusaur: document.getElementById('btnSubVenusaur'),
+    paneVenusaur: document.getElementById('paneVenusaur'),
+    btnVenusaurModeFull: document.getElementById('btnVenusaurModeFull'),
+    btnVenusaurModeSlice: document.getElementById('btnVenusaurModeSlice'),
+    btnVenusaurModeSketchfab: document.getElementById('btnVenusaurModeSketchfab'),
+    venusaur3dCanvasWrap: document.getElementById('venusaur3dCanvasWrap'),
+    venusaur3dCanvas: document.getElementById('venusaur3dCanvas'),
+    venusaur3dIframeWrap: document.getElementById('venusaur3dIframeWrap'),
+    venusaurSliceCard: document.getElementById('venusaurSliceCard'),
+    venusaurLayerBadge: document.getElementById('venusaurLayerBadge'),
+    venusaurLayerBlockCount: document.getElementById('venusaurLayerBlockCount'),
+    btnVenusaurPrevLayer: document.getElementById('btnVenusaurPrevLayer'),
+    btnVenusaurNextLayer: document.getElementById('btnVenusaurNextLayer'),
+    venusaurLayerSlider: document.getElementById('venusaurLayerSlider'),
+    venusaurVoxelGrid: document.getElementById('venusaurVoxelGrid'),
+    venusaurDimTop: document.getElementById('venusaurDimTop'),
+    venusaurDimRight: document.getElementById('venusaurDimRight'),
+    venusaurHoverTooltip: document.getElementById('venusaurHoverTooltip'),
+    venusaurTooltipColor: document.getElementById('venusaurTooltipColor'),
+    venusaurTooltipText: document.getElementById('venusaurTooltipText'),
+    venusaurMatTypesCount: document.getElementById('venusaurMatTypesCount'),
+    venusaurMatList: document.getElementById('venusaurMatList'),
+    btnVenusaurZoomIn: document.getElementById('btnVenusaurZoomIn'),
+    btnVenusaurZoomOut: document.getElementById('btnVenusaurZoomOut'),
+    btnVenusaurZoomReset: document.getElementById('btnVenusaurZoomReset'),
     videoPlayerIframe: document.getElementById('videoPlayerIframe'),
     videoResumeBanner: document.getElementById('videoResumeBanner'),
     videoResumeText: document.getElementById('videoResumeText'),
@@ -1366,6 +1391,9 @@
     if (DOM.btnSubBulba) {
       DOM.btnSubBulba.addEventListener('click', () => switchCharacterBlueprint('bulba'));
     }
+    if (DOM.btnSubVenusaur) {
+      DOM.btnSubVenusaur.addEventListener('click', () => switchCharacterBlueprint('venusaur'));
+    }
     // 巴斯光年事件
     if (DOM.btnBuzzModeFull) {
       DOM.btnBuzzModeFull.addEventListener('click', () => switchBuzz3DMode('full'));
@@ -1431,6 +1459,41 @@
     }
     if (DOM.btnBulbaZoomReset) {
       DOM.btnBulbaZoomReset.addEventListener('click', () => changeSliceZoom(bulbaWorkspace, bulbaState.zoom, 1.0, true, bulbaContainer));
+    }
+
+    // 妙蛙花事件
+    if (DOM.btnVenusaurModeFull) {
+      DOM.btnVenusaurModeFull.addEventListener('click', () => switchVenusaur3DMode('full'));
+    }
+    if (DOM.btnVenusaurModeSlice) {
+      DOM.btnVenusaurModeSlice.addEventListener('click', () => switchVenusaur3DMode('slice'));
+    }
+    if (DOM.btnVenusaurModeSketchfab) {
+      DOM.btnVenusaurModeSketchfab.addEventListener('click', () => switchVenusaur3DMode('sketchfab'));
+    }
+    if (DOM.btnVenusaurPrevLayer) {
+      DOM.btnVenusaurPrevLayer.addEventListener('click', () => setVenusaurLayer(venusaurState.curLayer - 1));
+    }
+    if (DOM.btnVenusaurNextLayer) {
+      DOM.btnVenusaurNextLayer.addEventListener('click', () => setVenusaurLayer(venusaurState.curLayer + 1));
+    }
+    if (DOM.venusaurLayerSlider) {
+      DOM.venusaurLayerSlider.addEventListener('input', (e) => setVenusaurLayer(Number(e.target.value)));
+    }
+
+    const venusaurContainer = DOM.venusaurVoxelGrid ? DOM.venusaurVoxelGrid.closest('.bulba-grid-container') : null;
+    const venusaurWorkspace = DOM.venusaurVoxelGrid ? DOM.venusaurVoxelGrid.closest('.bulba-grid-workspace') : null;
+    if (venusaurContainer && venusaurWorkspace) {
+      setupSliceZoomPan(venusaurContainer, venusaurWorkspace, venusaurState.zoom);
+    }
+    if (DOM.btnVenusaurZoomIn) {
+      DOM.btnVenusaurZoomIn.addEventListener('click', () => changeSliceZoom(venusaurWorkspace, venusaurState.zoom, 1.25));
+    }
+    if (DOM.btnVenusaurZoomOut) {
+      DOM.btnVenusaurZoomOut.addEventListener('click', () => changeSliceZoom(venusaurWorkspace, venusaurState.zoom, 0.8));
+    }
+    if (DOM.btnVenusaurZoomReset) {
+      DOM.btnVenusaurZoomReset.addEventListener('click', () => changeSliceZoom(venusaurWorkspace, venusaurState.zoom, 1.0, true, venusaurContainer));
     }
 
     // View mode switching
@@ -2078,15 +2141,22 @@
       if (DOM.toolbarHeaderRow) DOM.toolbarHeaderRow.classList.remove('hidden');
       if (DOM.toolbarTitle) DOM.toolbarTitle.textContent = '3D 藍圖';
       if (DOM.catalogProgressBadge) DOM.catalogProgressBadge.classList.remove('hidden');
-      if (bulbaState.curChar === 'bulba') {
+      if (bulbaState.curChar === 'venusaur') {
+        if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🌺';
+        const vTotal = (typeof VENUSAUR_VOXEL_DATA !== 'undefined' && VENUSAUR_VOXEL_DATA.totalBlocks) ? VENUSAUR_VOXEL_DATA.totalBlocks.toLocaleString() : '142,996';
+        const vLayers = (typeof VENUSAUR_VOXEL_DATA !== 'undefined' && VENUSAUR_VOXEL_DATA.layers) ? VENUSAUR_VOXEL_DATA.layers.length : '100';
+        if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = `<strong>${vTotal}</strong> 顆方塊 ‧ ${vLayers} 層切片`;
+        if (typeof renderVenusaurLayer === 'function') renderVenusaurLayer(venusaurState.curLayer);
+        if (typeof initVenusaurThreeEngine === 'function') setTimeout(initVenusaurThreeEngine, 60);
+      } else if (bulbaState.curChar === 'bulba') {
         if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🍃';
         if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>8,415</strong> 顆方塊 ‧ 53 層切片';
         if (typeof renderBulbaLayer === 'function') renderBulbaLayer(bulbaState.curLayer);
         if (typeof initBulbaThreeEngine === 'function') setTimeout(initBulbaThreeEngine, 60);
       } else {
         if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🚀';
-        const buzzTotal = (typeof BUZZ_VOXEL_DATA !== 'undefined' && BUZZ_VOXEL_DATA.totalBlocks) ? BUZZ_VOXEL_DATA.totalBlocks.toLocaleString() : '8,933';
-        const buzzLayers = (typeof BUZZ_VOXEL_DATA !== 'undefined' && BUZZ_VOXEL_DATA.layers) ? BUZZ_VOXEL_DATA.layers.length : '52';
+        const buzzTotal = (typeof BUZZ_VOXEL_DATA !== 'undefined' && BUZZ_VOXEL_DATA.totalBlocks) ? BUZZ_VOXEL_DATA.totalBlocks.toLocaleString() : '7,927';
+        const buzzLayers = (typeof BUZZ_VOXEL_DATA !== 'undefined' && BUZZ_VOXEL_DATA.layers) ? BUZZ_VOXEL_DATA.layers.length : '42';
         if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = `<strong>${buzzTotal}</strong> 顆方塊 ‧ ${buzzLayers} 層切片`;
         if (typeof renderBuzzLayer === 'function') renderBuzzLayer(buzzState.curLayer);
         if (typeof initBuzzThreeEngine === 'function') setTimeout(initBuzzThreeEngine, 60);
@@ -6998,6 +7068,22 @@
     }
   };
 
+  const venusaurState = {
+    curMode: 'full', // 'full' | 'slice' | 'sketchfab'
+    curLayer: 1,
+    zoom: { scale: 1.0, panX: 0, panY: 0 },
+    three: {
+      isInit: false,
+      scene: null,
+      camera: null,
+      renderer: null,
+      controls: null,
+      instancedMesh: null,
+      blockDataList: [],
+      animFrameId: null
+    }
+  };
+
   function applyWorkspaceZoomPan(workspace, zoomObj) {
     if (!workspace) return;
     workspace.style.transform = `translate(${zoomObj.panX}px, ${zoomObj.panY}px) scale(${zoomObj.scale})`;
@@ -7096,22 +7182,29 @@
 
   function switchCharacterBlueprint(char) {
     bulbaState.curChar = char;
+    if (DOM.btnSubBuzz) DOM.btnSubBuzz.classList.toggle('active', char === 'buzz');
+    if (DOM.btnSubBulba) DOM.btnSubBulba.classList.toggle('active', char === 'bulba');
+    if (DOM.btnSubVenusaur) DOM.btnSubVenusaur.classList.toggle('active', char === 'venusaur');
+
+    if (DOM.paneBuzz) DOM.paneBuzz.classList.toggle('hidden', char !== 'buzz');
+    if (DOM.paneBulba) DOM.paneBulba.classList.toggle('hidden', char !== 'bulba');
+    if (DOM.paneVenusaur) DOM.paneVenusaur.classList.toggle('hidden', char !== 'venusaur');
+
     if (char === 'buzz') {
-      if (DOM.btnSubBuzz) DOM.btnSubBuzz.classList.add('active');
-      if (DOM.btnSubBulba) DOM.btnSubBulba.classList.remove('active');
-      if (DOM.paneBuzz) DOM.paneBuzz.classList.remove('hidden');
-      if (DOM.paneBulba) DOM.paneBulba.classList.add('hidden');
       if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🚀';
       const bTotal = (typeof BUZZ_VOXEL_DATA !== 'undefined' && BUZZ_VOXEL_DATA.totalBlocks) ? BUZZ_VOXEL_DATA.totalBlocks.toLocaleString() : '7,927';
       const bLayers = (typeof BUZZ_VOXEL_DATA !== 'undefined' && BUZZ_VOXEL_DATA.layers) ? BUZZ_VOXEL_DATA.layers.length : '42';
       if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = `<strong>${bTotal}</strong> 顆方塊 ‧ ${bLayers} 層切片`;
       renderBuzzLayer(buzzState.curLayer);
       setTimeout(initBuzzThreeEngine, 60);
+    } else if (char === 'venusaur') {
+      if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🌺';
+      const vTotal = (typeof VENUSAUR_VOXEL_DATA !== 'undefined' && VENUSAUR_VOXEL_DATA.totalBlocks) ? VENUSAUR_VOXEL_DATA.totalBlocks.toLocaleString() : '142,996';
+      const vLayers = (typeof VENUSAUR_VOXEL_DATA !== 'undefined' && VENUSAUR_VOXEL_DATA.layers) ? VENUSAUR_VOXEL_DATA.layers.length : '100';
+      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = `<strong>${vTotal}</strong> 顆方塊 ‧ ${vLayers} 層切片`;
+      renderVenusaurLayer(venusaurState.curLayer);
+      setTimeout(initVenusaurThreeEngine, 60);
     } else {
-      if (DOM.btnSubBuzz) DOM.btnSubBuzz.classList.remove('active');
-      if (DOM.btnSubBulba) DOM.btnSubBulba.classList.add('active');
-      if (DOM.paneBuzz) DOM.paneBuzz.classList.add('hidden');
-      if (DOM.paneBulba) DOM.paneBulba.classList.remove('hidden');
       if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🍃';
       if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>8,415</strong> 顆方塊 ‧ 53 層切片';
       renderBulbaLayer(bulbaState.curLayer);
@@ -7875,7 +7968,368 @@
     t.instancedMesh.instanceMatrix.needsUpdate = true;
   }
 
-  // 暴露巴斯光年與妙蛙種子 API
+  // ═══════════════════════════════════════════════════════════════════
+  // 🌺 妙蛙花 (Venusaur #003) 100 層建造切片指南與 3D 引擎實作
+  // ═══════════════════════════════════════════════════════════════════
+  function switchVenusaur3DMode(mode) {
+    venusaurState.curMode = mode;
+    if (DOM.btnVenusaurModeFull) {
+      DOM.btnVenusaurModeFull.classList.toggle('active', mode === 'full');
+    }
+    if (DOM.btnVenusaurModeSlice) {
+      DOM.btnVenusaurModeSlice.classList.toggle('active', mode === 'slice');
+    }
+    if (DOM.btnVenusaurModeSketchfab) {
+      DOM.btnVenusaurModeSketchfab.classList.toggle('active', mode === 'sketchfab');
+    }
+
+    if (mode === 'sketchfab') {
+      if (DOM.venusaur3dCanvasWrap) DOM.venusaur3dCanvasWrap.style.display = 'none';
+      if (DOM.venusaur3dIframeWrap) DOM.venusaur3dIframeWrap.classList.add('active');
+      if (DOM.venusaurSliceCard) DOM.venusaurSliceCard.style.display = 'block';
+      renderVenusaurLayer(venusaurState.curLayer);
+    } else {
+      if (DOM.venusaur3dCanvasWrap) DOM.venusaur3dCanvasWrap.style.display = 'block';
+      if (DOM.venusaur3dIframeWrap) DOM.venusaur3dIframeWrap.classList.remove('active');
+      if (DOM.venusaurSliceCard) DOM.venusaurSliceCard.style.display = 'block';
+      updateVenusaur3DSliceFilter();
+      setTimeout(initVenusaurThreeEngine, 30);
+    }
+  }
+
+  function setVenusaurLayer(layerIndex) {
+    if (typeof VENUSAUR_VOXEL_DATA === 'undefined') return;
+    const maxLayer = VENUSAUR_VOXEL_DATA.layers.length;
+    const target = Math.max(1, Math.min(maxLayer, layerIndex));
+    venusaurState.curLayer = target;
+    if (DOM.venusaurLayerSlider) DOM.venusaurLayerSlider.value = target;
+    renderVenusaurLayer(target);
+    if (venusaurState.curMode === 'slice') {
+      updateVenusaur3DSliceFilter();
+    }
+  }
+
+  function renderVenusaurLayer(layerIndex) {
+    if (typeof VENUSAUR_VOXEL_DATA === 'undefined') return;
+    const data = VENUSAUR_VOXEL_DATA;
+    const layer = data.layers[layerIndex - 1];
+    if (!layer) return;
+
+    if (DOM.venusaurLayerBadge) {
+      DOM.venusaurLayerBadge.textContent = `第 ${layerIndex} / ${data.layers.length} 層`;
+    }
+    const blockCount = layer.blocks.length;
+    if (DOM.venusaurLayerBlockCount) {
+      DOM.venusaurLayerBlockCount.textContent = `本層 ${blockCount.toLocaleString()} 顆`;
+    }
+
+    if (DOM.venusaurVoxelGrid) {
+      DOM.venusaurVoxelGrid.innerHTML = '';
+      if (blockCount === 0) {
+        DOM.venusaurVoxelGrid.innerHTML = '<div class="bulba-empty-hint" style="color:#94a3b8;font-size:0.875rem;padding:2rem;">本層無方塊（可跳至下一層）</div>';
+        if (DOM.venusaurDimTop) DOM.venusaurDimTop.style.display = 'none';
+        if (DOM.venusaurDimRight) DOM.venusaurDimRight.style.display = 'none';
+      } else {
+        let minX = Infinity, maxX = -Infinity;
+        let minZ = Infinity, maxZ = -Infinity;
+        const blockMap = new Map();
+        const xOccupied = new Set();
+        const zOccupied = new Set();
+
+        layer.blocks.forEach(([x, z, bid]) => {
+          if (x < minX) minX = x;
+          if (x > maxX) maxX = x;
+          if (z < minZ) minZ = z;
+          if (z > maxZ) maxZ = z;
+          blockMap.set(`${x},${z}`, bid);
+          xOccupied.add(x);
+          zOccupied.add(z);
+        });
+
+        const spanX = maxX - minX + 1;
+        const spanZ = maxZ - minZ + 1;
+
+        const xSegments = getVoxelAxisSegments(minX, maxX, xOccupied);
+        const zSegments = getVoxelAxisSegments(minZ, maxZ, zOccupied);
+
+        const parent = DOM.venusaurVoxelGrid.closest('.bulba-grid-container') || DOM.venusaurVoxelGrid.parentElement;
+        const containerWidth = parent ? (parent.clientWidth || 800) : 800;
+        const isMobile = window.innerWidth <= 768;
+
+        let cellSize;
+        if (isMobile) {
+          const rightDimReserved = 28;
+          const netWidth = containerWidth - 36 - rightDimReserved - (spanX - 1);
+          cellSize = Math.max(2, Math.floor(netWidth / spanX));
+          cellSize = Math.min(14, cellSize);
+        } else {
+          const cellByHeight = Math.floor((340 - 24 - (spanZ - 1)) / spanZ);
+          const cellByWidth = Math.floor((containerWidth - 60 - 28 - (spanX - 1)) / spanX);
+          cellSize = Math.min(cellByHeight, cellByWidth, 16);
+          cellSize = Math.max(3, cellSize);
+        }
+
+        DOM.venusaurVoxelGrid.style.gap = '1px';
+        DOM.venusaurVoxelGrid.style.gridTemplateColumns = `repeat(${spanX}, ${cellSize}px)`;
+
+        const gridTotalWidth = spanX * cellSize + (spanX - 1) + 16;
+        const gridTotalHeight = spanZ * cellSize + (spanZ - 1) + 16;
+        renderDimTopSegments(DOM.venusaurDimTop, xSegments, cellSize, gridTotalWidth);
+        renderDimRightSegments(DOM.venusaurDimRight, zSegments, cellSize, gridTotalHeight);
+
+        const frag = document.createDocumentFragment();
+        for (let z = minZ; z <= maxZ; z++) {
+          for (let x = minX; x <= maxX; x++) {
+            const bid = blockMap.get(`${x},${z}`);
+            const cell = document.createElement('div');
+            cell.className = 'bulba-cell';
+            cell.style.width = `${cellSize}px`;
+            cell.style.height = `${cellSize}px`;
+
+            if (bid !== undefined) {
+              const pItem = data.palette[bid] || { name: '方塊', color: '#00a8c8' };
+              cell.style.backgroundColor = pItem.color;
+              cell.style.border = '1px solid rgba(15, 23, 42, 0.65)';
+              cell.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.35)';
+              cell.dataset.x = x;
+              cell.dataset.z = z;
+              cell.dataset.name = pItem.name;
+              cell.dataset.color = pItem.color;
+
+              cell.addEventListener('mouseenter', () => {
+                if (!DOM.venusaurHoverTooltip) return;
+                DOM.venusaurHoverTooltip.classList.remove('hidden');
+                if (DOM.venusaurTooltipColor) DOM.venusaurTooltipColor.style.backgroundColor = pItem.color;
+                if (DOM.venusaurTooltipText) {
+                  DOM.venusaurTooltipText.textContent = `${pItem.name} (X: ${x}, Z: ${z})`;
+                }
+              });
+              cell.addEventListener('mouseleave', () => {
+                if (DOM.venusaurHoverTooltip) DOM.venusaurHoverTooltip.classList.add('hidden');
+              });
+            } else {
+              cell.style.backgroundColor = 'rgba(236, 72, 153, 0.03)';
+              cell.style.border = '1px solid rgba(236, 72, 153, 0.08)';
+            }
+            frag.appendChild(cell);
+          }
+        }
+        DOM.venusaurVoxelGrid.appendChild(frag);
+
+        const workspace = DOM.venusaurVoxelGrid.closest('.bulba-grid-workspace');
+        if (workspace && parent && venusaurState.zoom.panX === 0 && venusaurState.zoom.panY === 0) {
+          fitWorkspaceToContainer(workspace, parent, venusaurState.zoom);
+        } else {
+          applyWorkspaceZoomPan(workspace, venusaurState.zoom);
+        }
+      }
+    }
+
+    // 本層材料清單 (支援勾選追蹤狀態)
+    if (DOM.venusaurMatList) {
+      DOM.venusaurMatList.innerHTML = '';
+      const matEntries = Object.entries(layer.materials);
+      if (DOM.venusaurMatTypesCount) {
+        DOM.venusaurMatTypesCount.textContent = `${matEntries.length} 種建材`;
+      }
+      matEntries.sort((a, b) => b[1] - a[1]);
+      
+      const checkKey = `pokopia_venusaur_layer_checks_L${layerIndex}`;
+      let checkState = {};
+      try {
+        checkState = JSON.parse(localStorage.getItem(checkKey) || '{}');
+      } catch (_) {}
+
+      matEntries.forEach(([bid, count]) => {
+        const pItem = data.palette[bid] || { name: '方塊', color: '#00a8c8' };
+        const isChecked = !!checkState[bid];
+        const item = document.createElement('div');
+        item.className = `bulba-mat-item ${isChecked ? 'is-checked' : ''}`;
+        item.style.cursor = 'pointer';
+        item.innerHTML = `
+          <input type="checkbox" class="mat-checkbox" ${isChecked ? 'checked' : ''} style="margin-right: 0.5rem; cursor: pointer;">
+          <span class="bulba-mat-chip" style="background-color: ${pItem.color};"></span>
+          <span class="bulba-mat-name" title="${pItem.name}" style="${isChecked ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${pItem.name}</span>
+          <span class="bulba-mat-count" style="${isChecked ? 'opacity: 0.6;' : ''}">×${count}</span>
+        `;
+        
+        const checkbox = item.querySelector('.mat-checkbox');
+        const toggleCheck = (e) => {
+          if (e.target !== checkbox) checkbox.checked = !checkbox.checked;
+          const checked = checkbox.checked;
+          item.classList.toggle('is-checked', checked);
+          const nameEl = item.querySelector('.bulba-mat-name');
+          const countEl = item.querySelector('.bulba-mat-count');
+          if (nameEl) nameEl.style.textDecoration = checked ? 'line-through' : 'none';
+          if (nameEl) nameEl.style.opacity = checked ? '0.6' : '1';
+          if (countEl) countEl.style.opacity = checked ? '0.6' : '1';
+          
+          checkState[bid] = checked;
+          try {
+            localStorage.setItem(checkKey, JSON.stringify(checkState));
+          } catch (_) {}
+        };
+        item.addEventListener('click', toggleCheck);
+        DOM.venusaurMatList.appendChild(item);
+      });
+    }
+  }
+
+  function initVenusaurThreeEngine() {
+    if (typeof THREE === 'undefined' || typeof VENUSAUR_VOXEL_DATA === 'undefined') return;
+    if (!DOM.venusaur3dCanvas) return;
+
+    const wrap = DOM.venusaur3dCanvas.parentElement;
+    if (!wrap) return;
+    const width = wrap.clientWidth || 800;
+    const height = wrap.clientHeight || 560;
+
+    const t = venusaurState.three;
+    if (t.isInit) {
+      t.renderer.setSize(width, height);
+      t.camera.aspect = width / height;
+      t.camera.updateProjectionMatrix();
+      return;
+    }
+
+    const scene = new THREE.Scene();
+    scene.background = null;
+
+    const camera = new THREE.PerspectiveCamera(40, width / height, 1, 2000);
+    camera.position.set(135, 95, 155);
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas: DOM.venusaur3dCanvas,
+      antialias: true,
+      alpha: true
+    });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.68);
+    scene.add(ambientLight);
+
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.72);
+    dirLight1.position.set(90, 150, 90);
+    scene.add(dirLight1);
+
+    const dirLight2 = new THREE.DirectionalLight(0xf472b6, 0.35);
+    dirLight2.position.set(-90, 60, -90);
+    scene.add(dirLight2);
+
+    const dirLight3 = new THREE.DirectionalLight(0x064e3b, 0.18);
+    dirLight3.position.set(0, -80, 0);
+    scene.add(dirLight3);
+
+    let controls = null;
+    if (typeof THREE.OrbitControls !== 'undefined') {
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.08;
+      controls.target.set(0, 0, 0);
+      controls.maxDistance = 650;
+      controls.minDistance = 30;
+    }
+
+    const data = VENUSAUR_VOXEL_DATA;
+    const totalCount = data.totalBlocks;
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const outlineTexture = createVoxelOutlineTexture();
+    const material = new THREE.MeshStandardMaterial({
+      map: outlineTexture || null,
+      roughness: 0.88,
+      metalness: 0.0
+    });
+
+    const instancedMesh = new THREE.InstancedMesh(geometry, material, totalCount);
+    const dummy = new THREE.Object3D();
+    const color = new THREE.Color();
+
+    const cx = data.dimensions.width / 2;
+    const cy = data.dimensions.height / 2;
+    const cz = data.dimensions.length / 2;
+
+    const blockDataList = [];
+    let idx = 0;
+
+    data.layers.forEach((layer) => {
+      const y = layer.layerIndex - 1;
+      layer.blocks.forEach(([x, z, bid]) => {
+        dummy.position.set(x - cx, y - cy, z - cz);
+        dummy.scale.set(1, 1, 1);
+        dummy.updateMatrix();
+
+        instancedMesh.setMatrixAt(idx, dummy.matrix);
+        const pItem = data.palette[bid] || { color: '#00a8c8' };
+        color.set(pItem.color);
+        instancedMesh.setColorAt(idx, color);
+
+        blockDataList.push({
+          index: idx,
+          layerIndex: layer.layerIndex,
+          defaultMatrix: dummy.matrix.clone(),
+          posX: x - cx,
+          posY: y - cy,
+          posZ: z - cz
+        });
+        idx++;
+      });
+    });
+
+    instancedMesh.instanceMatrix.needsUpdate = true;
+    if (instancedMesh.instanceColor) instancedMesh.instanceColor.needsUpdate = true;
+    scene.add(instancedMesh);
+
+    t.isInit = true;
+    t.scene = scene;
+    t.camera = camera;
+    t.renderer = renderer;
+    t.controls = controls;
+    t.instancedMesh = instancedMesh;
+    t.blockDataList = blockDataList;
+
+    function animate() {
+      t.animFrameId = requestAnimationFrame(animate);
+      if (controls) controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      if (!t.isInit || !DOM.venusaur3dCanvas) return;
+      const curWrap = DOM.venusaur3dCanvas.parentElement;
+      if (!curWrap) return;
+      const nw = curWrap.clientWidth || 500;
+      const nh = curWrap.clientHeight || 560;
+      camera.aspect = nw / nh;
+      camera.updateProjectionMatrix();
+      renderer.setSize(nw, nh);
+    });
+  }
+
+  function updateVenusaur3DSliceFilter() {
+    const t = venusaurState.three;
+    if (!t.isInit || !t.instancedMesh || !t.blockDataList.length) return;
+
+    const isSlice = venusaurState.curMode === 'slice';
+    const curLayer = venusaurState.curLayer;
+    const dummy = new THREE.Object3D();
+
+    for (let i = 0; i < t.blockDataList.length; i++) {
+      const item = t.blockDataList[i];
+      if (!isSlice || item.layerIndex <= curLayer) {
+        t.instancedMesh.setMatrixAt(item.index, item.defaultMatrix);
+      } else {
+        dummy.position.set(item.posX, item.posY, item.posZ);
+        dummy.scale.set(0, 0, 0);
+        dummy.updateMatrix();
+        t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
+      }
+    }
+    t.instancedMesh.instanceMatrix.needsUpdate = true;
+  }
+
+  // 暴露巴斯光年、妙蛙種子與妙蛙花 API
   window.PokopiaBuzz = {
     getState: () => buzzState,
     switchBuzz3DMode,
@@ -7892,6 +8346,14 @@
     renderBulbaLayer,
     initBulbaThreeEngine,
     updateBulba3DSliceFilter
+  };
+  window.PokopiaVenusaur = {
+    getState: () => venusaurState,
+    switchVenusaur3DMode,
+    setVenusaurLayer,
+    renderVenusaurLayer,
+    initVenusaurThreeEngine,
+    updateVenusaur3DSliceFilter
   };
 
   // 暴露地區地圖 API
