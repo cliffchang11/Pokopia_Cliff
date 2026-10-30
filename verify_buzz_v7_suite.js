@@ -114,10 +114,10 @@ it('1.5 腹部黑色腰帶水平橫貫連貫性', () => {
 // 2. 檢驗 index.html
 const indexHtml = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
 
-it('2.1 index.html 版本號全站升級至 v=4.24.0', () => {
-  assert.ok(indexHtml.includes('index.css?v=4.24.0'));
-  assert.ok(indexHtml.includes('buzz_voxel_data.js?v=4.24.0'));
-  assert.ok(indexHtml.includes('app.js?v=4.24.0'));
+it('2.1 index.html 版本號全站升級至 v=4.25.0', () => {
+  assert.ok(indexHtml.includes('index.css?v=4.25.0'));
+  assert.ok(indexHtml.includes('buzz_voxel_data.js?v=4.25.0'));
+  assert.ok(indexHtml.includes('app.js?v=4.25.0'));
   assert.ok(!indexHtml.includes('buzz_voxel_data.js?v=4.20.0'));
 });
 
@@ -129,11 +129,11 @@ it('2.2 index.html 切片指南與滑桿更新為 36 層', () => {
 // 3. 檢驗 sw.js
 const swJs = fs.readFileSync(path.join(__dirname, 'sw.js'), 'utf8');
 
-it('3.1 sw.js 快取名稱與版本號對齊 v4.24.0', () => {
-  assert.ok(swJs.includes("const CACHE_NAME = 'pokopia-cache-v4.24.0';"));
-  assert.ok(swJs.includes("'./index.css?v=4.24.0'"));
-  assert.ok(swJs.includes("'./buzz_voxel_data.js?v=4.24.0'"));
-  assert.ok(swJs.includes("'./app.js?v=4.24.0'"));
+it('3.1 sw.js 快取名稱與版本號對齊 v4.25.0', () => {
+  assert.ok(swJs.includes("const CACHE_NAME = 'pokopia-cache-v4.25.0';"));
+  assert.ok(swJs.includes("'./index.css?v=4.25.0'"));
+  assert.ok(swJs.includes("'./buzz_voxel_data.js?v=4.25.0'"));
+  assert.ok(swJs.includes("'./app.js?v=4.25.0'"));
 });
 
 // 4. 檢驗 app.js 3D 渲染、黑線邊框與 Sketchfab 切片常駐對帳

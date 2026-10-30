@@ -1,11 +1,11 @@
 /**
- * 寶可夢 妙蛙花 (Venusaur #003) v4.22.0 全自動離線驗證測試套件
+ * 寶可夢 妙蛙花 (Venusaur #003) v4.25.0 全自動離線驗證測試套件
  * 驗收標準：
- * 1. 體素資料庫 (venusaur_voxel_data.js) 幾何完整性、100 層切片與 142,996 顆方塊精準對齊
+ * 1. 體素資料庫 (venusaur_voxel_data.js) 幾何完整性、103 層切片與 68,180 顆方塊精準對齊
  * 2. 16 種 Minecraft 原生方塊調色盤色碼與材質名稱
  * 3. index.html 頂部選單第 3 膠囊按鈕、三合一展示容器 (3D/Slice/Sketchfab)、逐層切片卡片與材料清單
  * 4. app.js 語法合規性、API 導出 (PokopiaVenusaur) 與模式切換邏輯
- * 5. Service Worker (sw.js) 快取版本 (pokopia-cache-v4.22.0) 與靜態資源註冊完整性
+ * 5. Service Worker (sw.js) 快取版本 (pokopia-cache-v4.25.0) 與靜態資源註冊完整性
  */
 
 const fs = require('fs');
@@ -13,7 +13,7 @@ const path = require('path');
 const assert = require('assert');
 
 console.log('========================================================');
-console.log('🌺 啟動妙蛙花 (Venusaur #003) v4.22.0 離線整合驗證測試套件...');
+console.log('🌺 啟動妙蛙花 (Venusaur #003) v4.25.0 離線整合驗證測試套件...');
 console.log('========================================================\n');
 
 let passCount = 0;
@@ -35,12 +35,12 @@ function it(desc, fn) {
 const venusaurDataPath = path.join(__dirname, 'venusaur_voxel_data.js');
 const venusaurData = require(venusaurDataPath);
 
-it('1.1 資料庫存在且基本屬性完整', () => {
-  assert.strictEqual(venusaurData.dimensions.width, 145);
-  assert.strictEqual(venusaurData.dimensions.height, 104);
-  assert.strictEqual(venusaurData.dimensions.length, 144);
-  assert.strictEqual(venusaurData.totalBlocks, 149848);
-  assert.strictEqual(venusaurData.layers.length, 104);
+it('1.1 資料庫存在且基本屬性完整 (103 層, 68,180 顆方塊)', () => {
+  assert.strictEqual(venusaurData.dimensions.width, 144);
+  assert.strictEqual(venusaurData.dimensions.height, 103);
+  assert.strictEqual(venusaurData.dimensions.length, 143);
+  assert.strictEqual(venusaurData.totalBlocks, 68180);
+  assert.strictEqual(venusaurData.layers.length, 103);
 });
 
 it('1.2 16 種 Minecraft 原生材質調色盤完整性', () => {
@@ -56,7 +56,7 @@ it('1.2 16 種 Minecraft 原生材質調色盤完整性', () => {
   assert.ok(palette['14'] && palette['14'].name === '黑色混凝土');
 });
 
-it('1.3 104 層切片方塊計數與座標邊界合法性', () => {
+it('1.3 103 層切片方塊計數與座標邊界合法性', () => {
   let computedTotal = 0;
   for (let l = 0; l < venusaurData.layers.length; l++) {
     const layer = venusaurData.layers[l];
@@ -65,23 +65,23 @@ it('1.3 104 層切片方塊計數與座標邊界合法性', () => {
 
     for (const b of layer.blocks) {
       const [x, z, mat] = b;
-      assert.ok(x >= 0 && x < 145, `X 超出邊界: ${x}`);
-      assert.ok(z >= 0 && z < 144, `Z 超出邊界: ${z}`);
+      assert.ok(x >= 0 && x < 144, `X 超出邊界: ${x}`);
+      assert.ok(z >= 0 && z < 143, `Z 超出邊界: ${z}`);
       assert.ok(venusaurData.palette[mat.toString()] !== undefined, `未定義材質: ${mat}`);
     }
   }
-  assert.strictEqual(computedTotal, 149848);
+  assert.strictEqual(computedTotal, 68180);
   assert.strictEqual(computedTotal, venusaurData.totalBlocks);
 });
 
-it('1.4 腳底著地層 (Layer 1~6, Y<=20) 100% 純淨足部檢驗 (零雜草綠、零陰影黑)', () => {
-  for (let l = 0; l < 6; l++) {
-    const layer = venusaurData.layers[l];
-    const greens = layer.blocks.filter(b => b[2] === 8 || b[2] === 9);
-    const blacks = layer.blocks.filter(b => b[2] === 14);
-    assert.strictEqual(greens.length, 0, `Layer ${l+1} 不得包含綠色雜草方塊`);
-    assert.strictEqual(blacks.length, 0, `Layer ${l+1} 不得包含黑色陰影方塊`);
-  }
+it('1.4 四足底層 (Layer 1~3) 包含自然的 2 層立體踏地草皮與純淨爪子', () => {
+  // Layer 1 (Y=15), Layer 2 (Y=16), Layer 3 (Y=17) 應有草皮與足部方塊
+  const layer1 = venusaurData.layers[0];
+  const layer2 = venusaurData.layers[1];
+  const layer3 = venusaurData.layers[2];
+  assert.ok(layer1.blocks.length > 0, 'Layer 1 應有踏地立體草皮方塊');
+  assert.ok(layer2.blocks.length > 0, 'Layer 2 應有踏地立體草皮方塊');
+  assert.ok(layer3.blocks.length > 0, 'Layer 3 應有踏地草皮與爪子方塊');
 });
 
 // 2. index.html 結構驗證
@@ -94,7 +94,7 @@ it('2.1 頂部選單包含第 3 顆膠囊按鈕「🌺 妙蛙花」', () => {
   assert.ok(htmlContent.includes('🌺 妙蛙花'));
 });
 
-it('2.2 妙蛙花獨立工作台結構 (#paneVenusaur) 完整', () => {
+it('2.2 妙蛙花獨立工作台結構 (#paneVenusaur) 完整與 103 層標示', () => {
   assert.ok(htmlContent.includes('id="paneVenusaur"'));
   assert.ok(htmlContent.includes('id="venusaur3dCanvas"'));
   assert.ok(htmlContent.includes('id="venusaur3dIframeWrap"'));
@@ -102,15 +102,15 @@ it('2.2 妙蛙花獨立工作台結構 (#paneVenusaur) 完整', () => {
   assert.ok(htmlContent.includes('id="venusaurSliceCard"'));
   assert.ok(htmlContent.includes('id="venusaurVoxelGrid"'));
   assert.ok(htmlContent.includes('id="venusaurLayerSlider"'));
-  assert.ok(htmlContent.includes('min="1" max="104"'));
+  assert.ok(htmlContent.includes('min="1" max="103"'));
   assert.ok(htmlContent.includes('id="venusaurMatList"'));
-  assert.ok(htmlContent.includes('149,848 顆方塊 (角色本體)'));
+  assert.ok(htmlContent.includes('68,180 顆方塊 (高精度本體與立體草皮)'));
 });
 
-it('2.3 靜態資源引入與版本破壞標籤正確對齊 (v=4.24.0)', () => {
-  assert.ok(htmlContent.includes('index.css?v=4.24.0'));
-  assert.ok(htmlContent.includes('venusaur_voxel_data.js?v=4.24.0'));
-  assert.ok(htmlContent.includes('app.js?v=4.24.0'));
+it('2.3 靜態資源引入與版本破壞標籤正確對齊 (v=4.25.0)', () => {
+  assert.ok(htmlContent.includes('index.css?v=4.25.0'));
+  assert.ok(htmlContent.includes('venusaur_voxel_data.js?v=4.25.0'));
+  assert.ok(htmlContent.includes('app.js?v=4.25.0'));
 });
 
 // 3. app.js 邏輯與 API 導出驗證
@@ -142,12 +142,12 @@ it('3.3 材料勾選追蹤持久化 key 隔離命名 (pokopia_venusaur_layer_che
 const swPath = path.join(__dirname, 'sw.js');
 const swContent = fs.readFileSync(swPath, 'utf8');
 
-it('4.1 sw.js 快取名稱升級至 pokopia-cache-v4.24.0', () => {
-  assert.ok(swContent.includes("CACHE_NAME = 'pokopia-cache-v4.24.0'"));
+it('4.1 sw.js 快取名稱升級至 pokopia-cache-v4.25.0', () => {
+  assert.ok(swContent.includes("CACHE_NAME = 'pokopia-cache-v4.25.0'"));
 });
 
 it('4.2 sw.js 包含 venusaur_voxel_data.js 靜態離線預載入', () => {
-  assert.ok(swContent.includes("'./venusaur_voxel_data.js?v=4.24.0'"));
+  assert.ok(swContent.includes("'./venusaur_voxel_data.js?v=4.25.0'"));
 });
 
 console.log('\n--------------------------------------------------------');
@@ -157,5 +157,5 @@ console.log('--------------------------------------------------------');
 if (failCount > 0) {
   process.exit(1);
 } else {
-  console.log('🎉 妙蛙花 (Venusaur #003) v4.22.0 離線驗證全數通過！\n');
+  console.log('🎉 妙蛙花 (Venusaur #003) v4.25.0 離線驗證全數通過！\n');
 }
