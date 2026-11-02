@@ -125,31 +125,23 @@ for face in b_faces:
             rgb = sample_texture(body_tex, uv)
             r, g, b = rgb
             
-            # 爪子 (白色)
-            if r > 215 and g > 215 and b > 215:
+            # 爪子 (白色，嚴格限定足部高度 vy < 15)
+            if r > 215 and g > 215 and b > 215 and vy < 15:
                 pal_id = 10
             else:
-                # 1. 身軀正面額頭大倒三角區域 (正臉在 Z > 74, Y: 30~39, |X - 50| <= 8)
-                is_forehead = (30 <= vy <= 39 and vz > 74 and abs(vx - 50) <= 8)
-                # 2. 側腹幾何斑點區域 (X: 偏外側, Z: 中段 45~75, Y: 15~32)
-                is_side_flank = (abs(vx - 50) >= 16 and 45 <= vz <= 75 and 15 <= vy <= 32)
-                # 3. 後臀幾何倒三角區域 (臀部在 Z < 45, Y: 18~30, |X - 50| >= 8)
-                is_butt_spots = (vz < 45 and 18 <= vy <= 30 and abs(vx - 50) >= 8)
-                
-                # 排除背光陰影區 (後腿內側/跨下、下腹部、背部與葉片下方接縫)
+                # 排除背光接觸陰影區 (後腿跨下/跨內側、背部與葉片正下方接縫)
                 is_groin_shade = (vy < 23 and abs(vx - 50) < 12 and vz < 65)
                 is_leaf_underside_shade = (vy >= 33 and 40 <= vz <= 65 and abs(vx - 50) < 18)
                 is_shade = is_groin_shade or is_leaf_underside_shade
                 
-                # 額頭標誌性大倒三角斑點 (飽滿實心呈現)
-                if is_forehead and (r < 110 and g < 170 and b < 185) and not (r < 30 and g < 30 and b < 30):
-                    pal_id = 3
-                # 側腹與後臀幾何三角斑紋
-                elif (is_side_flank or is_butt_spots) and not is_shade and (r < 65 and g > 70 and b > 90):
-                    pal_id = 3
-                # 其餘身軀與陰影處 100% 回歸純淨青色皮膚固有色
+                # 真斑點判定 (依據官方貼圖深青綠固有光學特徵，徹底解鎖所有人為長方體邊界限制)
+                # 額頭中央大倒三角、雙眉上方小斑點、側腹部幾何斑、後臀與四肢斑點全部依原生貼圖幾何自然成形
+                is_true_spot = (r <= 50 and g >= 70 and b >= 80)
+                
+                if is_true_spot and not is_shade:
+                    pal_id = 3 # dark_prismarine (暗海晶石斑點)
                 else:
-                    pal_id = 1
+                    pal_id = 1 # cyan_concrete (純淨青色混凝土皮膚)
                 
             prio = PRIORITY[pal_id]
             pos = (vx, vy, vz)
@@ -170,8 +162,8 @@ for vy_tooth in [24, 25]:
                 if vy_tooth == 25:
                     raw_voxels[(vx_tooth, vy_tooth, max_z + 1)] = (10, 10)
 
-# 2. 取樣雙眼 (Eyes - 超採樣還原黑框黑瞳、鮮紅虹膜與潔白高光點)
-print("取樣雙眼五官 (12x12 超採樣，精確還原斜三角紅眼黑瞳與高光)...")
+# 2. 取樣雙眼 (Eyes - 超採樣還原黑框黑瞳、鮮紅虹膜與潔白高光點，眼周青色皮膚 100% 密合填補)
+print("取樣雙眼五官 (12x12 超採樣，精確還原斜三角紅眼黑瞳與高光，眼周皮膚無縫密合)...")
 eye_geom = mesh_dict['eyes']
 eye_tex = eye_geom.visual.material.baseColorTexture.convert('RGBA')
 e_verts = eye_geom.vertices
@@ -206,8 +198,9 @@ for face in e_faces:
             # 3. 鮮紅虹膜 (Red Concrete)
             elif r > 105 and r > g + 25 and r > b + 25:
                 pal_id = 11
+            # 4. 眼周青色皮膚 (Cyan Concrete - 100% 填滿眼窩，徹底杜絕空洞透底)
             else:
-                continue
+                pal_id = 1
                 
             prio = PRIORITY[pal_id]
             pos = (vx, vy, vz)
