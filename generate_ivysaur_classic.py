@@ -125,8 +125,12 @@ for face in b_faces:
             rgb = sample_texture(body_tex, uv)
             r, g, b = rgb
             
-            # 爪子 (白色，嚴格限定足部高度 vy < 15)
-            if r > 215 and g > 215 and b > 215 and vy < 15:
+            # 爪子與兩側嘴角原生尖牙 (白色)
+            # 1. 足底爪尖: vy < 15
+            # 2. 兩側嘴角原生立體小虎牙: 左側 X in [32, 37], 右側 X in [60, 65], vy in [16, 20], vz >= 82
+            is_claw = (vy < 15)
+            is_corner_tooth = (16 <= vy <= 20 and vz >= 82 and (32 <= vx <= 37 or 60 <= vx <= 65))
+            if r > 200 and g > 200 and b > 200 and (is_claw or is_corner_tooth):
                 pal_id = 10
             else:
                 # 排除背光接觸陰影區 (後腿跨下/跨內側、背部與葉片正下方接縫)
@@ -134,9 +138,9 @@ for face in b_faces:
                 is_leaf_underside_shade = (vy >= 33 and 40 <= vz <= 65 and abs(vx - 50) < 18)
                 is_shade = is_groin_shade or is_leaf_underside_shade
                 
-                # 真斑點判定 (依據官方貼圖深青綠固有光學特徵，徹底解鎖所有人為長方體邊界限制)
-                # 額頭中央大倒三角、雙眉上方小斑點、側腹部幾何斑、後臀與四肢斑點全部依原生貼圖幾何自然成形
-                is_true_spot = (r <= 50 and g >= 70 and b >= 80)
+                # 真斑點判定 (暗海晶石斑點: 涵蓋後臀、尾部、側腹、額頭與雙眉紋路)
+                # 斑點固有色: R < 98 且 G >= 60 且 B >= 75 且深於皮膚色調 (r + 35 < g)
+                is_true_spot = (r < 98 and g >= 60 and b >= 75 and (r + 35 < g))
                 
                 if is_true_spot and not is_shade:
                     pal_id = 3 # dark_prismarine (暗海晶石斑點)
