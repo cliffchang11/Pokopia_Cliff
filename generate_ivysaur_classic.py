@@ -136,13 +136,15 @@ for face in b_faces:
                 # 排除背光接觸陰影區 (後腿跨下/跨內側、背部與葉片正下方接縫)
                 is_groin_shade = (vy < 23 and abs(vx - 50) < 12 and vz < 65)
                 is_leaf_underside_shade = (vy >= 33 and 40 <= vz <= 65 and abs(vx - 50) < 18)
-                is_shade = is_groin_shade or is_leaf_underside_shade
+                # 排除嘴部深色唇縫紋路 (嘴巴整條紋路 100% 復原為青色皮膚固有色，不誤判為斑點)
+                is_mouth_seam = (15 <= vy <= 25 and vz >= 80)
+                is_shade_or_seam = is_groin_shade or is_leaf_underside_shade or is_mouth_seam
                 
                 # 真斑點判定 (暗海晶石斑點: 涵蓋後臀、尾部、側腹、額頭與雙眉紋路)
                 # 斑點固有色: R < 98 且 G >= 60 且 B >= 75 且深於皮膚色調 (r + 35 < g)
                 is_true_spot = (r < 98 and g >= 60 and b >= 75 and (r + 35 < g))
                 
-                if is_true_spot and not is_shade:
+                if is_true_spot and not is_shade_or_seam:
                     pal_id = 3 # dark_prismarine (暗海晶石斑點)
                 else:
                     pal_id = 1 # cyan_concrete (純淨青色混凝土皮膚)

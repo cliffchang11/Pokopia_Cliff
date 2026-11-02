@@ -84,6 +84,50 @@ it('1.4 純淨角色本體：第 1 層爪尖貼地，無任何地表草皮方塊
   }
 });
 
+it('1.5 嘴唇正面唇縫紋路 100% 復原為青色皮膚，絕無暗海晶石斑點 (期望 0 顆)', () => {
+  let voxels = [];
+  for (const layer of ivysaurData.layers) {
+    const y = layer.layerIndex;
+    for (const b of layer.blocks) {
+      voxels.push({ x: b[0], y: y, z: b[1], color: b[2] });
+    }
+  }
+  const lipSpots = voxels.filter(v => v.color === 3 && v.y >= 16 && v.y <= 22 && v.z >= 80 && v.x >= 30 && v.x <= 68);
+  assert.strictEqual(lipSpots.length, 0, `嘴唇正面唇線不應有暗海晶石斑點，實際為: ${lipSpots.length}`);
+});
+
+it('1.6 兩側嘴角原生立體虎牙精準保留，正臉中央人中無多餘白方塊', () => {
+  let voxels = [];
+  for (const layer of ivysaurData.layers) {
+    const y = layer.layerIndex;
+    for (const b of layer.blocks) {
+      voxels.push({ x: b[0], y: y, z: b[1], color: b[2] });
+    }
+  }
+  const leftTeeth = voxels.filter(v => v.color === 10 && v.x >= 32 && v.x <= 37 && v.y >= 16 && v.y <= 20 && v.z >= 82);
+  const rightTeeth = voxels.filter(v => v.color === 10 && v.x >= 60 && v.x <= 65 && v.y >= 16 && v.y <= 20 && v.z >= 82);
+  const midMouthWhite = voxels.filter(v => v.color === 10 && v.x >= 44 && v.x <= 56 && v.y >= 16 && v.y <= 22 && v.z >= 82);
+  
+  assert.ok(leftTeeth.length >= 25, `左嘴角虎牙應保留，實際: ${leftTeeth.length}`);
+  assert.ok(rightTeeth.length >= 25, `右嘴角虎牙應保留，實際: ${rightTeeth.length}`);
+  assert.strictEqual(midMouthWhite.length, 0, `正臉人中中央不應有多餘白方塊，實際: ${midMouthWhite.length}`);
+});
+
+it('1.7 後臀與額頭幾何斑點完整保留 (後臀 >= 700 顆, 額頭 >= 150 顆)', () => {
+  let voxels = [];
+  for (const layer of ivysaurData.layers) {
+    const y = layer.layerIndex;
+    for (const b of layer.blocks) {
+      voxels.push({ x: b[0], y: y, z: b[1], color: b[2] });
+    }
+  }
+  const buttSpots = voxels.filter(v => v.color === 3 && v.z < 50);
+  const foreheadSpots = voxels.filter(v => v.color === 3 && v.y >= 32 && v.z >= 72);
+  
+  assert.ok(buttSpots.length >= 700, `後臀幾何斑點數量應 >= 700，實際為: ${buttSpots.length}`);
+  assert.ok(foreheadSpots.length >= 150, `額頭幾何斑點數量應 >= 150，實際為: ${foreheadSpots.length}`);
+});
+
 // 2. index.html 結構驗證
 const htmlPath = path.join(__dirname, 'index.html');
 const htmlContent = fs.readFileSync(htmlPath, 'utf8');
