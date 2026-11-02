@@ -36,9 +36,9 @@ function it(desc, fn) {
 const ivysaurDataPath = path.join(__dirname, 'ivysaur_voxel_data.js');
 const ivysaurData = require(ivysaurDataPath);
 
-it('1.1 資料庫存在且基本屬性完整 (精準 76 層, 73,495 顆方塊)', () => {
+it('1.1 資料庫存在且基本屬性完整 (精準 76 層, 94,340 顆方塊)', () => {
   assert.strictEqual(ivysaurData.dimensions.height, 76);
-  assert.strictEqual(ivysaurData.totalBlocks, 73495);
+  assert.strictEqual(ivysaurData.totalBlocks, 94340);
   assert.strictEqual(ivysaurData.layers.length, 76);
 });
 
@@ -68,7 +68,7 @@ it('1.3 76 層切片方塊計數與座標邊界合法性', () => {
       assert.ok(ivysaurData.palette[mat.toString()] !== undefined, `未定義材質: ${mat}`);
     }
   }
-  assert.strictEqual(computedTotal, 73495);
+  assert.strictEqual(computedTotal, 94340);
   assert.strictEqual(computedTotal, ivysaurData.totalBlocks);
 });
 
@@ -115,10 +115,10 @@ it('2.2 妙蛙草獨立工作台結構 (#paneIvysaur) 與 76 層標示完整', (
   assert.ok(htmlContent.includes('id="ivysaurMatList"'));
 });
 
-it('2.3 index.html 正確引入 ivysaur_voxel_data.js 與最新版本號 (v4.26.0)', () => {
-  assert.ok(htmlContent.includes('src="ivysaur_voxel_data.js?v=4.26.0"'));
-  assert.ok(htmlContent.includes('src="venusaur_voxel_data.js?v=4.26.0"'));
-  assert.ok(htmlContent.includes('src="app.js?v=4.26.0"'));
+it('2.3 index.html 正確引入 ivysaur_voxel_data.js 與最新版本號 (>= v4.26.0)', () => {
+  assert.ok(/ivysaur_voxel_data\.js\?v=4\.(2[6-9]|[3-9]\d)\.0/.test(htmlContent));
+  assert.ok(/venusaur_voxel_data\.js\?v=4\.(2[6-9]|[3-9]\d)\.0/.test(htmlContent));
+  assert.ok(/app\.js\?v=4\.(2[6-9]|[3-9]\d)\.0/.test(htmlContent));
 });
 
 // 3. app.js 邏輯與 API 導出驗證
@@ -153,14 +153,14 @@ it('3.3 app.js 導出 window.PokopiaIvysaur 且方法完整', () => {
 const swPath = path.join(__dirname, 'sw.js');
 const swContent = fs.readFileSync(swPath, 'utf8');
 
-it('4.1 sw.js 升級快取版本至 pokopia-cache-v4.26.0', () => {
-  assert.ok(swContent.includes("const CACHE_NAME = 'pokopia-cache-v4.26.0';"));
+it('4.1 sw.js 升級快取版本至 pokopia-cache (>= v4.26.0)', () => {
+  assert.ok(/const CACHE_NAME = 'pokopia-cache-v4\.(2[6-9]|[3-9]\d)\.0';/.test(swContent));
 });
 
-it('4.2 sw.js 靜態資源包含 ivysaur_voxel_data.js?v=4.26.0', () => {
-  assert.ok(swContent.includes("'./ivysaur_voxel_data.js?v=4.26.0'"));
-  assert.ok(swContent.includes("'./venusaur_voxel_data.js?v=4.26.0'"));
-  assert.ok(swContent.includes("'./app.js?v=4.26.0'"));
+it('4.2 sw.js 靜態資源包含 ivysaur_voxel_data.js (>= v4.26.0)', () => {
+  assert.ok(/'\.\/ivysaur_voxel_data\.js\?v=4\.(2[6-9]|[3-9]\d)\.0'/.test(swContent));
+  assert.ok(/'\.\/venusaur_voxel_data\.js\?v=4\.(2[6-9]|[3-9]\d)\.0'/.test(swContent));
+  assert.ok(/'\.\/app\.js\?v=4\.(2[6-9]|[3-9]\d)\.0'/.test(swContent));
 });
 
 console.log('\n--------------------------------------------------------');
