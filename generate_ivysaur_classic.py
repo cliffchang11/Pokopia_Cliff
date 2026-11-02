@@ -125,24 +125,53 @@ for face in b_faces:
             rgb = sample_texture(body_tex, uv)
             r, g, b = rgb
             
-            # 爪子與尖牙 (白色)
+            # 爪子 (白色)
             if r > 215 and g > 215 and b > 215:
                 pal_id = 10
-            # 標誌性暗海晶石斑點：嚴格鎖定官方深孔雀藍固有斑紋 (R < 50, G > 70, B > 90)
-            # 徹底排除所有環境烘焙陰影 (R >= 50，如葉片下方與背部接縫、後腿內側、臀底與腹部)
-            elif r < 50 and g > 70 and b > 90:
-                pal_id = 3
-            # 主體青色皮膚 (背光陰影處 100% 回歸純淨皮膚固有色)
             else:
-                pal_id = 1
+                # 1. 身軀正面額頭大倒三角區域 (正臉在 Z > 74, Y: 30~39, |X - 50| <= 8)
+                is_forehead = (30 <= vy <= 39 and vz > 74 and abs(vx - 50) <= 8)
+                # 2. 側腹幾何斑點區域 (X: 偏外側, Z: 中段 45~75, Y: 15~32)
+                is_side_flank = (abs(vx - 50) >= 16 and 45 <= vz <= 75 and 15 <= vy <= 32)
+                # 3. 後臀幾何倒三角區域 (臀部在 Z < 45, Y: 18~30, |X - 50| >= 8)
+                is_butt_spots = (vz < 45 and 18 <= vy <= 30 and abs(vx - 50) >= 8)
+                
+                # 排除背光陰影區 (後腿內側/跨下、下腹部、背部與葉片下方接縫)
+                is_groin_shade = (vy < 23 and abs(vx - 50) < 12 and vz < 65)
+                is_leaf_underside_shade = (vy >= 33 and 40 <= vz <= 65 and abs(vx - 50) < 18)
+                is_shade = is_groin_shade or is_leaf_underside_shade
+                
+                # 額頭標誌性大倒三角斑點 (飽滿實心呈現)
+                if is_forehead and (r < 110 and g < 170 and b < 185) and not (r < 30 and g < 30 and b < 30):
+                    pal_id = 3
+                # 側腹與後臀幾何三角斑紋
+                elif (is_side_flank or is_butt_spots) and not is_shade and (r < 65 and g > 70 and b > 90):
+                    pal_id = 3
+                # 其餘身軀與陰影處 100% 回歸純淨青色皮膚固有色
+                else:
+                    pal_id = 1
                 
             prio = PRIORITY[pal_id]
             pos = (vx, vy, vz)
             if pos not in raw_voxels or raw_voxels[pos][1] < prio:
                 raw_voxels[pos] = (pal_id, prio)
 
-# 2. 取樣雙眼 (Eyes - 100% 還原官方經典斜三角眼神)
-print("取樣雙眼五官 (解耦眼眶皮膚，精確還原斜三角紅眼黑瞳)...")
+# 1.1 鑲嵌下唇兩側立體小白尖牙 (White Concrete - 正臉 Z>90 處嘴角向上突起)
+print("鑲嵌下唇兩側立體小白尖牙 (正臉 Z 唇緣)...")
+for vy_tooth in [24, 25]:
+    # 左嘴角 (X: 45~46), 右嘴角 (X: 53~54)
+    for vx_tooth_range in [(45, 46), (53, 54)]:
+        for vx_tooth in range(vx_tooth_range[0], vx_tooth_range[1] + 1):
+            cand_z = [pos[2] for pos in raw_voxels.keys() if pos[0] == vx_tooth and pos[1] == vy_tooth and pos[2] > 85]
+            if cand_z:
+                max_z = max(cand_z)
+                # 在嘴唇前緣外側形成向上突出的潔白尖牙
+                raw_voxels[(vx_tooth, vy_tooth, max_z)] = (10, 10)
+                if vy_tooth == 25:
+                    raw_voxels[(vx_tooth, vy_tooth, max_z + 1)] = (10, 10)
+
+# 2. 取樣雙眼 (Eyes - 超採樣還原黑框黑瞳、鮮紅虹膜與潔白高光點)
+print("取樣雙眼五官 (12x12 超採樣，精確還原斜三角紅眼黑瞳與高光)...")
 eye_geom = mesh_dict['eyes']
 eye_tex = eye_geom.visual.material.baseColorTexture.convert('RGBA')
 e_verts = eye_geom.vertices
@@ -153,15 +182,9 @@ for face in e_faces:
     v0, v1, v2 = e_verts[face]
     uv0, uv1, uv2 = e_uvs[face]
     
-    e1 = np.linalg.norm(v1 - v0) * scale
-    e2 = np.linalg.norm(v2 - v1) * scale
-    e3 = np.linalg.norm(v0 - v2) * scale
-    steps = max(3, int(np.ceil(max(e1, e2, e3) / 0.35)))
-    
-    for i in range(steps + 1):
-        for j in range(steps + 1 - i):
-            u = i / steps
-            v = j / steps
+    # 12x12 超採樣捕捉微小高光與黑眼線
+    for u in np.linspace(0.02, 0.98, 12):
+        for v in np.linspace(0.02, 0.98 - u, 12):
             w = 1.0 - u - v
             p = u * v0 + v * v1 + w * v2
             uv = u * uv0 + v * uv1 + w * uv2
@@ -174,27 +197,21 @@ for face in e_faces:
             rgb = sample_texture(eye_tex, uv)
             r, g, b = rgb
             
-            # 1. 判定是否為眼眶外圍的青色皮膚 (RGB 接近 129, 193, 202)
-            if g > 155 and b > 165 and r < 150:
-                pal_id = 1 # 青色混凝土 (回歸皮膚)
-            # 2. 白色高光反光點
-            elif r > 185 and g > 185 and b > 185:
-                pal_id = 10 # 白色混凝土
-            # 3. 黑色長瞳孔與深邃眼框線 (深暗色)
-            elif max(r, g, b) < 65:
-                pal_id = 12 # 黑色混凝土
-            # 4. 紅色眼珠虹膜
-            elif r > 110 and r > g + 30 and r > b + 30:
-                pal_id = 11 # 紅色混凝土
-            elif r > g and r > b and max(g, b) < 140:
-                pal_id = 11 # 紅色過渡色
-            # 5. 其餘回歸皮膚青色
+            # 1. 潔白高光點 (White Concrete)
+            if r > 180 and g > 180 and b > 180:
+                pal_id = 10
+            # 2. 黑色深邃眼框線與長瞳孔 (Black Concrete)
+            elif max(r, g, b) < 70:
+                pal_id = 12
+            # 3. 鮮紅虹膜 (Red Concrete)
+            elif r > 105 and r > g + 25 and r > b + 25:
+                pal_id = 11
             else:
-                pal_id = 1 # 青色混凝土
+                continue
                 
             prio = PRIORITY[pal_id]
             pos = (vx, vy, vz)
-            if pos not in raw_voxels or raw_voxels[pos][1] <= prio:
+            if pos not in raw_voxels or raw_voxels[pos][1] < prio:
                 raw_voxels[pos] = (pal_id, prio)
 
 # 3. 取樣葉片 (Leaves - 擴展雙層 2 格方塊立體厚度)
