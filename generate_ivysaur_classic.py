@@ -133,15 +133,15 @@ for face in b_faces:
             if r > 200 and g > 200 and b > 200 and (is_claw or is_corner_tooth):
                 pal_id = 10
             else:
-                # 排除背光接觸陰影區 (後腿跨下/跨內側、背部與葉片正下方接縫)
-                is_groin_shade = (vy < 23 and abs(vx - 50) < 12 and vz < 65)
+                # 排除背光接觸陰影區 (僅限後腿跨下內側 42 <= vz < 65，絕不誤傷屁股正後方外表面 vz <= 35)
+                is_groin_shade = (vy < 23 and abs(vx - 50) < 12 and 42 <= vz < 65)
                 is_leaf_underside_shade = (vy >= 33 and 40 <= vz <= 65 and abs(vx - 50) < 18)
                 # 排除嘴部深色唇縫紋路 (嘴巴整條紋路 100% 復原為青色皮膚固有色，不誤判為斑點)
                 is_mouth_seam = (15 <= vy <= 25 and vz >= 80)
                 is_shade_or_seam = is_groin_shade or is_leaf_underside_shade or is_mouth_seam
                 
-                # 真斑點判定 (暗海晶石斑點: 官方原生貼圖固有深青綠特徵)
-                # 額頭大倒三角、側腹幾何斑、後臀與尾部斑點依官方貼圖幾何自然成形
+                # 真斑點判定 (暗海晶石斑點: 官方原生貼圖固有深青綠幾何特徵)
+                # 額頭大倒三角、側腹幾何斑、屁股背面兩大標誌斑紋依官方貼圖幾何 100% 自然成形
                 is_true_spot = (r <= 50 and g >= 70 and b >= 80)
                 
                 if is_true_spot and not is_shade_or_seam:

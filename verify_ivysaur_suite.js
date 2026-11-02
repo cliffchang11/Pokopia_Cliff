@@ -113,7 +113,7 @@ it('1.6 兩側嘴角原生立體虎牙精準保留，正臉中央人中無多餘
   assert.strictEqual(midMouthWhite.length, 0, `正臉人中中央不應有多餘白方塊，實際: ${midMouthWhite.length}`);
 });
 
-it('1.7 斑紋精確回歸官方原生 680 顆純淨標準 (總斑點 650~720 顆, 額頭 >= 100 顆, 後臀 >= 200 顆)', () => {
+it('1.7 斑紋精確回歸官方原生標準 (後臀外表面幾何斑紋 >= 75 顆, 額頭 >= 100 顆, 總斑點 740~820 顆)', () => {
   let voxels = [];
   for (const layer of ivysaurData.layers) {
     const y = layer.layerIndex;
@@ -122,12 +122,22 @@ it('1.7 斑紋精確回歸官方原生 680 顆純淨標準 (總斑點 650~720 �
     }
   }
   const allSpots = voxels.filter(v => v.color === 3);
-  const buttSpots = voxels.filter(v => v.color === 3 && v.z < 50);
   const foreheadSpots = voxels.filter(v => v.color === 3 && v.y >= 32 && v.z >= 72);
   
-  assert.ok(allSpots.length >= 650 && allSpots.length <= 720, `全身斑點應在 650~720 顆純淨範圍，實際為: ${allSpots.length}`);
-  assert.ok(buttSpots.length >= 200, `後臀幾何斑點數量應 >= 200，實際為: ${buttSpots.length}`);
+  // 檢驗屁股背面最外表面 (最小 Z) 上的斑點分佈 (左倒三角 + 右斜角斑)
+  const buttVoxels = voxels.filter(v => v.z <= 35 && v.y >= 14 && v.y <= 35);
+  const surfaceMap = new Map();
+  for (const v of buttVoxels) {
+    const key = `${v.x},${v.y}`;
+    if (!surfaceMap.has(key) || v.z < surfaceMap.get(key).z) {
+      surfaceMap.set(key, v);
+    }
+  }
+  const buttSurfaceSpots = Array.from(surfaceMap.values()).filter(v => v.color === 3);
+  
+  assert.ok(buttSurfaceSpots.length >= 75, `後臀正後方外表面幾何斑點數量應 >= 75，實際為: ${buttSurfaceSpots.length}`);
   assert.ok(foreheadSpots.length >= 100, `額頭幾何斑點數量應 >= 100，實際為: ${foreheadSpots.length}`);
+  assert.ok(allSpots.length >= 740 && allSpots.length <= 820, `全身斑點應在 740~820 顆純淨標準範圍，實際為: ${allSpots.length}`);
 });
 
 // 2. index.html 結構驗證
