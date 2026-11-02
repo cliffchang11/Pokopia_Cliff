@@ -128,12 +128,18 @@ for face in b_faces:
             # 爪子與尖牙 (白色)
             if r > 215 and g > 215 and b > 215:
                 pal_id = 10
-            # 標誌性暗海晶石斑點 (涵蓋中心色階 89, 148, 164 及周圍暗紋)
-            elif (r < 115 and g < 175 and b < 185) and not (r < 40 and g < 40 and b < 40):
-                pal_id = 3
-            # 主體青色皮膚
             else:
-                pal_id = 1
+                # 判斷是否屬於下腹部、腋下、胸底或下巴喉嚨的背光陰影區 (排除光影暗角)
+                is_belly_shade = (p[1] < 0.80 and abs(p[0]) < 0.48 and p[2] < 0.85)
+                is_throat_shade = (p[1] < 0.62 and abs(p[0]) < 0.38)
+                is_shade = is_belly_shade or is_throat_shade
+                
+                # 標誌性暗海晶石斑點 (僅在額頭大三角、頭頂、四足外側等官方正統斑紋部位呈現)
+                if not is_shade and (r < 115 and g < 175 and b < 185) and not (r < 40 and g < 40 and b < 40):
+                    pal_id = 3
+                # 主體青色皮膚 (背光陰影處 100% 回歸純淨皮膚固有色)
+                else:
+                    pal_id = 1
                 
             prio = PRIORITY[pal_id]
             pos = (vx, vy, vz)
