@@ -128,18 +128,13 @@ for face in b_faces:
             # 爪子與尖牙 (白色)
             if r > 215 and g > 215 and b > 215:
                 pal_id = 10
+            # 標誌性暗海晶石斑點：嚴格鎖定官方深孔雀藍固有斑紋 (R < 50, G > 70, B > 90)
+            # 徹底排除所有環境烘焙陰影 (R >= 50，如葉片下方與背部接縫、後腿內側、臀底與腹部)
+            elif r < 50 and g > 70 and b > 90:
+                pal_id = 3
+            # 主體青色皮膚 (背光陰影處 100% 回歸純淨皮膚固有色)
             else:
-                # 判斷是否屬於下腹部、腋下、胸底或下巴喉嚨的背光陰影區 (排除光影暗角)
-                is_belly_shade = (p[1] < 0.80 and abs(p[0]) < 0.48 and p[2] < 0.85)
-                is_throat_shade = (p[1] < 0.62 and abs(p[0]) < 0.38)
-                is_shade = is_belly_shade or is_throat_shade
-                
-                # 標誌性暗海晶石斑點 (僅在額頭大三角、頭頂、四足外側等官方正統斑紋部位呈現)
-                if not is_shade and (r < 115 and g < 175 and b < 185) and not (r < 40 and g < 40 and b < 40):
-                    pal_id = 3
-                # 主體青色皮膚 (背光陰影處 100% 回歸純淨皮膚固有色)
-                else:
-                    pal_id = 1
+                pal_id = 1
                 
             prio = PRIORITY[pal_id]
             pos = (vx, vy, vz)
@@ -313,16 +308,20 @@ for (vx, vy, vz), (pal_id, prio) in raw_voxels.items():
     grid_solid[gx, gy, gz] = True
     grid_color[gx, gy, gz] = pal_id
 
-print("身軀實心填充與花苞內部封閉...")
+print("身軀實心填充與花苞內部封閉 (隔離葉片展開高度，杜絕葉下假性填充)...")
 for gy in range(dim_y):
     vy_actual = gy + min_y - 1
+    # 僅在身軀主體高度 (vy <= 33) 或花苞頂部 (vy >= 47) 執行閉合填充
+    # 葉片展開過渡高度 (34 <= vy <= 46) 嚴禁填充，保持葉面中空與綠色葉背純淨
+    if vy_actual > 33 and vy_actual < 47:
+        continue
     slice_2d = grid_solid[:, gy, :]
     if np.any(slice_2d):
         filled_2d = binary_fill_holes(slice_2d)
         new_voxels = filled_2d & (~slice_2d)
         grid_solid[:, gy, :][new_voxels] = True
         # 身軀內部填青色，花苞內部填粉紅
-        fill_color = 4 if vy_actual >= 45 else 1
+        fill_color = 4 if vy_actual >= 47 else 1
         grid_color[:, gy, :][new_voxels] = fill_color
 
 # 3D 鄰域平滑 (Spike removal filter)

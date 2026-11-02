@@ -36,9 +36,9 @@ function it(desc, fn) {
 const ivysaurDataPath = path.join(__dirname, 'ivysaur_voxel_data.js');
 const ivysaurData = require(ivysaurDataPath);
 
-it('1.1 資料庫存在且基本屬性完整 (精準 76 層, 94,340 顆方塊)', () => {
+it('1.1 資料庫存在且基本屬性完整 (精準 76 層, 90,921 顆方塊)', () => {
   assert.strictEqual(ivysaurData.dimensions.height, 76);
-  assert.strictEqual(ivysaurData.totalBlocks, 94340);
+  assert.strictEqual(ivysaurData.totalBlocks, 90921);
   assert.strictEqual(ivysaurData.layers.length, 76);
 });
 
@@ -68,7 +68,7 @@ it('1.3 76 層切片方塊計數與座標邊界合法性', () => {
       assert.ok(ivysaurData.palette[mat.toString()] !== undefined, `未定義材質: ${mat}`);
     }
   }
-  assert.strictEqual(computedTotal, 94340);
+  assert.strictEqual(computedTotal, 90921);
   assert.strictEqual(computedTotal, ivysaurData.totalBlocks);
 });
 
