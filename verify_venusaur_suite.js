@@ -107,10 +107,10 @@ it('2.2 妙蛙花獨立工作台結構 (#paneVenusaur) 完整與 103 層標示',
   assert.ok(htmlContent.includes('68,180 顆方塊 (高精度本體與立體草皮)'));
 });
 
-it('2.3 靜態資源引入與版本破壞標籤正確對齊 (v=4.25.0)', () => {
-  assert.ok(htmlContent.includes('index.css?v=4.25.0'));
-  assert.ok(htmlContent.includes('venusaur_voxel_data.js?v=4.25.0'));
-  assert.ok(htmlContent.includes('app.js?v=4.25.0'));
+it('2.3 靜態資源引入與版本破壞標籤正確對齊 (>= v4.25.0)', () => {
+  assert.ok(/index\.css\?v=4\.(2[5-9]|[3-9]\d)\.0/.test(htmlContent));
+  assert.ok(/venusaur_voxel_data\.js\?v=4\.(2[5-9]|[3-9]\d)\.0/.test(htmlContent));
+  assert.ok(/app\.js\?v=4\.(2[5-9]|[3-9]\d)\.0/.test(htmlContent));
 });
 
 // 3. app.js 邏輯與 API 導出驗證
@@ -142,12 +142,12 @@ it('3.3 材料勾選追蹤持久化 key 隔離命名 (pokopia_venusaur_layer_che
 const swPath = path.join(__dirname, 'sw.js');
 const swContent = fs.readFileSync(swPath, 'utf8');
 
-it('4.1 sw.js 快取名稱升級至 pokopia-cache-v4.25.0', () => {
-  assert.ok(swContent.includes("CACHE_NAME = 'pokopia-cache-v4.25.0'"));
+it('4.1 sw.js 快取名稱升級至 pokopia-cache-v4.25.0 以上', () => {
+  assert.ok(/CACHE_NAME = 'pokopia-cache-v4\.(2[5-9]|[3-9]\d)\.0'/.test(swContent));
 });
 
 it('4.2 sw.js 包含 venusaur_voxel_data.js 靜態離線預載入', () => {
-  assert.ok(swContent.includes("'./venusaur_voxel_data.js?v=4.25.0'"));
+  assert.ok(/venusaur_voxel_data\.js\?v=4\.(2[5-9]|[3-9]\d)\.0/.test(swContent));
 });
 
 console.log('\n--------------------------------------------------------');

@@ -557,9 +557,10 @@
       <div class="buzz3d-container">
         <!-- 次級角色切換膠囊列 -->
         <div class="char-pill-bar">
-          <button id="btnSubBuzz" class="char-pill-btn active" data-char="buzz">🚀 巴斯光年</button>
           <button id="btnSubBulba" class="char-pill-btn" data-char="bulba">🍃 妙蛙種子</button>
+          <button id="btnSubIvysaur" class="char-pill-btn" data-char="ivysaur">🌿 妙蛙草</button>
           <button id="btnSubVenusaur" class="char-pill-btn" data-char="venusaur">🌺 妙蛙花</button>
+          <button id="btnSubBuzz" class="char-pill-btn active" data-char="buzz">🚀 巴斯光年</button>
         </div>
 
         <!-- 角色 1：巴斯光年 3D 方塊建造工作台 -->
@@ -738,6 +739,106 @@
                   <span id="bulbaMatTypesCount" class="bulba-mat-count-badge">0 種建材</span>
                 </div>
                 <div id="bulbaMatList" class="bulba-mat-list">
+                  <!-- 動態注入本層方塊材料項目 -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 角色 2：妙蛙草 3D 方塊建造工作台 -->
+        <div id="paneIvysaur" class="char-pane hidden">
+          <div class="bulba-builder-layout buzz-builder-layout">
+            <!-- 上欄：3D 立體模型展示與剖面連動 -->
+            <div class="bulba-3d-card buzz-3d-card">
+              <div class="bulba-card-header">
+                <div class="bulba-card-title">
+                  <span>🌿 妙蛙草 3D 方塊雕像</span>
+                  <span class="bulba-total-stat">70,384 顆方塊 (生動張嘴露齒款)</span>
+                </div>
+                <div class="bulba-mode-switch buzz-mode-switch">
+                  <button id="btnIvysaurModeFull" class="bulba-mode-btn active" title="查看原生 Three.js 3D 方塊展台">原生 3D</button>
+                  <button id="btnIvysaurModeSlice" class="bulba-mode-btn" title="隨下方切片進度動態過濾顯示">動態剖面</button>
+                  <button id="btnIvysaurModeSketchfab" class="bulba-mode-btn" title="查看原作者 Josh 官方 Sketchfab 3D 原作視窗">Sketchfab 原作</button>
+                </div>
+              </div>
+              <div id="ivysaur3dCanvasWrap" class="bulba-canvas-wrap buzz-canvas-wrap">
+                <canvas id="ivysaur3dCanvas" class="bulba-3d-canvas"></canvas>
+                <div class="bulba-canvas-hint">上下左右 360° 拖曳旋轉 / 滾輪縮放視角</div>
+              </div>
+              <!-- 原作者 Josh 官方 Sketchfab 沉浸展示視窗 -->
+              <div id="ivysaur3dIframeWrap" class="buzz-iframe-wrap">
+                <iframe
+                  id="ivysaur3dIframe"
+                  class="buzz-iframe"
+                  title="Super Smash Bros For Wii U - Ivysaur Trophy by Josh"
+                  src="https://sketchfab.com/models/1c328a65b57f45f799f4879bb2a3f231/embed?autostart=1&autospin=0.2&ui_theme=dark&ui_infos=0&ui_watermark=0"
+                  frameborder="0"
+                  allow="autoplay; fullscreen; xr-spatial-tracking"
+                  xr-spatial-tracking="true"
+                  execution-while-out-of-viewport="true"
+                  execution-while-not-rendered="true"
+                  web-share="true"
+                  allowfullscreen>
+                </iframe>
+              </div>
+            </div>
+
+            <!-- 下欄：76 層逐層切片控制器與材料清單 -->
+            <div id="ivysaurSliceCard" class="bulba-slice-card buzz-slice-card">
+              <div class="bulba-card-header">
+                <div class="bulba-card-title">
+                  <span>📐 76 層建造切片指南</span>
+                  <span id="ivysaurLayerBadge" class="bulba-layer-badge buzz-layer-badge">第 1 / 76 層</span>
+                </div>
+                <span id="ivysaurLayerBlockCount" class="bulba-count-stat">本層 0 顆</span>
+              </div>
+
+              <!-- 樓層滑桿與控制按鈕 -->
+              <div class="bulba-slice-ctrl">
+                <div class="bulba-slider-row">
+                  <button id="btnIvysaurPrevLayer" class="bulba-step-btn" title="上一層">◀</button>
+                  <input type="range" id="ivysaurLayerSlider" class="bulba-slider buzz-slider" min="1" max="76" value="1" step="1">
+                  <button id="btnIvysaurNextLayer" class="bulba-step-btn" title="下一層">▶</button>
+                </div>
+                <!-- 2D 切片縮放與平移工具列 -->
+                <div class="bulba-zoom-toolbar buzz-zoom-toolbar">
+                  <div class="bulba-zoom-btn-group">
+                    <button id="btnIvysaurZoomOut" class="bulba-zoom-btn" title="縮小 (或滾輪向下)">🔍−</button>
+                    <button id="btnIvysaurZoomReset" class="bulba-zoom-btn bulba-zoom-reset" title="重設為 100% 居中">100%</button>
+                    <button id="btnIvysaurZoomIn" class="bulba-zoom-btn" title="放大 (或滾輪向上)">🔍+</button>
+                  </div>
+                  <span class="bulba-zoom-tip">可按住拖曳平移 ‧ 滾輪縮放</span>
+                </div>
+              </div>
+
+              <!-- 2D 點陣切片網格容器 (含工程雙軸長寬標註線) -->
+              <div class="bulba-grid-container buzz-grid-container">
+                <div class="bulba-grid-workspace">
+                  <!-- 頂部寬度分段標註線 -->
+                  <div id="ivysaurDimTop" class="bulba-dim-top"></div>
+                  <!-- 主體網格與右側長度分段標註線行 -->
+                  <div class="bulba-grid-row">
+                    <div id="ivysaurVoxelGrid" class="bulba-voxel-grid">
+                      <!-- 動態注入該層方塊元素 -->
+                    </div>
+                    <!-- 右側長度分段標註線 -->
+                    <div id="ivysaurDimRight" class="bulba-dim-right"></div>
+                  </div>
+                </div>
+                <div id="ivysaurHoverTooltip" class="bulba-hover-tooltip hidden">
+                  <span id="ivysaurTooltipColor" class="bulba-tooltip-color"></span>
+                  <span id="ivysaurTooltipText">青色混凝土 (X: 0, Z: 0)</span>
+                </div>
+              </div>
+
+              <!-- 本層所需材料清單 -->
+              <div class="bulba-materials-section">
+                <div class="bulba-mat-header">
+                  <span class="bulba-mat-title">📦 本層所需材料</span>
+                  <span id="ivysaurMatTypesCount" class="bulba-mat-count-badge">0 種建材</span>
+                </div>
+                <div id="ivysaurMatList" class="bulba-mat-list">
                   <!-- 動態注入本層方塊材料項目 -->
                 </div>
               </div>
@@ -1031,9 +1132,10 @@
   <!-- 3D Voxel Engine & Character Blueprint Data -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-  <script src="buzz_voxel_data.js?v=4.25.0"></script>
-  <script src="bulbasaur_voxel_data.js?v=4.25.0"></script>
-  <script src="venusaur_voxel_data.js?v=4.25.0"></script>
-  <script src="app.js?v=4.25.0"></script>
+  <script src="buzz_voxel_data.js?v=4.26.0"></script>
+  <script src="bulbasaur_voxel_data.js?v=4.26.0"></script>
+  <script src="ivysaur_voxel_data.js?v=4.26.0"></script>
+  <script src="venusaur_voxel_data.js?v=4.26.0"></script>
+  <script src="app.js?v=4.26.0"></script>
 </body>
 </html>

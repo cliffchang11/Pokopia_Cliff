@@ -268,6 +268,31 @@
     btnBulbaZoomIn: document.getElementById('btnBulbaZoomIn'),
     btnBulbaZoomOut: document.getElementById('btnBulbaZoomOut'),
     btnBulbaZoomReset: document.getElementById('btnBulbaZoomReset'),
+    btnSubIvysaur: document.getElementById('btnSubIvysaur'),
+    paneIvysaur: document.getElementById('paneIvysaur'),
+    btnIvysaurModeFull: document.getElementById('btnIvysaurModeFull'),
+    btnIvysaurModeSlice: document.getElementById('btnIvysaurModeSlice'),
+    btnIvysaurModeSketchfab: document.getElementById('btnIvysaurModeSketchfab'),
+    ivysaur3dCanvasWrap: document.getElementById('ivysaur3dCanvasWrap'),
+    ivysaur3dCanvas: document.getElementById('ivysaur3dCanvas'),
+    ivysaur3dIframeWrap: document.getElementById('ivysaur3dIframeWrap'),
+    ivysaurSliceCard: document.getElementById('ivysaurSliceCard'),
+    ivysaurLayerBadge: document.getElementById('ivysaurLayerBadge'),
+    ivysaurLayerBlockCount: document.getElementById('ivysaurLayerBlockCount'),
+    btnIvysaurPrevLayer: document.getElementById('btnIvysaurPrevLayer'),
+    btnIvysaurNextLayer: document.getElementById('btnIvysaurNextLayer'),
+    ivysaurLayerSlider: document.getElementById('ivysaurLayerSlider'),
+    ivysaurVoxelGrid: document.getElementById('ivysaurVoxelGrid'),
+    ivysaurDimTop: document.getElementById('ivysaurDimTop'),
+    ivysaurDimRight: document.getElementById('ivysaurDimRight'),
+    ivysaurHoverTooltip: document.getElementById('ivysaurHoverTooltip'),
+    ivysaurTooltipColor: document.getElementById('ivysaurTooltipColor'),
+    ivysaurTooltipText: document.getElementById('ivysaurTooltipText'),
+    ivysaurMatTypesCount: document.getElementById('ivysaurMatTypesCount'),
+    ivysaurMatList: document.getElementById('ivysaurMatList'),
+    btnIvysaurZoomIn: document.getElementById('btnIvysaurZoomIn'),
+    btnIvysaurZoomOut: document.getElementById('btnIvysaurZoomOut'),
+    btnIvysaurZoomReset: document.getElementById('btnIvysaurZoomReset'),
     btnSubVenusaur: document.getElementById('btnSubVenusaur'),
     paneVenusaur: document.getElementById('paneVenusaur'),
     btnVenusaurModeFull: document.getElementById('btnVenusaurModeFull'),
@@ -1391,6 +1416,9 @@
     if (DOM.btnSubBulba) {
       DOM.btnSubBulba.addEventListener('click', () => switchCharacterBlueprint('bulba'));
     }
+    if (DOM.btnSubIvysaur) {
+      DOM.btnSubIvysaur.addEventListener('click', () => switchCharacterBlueprint('ivysaur'));
+    }
     if (DOM.btnSubVenusaur) {
       DOM.btnSubVenusaur.addEventListener('click', () => switchCharacterBlueprint('venusaur'));
     }
@@ -1459,6 +1487,41 @@
     }
     if (DOM.btnBulbaZoomReset) {
       DOM.btnBulbaZoomReset.addEventListener('click', () => changeSliceZoom(bulbaWorkspace, bulbaState.zoom, 1.0, true, bulbaContainer));
+    }
+
+    // 妙蛙草事件
+    if (DOM.btnIvysaurModeFull) {
+      DOM.btnIvysaurModeFull.addEventListener('click', () => switchIvysaur3DMode('full'));
+    }
+    if (DOM.btnIvysaurModeSlice) {
+      DOM.btnIvysaurModeSlice.addEventListener('click', () => switchIvysaur3DMode('slice'));
+    }
+    if (DOM.btnIvysaurModeSketchfab) {
+      DOM.btnIvysaurModeSketchfab.addEventListener('click', () => switchIvysaur3DMode('sketchfab'));
+    }
+    if (DOM.btnIvysaurPrevLayer) {
+      DOM.btnIvysaurPrevLayer.addEventListener('click', () => setIvysaurLayer(ivysaurState.curLayer - 1));
+    }
+    if (DOM.btnIvysaurNextLayer) {
+      DOM.btnIvysaurNextLayer.addEventListener('click', () => setIvysaurLayer(ivysaurState.curLayer + 1));
+    }
+    if (DOM.ivysaurLayerSlider) {
+      DOM.ivysaurLayerSlider.addEventListener('input', (e) => setIvysaurLayer(Number(e.target.value)));
+    }
+
+    const ivysaurContainer = DOM.ivysaurVoxelGrid ? DOM.ivysaurVoxelGrid.closest('.bulba-grid-container') : null;
+    const ivysaurWorkspace = DOM.ivysaurVoxelGrid ? DOM.ivysaurVoxelGrid.closest('.bulba-grid-workspace') : null;
+    if (ivysaurContainer && ivysaurWorkspace) {
+      setupSliceZoomPan(ivysaurContainer, ivysaurWorkspace, ivysaurState.zoom);
+    }
+    if (DOM.btnIvysaurZoomIn) {
+      DOM.btnIvysaurZoomIn.addEventListener('click', () => changeSliceZoom(ivysaurWorkspace, ivysaurState.zoom, 1.25));
+    }
+    if (DOM.btnIvysaurZoomOut) {
+      DOM.btnIvysaurZoomOut.addEventListener('click', () => changeSliceZoom(ivysaurWorkspace, ivysaurState.zoom, 0.8));
+    }
+    if (DOM.btnIvysaurZoomReset) {
+      DOM.btnIvysaurZoomReset.addEventListener('click', () => changeSliceZoom(ivysaurWorkspace, ivysaurState.zoom, 1.0, true, ivysaurContainer));
     }
 
     // 妙蛙花事件
@@ -2143,11 +2206,18 @@
       if (DOM.catalogProgressBadge) DOM.catalogProgressBadge.classList.remove('hidden');
       if (bulbaState.curChar === 'venusaur') {
         if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🌺';
-        const vTotal = (typeof VENUSAUR_VOXEL_DATA !== 'undefined' && VENUSAUR_VOXEL_DATA.totalBlocks) ? VENUSAUR_VOXEL_DATA.totalBlocks.toLocaleString() : '142,996';
-        const vLayers = (typeof VENUSAUR_VOXEL_DATA !== 'undefined' && VENUSAUR_VOXEL_DATA.layers) ? VENUSAUR_VOXEL_DATA.layers.length : '100';
+        const vTotal = (typeof VENUSAUR_VOXEL_DATA !== 'undefined' && VENUSAUR_VOXEL_DATA.totalBlocks) ? VENUSAUR_VOXEL_DATA.totalBlocks.toLocaleString() : '68,180';
+        const vLayers = (typeof VENUSAUR_VOXEL_DATA !== 'undefined' && VENUSAUR_VOXEL_DATA.layers) ? VENUSAUR_VOXEL_DATA.layers.length : '103';
         if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = `<strong>${vTotal}</strong> 顆方塊 ‧ ${vLayers} 層切片`;
         if (typeof renderVenusaurLayer === 'function') renderVenusaurLayer(venusaurState.curLayer);
         if (typeof initVenusaurThreeEngine === 'function') setTimeout(initVenusaurThreeEngine, 60);
+      } else if (bulbaState.curChar === 'ivysaur') {
+        if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🌿';
+        const iTotal = (typeof IVYSAUR_VOXEL_DATA !== 'undefined' && IVYSAUR_VOXEL_DATA.totalBlocks) ? IVYSAUR_VOXEL_DATA.totalBlocks.toLocaleString() : '70,384';
+        const iLayers = (typeof IVYSAUR_VOXEL_DATA !== 'undefined' && IVYSAUR_VOXEL_DATA.layers) ? IVYSAUR_VOXEL_DATA.layers.length : '76';
+        if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = `<strong>${iTotal}</strong> 顆方塊 ‧ ${iLayers} 層切片`;
+        if (typeof renderIvysaurLayer === 'function') renderIvysaurLayer(ivysaurState.curLayer);
+        if (typeof initIvysaurThreeEngine === 'function') setTimeout(initIvysaurThreeEngine, 60);
       } else if (bulbaState.curChar === 'bulba') {
         if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🍃';
         if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>8,415</strong> 顆方塊 ‧ 53 層切片';
@@ -7068,6 +7138,22 @@
     }
   };
 
+  const ivysaurState = {
+    curMode: 'full', // 'full' | 'slice' | 'sketchfab'
+    curLayer: 1,
+    zoom: { scale: 1.0, panX: 0, panY: 0 },
+    three: {
+      isInit: false,
+      scene: null,
+      camera: null,
+      renderer: null,
+      controls: null,
+      instancedMesh: null,
+      blockDataList: [],
+      animFrameId: null
+    }
+  };
+
   const venusaurState = {
     curMode: 'full', // 'full' | 'slice' | 'sketchfab'
     curLayer: 1,
@@ -7184,10 +7270,12 @@
     bulbaState.curChar = char;
     if (DOM.btnSubBuzz) DOM.btnSubBuzz.classList.toggle('active', char === 'buzz');
     if (DOM.btnSubBulba) DOM.btnSubBulba.classList.toggle('active', char === 'bulba');
+    if (DOM.btnSubIvysaur) DOM.btnSubIvysaur.classList.toggle('active', char === 'ivysaur');
     if (DOM.btnSubVenusaur) DOM.btnSubVenusaur.classList.toggle('active', char === 'venusaur');
 
     if (DOM.paneBuzz) DOM.paneBuzz.classList.toggle('hidden', char !== 'buzz');
     if (DOM.paneBulba) DOM.paneBulba.classList.toggle('hidden', char !== 'bulba');
+    if (DOM.paneIvysaur) DOM.paneIvysaur.classList.toggle('hidden', char !== 'ivysaur');
     if (DOM.paneVenusaur) DOM.paneVenusaur.classList.toggle('hidden', char !== 'venusaur');
 
     if (char === 'buzz') {
@@ -7197,10 +7285,17 @@
       if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = `<strong>${bTotal}</strong> 顆方塊 ‧ ${bLayers} 層切片`;
       renderBuzzLayer(buzzState.curLayer);
       setTimeout(initBuzzThreeEngine, 60);
+    } else if (char === 'ivysaur') {
+      if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🌿';
+      const iTotal = (typeof IVYSAUR_VOXEL_DATA !== 'undefined' && IVYSAUR_VOXEL_DATA.totalBlocks) ? IVYSAUR_VOXEL_DATA.totalBlocks.toLocaleString() : '70,384';
+      const iLayers = (typeof IVYSAUR_VOXEL_DATA !== 'undefined' && IVYSAUR_VOXEL_DATA.layers) ? IVYSAUR_VOXEL_DATA.layers.length : '76';
+      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = `<strong>${iTotal}</strong> 顆方塊 ‧ ${iLayers} 層切片`;
+      renderIvysaurLayer(ivysaurState.curLayer);
+      setTimeout(initIvysaurThreeEngine, 60);
     } else if (char === 'venusaur') {
       if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🌺';
-      const vTotal = (typeof VENUSAUR_VOXEL_DATA !== 'undefined' && VENUSAUR_VOXEL_DATA.totalBlocks) ? VENUSAUR_VOXEL_DATA.totalBlocks.toLocaleString() : '142,996';
-      const vLayers = (typeof VENUSAUR_VOXEL_DATA !== 'undefined' && VENUSAUR_VOXEL_DATA.layers) ? VENUSAUR_VOXEL_DATA.layers.length : '100';
+      const vTotal = (typeof VENUSAUR_VOXEL_DATA !== 'undefined' && VENUSAUR_VOXEL_DATA.totalBlocks) ? VENUSAUR_VOXEL_DATA.totalBlocks.toLocaleString() : '68,180';
+      const vLayers = (typeof VENUSAUR_VOXEL_DATA !== 'undefined' && VENUSAUR_VOXEL_DATA.layers) ? VENUSAUR_VOXEL_DATA.layers.length : '103';
       if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = `<strong>${vTotal}</strong> 顆方塊 ‧ ${vLayers} 層切片`;
       renderVenusaurLayer(venusaurState.curLayer);
       setTimeout(initVenusaurThreeEngine, 60);
@@ -7969,6 +8064,331 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════
+  // 🌿 妙蛙草 (Ivysaur #002) 76 層建造切片指南與 3D 引擎實作
+  // ═══════════════════════════════════════════════════════════════════
+  function switchIvysaur3DMode(mode) {
+    ivysaurState.curMode = mode;
+    if (DOM.btnIvysaurModeFull) {
+      DOM.btnIvysaurModeFull.classList.toggle('active', mode === 'full');
+    }
+    if (DOM.btnIvysaurModeSlice) {
+      DOM.btnIvysaurModeSlice.classList.toggle('active', mode === 'slice');
+    }
+    if (DOM.btnIvysaurModeSketchfab) {
+      DOM.btnIvysaurModeSketchfab.classList.toggle('active', mode === 'sketchfab');
+    }
+
+    if (mode === 'sketchfab') {
+      if (DOM.ivysaur3dCanvasWrap) DOM.ivysaur3dCanvasWrap.style.display = 'none';
+      if (DOM.ivysaur3dIframeWrap) DOM.ivysaur3dIframeWrap.classList.add('active');
+      if (DOM.ivysaurSliceCard) DOM.ivysaurSliceCard.style.display = 'block';
+      renderIvysaurLayer(ivysaurState.curLayer);
+    } else {
+      if (DOM.ivysaur3dCanvasWrap) DOM.ivysaur3dCanvasWrap.style.display = 'block';
+      if (DOM.ivysaur3dIframeWrap) DOM.ivysaur3dIframeWrap.classList.remove('active');
+      if (DOM.ivysaurSliceCard) DOM.ivysaurSliceCard.style.display = 'block';
+      updateIvysaur3DSliceFilter();
+      setTimeout(initIvysaurThreeEngine, 30);
+    }
+  }
+
+  function setIvysaurLayer(layerIndex) {
+    if (typeof IVYSAUR_VOXEL_DATA === 'undefined') return;
+    const maxLayer = IVYSAUR_VOXEL_DATA.layers.length;
+    const target = Math.max(1, Math.min(maxLayer, layerIndex));
+    ivysaurState.curLayer = target;
+    if (DOM.ivysaurLayerSlider) DOM.ivysaurLayerSlider.value = target;
+    renderIvysaurLayer(target);
+    if (ivysaurState.curMode === 'slice') {
+      updateIvysaur3DSliceFilter();
+    }
+  }
+
+  function renderIvysaurLayer(layerIndex) {
+    if (typeof IVYSAUR_VOXEL_DATA === 'undefined') return;
+    const data = IVYSAUR_VOXEL_DATA;
+    const layer = data.layers[layerIndex - 1];
+    if (!layer) return;
+
+    if (DOM.ivysaurLayerBadge) {
+      DOM.ivysaurLayerBadge.textContent = `第 ${layerIndex} / ${data.layers.length} 層`;
+    }
+    const blockCount = layer.blocks.length;
+    if (DOM.ivysaurLayerBlockCount) {
+      DOM.ivysaurLayerBlockCount.textContent = `本層 ${blockCount.toLocaleString()} 顆`;
+    }
+
+    if (DOM.ivysaurVoxelGrid) {
+      DOM.ivysaurVoxelGrid.innerHTML = '';
+      if (blockCount === 0) {
+        DOM.ivysaurVoxelGrid.innerHTML = '<div class="bulba-empty-hint" style="color:#94a3b8;font-size:0.875rem;padding:2rem;">本層無方塊（可跳至下一層）</div>';
+        if (DOM.ivysaurDimTop) DOM.ivysaurDimTop.style.display = 'none';
+        if (DOM.ivysaurDimRight) DOM.ivysaurDimRight.style.display = 'none';
+      } else {
+        let minX = Infinity, maxX = -Infinity;
+        let minZ = Infinity, maxZ = -Infinity;
+        const blockMap = new Map();
+        const xOccupied = new Set();
+        const zOccupied = new Set();
+
+        layer.blocks.forEach(([x, z, bid]) => {
+          if (x < minX) minX = x;
+          if (x > maxX) maxX = x;
+          if (z < minZ) minZ = z;
+          if (z > maxZ) maxZ = z;
+          blockMap.set(`${x},${z}`, bid);
+          xOccupied.add(x);
+          zOccupied.add(z);
+        });
+
+        const spanX = maxX - minX + 1;
+        const spanZ = maxZ - minZ + 1;
+
+        DOM.ivysaurVoxelGrid.style.gridTemplateColumns = `repeat(${spanX}, 1fr)`;
+        DOM.ivysaurVoxelGrid.style.gridTemplateRows = `repeat(${spanZ}, 1fr)`;
+
+        // 渲染 2D 方塊點陣
+        for (let rz = minZ; rz <= maxZ; rz++) {
+          for (let rx = minX; rx <= maxX; rx++) {
+            const key = `${rx},${rz}`;
+            const bid = blockMap.get(key);
+            const cell = document.createElement('div');
+            cell.className = 'bulba-voxel-cell';
+            if (bid !== undefined) {
+              const palItem = data.palette[bid] || { name: '方塊', color: '#00a8c8' };
+              cell.style.backgroundColor = palItem.color;
+              cell.dataset.name = palItem.name;
+              cell.dataset.bid = bid;
+              cell.dataset.coord = `X: ${rx}, Z: ${rz}`;
+              cell.addEventListener('mouseenter', (ev) => {
+                if (DOM.ivysaurHoverTooltip && DOM.ivysaurTooltipColor && DOM.ivysaurTooltipText) {
+                  DOM.ivysaurTooltipColor.style.backgroundColor = palItem.color;
+                  DOM.ivysaurTooltipText.textContent = `${palItem.name} (${cell.dataset.coord})`;
+                  DOM.ivysaurHoverTooltip.classList.remove('hidden');
+                }
+              });
+              cell.addEventListener('mouseleave', () => {
+                if (DOM.ivysaurHoverTooltip) DOM.ivysaurHoverTooltip.classList.add('hidden');
+              });
+            } else {
+              cell.classList.add('empty');
+            }
+            DOM.ivysaurVoxelGrid.appendChild(cell);
+          }
+        }
+
+        // 雙軸長寬工程標註線
+        if (DOM.ivysaurDimTop) {
+          DOM.ivysaurDimTop.style.display = 'flex';
+          DOM.ivysaurDimTop.style.gridTemplateColumns = `repeat(${spanX}, 1fr)`;
+          DOM.ivysaurDimTop.innerHTML = '';
+          const topSpan = document.createElement('div');
+          topSpan.className = 'bulba-dim-segment';
+          topSpan.style.gridColumn = `1 / span ${spanX}`;
+          topSpan.textContent = `寬 ${spanX} 格`;
+          DOM.ivysaurDimTop.appendChild(topSpan);
+        }
+        if (DOM.ivysaurDimRight) {
+          DOM.ivysaurDimRight.style.display = 'flex';
+          DOM.ivysaurDimRight.style.gridTemplateRows = `repeat(${spanZ}, 1fr)`;
+          DOM.ivysaurDimRight.innerHTML = '';
+          const rightSpan = document.createElement('div');
+          rightSpan.className = 'bulba-dim-segment';
+          rightSpan.style.gridRow = `1 / span ${spanZ}`;
+          rightSpan.textContent = `深 ${spanZ} 格`;
+          DOM.ivysaurDimRight.appendChild(rightSpan);
+        }
+      }
+    }
+
+    // 材料清單 (BOM)
+    if (DOM.ivysaurMatList && DOM.ivysaurMatTypesCount) {
+      DOM.ivysaurMatList.innerHTML = '';
+      const matKeys = Object.keys(layer.materials);
+      DOM.ivysaurMatTypesCount.textContent = `${matKeys.length} 種建材`;
+
+      matKeys.sort((a, b) => (layer.materials[b] || 0) - (layer.materials[a] || 0));
+
+      matKeys.forEach((bid) => {
+        const count = layer.materials[bid] || 0;
+        const palItem = data.palette[bid] || { name: '方塊', color: '#00a8c8' };
+        const item = document.createElement('div');
+        item.className = 'bulba-mat-item';
+        item.innerHTML = `
+          <div class="bulba-mat-left">
+            <span class="bulba-mat-checkbox"></span>
+            <span class="bulba-mat-swatch" style="background-color: ${palItem.color}"></span>
+            <span class="bulba-mat-name">${palItem.name}</span>
+          </div>
+          <span class="bulba-mat-qty">${count.toLocaleString()} 顆</span>
+        `;
+        const toggleCheck = () => {
+          item.classList.toggle('checked');
+          try {
+            if (navigator.vibrate) navigator.vibrate(10);
+          } catch (_) {}
+        };
+        item.addEventListener('click', toggleCheck);
+        DOM.ivysaurMatList.appendChild(item);
+      });
+    }
+  }
+
+  function initIvysaurThreeEngine() {
+    if (typeof THREE === 'undefined' || typeof IVYSAUR_VOXEL_DATA === 'undefined') return;
+    if (!DOM.ivysaur3dCanvas) return;
+
+    const wrap = DOM.ivysaur3dCanvas.parentElement;
+    if (!wrap) return;
+    const width = wrap.clientWidth || 800;
+    const height = wrap.clientHeight || 560;
+
+    const t = ivysaurState.three;
+    if (t.isInit) {
+      t.renderer.setSize(width, height);
+      t.camera.aspect = width / height;
+      t.camera.updateProjectionMatrix();
+      return;
+    }
+
+    const scene = new THREE.Scene();
+    scene.background = null;
+
+    const camera = new THREE.PerspectiveCamera(40, width / height, 1, 2000);
+    camera.position.set(110, 80, 125);
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas: DOM.ivysaur3dCanvas,
+      antialias: true,
+      alpha: true
+    });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.72);
+    scene.add(ambientLight);
+
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.75);
+    dirLight1.position.set(80, 120, 80);
+    scene.add(dirLight1);
+
+    const dirLight2 = new THREE.DirectionalLight(0xf472b6, 0.35);
+    dirLight2.position.set(-80, 50, -80);
+    scene.add(dirLight2);
+
+    const dirLight3 = new THREE.DirectionalLight(0x064e3b, 0.2);
+    dirLight3.position.set(0, -60, 0);
+    scene.add(dirLight3);
+
+    let controls = null;
+    if (typeof THREE.OrbitControls !== 'undefined') {
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.08;
+      controls.target.set(0, 0, 0);
+      controls.maxDistance = 500;
+      controls.minDistance = 25;
+    }
+
+    const data = IVYSAUR_VOXEL_DATA;
+    const totalCount = data.totalBlocks;
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const outlineTexture = createVoxelOutlineTexture();
+    const material = new THREE.MeshStandardMaterial({
+      map: outlineTexture || null,
+      roughness: 0.88,
+      metalness: 0.0
+    });
+
+    const instancedMesh = new THREE.InstancedMesh(geometry, material, totalCount);
+    const dummy = new THREE.Object3D();
+    const color = new THREE.Color();
+
+    const cx = data.dimensions.width / 2;
+    const cy = data.dimensions.height / 2;
+    const cz = data.dimensions.length / 2;
+
+    const blockDataList = [];
+    let idx = 0;
+
+    data.layers.forEach((layer) => {
+      const y = layer.layerIndex - 1;
+      layer.blocks.forEach(([x, z, bid]) => {
+        dummy.position.set(x - cx, y - cy, z - cz);
+        dummy.scale.set(1, 1, 1);
+        dummy.updateMatrix();
+
+        instancedMesh.setMatrixAt(idx, dummy.matrix);
+        const pItem = data.palette[bid] || { color: '#00a8c8' };
+        color.set(pItem.color);
+        instancedMesh.setColorAt(idx, color);
+
+        blockDataList.push({
+          index: idx,
+          layerIndex: layer.layerIndex,
+          defaultMatrix: dummy.matrix.clone(),
+          posX: x - cx,
+          posY: y - cy,
+          posZ: z - cz
+        });
+        idx++;
+      });
+    });
+
+    instancedMesh.instanceMatrix.needsUpdate = true;
+    if (instancedMesh.instanceColor) instancedMesh.instanceColor.needsUpdate = true;
+    scene.add(instancedMesh);
+
+    t.isInit = true;
+    t.scene = scene;
+    t.camera = camera;
+    t.renderer = renderer;
+    t.controls = controls;
+    t.instancedMesh = instancedMesh;
+    t.blockDataList = blockDataList;
+
+    function animate() {
+      t.animFrameId = requestAnimationFrame(animate);
+      if (controls) controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      if (!t.isInit || !DOM.ivysaur3dCanvas) return;
+      const curWrap = DOM.ivysaur3dCanvas.parentElement;
+      if (!curWrap) return;
+      const nw = curWrap.clientWidth || 500;
+      const nh = curWrap.clientHeight || 560;
+      camera.aspect = nw / nh;
+      camera.updateProjectionMatrix();
+      renderer.setSize(nw, nh);
+    });
+  }
+
+  function updateIvysaur3DSliceFilter() {
+    const t = ivysaurState.three;
+    if (!t.isInit || !t.instancedMesh || !t.blockDataList.length) return;
+
+    const isSlice = ivysaurState.curMode === 'slice';
+    const curLayer = ivysaurState.curLayer;
+    const dummy = new THREE.Object3D();
+
+    for (let i = 0; i < t.blockDataList.length; i++) {
+      const item = t.blockDataList[i];
+      if (!isSlice || item.layerIndex <= curLayer) {
+        t.instancedMesh.setMatrixAt(item.index, item.defaultMatrix);
+      } else {
+        dummy.position.set(item.posX, item.posY, item.posZ);
+        dummy.scale.set(0, 0, 0); // 縮至 0 隱藏
+        dummy.updateMatrix();
+        t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
+      }
+    }
+    t.instancedMesh.instanceMatrix.needsUpdate = true;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
   // 🌺 妙蛙花 (Venusaur #003) 100 層建造切片指南與 3D 引擎實作
   // ═══════════════════════════════════════════════════════════════════
   function switchVenusaur3DMode(mode) {
@@ -8346,6 +8766,14 @@
     renderBulbaLayer,
     initBulbaThreeEngine,
     updateBulba3DSliceFilter
+  };
+  window.PokopiaIvysaur = {
+    getState: () => ivysaurState,
+    switchIvysaur3DMode,
+    setIvysaurLayer,
+    renderIvysaurLayer,
+    initIvysaurThreeEngine,
+    updateIvysaur3DSliceFilter
   };
   window.PokopiaVenusaur = {
     getState: () => venusaurState,
