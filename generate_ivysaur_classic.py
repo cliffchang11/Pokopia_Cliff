@@ -148,19 +148,6 @@ for face in b_faces:
             if pos not in raw_voxels or raw_voxels[pos][1] < prio:
                 raw_voxels[pos] = (pal_id, prio)
 
-# 1.1 鑲嵌下唇兩側立體小白尖牙 (White Concrete - 正臉 Z>90 處嘴角向上突起)
-print("鑲嵌下唇兩側立體小白尖牙 (正臉 Z 唇緣)...")
-for vy_tooth in [24, 25]:
-    # 左嘴角 (X: 45~46), 右嘴角 (X: 53~54)
-    for vx_tooth_range in [(45, 46), (53, 54)]:
-        for vx_tooth in range(vx_tooth_range[0], vx_tooth_range[1] + 1):
-            cand_z = [pos[2] for pos in raw_voxels.keys() if pos[0] == vx_tooth and pos[1] == vy_tooth and pos[2] > 85]
-            if cand_z:
-                max_z = max(cand_z)
-                # 在嘴唇前緣外側形成向上突出的潔白尖牙
-                raw_voxels[(vx_tooth, vy_tooth, max_z)] = (10, 10)
-                if vy_tooth == 25:
-                    raw_voxels[(vx_tooth, vy_tooth, max_z + 1)] = (10, 10)
 
 # 2. 取樣雙眼 (Eyes - 超採樣還原黑框黑瞳、鮮紅虹膜與潔白高光點，眼周青色皮膚 100% 密合填補)
 print("取樣雙眼五官 (12x12 超採樣，精確還原斜三角紅眼黑瞳與高光，眼周皮膚無縫密合)...")
