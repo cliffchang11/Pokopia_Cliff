@@ -126,10 +126,10 @@ for face in b_faces:
             r, g, b = rgb
             
             # 爪子與尖牙 (白色)
-            if r > 200 and g > 200 and b > 200:
+            if r > 215 and g > 215 and b > 215:
                 pal_id = 10
-            # 暗斑 (暗海晶石)
-            elif (r < 75 and g < 110 and b < 125) and (g > r or b > r):
+            # 標誌性暗海晶石斑點 (涵蓋中心色階 89, 148, 164 及周圍暗紋)
+            elif (r < 115 and g < 175 and b < 185) and not (r < 40 and g < 40 and b < 40):
                 pal_id = 3
             # 主體青色皮膚
             else:
@@ -140,8 +140,8 @@ for face in b_faces:
             if pos not in raw_voxels or raw_voxels[pos][1] < prio:
                 raw_voxels[pos] = (pal_id, prio)
 
-# 2. 取樣雙眼 (Eyes - 融合 Bloxelizer 高對比神態)
-print("取樣雙眼五官...")
+# 2. 取樣雙眼 (Eyes - 100% 還原官方經典斜三角眼神)
+print("取樣雙眼五官 (解耦眼眶皮膚，精確還原斜三角紅眼黑瞳)...")
 eye_geom = mesh_dict['eyes']
 eye_tex = eye_geom.visual.material.baseColorTexture.convert('RGBA')
 e_verts = eye_geom.vertices
@@ -173,17 +173,23 @@ for face in e_faces:
             rgb = sample_texture(eye_tex, uv)
             r, g, b = rgb
             
-            # 白色高光反光點
-            if r > 180 and g > 180 and b > 180:
-                pal_id = 10
-            # 黑色瞳孔/暗部
-            elif max(r, g, b) < 60:
-                pal_id = 12
-            # 紅色眼珠
-            elif r > g and r > b:
-                pal_id = 11
+            # 1. 判定是否為眼眶外圍的青色皮膚 (RGB 接近 129, 193, 202)
+            if g > 155 and b > 165 and r < 150:
+                pal_id = 1 # 青色混凝土 (回歸皮膚)
+            # 2. 白色高光反光點
+            elif r > 185 and g > 185 and b > 185:
+                pal_id = 10 # 白色混凝土
+            # 3. 黑色長瞳孔與深邃眼框線 (深暗色)
+            elif max(r, g, b) < 65:
+                pal_id = 12 # 黑色混凝土
+            # 4. 紅色眼珠虹膜
+            elif r > 110 and r > g + 30 and r > b + 30:
+                pal_id = 11 # 紅色混凝土
+            elif r > g and r > b and max(g, b) < 140:
+                pal_id = 11 # 紅色過渡色
+            # 5. 其餘回歸皮膚青色
             else:
-                pal_id = 11 # 默認眼球紅
+                pal_id = 1 # 青色混凝土
                 
             prio = PRIORITY[pal_id]
             pos = (vx, vy, vz)
