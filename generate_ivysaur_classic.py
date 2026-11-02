@@ -140,9 +140,9 @@ for face in b_faces:
                 is_mouth_seam = (15 <= vy <= 25 and vz >= 80)
                 is_shade_or_seam = is_groin_shade or is_leaf_underside_shade or is_mouth_seam
                 
-                # 真斑點判定 (暗海晶石斑點: 涵蓋後臀、尾部、側腹、額頭與雙眉紋路)
-                # 斑點固有色: R < 98 且 G >= 60 且 B >= 75 且深於皮膚色調 (r + 35 < g)
-                is_true_spot = (r < 98 and g >= 60 and b >= 75 and (r + 35 < g))
+                # 真斑點判定 (暗海晶石斑點: 官方原生貼圖固有深青綠特徵)
+                # 額頭大倒三角、側腹幾何斑、後臀與尾部斑點依官方貼圖幾何自然成形
+                is_true_spot = (r <= 50 and g >= 70 and b >= 80)
                 
                 if is_true_spot and not is_shade_or_seam:
                     pal_id = 3 # dark_prismarine (暗海晶石斑點)

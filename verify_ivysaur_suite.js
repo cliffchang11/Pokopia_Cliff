@@ -113,7 +113,7 @@ it('1.6 兩側嘴角原生立體虎牙精準保留，正臉中央人中無多餘
   assert.strictEqual(midMouthWhite.length, 0, `正臉人中中央不應有多餘白方塊，實際: ${midMouthWhite.length}`);
 });
 
-it('1.7 後臀與額頭幾何斑點完整保留 (後臀 >= 700 顆, 額頭 >= 150 顆)', () => {
+it('1.7 斑紋精確回歸官方原生 680 顆純淨標準 (總斑點 650~720 顆, 額頭 >= 100 顆, 後臀 >= 200 顆)', () => {
   let voxels = [];
   for (const layer of ivysaurData.layers) {
     const y = layer.layerIndex;
@@ -121,11 +121,13 @@ it('1.7 後臀與額頭幾何斑點完整保留 (後臀 >= 700 顆, 額頭 >= 15
       voxels.push({ x: b[0], y: y, z: b[1], color: b[2] });
     }
   }
+  const allSpots = voxels.filter(v => v.color === 3);
   const buttSpots = voxels.filter(v => v.color === 3 && v.z < 50);
   const foreheadSpots = voxels.filter(v => v.color === 3 && v.y >= 32 && v.z >= 72);
   
-  assert.ok(buttSpots.length >= 700, `後臀幾何斑點數量應 >= 700，實際為: ${buttSpots.length}`);
-  assert.ok(foreheadSpots.length >= 150, `額頭幾何斑點數量應 >= 150，實際為: ${foreheadSpots.length}`);
+  assert.ok(allSpots.length >= 650 && allSpots.length <= 720, `全身斑點應在 650~720 顆純淨範圍，實際為: ${allSpots.length}`);
+  assert.ok(buttSpots.length >= 200, `後臀幾何斑點數量應 >= 200，實際為: ${buttSpots.length}`);
+  assert.ok(foreheadSpots.length >= 100, `額頭幾何斑點數量應 >= 100，實際為: ${foreheadSpots.length}`);
 });
 
 // 2. index.html 結構驗證
