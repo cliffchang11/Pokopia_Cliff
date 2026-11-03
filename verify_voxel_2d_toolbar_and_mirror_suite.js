@@ -251,6 +251,35 @@ test('3.5 2D 鏡像對稱格子具備實體色彩預覽、發光脈衝框與無�
   assert.strictEqual(cssCode.includes('outline: 2.5px solid #facc15'), true, '應具備亮金霓虹外框');
 });
 
+test('3.6 切片滾輪縮放範圍對齊 0.30~4.0，徹底解除 0.6 跳大卡死限制', () => {
+  const appCode = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf-8');
+  assert.strictEqual(appCode.includes('Math.min(4.0, Math.max(0.30, Number((zoomObj.scale * factor).toFixed(3))))'), true, '滾輪縮放應支援 0.30~4.0');
+  assert.strictEqual(appCode.includes('Math.min(4.0, Math.max(0.30, Number(newScale.toFixed(2))))'), true, '按鈕縮放應對齊 0.30~4.0');
+  assert.strictEqual(appCode.includes('containerH = container.clientHeight || 580;'), true, '自適應高度 fallback 應為 580px');
+});
+
+test('3.7 Zoom-to-Cursor 游標錨定補償演算正確（游標下世界座標恆等）', () => {
+  const appCode = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf-8');
+  assert.strictEqual(appCode.includes('zoomObj.panX = Math.round(mouseX - scaleRatio * (mouseX - zoomObj.panX));'), true);
+  assert.strictEqual(appCode.includes('zoomObj.panY = Math.round(mouseY - scaleRatio * (mouseY - zoomObj.panY));'), true);
+
+  // 離線數學模擬斷言
+  const zoomObj = { scale: 1.0, panX: 0, panY: 0 };
+  const mouseX = 150; // 游標位於中心偏右 150px
+  const mouseY = 80;  // 游標位於中心偏下 80px
+  const newScale = 2.0; // 放大兩倍
+  const scaleRatio = newScale / zoomObj.scale; // 2.0
+  const newPanX = Math.round(mouseX - scaleRatio * (mouseX - zoomObj.panX)); // 150 - 2 * 150 = -150
+  const newPanY = Math.round(mouseY - scaleRatio * (mouseY - zoomObj.panY)); // 80 - 2 * 80 = -80
+
+  // 驗證縮放後游標下的 local 座標在前後是否一致：
+  // 縮放前 localX = (mouseX - panX) / scale = (150 - 0) / 1.0 = 150
+  // 縮放後 localX = (mouseX - newPanX) / newScale = (150 - (-150)) / 2.0 = 300 / 2.0 = 150
+  const localXBefore = (mouseX - zoomObj.panX) / zoomObj.scale;
+  const localXAfter = (mouseX - newPanX) / newScale;
+  assert.strictEqual(localXBefore, localXAfter, '縮放前後滑鼠游標正下方的畫布坐標必須完全恆等');
+});
+
 console.log('\n--------------------------------------------------------');
 console.log(`🎉 全部 ${passCount} 項離線自動化整合測試全數通過 (100% PASS)！`);
 console.log('========================================================\n');

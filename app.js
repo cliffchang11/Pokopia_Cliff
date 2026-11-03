@@ -7179,7 +7179,7 @@
   function fitWorkspaceToContainer(workspace, container, zoomObj) {
     if (!workspace || !container || !zoomObj) return;
     const containerW = container.clientWidth || 800;
-    const containerH = container.clientHeight || 420;
+    const containerH = container.clientHeight || 580;
 
     // 取得工作區未經過 CSS scale 轉換時的實際寬高
     const wsW = workspace.offsetWidth || workspace.scrollWidth || 600;
@@ -7192,7 +7192,7 @@
     const scaleW = availW / wsW;
     const scaleH = availH / wsH;
     let fitScale = Math.min(scaleW, scaleH, 2.2);
-    fitScale = Math.max(0.35, Number(fitScale.toFixed(2)));
+    fitScale = Math.max(0.30, Number(fitScale.toFixed(2)));
 
     zoomObj.scale = fitScale;
     zoomObj.panX = 0;
@@ -7211,7 +7211,7 @@
       zoomObj.panY = 0;
     } else {
       const newScale = zoomObj.scale * factor;
-      zoomObj.scale = Math.min(3.5, Math.max(0.35, Number(newScale.toFixed(2))));
+      zoomObj.scale = Math.min(4.0, Math.max(0.30, Number(newScale.toFixed(2))));
     }
     applyWorkspaceZoomPan(workspace, zoomObj);
   }
@@ -7225,13 +7225,23 @@
     let initialPanX = 0;
     let initialPanY = 0;
 
-    // 滾輪平滑縮放 (依滑鼠位置中心)
+    // 滾輪平滑縮放 (依滑鼠位置中心錨定 Zoom to Cursor)
     container.addEventListener('wheel', (e) => {
       e.preventDefault();
-      const factor = e.deltaY < 0 ? 1.15 : 0.87;
-      const newScale = Math.min(3.5, Math.max(0.6, Number((zoomObj.scale * factor).toFixed(2))));
-      zoomObj.scale = newScale;
-      applyWorkspaceZoomPan(workspace, zoomObj);
+      const factor = e.deltaY < 0 ? 1.11 : 0.90;
+      const newScale = Math.min(4.0, Math.max(0.30, Number((zoomObj.scale * factor).toFixed(3))));
+      if (newScale !== zoomObj.scale) {
+        const rect = container.getBoundingClientRect();
+        // 計算滑鼠相對於容器可視中心的距離
+        const mouseX = e.clientX - rect.left - rect.width / 2;
+        const mouseY = e.clientY - rect.top - rect.height / 2;
+        const scaleRatio = newScale / zoomObj.scale;
+        // 錨定游標位置，精準補償 panX 與 panY
+        zoomObj.panX = Math.round(mouseX - scaleRatio * (mouseX - zoomObj.panX));
+        zoomObj.panY = Math.round(mouseY - scaleRatio * (mouseY - zoomObj.panY));
+        zoomObj.scale = newScale;
+        applyWorkspaceZoomPan(workspace, zoomObj);
+      }
     }, { passive: false });
 
     // 拖曳平移 (Pointer Events: 滑鼠與觸控完全相容)
