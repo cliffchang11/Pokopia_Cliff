@@ -8177,7 +8177,7 @@
         const spanZ = maxZ - minZ + 1;
 
         DOM.ivysaurVoxelGrid.style.gridTemplateColumns = `repeat(${spanX}, 1fr)`;
-        DOM.ivysaurVoxelGrid.style.gridTemplateRows = `repeat(${spanZ}, 1fr)`;
+        const frag = document.createDocumentFragment();
 
         // 渲染 2D 方塊點陣
         for (let rz = minZ; rz <= maxZ; rz++) {
@@ -8203,10 +8203,21 @@
                 if (DOM.ivysaurHoverTooltip) DOM.ivysaurHoverTooltip.classList.add('hidden');
               });
             } else {
-              cell.classList.add('empty');
+              // 柔和清新草系藍圖底格線，告別死黑
+              cell.style.backgroundColor = 'rgba(52, 211, 153, 0.04)';
+              cell.style.border = '1px solid rgba(52, 211, 153, 0.1)';
             }
-            DOM.ivysaurVoxelGrid.appendChild(cell);
+            frag.appendChild(cell);
           }
+        }
+        DOM.ivysaurVoxelGrid.appendChild(frag);
+
+        const workspace = DOM.ivysaurVoxelGrid.closest('.bulba-grid-workspace');
+        const parent = DOM.ivysaurVoxelGrid.closest('.bulba-grid-container');
+        if (workspace && parent && ivysaurState.zoom.panX === 0 && ivysaurState.zoom.panY === 0) {
+          fitWorkspaceToContainer(workspace, parent, ivysaurState.zoom);
+        } else if (workspace) {
+          applyWorkspaceZoomPan(workspace, ivysaurState.zoom);
         }
 
         // 雙軸長寬工程標註線
@@ -8233,7 +8244,7 @@
       }
     }
 
-    // 材料清單 (BOM)
+    // 材料清單 (BOM) 高對比醒目卡片
     if (DOM.ivysaurMatList && DOM.ivysaurMatTypesCount) {
       DOM.ivysaurMatList.innerHTML = '';
       const matKeys = Object.keys(layer.materials);
@@ -8246,16 +8257,23 @@
         const palItem = data.palette[bid] || { name: '方塊', color: '#00a8c8' };
         const item = document.createElement('div');
         item.className = 'bulba-mat-item';
+        item.style.cursor = 'pointer';
         item.innerHTML = `
-          <div class="bulba-mat-left">
-            <span class="bulba-mat-checkbox"></span>
-            <span class="bulba-mat-swatch" style="background-color: ${palItem.color}"></span>
-            <span class="bulba-mat-name">${palItem.name}</span>
-          </div>
-          <span class="bulba-mat-qty">${count.toLocaleString()} 顆</span>
+          <input type="checkbox" class="mat-checkbox" style="margin-right: 0.5rem; cursor: pointer;">
+          <span class="bulba-mat-chip" style="background-color: ${palItem.color};"></span>
+          <span class="bulba-mat-name" title="${palItem.name}">${palItem.name}</span>
+          <span class="bulba-mat-count">×${count.toLocaleString()}</span>
         `;
-        const toggleCheck = () => {
-          item.classList.toggle('checked');
+        const checkbox = item.querySelector('.mat-checkbox');
+        const toggleCheck = (e) => {
+          if (e.target !== checkbox) checkbox.checked = !checkbox.checked;
+          const checked = checkbox.checked;
+          item.classList.toggle('is-checked', checked);
+          const nameEl = item.querySelector('.bulba-mat-name');
+          const countEl = item.querySelector('.bulba-mat-count');
+          if (nameEl) nameEl.style.textDecoration = checked ? 'line-through' : 'none';
+          if (nameEl) nameEl.style.opacity = checked ? '0.6' : '1';
+          if (countEl) countEl.style.opacity = checked ? '0.6' : '1';
           try {
             if (navigator.vibrate) navigator.vibrate(10);
           } catch (_) {}

@@ -300,7 +300,7 @@
 
   function createEditorToolbarDOM(charKey, baseData, onAction) {
     const wrap = document.createElement('div');
-    wrap.className = 'voxel-editor-toolbar';
+    wrap.className = 'voxel-editor-container';
     wrap.id = `voxelToolbar_${charKey}`;
 
     // 建立調色盤色票 HTML
@@ -321,51 +321,64 @@
     });
 
     wrap.innerHTML = `
-      <div class="ve-toolbar-inner">
-        <div class="ve-tool-group">
-          <button type="button" class="ve-btn ${!_state.editorMode ? 'active' : ''}" data-tool="rotate" title="視角旋轉">
-            🖐️ 旋轉
-          </button>
-          <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'paint' ? 'active' : ''}" data-tool="paint" title="塗色 (修改方塊材質)">
-            🎨 塗色
-          </button>
-          <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'delete' ? 'active' : ''}" data-tool="delete" title="消除 (刪除點擊的方塊)">
-            🧹 消除
-          </button>
-          <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'add' ? 'active' : ''}" data-tool="add" title="新增 (在點擊面上堆疊方塊)">
-            ➕ 新增
-          </button>
-          <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'eyedropper' ? 'active' : ''}" data-tool="eyedropper" title="吸管 (吸取模型上的方塊材質)">
-            🧪 吸管
-          </button>
+      <!-- 右上角精簡開關膠囊按鈕 (預設常駐，零遮擋模型) -->
+      <button type="button" class="ve-toggle-capsule" id="veToggleBtn_${charKey}" title="開啟 / 收合 3D 體素手動編輯器">
+        🛠️ 體素編輯
+      </button>
+
+      <!-- 展開的編輯工具面板 (預設隱藏) -->
+      <div class="voxel-editor-toolbar ve-hidden" id="vePanel_${charKey}">
+        <div class="ve-toolbar-header">
+          <span class="ve-header-title">🛠️ 體素工坊</span>
+          <button type="button" class="ve-close-btn" id="veCloseBtn_${charKey}" title="收合面板">✖ 收合</button>
         </div>
 
-        <div class="ve-divider"></div>
+        <div class="ve-toolbar-inner">
+          <div class="ve-tool-group">
+            <button type="button" class="ve-btn ${!_state.editorMode ? 'active' : ''}" data-tool="rotate" title="視角旋轉 (可拖曳視角)">
+              🖐️ 旋轉
+            </button>
+            <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'paint' ? 'active' : ''}" data-tool="paint" title="塗色 (修改方塊材質)">
+              🎨 塗色
+            </button>
+            <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'delete' ? 'active' : ''}" data-tool="delete" title="消除 (刪除點擊的方塊)">
+              🧹 消除
+            </button>
+            <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'add' ? 'active' : ''}" data-tool="add" title="新增 (在點擊面上堆疊方塊)">
+              ➕ 新增
+            </button>
+            <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'eyedropper' ? 'active' : ''}" data-tool="eyedropper" title="吸管 (吸取模型上的方塊材質)">
+              🧪 吸管
+            </button>
+          </div>
 
-        <div class="ve-action-group">
-          <button type="button" class="ve-btn ${_state.mirrorSymmetry ? 'active' : ''}" id="btnMirror_${charKey}" title="左右鏡像對稱編輯">
-            🪞 鏡像: ${_state.mirrorSymmetry ? '開' : '關'}
-          </button>
-          <button type="button" class="ve-btn" id="btnUndo_${charKey}" title="撤銷上一步">
-            ↩️ 撤銷
-          </button>
-          <button type="button" class="ve-btn" id="btnRedo_${charKey}" title="重做">
-            ↪️ 重做
-          </button>
-          <button type="button" class="ve-btn ve-btn-danger" id="btnReset_${charKey}" title="清除自訂修改，恢復官方預設值">
-            🔄 恢復預設
-          </button>
-          <button type="button" class="ve-btn ve-btn-primary" id="btnSubmit_${charKey}" title="永久存檔 (同步雲端與本地)">
-            ☁️ 提交存檔
-          </button>
+          <div class="ve-divider"></div>
+
+          <div class="ve-action-group">
+            <button type="button" class="ve-btn ${_state.mirrorSymmetry ? 'active' : ''}" id="btnMirror_${charKey}" title="左右鏡像對稱編輯">
+              🪞 鏡像: ${_state.mirrorSymmetry ? '開' : '關'}
+            </button>
+            <button type="button" class="ve-btn" id="btnUndo_${charKey}" title="撤銷上一步">
+              ↩️ 撤銷
+            </button>
+            <button type="button" class="ve-btn" id="btnRedo_${charKey}" title="重做">
+              ↪️ 重做
+            </button>
+            <button type="button" class="ve-btn ve-btn-danger" id="btnReset_${charKey}" title="清除自訂修改，恢復官方預設值">
+              🔄 恢復預設
+            </button>
+            <button type="button" class="ve-btn ve-btn-primary" id="btnSubmit_${charKey}" title="永久存檔 (同步雲端與本地)">
+              ☁️ 提交存檔
+            </button>
+          </div>
         </div>
-      </div>
 
-      <!-- 調色盤色票列 -->
-      <div class="ve-palette-bar" id="vePaletteBar_${charKey}">
-        <span class="ve-palette-label">當前材質:</span>
-        <div class="ve-palette-dots">
-          ${paletteHtml}
+        <!-- 調色盤色票列 -->
+        <div class="ve-palette-bar" id="vePaletteBar_${charKey}">
+          <span class="ve-palette-label">材質:</span>
+          <div class="ve-palette-dots">
+            ${paletteHtml}
+          </div>
         </div>
       </div>
     `;
@@ -402,26 +415,40 @@
       mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
 
       raycaster.setFromCamera(mouse, threeState.camera);
-      const mesh = threeState.instancedMesh;
-      if (!mesh) return;
 
-      const intersects = raycaster.intersectObject(mesh);
+      // 同時檢驗原版 InstancedMesh 與動態新增網格
+      const targets = [];
+      if (threeState.instancedMesh) targets.push(threeState.instancedMesh);
+      if (threeState.dynamicAddedGroup && threeState.dynamicAddedGroup.children.length > 0) {
+        targets.push(...threeState.dynamicAddedGroup.children);
+      }
+      if (targets.length === 0) return;
+
+      const intersects = raycaster.intersectObjects(targets, false);
       if (!intersects || intersects.length === 0) return;
 
       const hit = intersects[0];
-      const instanceId = hit.instanceId;
-      if (instanceId === undefined || instanceId === null) return;
-
-      const blockInfo = threeState.blockDataList ? threeState.blockDataList[instanceId] : null;
-      if (!blockInfo) return;
-
       const cx = baseData.dimensions.width / 2;
       const cy = baseData.dimensions.height / 2;
       const cz = baseData.dimensions.length / 2;
 
-      const voxelX = Math.round(blockInfo.posX + cx);
-      const voxelY = Math.round(blockInfo.posY + cy);
-      const voxelZ = Math.round(blockInfo.posZ + cz);
+      let voxelX, voxelY, voxelZ;
+
+      if (hit.object && hit.object.userData && hit.object.userData.isDynamic) {
+        // 點擊到動態新增的方塊
+        voxelX = hit.object.userData.voxelX;
+        voxelY = hit.object.userData.voxelY;
+        voxelZ = hit.object.userData.voxelZ;
+      } else {
+        // 點擊到原版 InstancedMesh 方塊
+        const instanceId = hit.instanceId;
+        if (instanceId === undefined || instanceId === null) return;
+        const blockInfo = threeState.blockDataList ? threeState.blockDataList[instanceId] : null;
+        if (!blockInfo) return;
+        voxelX = Math.round(blockInfo.posX + cx);
+        voxelY = Math.round(blockInfo.posY + cy);
+        voxelZ = Math.round(blockInfo.posZ + cz);
+      }
 
       if (_state.tool === 'eyedropper') {
         const effBid = getEffectiveBid(charKey, voxelX, voxelY, voxelZ);
@@ -446,12 +473,12 @@
         executeVoxelAction(charKey, newX, newY, newZ, 'add', _state.selectedBid);
       }
 
-      // 即時重新同步 Three.js InstancedMesh
+      // 即時重新同步 Three.js 實例與動態增補網格
       syncThreeMeshFromOverrides(charKey, threeState, baseData);
     });
   }
 
-  // 依據 overrides 即時更新 Three.js InstancedMesh 的顏色或可見度
+  // 依據 overrides 即時更新 Three.js InstancedMesh 與動態增補網格
   function syncThreeMeshFromOverrides(charKey, threeState, baseData) {
     if (!threeState || !threeState.instancedMesh || !threeState.blockDataList) return;
 
@@ -463,6 +490,7 @@
     const cy = baseData.dimensions.height / 2;
     const cz = baseData.dimensions.length / 2;
 
+    // 1. 同步原版方塊的顏色與刪除縮放
     blockList.forEach(item => {
       const vx = Math.round(item.posX + cx);
       const vy = Math.round(item.posY + cy);
@@ -471,19 +499,16 @@
       const bid = getEffectiveBid(charKey, vx, vy, vz);
 
       if (bid === -1) {
-        // 刪除：縮放為 0
         dummy.position.set(item.posX, item.posY, item.posZ);
         dummy.scale.set(0, 0, 0);
         dummy.updateMatrix();
         mesh.setMatrixAt(item.index, dummy.matrix);
       } else {
-        // 恢復正常縮放
         dummy.position.set(item.posX, item.posY, item.posZ);
         dummy.scale.set(1, 1, 1);
         dummy.updateMatrix();
         mesh.setMatrixAt(item.index, dummy.matrix);
 
-        // 更新顏色
         const pItem = (baseData.palette && baseData.palette[bid]) ? baseData.palette[bid] : { color: '#00a8c8' };
         color.set(pItem.color);
         mesh.setColorAt(item.index, color);
@@ -492,6 +517,46 @@
 
     mesh.instanceMatrix.needsUpdate = true;
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+
+    // 2. 同步「自訂動態增補網格 (Dynamic Added Mesh)」
+    if (typeof THREE !== 'undefined') {
+      if (!threeState.dynamicAddedGroup) {
+        threeState.dynamicAddedGroup = new THREE.Group();
+        threeState.scene.add(threeState.dynamicAddedGroup);
+      }
+
+      // 清空舊的動態增補方塊
+      while (threeState.dynamicAddedGroup.children.length > 0) {
+        const obj = threeState.dynamicAddedGroup.children[0];
+        threeState.dynamicAddedGroup.remove(obj);
+        if (obj.geometry && obj.geometry !== mesh.geometry) obj.geometry.dispose();
+        if (obj.material) obj.material.dispose();
+      }
+
+      // 檢查所有 overrides 中屬於「新增方塊」者
+      const overrides = getOverrides(charKey);
+      const geom = mesh.geometry || new THREE.BoxGeometry(1, 1, 1);
+
+      Object.entries(overrides).forEach(([coordStr, bid]) => {
+        if (bid !== -1) {
+          const [x, y, z] = coordStr.split(',').map(Number);
+          // 若原版沒有此方塊，代表是使用者/鏡像手動新增的方塊！
+          if (getOriginalBid(charKey, x, y, z) === -1) {
+            const pItem = (baseData.palette && baseData.palette[bid]) ? baseData.palette[bid] : { color: '#00a8c8' };
+            const mat = new THREE.MeshStandardMaterial({
+              color: pItem.color,
+              roughness: 0.88,
+              metalness: 0.0
+            });
+            const cube = new THREE.Mesh(geom, mat);
+            cube.position.set(x - cx, y - cy, z - cz);
+            cube.scale.set(1, 1, 1);
+            cube.userData = { voxelX: x, voxelY: y, voxelZ: z, isDynamic: true };
+            threeState.dynamicAddedGroup.add(cube);
+          }
+        }
+      });
+    }
   }
 
   function updateToolbarUI(charKey) {
@@ -525,15 +590,46 @@
   function attachEditorToScene(charKey, threeState, baseData, canvasWrap, onSubmitCallback) {
     if (!canvasWrap || !threeState) return;
 
-    // 檢查或建立懸浮工具列
-    let toolbar = document.getElementById(`voxelToolbar_${charKey}`);
-    if (!toolbar) {
-      toolbar = createEditorToolbarDOM(charKey, baseData);
+    // 檢查或建立懸浮工具列容器
+    let container = document.getElementById(`voxelToolbar_${charKey}`);
+    if (!container) {
+      container = createEditorToolbarDOM(charKey, baseData);
       canvasWrap.style.position = 'relative';
-      canvasWrap.appendChild(toolbar);
+      canvasWrap.appendChild(container);
+
+      const toggleBtn = container.querySelector(`#veToggleBtn_${charKey}`);
+      const panel = container.querySelector(`#vePanel_${charKey}`);
+      const closeBtn = container.querySelector(`#veCloseBtn_${charKey}`);
+
+      // 開關面板
+      if (toggleBtn && panel) {
+        toggleBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isHidden = panel.classList.contains('ve-hidden');
+          panel.classList.toggle('ve-hidden', !isHidden);
+          if (isHidden) {
+            _state.editorMode = true;
+            if (_state.tool === 'rotate') _state.tool = 'paint';
+            updateToolbarUI(charKey);
+          } else {
+            _state.editorMode = false;
+            _state.tool = 'rotate';
+          }
+        });
+      }
+
+      if (closeBtn && panel) {
+        closeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          panel.classList.add('ve-hidden');
+          _state.editorMode = false;
+          _state.tool = 'rotate';
+          updateToolbarUI(charKey);
+        });
+      }
 
       // 事件綁定
-      toolbar.addEventListener('click', (e) => {
+      panel.addEventListener('click', (e) => {
         const target = e.target.closest('button');
         if (!target) return;
 

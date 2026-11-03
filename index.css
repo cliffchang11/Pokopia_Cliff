@@ -12753,28 +12753,114 @@ body.has-floating-back .scroll-top-btn {
 
 /* ─────────────────────────────────────────────────────────────
    Pokopia 3D 體素手動編輯器懸浮工具列 (Voxel Editor Toolbar)
-   現代毛玻璃玻璃擬態 (Glassmorphism) + 靈動微交互
+   現代毛玻璃玻璃擬態 (Glassmorphism) + 右上角輕量開關膠囊
    ───────────────────────────────────────────────────────────── */
 
+.voxel-editor-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 40;
+}
+
+/* 右上角精簡開關膠囊按鈕 (預設常駐，完全零遮擋) */
+.ve-toggle-capsule {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  border-radius: 20px;
+  padding: 6px 14px;
+  color: #38bdf8;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35), 0 0 10px rgba(56, 189, 248, 0.2);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.ve-toggle-capsule:hover {
+  background: rgba(2, 132, 199, 0.88);
+  color: #ffffff;
+  border-color: #7dd3fc;
+  box-shadow: 0 4px 20px rgba(2, 132, 199, 0.5);
+  transform: translateY(-2px);
+}
+
+.ve-toggle-capsule:active {
+  transform: translateY(0);
+}
+
+/* 展開後的編輯工作面板 (右上側浮動，避開中央頭部) */
 .voxel-editor-toolbar {
   position: absolute;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 40;
+  top: 52px;
+  right: 14px;
+  pointer-events: auto;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 12px;
-  padding: 8px 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.36), 0 2px 6px rgba(0, 0, 0, 0.2);
+  padding: 10px 14px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.25);
   user-select: none;
-  max-width: 95%;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 520px;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.voxel-editor-toolbar.ve-hidden {
+  display: none !important;
+}
+
+.ve-toolbar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 6px;
+}
+
+.ve-header-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #38bdf8;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ve-close-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ve-close-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.4);
 }
 
 .ve-toolbar-inner {
@@ -12782,7 +12868,6 @@ body.has-floating-back .scroll-top-btn {
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
-  justify-content: center;
 }
 
 .ve-tool-group,
@@ -12906,8 +12991,10 @@ body.has-floating-back .scroll-top-btn {
 
 @media (max-width: 768px) {
   .voxel-editor-toolbar {
-    width: 96%;
-    padding: 6px 8px;
+    width: 94%;
+    right: 3%;
+    top: 50px;
+    padding: 8px 10px;
     gap: 6px;
   }
   .ve-btn {
