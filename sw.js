@@ -1,23 +1,23 @@
-const CACHE_NAME = 'pokopia-cache-v4.47.0';
+const CACHE_NAME = 'pokopia-cache-v4.48.0';
 
 const STATIC_ASSETS = [
   './',
   './index.html',
-  './index.css?v=4.47.0',
+  './index.css?v=4.48.0',
   './data.js?v=4.15.0',
   './preferences_db.js?v=4.15.0',
   './autofarm_data.js?v=4.15.0',
   './region_data.js?v=4.15.0',
   './video_data.js?v=4.15.0',
   './firebase.js?v=4.15.0',
-  './buzz_voxel_data.js?v=4.47.0',
-  './bulbasaur_voxel_data.js?v=4.47.0',
-  './ivysaur_voxel_data.js?v=4.47.0',
-  './venusaur_voxel_data.js?v=4.47.0',
-  './voxel_editor.js?v=4.47.0',
-  './app.js?v=4.47.0',
+  './buzz_voxel_data.js?v=4.48.0',
+  './bulbasaur_voxel_data.js?v=4.48.0',
+  './ivysaur_voxel_data.js?v=4.48.0',
+  './venusaur_voxel_data.js?v=4.48.0',
+  './voxel_editor.js?v=4.48.0',
+  './app.js?v=4.48.0',
   './manifest.json',
-  './assets/logo.png?v=4.47.0',
+  './assets/logo.png?v=4.48.0',
   './assets/icons/icon-192.png',
   './assets/icons/icon-512.png',
   './assets/icons/icon-maskable-512.png'

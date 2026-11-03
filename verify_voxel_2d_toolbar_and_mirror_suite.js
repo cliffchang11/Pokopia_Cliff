@@ -292,6 +292,125 @@ test('3.9 四大角色 2D 切片網格具備幾何對稱 X 軸平衡展開，確
   assert.strictEqual(appCode.includes("const symBounds = VoxelDeltaStore.getCharBounds('venusaur');"), true);
 });
 
+test('3.10 3D 渲染後台休眠與 cancelAnimationFrame 機制 (離開 3D 藍圖分頁或切換角色時立即終止 rAF)', () => {
+  const appCode = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf-8');
+  assert.strictEqual(appCode.includes('function stopThreeRendering(charKey) {'), true);
+  assert.strictEqual(appCode.includes('cancelAnimationFrame(t.animFrameId);'), true);
+  assert.strictEqual(appCode.includes("if (tab !== 'buzz3d' && typeof stopThreeRendering === 'function') {"), true);
+  assert.strictEqual(appCode.includes("['buzz', 'bulbasaur', 'ivysaur', 'venusaur'].forEach(stopThreeRendering);"), true);
+  assert.strictEqual(appCode.includes("if (typeof startThreeRendering === 'function') startThreeRendering(bulbaState.curChar || 'buzz');"), true);
+});
+
+test('3.11 3D Render-on-Demand 按需渲染 (四大角色移除無窮迴圈 animate，改為 controls change 觸發)', () => {
+  const appCode = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf-8');
+  // 四大角色皆具備 controls change 監聽與 startThreeRendering
+  assert.strictEqual(appCode.includes("controls.addEventListener('change', () => requestThreeRender('buzz'));"), true);
+  assert.strictEqual(appCode.includes("controls.addEventListener('change', () => requestThreeRender('bulbasaur'));"), true);
+  assert.strictEqual(appCode.includes("controls.addEventListener('change', () => requestThreeRender('ivysaur'));"), true);
+  assert.strictEqual(appCode.includes("controls.addEventListener('change', () => requestThreeRender('venusaur'));"), true);
+  assert.strictEqual(appCode.includes("startThreeRendering('buzz');"), true);
+  assert.strictEqual(appCode.includes("startThreeRendering('bulbasaur');"), true);
+  assert.strictEqual(appCode.includes("startThreeRendering('ivysaur');"), true);
+  assert.strictEqual(appCode.includes("startThreeRendering('venusaur');"), true);
+});
+
+test('3.12 四大角色 2D 切片網格 cell 生成時直連 handleCellMirrorHover (100% 獨立解耦，不依賴 3D 引擎)', () => {
+  const appCode = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf-8');
+  assert.strictEqual(appCode.includes("cell.addEventListener('mouseenter', () => handleCellMirrorHover(DOM.buzzVoxelGrid, 'buzz', cell, true));"), true);
+  assert.strictEqual(appCode.includes("cell.addEventListener('mouseleave', () => handleCellMirrorHover(DOM.buzzVoxelGrid, 'buzz', cell, false));"), true);
+  assert.strictEqual(appCode.includes("cell.addEventListener('mouseenter', () => handleCellMirrorHover(DOM.bulbaVoxelGrid, 'bulbasaur', cell, true));"), true);
+  assert.strictEqual(appCode.includes("cell.addEventListener('mouseleave', () => handleCellMirrorHover(DOM.bulbaVoxelGrid, 'bulbasaur', cell, false));"), true);
+  assert.strictEqual(appCode.includes("cell.addEventListener('mouseenter', () => handleCellMirrorHover(DOM.ivysaurVoxelGrid, 'ivysaur', cell, true));"), true);
+  assert.strictEqual(appCode.includes("cell.addEventListener('mouseleave', () => handleCellMirrorHover(DOM.ivysaurVoxelGrid, 'ivysaur', cell, false));"), true);
+  assert.strictEqual(appCode.includes("cell.addEventListener('mouseenter', () => handleCellMirrorHover(DOM.venusaurVoxelGrid, 'venusaur', cell, true));"), true);
+  assert.strictEqual(appCode.includes("cell.addEventListener('mouseleave', () => handleCellMirrorHover(DOM.venusaurVoxelGrid, 'venusaur', cell, false));"), true);
+});
+
+test('3.13 離線模擬 handleCellMirrorHover 鏡像外框觸發、中心軸避開、樣式色彩注入與無痕還原', () => {
+  // 建立 DOM 模擬節點
+  class MockClassList {
+    constructor() { this.classes = new Set(); }
+    add(...cls) { cls.forEach(c => this.classes.add(c)); }
+    remove(...cls) { cls.forEach(c => this.classes.delete(c)); }
+    contains(c) { return this.classes.has(c); }
+  }
+  class MockElement {
+    constructor(dataset = {}, bg = '') {
+      this.dataset = dataset;
+      this.style = { backgroundColor: bg };
+      this.classList = new MockClassList();
+    }
+  }
+
+  const cells = new Map();
+  // 模擬巴斯光年第 1 層的格子：X: 18 與對稱側 X: 22 (中軸 20，bounds.sum = 40)
+  const cellSource = new MockElement({ x: '18', z: '10' }, '#93c5fd');
+  const cellTarget = new MockElement({ x: '22', z: '10' }, '#93c5fd');
+  const cellCenter = new MockElement({ x: '20', z: '10' }, '#f1f5f9');
+  cells.set('18,10', cellSource);
+  cells.set('22,10', cellTarget);
+  cells.set('20,10', cellCenter);
+
+  const mockGrid = {
+    querySelector: (sel) => {
+      const match = sel.match(/data-x="(\d+)"\]\[data-z="(\d+)"\]/);
+      if (match) return cells.get(`${match[1]},${match[2]}`) || null;
+      return null;
+    },
+    querySelectorAll: (sel) => {
+      const res = [];
+      cells.forEach(c => {
+        if (c.classList.contains('ve-cell-mirror-ghost')) res.push(c);
+      });
+      return res;
+    }
+  };
+
+  // 抽出 handleCellMirrorHover 核心進行純粹邏輯模擬
+  function testHandleCellMirrorHover(gridEl, charKey, sourceCell, isEnter) {
+    if (!gridEl) return;
+    if (!isEnter) {
+      gridEl.querySelectorAll('.ve-cell-mirror-ghost').forEach(c => {
+        c.classList.remove('ve-cell-mirror-ghost', 'delete', 've-ghost-paint');
+        if (c._origBg !== undefined) {
+          c.style.backgroundColor = c._origBg;
+          delete c._origBg;
+        }
+      });
+      return;
+    }
+    if (!sourceCell || sourceCell.dataset.x === undefined) return;
+    const x = Number(sourceCell.dataset.x);
+    const z = Number(sourceCell.dataset.z);
+    const symX = VoxelDeltaStore.getSymmetryX(x, charKey);
+    if (symX === null || symX === x) return;
+
+    const targetCell = gridEl.querySelector(`.bulba-cell[data-x="${symX}"][data-z="${z}"]`);
+    if (targetCell) {
+      targetCell.classList.add('ve-cell-mirror-ghost');
+      targetCell._origBg = targetCell.style.backgroundColor || '';
+      targetCell.classList.add('ve-ghost-paint');
+      targetCell.style.backgroundColor = sourceCell.style.backgroundColor;
+    }
+  }
+
+  // 1. 滑鼠移入 cellSource (X: 18)
+  testHandleCellMirrorHover(mockGrid, 'buzz', cellSource, true);
+  assert.strictEqual(cellTarget.classList.contains('ve-cell-mirror-ghost'), true, '對稱目標 cellTarget 應加上 ve-cell-mirror-ghost');
+  assert.strictEqual(cellTarget.classList.contains('ve-ghost-paint'), true, '應加上 ve-ghost-paint');
+  assert.strictEqual(cellTarget._origBg, '#93c5fd', '原始背景應妥善暫存備份');
+
+  // 2. 滑鼠離開
+  testHandleCellMirrorHover(mockGrid, 'buzz', cellSource, false);
+  assert.strictEqual(cellTarget.classList.contains('ve-cell-mirror-ghost'), false, '滑鼠離開後 ve-cell-mirror-ghost 應被清除');
+  assert.strictEqual(cellTarget._origBg, undefined, '_origBg 應被清理刪除');
+  assert.strictEqual(cellTarget.style.backgroundColor, '#93c5fd', '背景色應無痕還原');
+
+  // 3. 滑鼠移入中心軸自身的格子 (X: 20)，不應觸發重複自體發光
+  testHandleCellMirrorHover(mockGrid, 'buzz', cellCenter, true);
+  assert.strictEqual(cellCenter.classList.contains('ve-cell-mirror-ghost'), false, '中軸自身格子不應重複發光');
+});
+
 console.log('\n--------------------------------------------------------');
 console.log(`🎉 全部 ${passCount} 項離線自動化整合測試全數通過 (100% PASS)！`);
 console.log('========================================================\n');

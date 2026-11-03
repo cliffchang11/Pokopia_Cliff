@@ -1966,6 +1966,11 @@
     state.isStaggerAnim = true;
     closeTocDropdown();
 
+    // 3D 渲染後台休眠：離開 3D 藍圖分頁時立即停止所有 WebGL requestAnimationFrame，零背景佔用
+    if (tab !== 'buzz3d' && typeof stopThreeRendering === 'function') {
+      ['buzz', 'bulbasaur', 'ivysaur', 'venusaur'].forEach(stopThreeRendering);
+    }
+
     // Reset Tabs
     DOM.tabStorage.classList.remove('active');
     DOM.tabHabitat.classList.remove('active');
@@ -2204,6 +2209,7 @@
       if (DOM.toolbarHeaderRow) DOM.toolbarHeaderRow.classList.remove('hidden');
       if (DOM.toolbarTitle) DOM.toolbarTitle.textContent = '3D 藍圖';
       if (DOM.catalogProgressBadge) DOM.catalogProgressBadge.classList.remove('hidden');
+      if (typeof startThreeRendering === 'function') startThreeRendering(bulbaState.curChar || 'buzz');
       if (bulbaState.curChar === 'venusaur') {
         if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🌺';
         const vTotal = (typeof VENUSAUR_VOXEL_DATA !== 'undefined' && VENUSAUR_VOXEL_DATA.totalBlocks) ? VENUSAUR_VOXEL_DATA.totalBlocks.toLocaleString() : '68,180';
@@ -7170,6 +7176,117 @@
     }
   };
 
+  // ═══════════════════════════════════════════════════════════════════
+  // 3D 渲染生命週期與按需渲染引擎 (Render-on-Demand & Zero-Overhead)
+  // ═══════════════════════════════════════════════════════════════════
+  function getThreeStateByChar(charKey) {
+    if (charKey === 'buzz') return buzzState.three;
+    if (charKey === 'bulba' || charKey === 'bulbasaur') return bulbaState.three;
+    if (charKey === 'ivysaur') return ivysaurState.three;
+    if (charKey === 'venusaur') return venusaurState.three;
+    return null;
+  }
+
+  // 單次請求重繪 (Render on Demand，視角靜止時 0% GPU 佔用)
+  function requestThreeRender(charKey) {
+    const t = getThreeStateByChar(charKey);
+    if (!t || !t.isInit || !t.renderer || !t.scene || !t.camera) return;
+    if (t.renderRequested) return;
+    t.renderRequested = true;
+    requestAnimationFrame(() => {
+      t.renderRequested = false;
+      if (t.controls) t.controls.update();
+      t.renderer.render(t.scene, t.camera);
+    });
+  }
+
+  // 停止指定角色的 3D 渲染 (Zero-Overhead 背景休眠)
+  function stopThreeRendering(charKey) {
+    const t = getThreeStateByChar(charKey);
+    if (!t) return;
+    if (t.animFrameId) {
+      cancelAnimationFrame(t.animFrameId);
+      t.animFrameId = null;
+    }
+  }
+
+  // 啟動指定角色的 3D 渲染監聽 (與 controls 連動按需繪製，休眠其他角色)
+  function startThreeRendering(charKey) {
+    ['buzz', 'bulbasaur', 'ivysaur', 'venusaur'].forEach(k => {
+      if (k !== charKey && (charKey !== 'bulba' || k !== 'bulbasaur')) {
+        stopThreeRendering(k);
+      }
+    });
+
+    const t = getThreeStateByChar(charKey);
+    if (!t || !t.isInit) return;
+
+    requestThreeRender(charKey);
+
+    if (t.controls && !t.controls._onDemandAttached) {
+      t.controls._onDemandAttached = true;
+      t.controls.addEventListener('change', () => requestThreeRender(charKey));
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // 2D 切片點陣獨立鏡像對稱控制器 (100% 獨立解耦，不依賴 3D 引擎)
+  // ═══════════════════════════════════════════════════════════════════
+  function handleCellMirrorHover(gridEl, charKey, sourceCell, isEnter) {
+    if (!gridEl) return;
+    if (!isEnter) {
+      gridEl.querySelectorAll('.ve-cell-mirror-ghost').forEach(c => {
+        c.classList.remove('ve-cell-mirror-ghost', 'delete', 've-ghost-paint');
+        if (c._origBg !== undefined) {
+          c.style.backgroundColor = c._origBg;
+          delete c._origBg;
+        }
+      });
+      return;
+    }
+
+    if (!sourceCell || sourceCell.dataset.x === undefined) return;
+    const x = Number(sourceCell.dataset.x);
+    const z = Number(sourceCell.dataset.z);
+
+    // 取得角色的對稱軸座標
+    let symX = null;
+    if (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.getSymmetryX) {
+      symX = VoxelDeltaStore.getSymmetryX(x, charKey);
+    } else {
+      const bounds = { buzz: 40, bulba: 35, bulbasaur: 35, ivysaur: 100, venusaur: 100 };
+      if (bounds[charKey] !== undefined) symX = bounds[charKey] - x;
+    }
+
+    // 中心軸自身格子不重複顯示金色發光提示
+    if (symX === null || symX === x) return;
+
+    const targetCell = gridEl.querySelector(`.bulba-cell[data-x="${symX}"][data-z="${z}"]`);
+    if (targetCell) {
+      targetCell.classList.add('ve-cell-mirror-ghost');
+      targetCell._origBg = targetCell.style.backgroundColor || '';
+
+      const isDelete = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.state && VoxelDeltaStore.state.tool === 'delete');
+      if (isDelete) {
+        targetCell.classList.add('delete');
+      } else {
+        targetCell.classList.add('ve-ghost-paint');
+        const srcColor = sourceCell.dataset.color || sourceCell.style.backgroundColor;
+        if (srcColor && !srcColor.includes('rgba(56, 189, 248, 0.04)') && !srcColor.includes('rgba(52, 211, 153, 0.04)')) {
+          targetCell.style.backgroundColor = srcColor;
+        } else {
+          const selBid = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.state) ? VoxelDeltaStore.state.selectedBid : null;
+          const base = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.getBaseData) ? VoxelDeltaStore.getBaseData(charKey) : null;
+          if (base && base.palette && selBid !== null && base.palette[selBid]) {
+            targetCell.style.backgroundColor = base.palette[selBid].color;
+          } else {
+            targetCell.style.backgroundColor = '#facc15';
+          }
+        }
+      }
+    }
+  }
+
   function applyWorkspaceZoomPan(workspace, zoomObj) {
     if (!workspace) return;
     workspace.style.transform = `translate(${zoomObj.panX}px, ${zoomObj.panY}px) scale(${zoomObj.scale})`;
@@ -7278,6 +7395,9 @@
 
   function switchCharacterBlueprint(char) {
     bulbaState.curChar = char;
+    if (typeof startThreeRendering === 'function') {
+      startThreeRendering(char);
+    }
     if (DOM.btnSubBuzz) DOM.btnSubBuzz.classList.toggle('active', char === 'buzz');
     if (DOM.btnSubBulba) DOM.btnSubBulba.classList.toggle('active', char === 'bulba');
     if (DOM.btnSubIvysaur) DOM.btnSubIvysaur.classList.toggle('active', char === 'ivysaur');
@@ -7550,6 +7670,10 @@
               cell.classList.add('ve-cell-selected');
             }
 
+            // 直連 2D 鏡像對稱提示 (100% 獨立解耦，滑鼠懸停立即顯現金光外框)
+            cell.addEventListener('mouseenter', () => handleCellMirrorHover(DOM.bulbaVoxelGrid, 'bulbasaur', cell, true));
+            cell.addEventListener('mouseleave', () => handleCellMirrorHover(DOM.bulbaVoxelGrid, 'bulbasaur', cell, false));
+
             if (bid) {
               const pItem = data.palette[bid] || { name: '方塊', color: '#64a395' };
               cell.style.backgroundColor = pItem.color;
@@ -7712,6 +7836,10 @@
             if (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.state.selectedVoxels && VoxelDeltaStore.state.selectedVoxels.has(coordKey)) {
               cell.classList.add('ve-cell-selected');
             }
+
+            // 直連 2D 鏡像對稱提示 (100% 獨立解耦，滑鼠懸停立即顯現金光外框)
+            cell.addEventListener('mouseenter', () => handleCellMirrorHover(DOM.buzzVoxelGrid, 'buzz', cell, true));
+            cell.addEventListener('mouseleave', () => handleCellMirrorHover(DOM.buzzVoxelGrid, 'buzz', cell, false));
 
             if (bid !== undefined) {
               const pItem = data.palette[bid] || { name: '方塊', color: '#f1f5f9' };
@@ -7902,40 +8030,12 @@
       let marqueeStart = null;
 
       function clearMirrorGhost() {
-        gridEl.querySelectorAll('.ve-cell-mirror-ghost').forEach(c => {
-          c.classList.remove('ve-cell-mirror-ghost', 'delete', 've-ghost-paint');
-          if (c._origBg !== undefined) {
-            c.style.backgroundColor = c._origBg;
-            delete c._origBg;
-          }
-        });
+        handleCellMirrorHover(gridEl, charKey, null, false);
       }
 
       function updateMirrorGhost(x, z, y) {
-        clearMirrorGhost();
-        if (typeof VoxelDeltaStore === 'undefined' || !VoxelDeltaStore.state.mirrorSymmetry) return;
-        const symX = VoxelDeltaStore.getSymmetryX(x, charKey);
-        if (symX === null || symX === x) return;
-
-        const targetCell = gridEl.querySelector(`.bulba-cell[data-x="${symX}"][data-z="${z}"]`);
-        if (targetCell) {
-          targetCell.classList.add('ve-cell-mirror-ghost');
-          targetCell._origBg = targetCell.style.backgroundColor || '';
-
-          const tool = VoxelDeltaStore.state.tool;
-          if (tool === 'delete') {
-            targetCell.classList.add('delete');
-          } else {
-            targetCell.classList.add('ve-ghost-paint');
-            const selBid = VoxelDeltaStore.state.selectedBid;
-            const pal = baseData && baseData.palette ? baseData.palette[selBid] : null;
-            if (pal && pal.color) {
-              targetCell.style.backgroundColor = pal.color;
-            } else {
-              targetCell.style.backgroundColor = '#00a8c8';
-            }
-          }
-        }
+        const sourceCell = gridEl.querySelector(`.bulba-cell[data-x="${x}"][data-z="${z}"]`);
+        handleCellMirrorHover(gridEl, charKey, sourceCell, true);
       }
 
       gridEl.addEventListener('pointerdown', (e) => {
@@ -8040,6 +8140,7 @@
       t.renderer.setSize(width, height);
       t.camera.aspect = width / height;
       t.camera.updateProjectionMatrix();
+      requestThreeRender('buzz');
       return;
     }
 
@@ -8136,12 +8237,10 @@
     t.instancedMesh = instancedMesh;
     t.blockDataList = blockDataList;
 
-    function animate() {
-      t.animFrameId = requestAnimationFrame(animate);
-      if (controls) controls.update();
-      renderer.render(scene, camera);
+    if (controls) {
+      controls.addEventListener('change', () => requestThreeRender('buzz'));
     }
-    animate();
+    startThreeRendering('buzz');
 
     setupVoxelEditorIntegration('buzz', t, BUZZ_VOXEL_DATA, DOM.buzz3dCanvas, () => renderBuzzLayer(buzzState.curLayer));
 
@@ -8154,6 +8253,7 @@
       camera.aspect = nw / nh;
       camera.updateProjectionMatrix();
       renderer.setSize(nw, nh);
+      requestThreeRender('buzz');
     });
   }
 
@@ -8213,6 +8313,7 @@
       t.renderer.setSize(width, height);
       t.camera.aspect = width / height;
       t.camera.updateProjectionMatrix();
+      requestThreeRender('bulbasaur');
       return;
     }
 
@@ -8319,13 +8420,10 @@
     t.instancedMesh = instancedMesh;
     t.blockDataList = blockDataList;
 
-    // Animation Loop
-    function animate() {
-      t.animFrameId = requestAnimationFrame(animate);
-      if (controls) controls.update();
-      renderer.render(scene, camera);
+    if (controls) {
+      controls.addEventListener('change', () => requestThreeRender('bulbasaur'));
     }
-    animate();
+    startThreeRendering('bulbasaur');
 
     setupVoxelEditorIntegration('bulbasaur', t, BULBASAUR_VOXEL_DATA, DOM.bulba3dCanvas, () => renderBulbaLayer(bulbaState.curLayer));
 
@@ -8339,6 +8437,7 @@
       camera.aspect = nw / nh;
       camera.updateProjectionMatrix();
       renderer.setSize(nw, nh);
+      requestThreeRender('bulbasaur');
     });
   }
 
@@ -8530,6 +8629,10 @@
               cell.classList.add('ve-cell-selected');
             }
 
+            // 直連 2D 鏡像對稱提示 (100% 獨立解耦，滑鼠懸停立即顯現金光外框)
+            cell.addEventListener('mouseenter', () => handleCellMirrorHover(DOM.ivysaurVoxelGrid, 'ivysaur', cell, true));
+            cell.addEventListener('mouseleave', () => handleCellMirrorHover(DOM.ivysaurVoxelGrid, 'ivysaur', cell, false));
+
             if (bid !== undefined) {
               const palItem = data.palette[bid] || { name: '方塊', color: '#00a8c8' };
               cell.style.backgroundColor = palItem.color;
@@ -8623,6 +8726,7 @@
       t.renderer.setSize(width, height);
       t.camera.aspect = width / height;
       t.camera.updateProjectionMatrix();
+      requestThreeRender('ivysaur');
       return;
     }
 
@@ -8722,12 +8826,10 @@
     t.instancedMesh = instancedMesh;
     t.blockDataList = blockDataList;
 
-    function animate() {
-      t.animFrameId = requestAnimationFrame(animate);
-      if (controls) controls.update();
-      renderer.render(scene, camera);
+    if (controls) {
+      controls.addEventListener('change', () => requestThreeRender('ivysaur'));
     }
-    animate();
+    startThreeRendering('ivysaur');
 
     setupVoxelEditorIntegration('ivysaur', t, IVYSAUR_VOXEL_DATA, DOM.ivysaur3dCanvas, () => renderIvysaurLayer(ivysaurState.curLayer));
 
@@ -8740,6 +8842,7 @@
       camera.aspect = nw / nh;
       camera.updateProjectionMatrix();
       renderer.setSize(nw, nh);
+      requestThreeRender('ivysaur');
     });
   }
 
@@ -8923,6 +9026,10 @@
               cell.classList.add('ve-cell-selected');
             }
 
+            // 直連 2D 鏡像對稱提示 (100% 獨立解耦，滑鼠懸停立即顯現金光外框)
+            cell.addEventListener('mouseenter', () => handleCellMirrorHover(DOM.venusaurVoxelGrid, 'venusaur', cell, true));
+            cell.addEventListener('mouseleave', () => handleCellMirrorHover(DOM.venusaurVoxelGrid, 'venusaur', cell, false));
+
             if (bid !== undefined) {
               const pItem = data.palette[bid] || { name: '方塊', color: '#00a8c8' };
               cell.style.backgroundColor = pItem.color;
@@ -9025,6 +9132,7 @@
       t.renderer.setSize(width, height);
       t.camera.aspect = width / height;
       t.camera.updateProjectionMatrix();
+      requestThreeRender('venusaur');
       return;
     }
 
@@ -9124,12 +9232,10 @@
     t.instancedMesh = instancedMesh;
     t.blockDataList = blockDataList;
 
-    function animate() {
-      t.animFrameId = requestAnimationFrame(animate);
-      if (controls) controls.update();
-      renderer.render(scene, camera);
+    if (controls) {
+      controls.addEventListener('change', () => requestThreeRender('venusaur'));
     }
-    animate();
+    startThreeRendering('venusaur');
 
     setupVoxelEditorIntegration('venusaur', t, VENUSAUR_VOXEL_DATA, DOM.venusaur3dCanvas, () => renderVenusaurLayer(venusaurState.curLayer));
 
@@ -9142,6 +9248,7 @@
       camera.aspect = nw / nh;
       camera.updateProjectionMatrix();
       renderer.setSize(nw, nh);
+      requestThreeRender('venusaur');
     });
   }
 
