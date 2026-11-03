@@ -7191,7 +7191,7 @@
 
     const scaleW = availW / wsW;
     const scaleH = availH / wsH;
-    let fitScale = Math.min(scaleW, scaleH, 1.0);
+    let fitScale = Math.min(scaleW, scaleH, 2.2);
     fitScale = Math.max(0.35, Number(fitScale.toFixed(2)));
 
     zoomObj.scale = fitScale;
@@ -8176,23 +8176,63 @@
         const spanX = maxX - minX + 1;
         const spanZ = maxZ - minZ + 1;
 
-        DOM.ivysaurVoxelGrid.style.gridTemplateColumns = `repeat(${spanX}, 1fr)`;
+        // 計算 X 軸與 Z 軸的實體與間隔段落 (如左腳、中空、右腳)
+        const xSegments = getVoxelAxisSegments(minX, maxX, xOccupied);
+        const zSegments = getVoxelAxisSegments(minZ, maxZ, zOccupied);
+
+        // 依容器動態計算最適正方形方塊像素 (cellSize)
+        const parent = DOM.ivysaurVoxelGrid.closest('.bulba-grid-container') || DOM.ivysaurVoxelGrid.parentElement;
+        const containerWidth = parent ? (parent.clientWidth || 800) : 800;
+        const containerHeight = parent ? (parent.clientHeight || 500) : 500;
+        const isMobile = window.innerWidth <= 768;
+
+        let cellSize;
+        if (isMobile) {
+          const rightDimReserved = 28;
+          const netWidth = containerWidth - 36 - rightDimReserved - (spanX - 1);
+          cellSize = Math.max(3, Math.floor(netWidth / spanX));
+          cellSize = Math.min(14, cellSize);
+        } else {
+          // 桌面版：寬高雙向約束，自適應最大化充滿可視畫面 (絕不黑死塌陷)
+          const cellByHeight = Math.floor((Math.max(460, containerHeight - 60) - 24 - (spanZ - 1)) / spanZ);
+          const cellByWidth = Math.floor((containerWidth - 60 - 28 - (spanX - 1)) / spanX);
+          cellSize = Math.min(cellByHeight, cellByWidth);
+          cellSize = Math.max(6, Math.min(24, cellSize));
+        }
+
+        DOM.ivysaurVoxelGrid.style.gap = '1px';
+        DOM.ivysaurVoxelGrid.style.gridTemplateColumns = `repeat(${spanX}, ${cellSize}px)`;
+
+        // 動態將頂部標註線寬度與側邊長度標註高度對齊網格本體邊緣並注入分段純數字
+        const gridTotalWidth = spanX * cellSize + (spanX - 1) + 16;
+        const gridTotalHeight = spanZ * cellSize + (spanZ - 1) + 16;
+        renderDimTopSegments(DOM.ivysaurDimTop, xSegments, cellSize, gridTotalWidth);
+        renderDimRightSegments(DOM.ivysaurDimRight, zSegments, cellSize, gridTotalHeight);
+
         const frag = document.createDocumentFragment();
 
-        // 渲染 2D 方塊點陣
+        // 渲染 2D 方塊點陣 (每個格子具有固定的正方形長寬，絕不發生中段塌陷撕裂黑縫)
         for (let rz = minZ; rz <= maxZ; rz++) {
           for (let rx = minX; rx <= maxX; rx++) {
             const key = `${rx},${rz}`;
             const bid = blockMap.get(key);
             const cell = document.createElement('div');
-            cell.className = 'bulba-voxel-cell';
+            cell.className = 'bulba-cell';
+            cell.style.width = `${cellSize}px`;
+            cell.style.height = `${cellSize}px`;
+
             if (bid !== undefined) {
               const palItem = data.palette[bid] || { name: '方塊', color: '#00a8c8' };
               cell.style.backgroundColor = palItem.color;
+              cell.style.border = '1px solid rgba(15, 23, 42, 0.65)';
+              cell.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.35)';
+              cell.dataset.x = rx;
+              cell.dataset.z = rz;
               cell.dataset.name = palItem.name;
+              cell.dataset.color = palItem.color;
               cell.dataset.bid = bid;
               cell.dataset.coord = `X: ${rx}, Z: ${rz}`;
-              cell.addEventListener('mouseenter', (ev) => {
+              cell.addEventListener('mouseenter', () => {
                 if (DOM.ivysaurHoverTooltip && DOM.ivysaurTooltipColor && DOM.ivysaurTooltipText) {
                   DOM.ivysaurTooltipColor.style.backgroundColor = palItem.color;
                   DOM.ivysaurTooltipText.textContent = `${palItem.name} (${cell.dataset.coord})`;
@@ -8203,7 +8243,7 @@
                 if (DOM.ivysaurHoverTooltip) DOM.ivysaurHoverTooltip.classList.add('hidden');
               });
             } else {
-              // 柔和清新草系藍圖底格線，告別死黑
+              // 柔和清新草系工程藍圖底格線，告別死黑
               cell.style.backgroundColor = 'rgba(52, 211, 153, 0.04)';
               cell.style.border = '1px solid rgba(52, 211, 153, 0.1)';
             }
@@ -8213,33 +8253,10 @@
         DOM.ivysaurVoxelGrid.appendChild(frag);
 
         const workspace = DOM.ivysaurVoxelGrid.closest('.bulba-grid-workspace');
-        const parent = DOM.ivysaurVoxelGrid.closest('.bulba-grid-container');
         if (workspace && parent && ivysaurState.zoom.panX === 0 && ivysaurState.zoom.panY === 0) {
           fitWorkspaceToContainer(workspace, parent, ivysaurState.zoom);
         } else if (workspace) {
           applyWorkspaceZoomPan(workspace, ivysaurState.zoom);
-        }
-
-        // 雙軸長寬工程標註線
-        if (DOM.ivysaurDimTop) {
-          DOM.ivysaurDimTop.style.display = 'flex';
-          DOM.ivysaurDimTop.style.gridTemplateColumns = `repeat(${spanX}, 1fr)`;
-          DOM.ivysaurDimTop.innerHTML = '';
-          const topSpan = document.createElement('div');
-          topSpan.className = 'bulba-dim-segment';
-          topSpan.style.gridColumn = `1 / span ${spanX}`;
-          topSpan.textContent = `寬 ${spanX} 格`;
-          DOM.ivysaurDimTop.appendChild(topSpan);
-        }
-        if (DOM.ivysaurDimRight) {
-          DOM.ivysaurDimRight.style.display = 'flex';
-          DOM.ivysaurDimRight.style.gridTemplateRows = `repeat(${spanZ}, 1fr)`;
-          DOM.ivysaurDimRight.innerHTML = '';
-          const rightSpan = document.createElement('div');
-          rightSpan.className = 'bulba-dim-segment';
-          rightSpan.style.gridRow = `1 / span ${spanZ}`;
-          rightSpan.textContent = `深 ${spanZ} 格`;
-          DOM.ivysaurDimRight.appendChild(rightSpan);
         }
       }
     }

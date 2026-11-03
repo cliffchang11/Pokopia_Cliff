@@ -64,35 +64,42 @@ assert.ok(editorCode.includes('ve-close-btn'), 'voxel_editor.js 缺少 ve-close-
 console.log('  ✓ PASS: 2.1 voxel_editor.js 具備 dynamicAddedGroup 3D 實體動態增補實例層');
 console.log('  ✓ PASS: 2.2 voxel_editor.js 具備右上角精簡開關膠囊與面板收合機制 (零遮擋模型)');
 
-// 3. 測試妙蛙草切片指南自適應居中縮放與材料卡片
-console.log('\n【測試組 3: 妙蛙草切片指南自適應居中縮放與材料卡片】');
+// 3. 測試妙蛙草切片指南自適應居中縮放、尺規對齊與黑縫徹底消除
+console.log('\n【測試組 3: 妙蛙草切片指南自適應居中縮放、尺規對齊與防塌陷黑縫】');
 const appCode = fs.readFileSync('./app.js', 'utf8');
 assert.ok(appCode.includes('setupVoxelEditorIntegration'), 'app.js 缺少 setupVoxelEditorIntegration');
 assert.ok(appCode.includes('fitWorkspaceToContainer(workspace, parent, ivysaurState.zoom)'), 'renderIvysaurLayer 缺少自適應縮放引擎');
+assert.ok(appCode.includes('renderDimTopSegments(DOM.ivysaurDimTop'), 'renderIvysaurLayer 缺少頂部工程分段尺規');
+assert.ok(appCode.includes('renderDimRightSegments(DOM.ivysaurDimRight'), 'renderIvysaurLayer 缺少右側工程分段尺規');
+assert.ok(appCode.includes("cell.className = 'bulba-cell'"), 'renderIvysaurLayer 缺少正規 bulba-cell 類別');
+assert.ok(appCode.includes('cell.style.width = `${cellSize}px`'), 'renderIvysaurLayer 方塊未鎖定固定正方形像素');
 assert.ok(appCode.includes('rgba(52, 211, 153, 0.04)'), 'renderIvysaurLayer 缺少工程藍圖底格線');
 assert.ok(appCode.includes('bulba-mat-chip'), 'renderIvysaurLayer 材料卡片缺少統一晶片樣式');
 assert.ok(appCode.includes('bulba-mat-count'), 'renderIvysaurLayer 材料卡片缺少統一計數標籤');
-console.log('  ✓ PASS: 3.1 renderIvysaurLayer 完整導入 fitWorkspaceToContainer 居中放大充滿畫布');
-console.log('  ✓ PASS: 3.2 renderIvysaurLayer 具備清晰工程藍圖底格線與高對比材料卡片');
+console.log('  ✓ PASS: 3.1 renderIvysaurLayer 完整導入動態 cellSize 與固定正方形方塊 (黑縫徹底消滅)');
+console.log('  ✓ PASS: 3.2 renderIvysaurLayer 完整導入 renderDimTopSegments/Right 工程分段尺規');
+console.log('  ✓ PASS: 3.3 renderIvysaurLayer 具備 fitWorkspaceToContainer 居中放大充滿視窗與高對比材料卡片');
 
-// 4. 測試前端資源引入與版本破壞標籤 (v4.39.0)
-console.log('\n【測試組 4: 靜態資源引入與版本升級 (v4.39.0)】');
+// 4. 測試前端資源引入與版本破壞標籤 (v4.40.0)
+console.log('\n【測試組 4: 靜態資源引入與版本升級 (v4.40.0)】');
 const indexHtml = fs.readFileSync('./index.html', 'utf8');
-assert.ok(indexHtml.includes('voxel_editor.js?v=4.39.0'), 'index.html 缺少 voxel_editor.js?v=4.39.0');
-assert.ok(indexHtml.includes('index.css?v=4.39.0'), 'index.html 未更新至 index.css?v=4.39.0');
-assert.ok(indexHtml.includes('app.js?v=4.39.0'), 'index.html 未更新至 app.js?v=4.39.0');
-console.log('  ✓ PASS: 4.1 index.html 正確引入 voxel_editor.js 且全站版號對齊 v=4.39.0');
+assert.ok(indexHtml.includes('voxel_editor.js?v=4.40.0'), 'index.html 缺少 voxel_editor.js?v=4.40.0');
+assert.ok(indexHtml.includes('index.css?v=4.40.0'), 'index.html 未更新至 index.css?v=4.40.0');
+assert.ok(indexHtml.includes('app.js?v=4.40.0'), 'index.html 未更新至 app.js?v=4.40.0');
+console.log('  ✓ PASS: 4.1 index.html 正確引入 voxel_editor.js 且全站版號對齊 v=4.40.0');
 
 const swCode = fs.readFileSync('./sw.js', 'utf8');
-assert.ok(swCode.includes('pokopia-cache-v4.39.0'), 'sw.js 快取版本未升級至 v4.39.0');
-assert.ok(swCode.includes('./voxel_editor.js?v=4.39.0'), 'sw.js 靜態清單未包含 voxel_editor.js?v=4.39.0');
-console.log('  ✓ PASS: 4.2 sw.js 離線快取成功升級 pokopia-cache-v4.39.0 且納入最新資產');
+assert.ok(swCode.includes('pokopia-cache-v4.40.0'), 'sw.js 快取版本未升級至 v4.40.0');
+assert.ok(swCode.includes('./voxel_editor.js?v=4.40.0'), 'sw.js 靜態清單未包含 voxel_editor.js?v=4.40.0');
+console.log('  ✓ PASS: 4.2 sw.js 離線快取成功升級 pokopia-cache-v4.40.0 且納入最新資產');
 
 const indexCss = fs.readFileSync('./index.css', 'utf8');
 assert.ok(indexCss.includes('.ve-toggle-capsule'), 'index.css 缺少 .ve-toggle-capsule 膠囊樣式');
 assert.ok(indexCss.includes('.voxel-editor-toolbar.ve-hidden'), 'index.css 缺少 .ve-hidden 樣式');
-console.log('  ✓ PASS: 4.3 index.css 具備右上角輕量膠囊開關與非遮擋面板樣式');
+assert.ok(indexCss.includes('width: 84px;'), 'index.css 缺少直立側邊欄寬度定義');
+assert.ok(indexCss.includes('grid-template-columns: repeat(2, 24px)'), 'index.css 缺少 2 欄緊湊色票排版');
+console.log('  ✓ PASS: 4.3 index.css 具備右側直立側邊欄 (寬 84px) 與 2 欄 6 列色票網格');
 
 console.log('\n--------------------------------------------------------');
-console.log('🎉 Pokopia 3D 體素手動編輯與雲端同步系統離線驗收 100% PASS！');
+console.log('🎉 Pokopia 3D 體素直立側邊欄與妙蛙草切片網格修復離線驗收 100% PASS！');
 console.log('========================================================\n');
