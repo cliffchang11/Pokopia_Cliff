@@ -7871,7 +7871,11 @@
 
       function clearMirrorGhost() {
         gridEl.querySelectorAll('.ve-cell-mirror-ghost').forEach(c => {
-          c.classList.remove('ve-cell-mirror-ghost', 'delete');
+          c.classList.remove('ve-cell-mirror-ghost', 'delete', 've-ghost-paint');
+          if (c._origBg !== undefined) {
+            c.style.backgroundColor = c._origBg;
+            delete c._origBg;
+          }
         });
       }
 
@@ -7884,8 +7888,20 @@
         const targetCell = gridEl.querySelector(`.bulba-cell[data-x="${symX}"][data-z="${z}"]`);
         if (targetCell) {
           targetCell.classList.add('ve-cell-mirror-ghost');
-          if (VoxelDeltaStore.state.tool === 'delete') {
+          targetCell._origBg = targetCell.style.backgroundColor || '';
+
+          const tool = VoxelDeltaStore.state.tool;
+          if (tool === 'delete') {
             targetCell.classList.add('delete');
+          } else {
+            targetCell.classList.add('ve-ghost-paint');
+            const selBid = VoxelDeltaStore.state.selectedBid;
+            const pal = baseData && baseData.palette ? baseData.palette[selBid] : null;
+            if (pal && pal.color) {
+              targetCell.style.backgroundColor = pal.color;
+            } else {
+              targetCell.style.backgroundColor = '#00a8c8';
+            }
           }
         }
       }

@@ -233,6 +233,24 @@ test('3.3 index.css 具備 .ve-symmetry-axis-line 與 .voxel-editor-2d-toolbar �
   assert.strictEqual(cssCode.includes('.ve-mirror-actions'), true);
 });
 
+test('3.4 index.css 切片容器高度電腦版為 580px，手機版為螢幕比例 min(65vh, 480px)', () => {
+  const cssCode = fs.readFileSync(path.join(__dirname, 'index.css'), 'utf-8');
+  assert.strictEqual(cssCode.includes('height: 580px;'), true, '電腦版高度應為 580px');
+  assert.strictEqual(cssCode.includes('height: min(65vh, 480px) !important;'), true, '手機版高度應自適應螢幕比例');
+  assert.strictEqual(cssCode.includes('min-height: 340px !important;'), true, '手機版應設定 min-height: 340px');
+});
+
+test('3.5 2D 鏡像對稱格子具備實體色彩預覽、發光脈衝框與無痕復原機制', () => {
+  const appCode = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf-8');
+  assert.strictEqual(appCode.includes('targetCell._origBg = targetCell.style.backgroundColor || \'\';'), true);
+  assert.strictEqual(appCode.includes('targetCell.classList.add(\'ve-ghost-paint\');'), true);
+  assert.strictEqual(appCode.includes('c.style.backgroundColor = c._origBg;'), true);
+
+  const cssCode = fs.readFileSync(path.join(__dirname, 'index.css'), 'utf-8');
+  assert.strictEqual(cssCode.includes('ve-mirror-pulse'), true, '應具備金色發光脈衝動效');
+  assert.strictEqual(cssCode.includes('outline: 2.5px solid #facc15'), true, '應具備亮金霓虹外框');
+});
+
 console.log('\n--------------------------------------------------------');
 console.log(`🎉 全部 ${passCount} 項離線自動化整合測試全數通過 (100% PASS)！`);
 console.log('========================================================\n');
