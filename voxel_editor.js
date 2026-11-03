@@ -216,6 +216,85 @@
     return changes.length;
   }
 
+  // 一鍵當前切片層鏡像同步 (左鏡右 或 右鏡左)
+  function mirrorCurrentLayer(charKey, layerIndex, direction) {
+    const bounds = getCharBounds(charKey);
+    if (!bounds) return 0;
+    const center = bounds.center;
+    const y = layerIndex - 1;
+
+    const base = getBaseData(charKey);
+    if (!base) return 0;
+    const targetLayer = base.layers ? base.layers.find(l => l.layerIndex === layerIndex) : null;
+    const coordsSet = new Set();
+    if (targetLayer && targetLayer.blocks) {
+      targetLayer.blocks.forEach(b => coordsSet.add(`${b[0]},${b[1]}`));
+    }
+    const overrides = getOverrides(charKey);
+    Object.keys(overrides).forEach(k => {
+      const parts = k.split(',').map(Number);
+      if (parts[1] === y) {
+        coordsSet.add(`${parts[0]},${parts[2]}`);
+      }
+    });
+
+    const isLtoR = (direction === 'left-to-right');
+    const allXCoords = new Set();
+    coordsSet.forEach(coordStr => {
+      const [x, z] = coordStr.split(',').map(Number);
+      allXCoords.add(`${x},${z}`);
+      const symX = getSymmetryX(x, charKey);
+      if (symX !== null) {
+        allXCoords.add(`${symX},${z}`);
+      }
+    });
+
+    const changes = [];
+
+    allXCoords.forEach(coordStr => {
+      const [x, z] = coordStr.split(',').map(Number);
+      const symX = getSymmetryX(x, charKey);
+      if (symX === null || symX === x) return;
+
+      if (isLtoR) {
+        if (x < center) {
+          const srcBid = getEffectiveBid(charKey, x, y, z);
+          const tgtBid = getEffectiveBid(charKey, symX, y, z);
+
+          if (srcBid !== -1) {
+            if (tgtBid === -1) {
+              changes.push({ x: symX, y, z, newBid: srcBid });
+            }
+          } else {
+            if (tgtBid !== -1) {
+              changes.push({ x: symX, y, z, newBid: -1 });
+            }
+          }
+        }
+      } else {
+        if (x > center) {
+          const srcBid = getEffectiveBid(charKey, x, y, z);
+          const tgtBid = getEffectiveBid(charKey, symX, y, z);
+
+          if (srcBid !== -1) {
+            if (tgtBid === -1) {
+              changes.push({ x: symX, y, z, newBid: srcBid });
+            }
+          } else {
+            if (tgtBid !== -1) {
+              changes.push({ x: symX, y, z, newBid: -1 });
+            }
+          }
+        }
+      }
+    });
+
+    if (changes.length > 0) {
+      applyChanges(charKey, changes);
+    }
+    return changes.length;
+  }
+
   // 記錄懸停位置以供幽靈預覽
   function setHoverVoxel(charKey, x, y, z) {
     if (x === null || x === undefined) {
@@ -478,6 +557,14 @@
             <button type="button" class="ve-btn ${_state.mirrorSymmetry ? 'active' : ''}" id="btnMirror_${charKey}" title="左右鏡像對稱編輯">
               🪞 鏡像: ${_state.mirrorSymmetry ? '開' : '關'}
             </button>
+            <div class="ve-mirror-actions" style="display:flex;gap:4px;width:100%;">
+              <button type="button" class="ve-btn ve-btn-mirror-ltor" id="btnMirrorLtoR_${charKey}" title="將本層左側方塊完全鏡像複製至右側 (右側原有顏色不變，缺少則補齊，來源無則刪除)" style="flex:1;padding:4px 2px;font-size:11px;">
+                ⮂ 左鏡右
+              </button>
+              <button type="button" class="ve-btn ve-btn-mirror-rtol" id="btnMirrorRtoL_${charKey}" title="將本層右側方塊完全鏡像複製至左側 (左側原有顏色不變，缺少則補齊，來源無則刪除)" style="flex:1;padding:4px 2px;font-size:11px;">
+                ⮃ 右鏡左
+              </button>
+            </div>
             <button type="button" class="ve-btn" id="btnUndo_${charKey}" title="撤銷上一步">
               ↩️ 撤銷
             </button>
@@ -710,7 +797,16 @@
         mesh.setMatrixAt(item.index, dummy.matrix);
       } else {
         dummy.position.set(item.posX, item.posY, item.posZ);
-        dummy.scale.set(1, 1, 1);
+        let hideInSlice = false;
+        if (threeState._getCurMode && threeState._getCurMode() === 'slice') {
+          const curLayer = (threeState._getCurLayer ? threeState._getCurLayer() : 9999);
+          if (item.layerIndex > curLayer) hideInSlice = true;
+        }
+        if (hideInSlice) {
+          dummy.scale.set(0, 0, 0);
+        } else {
+          dummy.scale.set(1, 1, 1);
+        }
         dummy.updateMatrix();
         mesh.setMatrixAt(item.index, dummy.matrix);
 
@@ -748,14 +844,22 @@
           // 若原版沒有此方塊，代表是使用者/鏡像手動新增的方塊！
           if (getOriginalBid(charKey, x, y, z) === -1) {
             const pItem = (baseData.palette && baseData.palette[bid]) ? baseData.palette[bid] : { color: '#00a8c8' };
+            const outlineMap = (mesh && mesh.material && mesh.material.map) ? mesh.material.map : null;
             const mat = new THREE.MeshStandardMaterial({
+              map: outlineMap,
               color: pItem.color,
               roughness: 0.88,
               metalness: 0.0
             });
             const cube = new THREE.Mesh(geom, mat);
             cube.position.set(x - cx, y - cy, z - cz);
-            cube.scale.set(1, 1, 1);
+            let hideDynamic = false;
+            if (threeState._getCurMode && threeState._getCurMode() === 'slice') {
+              const curLayer = (threeState._getCurLayer ? threeState._getCurLayer() : 9999);
+              if ((y + 1) > curLayer) hideDynamic = true;
+            }
+            cube.scale.set(hideDynamic ? 0 : 1, hideDynamic ? 0 : 1, hideDynamic ? 0 : 1);
+            cube.visible = !hideDynamic;
             cube.userData = { voxelX: x, voxelY: y, voxelZ: z, isDynamic: true };
             threeState.dynamicAddedGroup.add(cube);
           }
@@ -788,139 +892,81 @@
   }
 
   function updateToolbarUI(charKey) {
-    const bar = document.getElementById(`voxelToolbar_${charKey}`);
-    if (!bar) return;
+    const bars = document.querySelectorAll(`[id="voxelToolbar_${charKey}"], [id="voxelToolbar2D_${charKey}"]`);
+    bars.forEach(bar => {
+      // 工具按鈕 active
+      bar.querySelectorAll('.ve-tool-group .ve-btn').forEach(btn => {
+        const tool = btn.getAttribute('data-tool');
+        if (tool === 'rotate') {
+          btn.classList.toggle('active', !_state.editorMode || _state.tool === 'rotate');
+        } else {
+          btn.classList.toggle('active', _state.editorMode && _state.tool === tool);
+        }
+      });
 
-    // 工具按鈕 active
-    bar.querySelectorAll('.ve-tool-group .ve-btn').forEach(btn => {
-      const tool = btn.getAttribute('data-tool');
-      if (tool === 'rotate') {
-        btn.classList.toggle('active', !_state.editorMode || _state.tool === 'rotate');
-      } else {
-        btn.classList.toggle('active', _state.editorMode && _state.tool === tool);
-      }
-    });
+      // 鏡像按鈕
+      bar.querySelectorAll(`[id^="btnMirror_"]`).forEach(btnMirror => {
+        btnMirror.classList.toggle('active', _state.mirrorSymmetry);
+        btnMirror.innerHTML = `🪞 鏡像: ${_state.mirrorSymmetry ? '開' : '關'}`;
+      });
 
-    // 鏡像按鈕
-    const btnMirror = document.getElementById(`btnMirror_${charKey}`);
-    if (btnMirror) {
-      btnMirror.classList.toggle('active', _state.mirrorSymmetry);
-      btnMirror.innerHTML = `🪞 鏡像: ${_state.mirrorSymmetry ? '開' : '關'}`;
-    }
+      // 清空選取按鈕
+      bar.querySelectorAll(`[id^="btnClearSel_"]`).forEach(btnClearSel => {
+        const selCount = _state.selectedVoxels ? _state.selectedVoxels.size : 0;
+        btnClearSel.style.display = selCount > 0 ? '' : 'none';
+        btnClearSel.innerHTML = `✖ 清空選取 (${selCount})`;
+      });
 
-    // 清空選取按鈕
-    const btnClearSel = document.getElementById(`btnClearSel_${charKey}`);
-    if (btnClearSel) {
-      const selCount = _state.selectedVoxels ? _state.selectedVoxels.size : 0;
-      btnClearSel.style.display = selCount > 0 ? '' : 'none';
-      btnClearSel.innerHTML = `✖ 清空選取 (${selCount})`;
-    }
-
-    // 色票 active (左側調色盤)
-    bar.querySelectorAll('.ve-color-dot').forEach(dot => {
-      const bid = Number(dot.getAttribute('data-bid'));
-      dot.classList.toggle('active', bid === Number(_state.selectedBid));
+      // 色票 active (左側調色盤)
+      bar.querySelectorAll('.ve-color-dot').forEach(dot => {
+        const bid = Number(dot.getAttribute('data-bid'));
+        dot.classList.toggle('active', bid === Number(_state.selectedBid));
+      });
     });
   }
 
-  function attachEditorToScene(charKey, threeState, baseData, canvasWrap, onSubmitCallback) {
-    if (!canvasWrap || !threeState) return;
+  function setupToolbarEvents(container, charKey, threeState, baseData, onSubmitCallback) {
+    const toggleBtn = container.querySelector(`[id^="veToggleBtn_"]`);
+    const panel = container.querySelector(`[id^="vePanel_"]`);
+    const paletteDock = container.querySelector(`[id^="vePaletteDock_"]`);
+    const closeBtn = container.querySelector(`[id^="veCloseBtn_"]`);
 
-    // 檢查或建立懸浮工具列容器
-    let container = document.getElementById(`voxelToolbar_${charKey}`);
-    if (!container) {
-      container = createEditorToolbarDOM(charKey, baseData);
-      canvasWrap.style.position = 'relative';
-      canvasWrap.appendChild(container);
-
-      const toggleBtn = container.querySelector(`#veToggleBtn_${charKey}`);
-      const panel = container.querySelector(`#vePanel_${charKey}`);
-      const paletteDock = container.querySelector(`#vePaletteDock_${charKey}`);
-      const closeBtn = container.querySelector(`#veCloseBtn_${charKey}`);
-
-      // 開關面板 (左右雙翼同步展開與收合)
-      if (toggleBtn && panel) {
-        toggleBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const isHidden = panel.classList.contains('ve-hidden');
-          panel.classList.toggle('ve-hidden', !isHidden);
-          if (paletteDock) paletteDock.classList.toggle('ve-hidden', !isHidden);
-          if (isHidden) {
-            _state.editorMode = true;
-            if (_state.tool === 'rotate') _state.tool = 'paint';
-            updateToolbarUI(charKey);
-          } else {
-            _state.editorMode = false;
-            _state.tool = 'rotate';
-          }
-        });
-      }
-
-      if (closeBtn && panel) {
-        closeBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          panel.classList.add('ve-hidden');
-          if (paletteDock) paletteDock.classList.add('ve-hidden');
+    if (toggleBtn && panel) {
+      toggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isHidden = panel.classList.contains('ve-hidden');
+        panel.classList.toggle('ve-hidden', !isHidden);
+        if (paletteDock) paletteDock.classList.toggle('ve-hidden', !isHidden);
+        if (isHidden) {
+          _state.editorMode = true;
+          if (_state.tool === 'rotate') _state.tool = 'paint';
+          updateToolbarUI(charKey);
+        } else {
           _state.editorMode = false;
           _state.tool = 'rotate';
           updateToolbarUI(charKey);
-        });
-      }
+        }
+      });
+    }
 
-      // 左側調色盤事件綁定
-      if (paletteDock) {
-        paletteDock.addEventListener('click', (e) => {
-          const target = e.target.closest('button');
-          if (!target) return;
-          if (target.hasAttribute('data-bid')) {
-            _state.selectedBid = Number(target.getAttribute('data-bid'));
-            if (_state.selectedVoxels && _state.selectedVoxels.size > 0) {
-              // 多方塊批次塗色！
-              applyBatchAction(charKey, 'paint', _state.selectedBid);
-              syncThreeMeshFromOverrides(charKey, threeState, baseData);
-            } else if (_state.tool === 'rotate' || _state.tool === 'eyedropper' || _state.tool === 'delete') {
-              _state.tool = 'paint';
-              _state.editorMode = true;
-            }
-            updateToolbarUI(charKey);
-          }
-        });
-      }
+    if (closeBtn && panel) {
+      closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        panel.classList.add('ve-hidden');
+        if (paletteDock) paletteDock.classList.add('ve-hidden');
+        _state.editorMode = false;
+        _state.tool = 'rotate';
+        updateToolbarUI(charKey);
+      });
+    }
 
-      // 右側工具面板事件綁定
-      panel.addEventListener('click', (e) => {
+    if (paletteDock) {
+      paletteDock.addEventListener('click', (e) => {
         const target = e.target.closest('button');
         if (!target) return;
-
-        // 清空選取
-        if (target.id === `btnClearSel_${charKey}`) {
-          clearSelection(charKey);
-          updateToolbarUI(charKey);
-          syncThreeMeshFromOverrides(charKey, threeState, baseData);
-          return;
-        }
-
-        // 工具切換
-        if (target.hasAttribute('data-tool')) {
-          const t = target.getAttribute('data-tool');
-          if (t === 'delete' && _state.selectedVoxels && _state.selectedVoxels.size > 0) {
-            // 多方塊整批消除！
-            applyBatchAction(charKey, 'delete');
-            syncThreeMeshFromOverrides(charKey, threeState, baseData);
-            updateToolbarUI(charKey);
-            return;
-          }
-          _state.tool = t;
-          _state.editorMode = (t !== 'rotate');
-          updateToolbarUI(charKey);
-          return;
-        }
-
-        // 選擇材質色票
         if (target.hasAttribute('data-bid')) {
           _state.selectedBid = Number(target.getAttribute('data-bid'));
           if (_state.selectedVoxels && _state.selectedVoxels.size > 0) {
-            // 多方塊批次塗色！
             applyBatchAction(charKey, 'paint', _state.selectedBid);
             syncThreeMeshFromOverrides(charKey, threeState, baseData);
           } else if (_state.tool === 'rotate' || _state.tool === 'eyedropper' || _state.tool === 'delete') {
@@ -928,53 +974,126 @@
             _state.editorMode = true;
           }
           updateToolbarUI(charKey);
-          return;
         }
+      });
+    }
 
-        // 鏡像切換
-        if (target.id === `btnMirror_${charKey}`) {
-          _state.mirrorSymmetry = !_state.mirrorSymmetry;
+    panel.addEventListener('click', (e) => {
+      const target = e.target.closest('button');
+      if (!target) return;
+
+      if (target.id.startsWith('btnClearSel_')) {
+        clearSelection(charKey);
+        updateToolbarUI(charKey);
+        syncThreeMeshFromOverrides(charKey, threeState, baseData);
+        return;
+      }
+
+      if (target.hasAttribute('data-tool')) {
+        const t = target.getAttribute('data-tool');
+        if (t === 'delete' && _state.selectedVoxels && _state.selectedVoxels.size > 0) {
+          applyBatchAction(charKey, 'delete');
+          syncThreeMeshFromOverrides(charKey, threeState, baseData);
           updateToolbarUI(charKey);
           return;
         }
+        _state.tool = t;
+        _state.editorMode = (t !== 'rotate');
+        updateToolbarUI(charKey);
+        return;
+      }
 
-        // 撤銷
-        if (target.id === `btnUndo_${charKey}`) {
-          undo(charKey);
+      if (target.hasAttribute('data-bid')) {
+        _state.selectedBid = Number(target.getAttribute('data-bid'));
+        if (_state.selectedVoxels && _state.selectedVoxels.size > 0) {
+          applyBatchAction(charKey, 'paint', _state.selectedBid);
           syncThreeMeshFromOverrides(charKey, threeState, baseData);
-          return;
+        } else if (_state.tool === 'rotate' || _state.tool === 'eyedropper' || _state.tool === 'delete') {
+          _state.tool = 'paint';
+          _state.editorMode = true;
         }
+        updateToolbarUI(charKey);
+        return;
+      }
 
-        // 重做
-        if (target.id === `btnRedo_${charKey}`) {
-          redo(charKey);
+      if (target.id.startsWith('btnMirror_')) {
+        _state.mirrorSymmetry = !_state.mirrorSymmetry;
+        updateToolbarUI(charKey);
+        return;
+      }
+
+      // 一鍵鏡像同步 (左鏡右 / 右鏡左)
+      if (target.id.startsWith('btnMirrorLtoR_') || target.classList.contains('ve-btn-mirror-ltor')) {
+        const curLayer = (threeState._getCurLayer ? threeState._getCurLayer() : 1);
+        mirrorCurrentLayer(charKey, curLayer, 'left-to-right');
+        syncThreeMeshFromOverrides(charKey, threeState, baseData);
+        return;
+      }
+      if (target.id.startsWith('btnMirrorRtoL_') || target.classList.contains('ve-btn-mirror-rtol')) {
+        const curLayer = (threeState._getCurLayer ? threeState._getCurLayer() : 1);
+        mirrorCurrentLayer(charKey, curLayer, 'right-to-left');
+        syncThreeMeshFromOverrides(charKey, threeState, baseData);
+        return;
+      }
+
+      if (target.id.startsWith('btnUndo_')) {
+        undo(charKey);
+        syncThreeMeshFromOverrides(charKey, threeState, baseData);
+        return;
+      }
+
+      if (target.id.startsWith('btnRedo_')) {
+        redo(charKey);
+        syncThreeMeshFromOverrides(charKey, threeState, baseData);
+        return;
+      }
+
+      if (target.id.startsWith('btnReset_')) {
+        if (confirm('確定要清空所有自訂修改，恢復官方原版模型嗎？')) {
+          resetToDefault(charKey);
           syncThreeMeshFromOverrides(charKey, threeState, baseData);
-          return;
-        }
-
-        // 恢復預設值
-        if (target.id === `btnReset_${charKey}`) {
-          if (confirm('確定要清空所有自訂修改，恢復官方原版模型嗎？')) {
-            resetToDefault(charKey);
-            syncThreeMeshFromOverrides(charKey, threeState, baseData);
-            if (typeof onSubmitCallback === 'function') {
-              onSubmitCallback(charKey, {});
-            }
-          }
-          return;
-        }
-
-        // 提交存檔
-        if (target.id === `btnSubmit_${charKey}`) {
-          const overrides = getOverrides(charKey);
           if (typeof onSubmitCallback === 'function') {
-            onSubmitCallback(charKey, overrides);
+            onSubmitCallback(charKey, {});
           }
-          return;
         }
-      });
+        return;
+      }
 
+      if (target.id.startsWith('btnSubmit_')) {
+        const overrides = getOverrides(charKey);
+        if (typeof onSubmitCallback === 'function') {
+          onSubmitCallback(charKey, overrides);
+        }
+        return;
+      }
+    });
+  }
+
+  function attachEditorToScene(charKey, threeState, baseData, canvasWrap, onSubmitCallback) {
+    if (!canvasWrap || !threeState) return;
+
+    let container = document.getElementById(`voxelToolbar_${charKey}`);
+    if (!container) {
+      container = createEditorToolbarDOM(charKey, baseData);
+      canvasWrap.style.position = 'relative';
+      canvasWrap.appendChild(container);
+
+      setupToolbarEvents(container, charKey, threeState, baseData, onSubmitCallback);
       bindThreeRaycaster(charKey, threeState, baseData, canvasWrap);
+    }
+  }
+
+  function attachEditorTo2D(charKey, threeState, baseData, container2D, onSubmitCallback) {
+    if (!container2D || !threeState) return;
+    let toolbar2D = container2D.querySelector(`#voxelToolbar2D_${charKey}`);
+    if (!toolbar2D) {
+      toolbar2D = createEditorToolbarDOM(charKey, baseData);
+      toolbar2D.id = `voxelToolbar2D_${charKey}`;
+      toolbar2D.classList.add('voxel-editor-2d-toolbar');
+      container2D.style.position = 'relative';
+      container2D.appendChild(toolbar2D);
+
+      setupToolbarEvents(toolbar2D, charKey, threeState, baseData, onSubmitCallback);
     }
   }
 
@@ -990,6 +1109,7 @@
     selectRegion,
     clearSelection,
     applyBatchAction,
+    mirrorCurrentLayer,
     setHoverVoxel,
     undo,
     redo,
@@ -1000,6 +1120,7 @@
     addChangeListener,
     // Three 編輯器模組
     attachEditorToScene,
+    attachEditorTo2D,
     syncThreeMeshFromOverrides,
     updateToolbarUI
   };

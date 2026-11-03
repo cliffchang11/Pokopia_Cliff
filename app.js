@@ -7557,6 +7557,7 @@
           }
         }
         DOM.bulbaVoxelGrid.appendChild(frag);
+        appendSymmetryAxisLine(DOM.bulbaVoxelGrid, 'bulbasaur', minX, maxX, cellSize);
         const workspace = DOM.bulbaVoxelGrid.closest('.bulba-grid-workspace');
         if (workspace && parent && bulbaState.zoom.panX === 0 && bulbaState.zoom.panY === 0) {
           fitWorkspaceToContainer(workspace, parent, bulbaState.zoom);
@@ -7707,6 +7708,7 @@
           }
         }
         DOM.buzzVoxelGrid.appendChild(frag);
+        appendSymmetryAxisLine(DOM.buzzVoxelGrid, 'buzz', minX, maxX, cellSize);
         const workspace = DOM.buzzVoxelGrid.closest('.bulba-grid-workspace');
         if (workspace && parent && buzzState.zoom.panX === 0 && buzzState.zoom.panY === 0) {
           fitWorkspaceToContainer(workspace, parent, buzzState.zoom);
@@ -7776,21 +7778,80 @@
     return null;
   }
 
+  function getCharSliceCardEl(charKey) {
+    const grid = getCharGridEl(charKey);
+    if (!grid) return null;
+    return grid.closest('.bulba-grid-container') || grid.closest('.blueprint-slice-card') || grid.parentElement;
+  }
+
+  function appendSymmetryAxisLine(gridEl, charKey, minX, maxX, cellSize) {
+    if (!gridEl || typeof VoxelDeltaStore === 'undefined') return;
+    const symBounds = VoxelDeltaStore.getCharBounds(charKey);
+    if (symBounds && symBounds.center >= minX && symBounds.center <= maxX) {
+      const axisLine = document.createElement('div');
+      axisLine.className = 've-symmetry-axis-line';
+      const axisCol = symBounds.center - minX;
+      const leftPx = 8 + axisCol * (cellSize + 1) + (cellSize / 2);
+      axisLine.style.left = `${leftPx}px`;
+      axisLine.innerHTML = `<span class="ve-symmetry-axis-badge" title="對稱軸 X=${symBounds.center}">對稱軸 X=${symBounds.center}</span>`;
+      gridEl.appendChild(axisLine);
+    }
+  }
+
   // ═══════════════════════════════════════════════════════════════════
   // 通用 3D 體素手動編輯器整合掛載 (Voxel Editor Integration)
   // ═══════════════════════════════════════════════════════════════════
   function setupVoxelEditorIntegration(charKey, threeState, baseData, canvasEl, refreshSliceCallback) {
-    if (typeof VoxelDeltaStore === 'undefined' || !VoxelDeltaStore.attachEditorToScene || !canvasEl) return;
+    if (typeof VoxelDeltaStore === 'undefined' || !canvasEl) return;
+
+    // 綁定動態剖面模式與層數回調，防止編輯後被強制展開成全體 3D
+    threeState._getCurMode = () => {
+      if (charKey === 'bulbasaur') return bulbaState.curMode;
+      if (charKey === 'buzz') return buzzState.curMode;
+      if (charKey === 'ivysaur') return ivysaurState.curMode;
+      if (charKey === 'venusaur') return venusaurState.curMode;
+      return '3d';
+    };
+    threeState._getCurLayer = () => {
+      if (charKey === 'bulbasaur') return bulbaState.curLayer;
+      if (charKey === 'buzz') return buzzState.curLayer;
+      if (charKey === 'ivysaur') return ivysaurState.curLayer;
+      if (charKey === 'venusaur') return venusaurState.curLayer;
+      return 1;
+    };
+    threeState._onAfterSync = () => {
+      if (charKey === 'bulbasaur') updateBulba3DSliceFilter();
+      if (charKey === 'buzz') updateBuzz3DSliceFilter();
+      if (charKey === 'ivysaur') updateIvysaur3DSliceFilter();
+      if (charKey === 'venusaur') updateVenusaur3DSliceFilter();
+    };
+
     const curWrap = canvasEl.parentElement;
-    VoxelDeltaStore.attachEditorToScene(charKey, threeState, baseData, curWrap, (k, overrides) => {
-      if (window.PokopiaFirebase && window.PokopiaFirebase.saveVoxelOverrides) {
-        const res = window.PokopiaFirebase.saveVoxelOverrides(k, overrides);
-        alert(res.message || '存檔成功！');
-      }
-      if (typeof refreshSliceCallback === 'function') {
-        refreshSliceCallback();
-      }
-    });
+    if (VoxelDeltaStore.attachEditorToScene) {
+      VoxelDeltaStore.attachEditorToScene(charKey, threeState, baseData, curWrap, (k, overrides) => {
+        if (window.PokopiaFirebase && window.PokopiaFirebase.saveVoxelOverrides) {
+          const res = window.PokopiaFirebase.saveVoxelOverrides(k, overrides);
+          alert(res.message || '存檔成功！');
+        }
+        if (typeof refreshSliceCallback === 'function') {
+          refreshSliceCallback();
+        }
+      });
+    }
+
+    // 掛載 2D 切片區域專屬體素編輯工具列
+    const sliceCard = getCharSliceCardEl(charKey);
+    if (sliceCard && VoxelDeltaStore.attachEditorTo2D) {
+      VoxelDeltaStore.attachEditorTo2D(charKey, threeState, baseData, sliceCard, (k, overrides) => {
+        if (window.PokopiaFirebase && window.PokopiaFirebase.saveVoxelOverrides) {
+          const res = window.PokopiaFirebase.saveVoxelOverrides(k, overrides);
+          alert(res.message || '存檔成功！');
+        }
+        if (typeof refreshSliceCallback === 'function') {
+          refreshSliceCallback();
+        }
+      });
+    }
 
     // 當體素發生任何變更時自動同步刷新 2D 切片與材料統計
     if (VoxelDeltaStore.addChangeListener) {
@@ -7816,7 +7877,7 @@
 
       function updateMirrorGhost(x, z, y) {
         clearMirrorGhost();
-        if (typeof VoxelDeltaStore === 'undefined' || !VoxelDeltaStore.state.mirrorSymmetry || !VoxelDeltaStore.state.editorMode) return;
+        if (typeof VoxelDeltaStore === 'undefined' || !VoxelDeltaStore.state.mirrorSymmetry) return;
         const symX = VoxelDeltaStore.getSymmetryX(x, charKey);
         if (symX === null || symX === x) return;
 
@@ -8055,11 +8116,22 @@
     const isSlice = buzzState.curMode === 'slice';
     const curLayer = buzzState.curLayer;
     const dummy = new THREE.Object3D();
+    const cx = BUZZ_VOXEL_DATA.dimensions.width / 2;
+    const cy = BUZZ_VOXEL_DATA.dimensions.height / 2;
+    const cz = BUZZ_VOXEL_DATA.dimensions.length / 2;
 
     for (let i = 0; i < t.blockDataList.length; i++) {
       const item = t.blockDataList[i];
-      if (!isSlice || item.layerIndex <= curLayer) {
-        t.instancedMesh.setMatrixAt(item.index, item.defaultMatrix);
+      const vx = Math.round(item.posX + cx);
+      const vy = Math.round(item.posY + cy);
+      const vz = Math.round(item.posZ + cz);
+      const isDeleted = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.getEffectiveBid('buzz', vx, vy, vz) === -1);
+
+      if (!isDeleted && (!isSlice || item.layerIndex <= curLayer)) {
+        dummy.position.set(item.posX, item.posY, item.posZ);
+        dummy.scale.set(1, 1, 1);
+        dummy.updateMatrix();
+        t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
       } else {
         dummy.position.set(item.posX, item.posY, item.posZ);
         dummy.scale.set(0, 0, 0);
@@ -8068,6 +8140,15 @@
       }
     }
     t.instancedMesh.instanceMatrix.needsUpdate = true;
+
+    if (t.dynamicAddedGroup && t.dynamicAddedGroup.children) {
+      t.dynamicAddedGroup.children.forEach(cube => {
+        if (!cube.userData || !cube.userData.isDynamic) return;
+        const hide = isSlice && ((cube.userData.voxelY + 1) > curLayer);
+        cube.scale.set(hide ? 0 : 1, hide ? 0 : 1, hide ? 0 : 1);
+        cube.visible = !hide;
+      });
+    }
   }
 
   function initBulbaThreeEngine() {
@@ -8220,11 +8301,22 @@
     const isSlice = bulbaState.curMode === 'slice';
     const curLayer = bulbaState.curLayer;
     const dummy = new THREE.Object3D();
+    const cx = BULBASAUR_VOXEL_DATA.dimensions.width / 2;
+    const cy = BULBASAUR_VOXEL_DATA.dimensions.height / 2;
+    const cz = BULBASAUR_VOXEL_DATA.dimensions.length / 2;
 
     for (let i = 0; i < t.blockDataList.length; i++) {
       const item = t.blockDataList[i];
-      if (!isSlice || item.layerIndex <= curLayer) {
-        t.instancedMesh.setMatrixAt(item.index, item.defaultMatrix);
+      const vx = Math.round(item.posX + cx);
+      const vy = Math.round(item.posY + cy);
+      const vz = Math.round(item.posZ + cz);
+      const isDeleted = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.getEffectiveBid('bulbasaur', vx, vy, vz) === -1);
+
+      if (!isDeleted && (!isSlice || item.layerIndex <= curLayer)) {
+        dummy.position.set(item.posX, item.posY, item.posZ);
+        dummy.scale.set(1, 1, 1);
+        dummy.updateMatrix();
+        t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
       } else {
         dummy.position.set(item.posX, item.posY, item.posZ);
         dummy.scale.set(0, 0, 0); // 縮至 0 隱藏
@@ -8233,6 +8325,15 @@
       }
     }
     t.instancedMesh.instanceMatrix.needsUpdate = true;
+
+    if (t.dynamicAddedGroup && t.dynamicAddedGroup.children) {
+      t.dynamicAddedGroup.children.forEach(cube => {
+        if (!cube.userData || !cube.userData.isDynamic) return;
+        const hide = isSlice && ((cube.userData.voxelY + 1) > curLayer);
+        cube.scale.set(hide ? 0 : 1, hide ? 0 : 1, hide ? 0 : 1);
+        cube.visible = !hide;
+      });
+    }
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -8398,6 +8499,7 @@
           }
         }
         DOM.ivysaurVoxelGrid.appendChild(frag);
+        appendSymmetryAxisLine(DOM.ivysaurVoxelGrid, 'ivysaur', minX, maxX, cellSize);
 
         const workspace = DOM.ivysaurVoxelGrid.closest('.bulba-grid-workspace');
         if (workspace && parent && ivysaurState.zoom.panX === 0 && ivysaurState.zoom.panY === 0) {
@@ -8589,11 +8691,22 @@
     const isSlice = ivysaurState.curMode === 'slice';
     const curLayer = ivysaurState.curLayer;
     const dummy = new THREE.Object3D();
+    const cx = IVYSAUR_VOXEL_DATA.dimensions.width / 2;
+    const cy = IVYSAUR_VOXEL_DATA.dimensions.height / 2;
+    const cz = IVYSAUR_VOXEL_DATA.dimensions.length / 2;
 
     for (let i = 0; i < t.blockDataList.length; i++) {
       const item = t.blockDataList[i];
-      if (!isSlice || item.layerIndex <= curLayer) {
-        t.instancedMesh.setMatrixAt(item.index, item.defaultMatrix);
+      const vx = Math.round(item.posX + cx);
+      const vy = Math.round(item.posY + cy);
+      const vz = Math.round(item.posZ + cz);
+      const isDeleted = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.getEffectiveBid('ivysaur', vx, vy, vz) === -1);
+
+      if (!isDeleted && (!isSlice || item.layerIndex <= curLayer)) {
+        dummy.position.set(item.posX, item.posY, item.posZ);
+        dummy.scale.set(1, 1, 1);
+        dummy.updateMatrix();
+        t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
       } else {
         dummy.position.set(item.posX, item.posY, item.posZ);
         dummy.scale.set(0, 0, 0); // 縮至 0 隱藏
@@ -8602,6 +8715,15 @@
       }
     }
     t.instancedMesh.instanceMatrix.needsUpdate = true;
+
+    if (t.dynamicAddedGroup && t.dynamicAddedGroup.children) {
+      t.dynamicAddedGroup.children.forEach(cube => {
+        if (!cube.userData || !cube.userData.isDynamic) return;
+        const hide = isSlice && ((cube.userData.voxelY + 1) > curLayer);
+        cube.scale.set(hide ? 0 : 1, hide ? 0 : 1, hide ? 0 : 1);
+        cube.visible = !hide;
+      });
+    }
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -8758,6 +8880,7 @@
           }
         }
         DOM.venusaurVoxelGrid.appendChild(frag);
+        appendSymmetryAxisLine(DOM.venusaurVoxelGrid, 'venusaur', minX, maxX, cellSize);
 
         const workspace = DOM.venusaurVoxelGrid.closest('.bulba-grid-workspace');
         if (workspace && parent && venusaurState.zoom.panX === 0 && venusaurState.zoom.panY === 0) {
@@ -8959,11 +9082,22 @@
     const isSlice = venusaurState.curMode === 'slice';
     const curLayer = venusaurState.curLayer;
     const dummy = new THREE.Object3D();
+    const cx = VENUSAUR_VOXEL_DATA.dimensions.width / 2;
+    const cy = VENUSAUR_VOXEL_DATA.dimensions.height / 2;
+    const cz = VENUSAUR_VOXEL_DATA.dimensions.length / 2;
 
     for (let i = 0; i < t.blockDataList.length; i++) {
       const item = t.blockDataList[i];
-      if (!isSlice || item.layerIndex <= curLayer) {
-        t.instancedMesh.setMatrixAt(item.index, item.defaultMatrix);
+      const vx = Math.round(item.posX + cx);
+      const vy = Math.round(item.posY + cy);
+      const vz = Math.round(item.posZ + cz);
+      const isDeleted = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.getEffectiveBid('venusaur', vx, vy, vz) === -1);
+
+      if (!isDeleted && (!isSlice || item.layerIndex <= curLayer)) {
+        dummy.position.set(item.posX, item.posY, item.posZ);
+        dummy.scale.set(1, 1, 1);
+        dummy.updateMatrix();
+        t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
       } else {
         dummy.position.set(item.posX, item.posY, item.posZ);
         dummy.scale.set(0, 0, 0);
@@ -8972,6 +9106,15 @@
       }
     }
     t.instancedMesh.instanceMatrix.needsUpdate = true;
+
+    if (t.dynamicAddedGroup && t.dynamicAddedGroup.children) {
+      t.dynamicAddedGroup.children.forEach(cube => {
+        if (!cube.userData || !cube.userData.isDynamic) return;
+        const hide = isSlice && ((cube.userData.voxelY + 1) > curLayer);
+        cube.scale.set(hide ? 0 : 1, hide ? 0 : 1, hide ? 0 : 1);
+        cube.visible = !hide;
+      });
+    }
   }
 
   // 暴露巴斯光年、妙蛙種子與妙蛙花 API
