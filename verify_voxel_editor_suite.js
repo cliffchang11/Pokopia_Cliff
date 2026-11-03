@@ -54,15 +54,18 @@ const targetLayer = effData.layers.find(l => l.layerIndex === 6);
 assert.ok(targetLayer && targetLayer.materials[3] > 0, '材料統計表未動態計入新增方塊');
 console.log('  ✓ PASS: 1.4 動態體素資料庫疊加與材料統計 (materials) 即時連動正確');
 
-// 2. 測試 3D 動態方塊增補網格 (Dynamic Added Mesh) 與工具列收合結構
-console.log('\n【測試組 2: 3D 動態方塊增補網格與工具列收合機制】');
+// 2. 測試 3D 動態方塊增補網格 (Dynamic Added Mesh) 與雙翼分離佈局結構
+console.log('\n【測試組 2: 3D 動態方塊增補網格與雙翼分離佈局結構】');
 const editorCode = fs.readFileSync('./voxel_editor.js', 'utf8');
 assert.ok(editorCode.includes('dynamicAddedGroup'), 'voxel_editor.js 缺少 dynamicAddedGroup 動態增補網格');
 assert.ok(editorCode.includes('ve-toggle-capsule'), 'voxel_editor.js 缺少 ve-toggle-capsule 右上角開關膠囊');
-assert.ok(editorCode.includes('ve-hidden'), 'voxel_editor.js 缺少 ve-hidden 預設收合類別');
+assert.ok(editorCode.includes('vePaletteDock_'), 'voxel_editor.js 缺少左側專屬調色盤 DOM 容器');
+assert.ok(editorCode.includes('vePanel_'), 'voxel_editor.js 缺少右側工具面板 DOM 容器');
+assert.ok(editorCode.includes('paletteDock.classList.toggle'), 'voxel_editor.js 缺少左右雙翼同步展開/收合連動');
 assert.ok(editorCode.includes('ve-close-btn'), 'voxel_editor.js 缺少 ve-close-btn 收合按鈕');
 console.log('  ✓ PASS: 2.1 voxel_editor.js 具備 dynamicAddedGroup 3D 實體動態增補實例層');
-console.log('  ✓ PASS: 2.2 voxel_editor.js 具備右上角精簡開關膠囊與面板收合機制 (零遮擋模型)');
+console.log('  ✓ PASS: 2.2 voxel_editor.js 具備左側調色盤 (vePaletteDock) 與右側工具面板雙翼分離結構');
+console.log('  ✓ PASS: 2.3 voxel_editor.js 具備開關膠囊與收合按鈕之雙翼同步連動機制');
 
 // 3. 測試妙蛙草切片指南自適應居中縮放、尺規對齊與黑縫徹底消除
 console.log('\n【測試組 3: 妙蛙草切片指南自適應居中縮放、尺規對齊與防塌陷黑縫】');
@@ -80,26 +83,27 @@ console.log('  ✓ PASS: 3.1 renderIvysaurLayer 完整導入動態 cellSize 與�
 console.log('  ✓ PASS: 3.2 renderIvysaurLayer 完整導入 renderDimTopSegments/Right 工程分段尺規');
 console.log('  ✓ PASS: 3.3 renderIvysaurLayer 具備 fitWorkspaceToContainer 居中放大充滿視窗與高對比材料卡片');
 
-// 4. 測試前端資源引入與版本破壞標籤 (v4.40.0)
-console.log('\n【測試組 4: 靜態資源引入與版本升級 (v4.40.0)】');
+// 4. 測試前端資源引入與版本破壞標籤 (v4.41.0)
+console.log('\n【測試組 4: 靜態資源引入與版本升級 (v4.41.0)】');
 const indexHtml = fs.readFileSync('./index.html', 'utf8');
-assert.ok(indexHtml.includes('voxel_editor.js?v=4.40.0'), 'index.html 缺少 voxel_editor.js?v=4.40.0');
-assert.ok(indexHtml.includes('index.css?v=4.40.0'), 'index.html 未更新至 index.css?v=4.40.0');
-assert.ok(indexHtml.includes('app.js?v=4.40.0'), 'index.html 未更新至 app.js?v=4.40.0');
-console.log('  ✓ PASS: 4.1 index.html 正確引入 voxel_editor.js 且全站版號對齊 v=4.40.0');
+assert.ok(indexHtml.includes('voxel_editor.js?v=4.41.0'), 'index.html 缺少 voxel_editor.js?v=4.41.0');
+assert.ok(indexHtml.includes('index.css?v=4.41.0'), 'index.html 未更新至 index.css?v=4.41.0');
+assert.ok(indexHtml.includes('app.js?v=4.41.0'), 'index.html 未更新至 app.js?v=4.41.0');
+console.log('  ✓ PASS: 4.1 index.html 正確引入 voxel_editor.js 且全站版號對齊 v=4.41.0');
 
 const swCode = fs.readFileSync('./sw.js', 'utf8');
-assert.ok(swCode.includes('pokopia-cache-v4.40.0'), 'sw.js 快取版本未升級至 v4.40.0');
-assert.ok(swCode.includes('./voxel_editor.js?v=4.40.0'), 'sw.js 靜態清單未包含 voxel_editor.js?v=4.40.0');
-console.log('  ✓ PASS: 4.2 sw.js 離線快取成功升級 pokopia-cache-v4.40.0 且納入最新資產');
+assert.ok(swCode.includes('pokopia-cache-v4.41.0'), 'sw.js 快取版本未升級至 v4.41.0');
+assert.ok(swCode.includes('./voxel_editor.js?v=4.41.0'), 'sw.js 靜態清單未包含 voxel_editor.js?v=4.41.0');
+console.log('  ✓ PASS: 4.2 sw.js 離線快取成功升級 pokopia-cache-v4.41.0 且納入最新資產');
 
 const indexCss = fs.readFileSync('./index.css', 'utf8');
 assert.ok(indexCss.includes('.ve-toggle-capsule'), 'index.css 缺少 .ve-toggle-capsule 膠囊樣式');
+assert.ok(indexCss.includes('.ve-palette-dock'), 'index.css 缺少 .ve-palette-dock 左側調色盤樣式');
+assert.ok(indexCss.includes('width: 58px;'), 'index.css 缺少左側調色盤寬度定義 (58px)');
+assert.ok(indexCss.includes('width: 84px;'), 'index.css 缺少右側工具側邊欄寬度定義 (84px)');
 assert.ok(indexCss.includes('.voxel-editor-toolbar.ve-hidden'), 'index.css 缺少 .ve-hidden 樣式');
-assert.ok(indexCss.includes('width: 84px;'), 'index.css 缺少直立側邊欄寬度定義');
-assert.ok(indexCss.includes('grid-template-columns: repeat(2, 24px)'), 'index.css 缺少 2 欄緊湊色票排版');
-console.log('  ✓ PASS: 4.3 index.css 具備右側直立側邊欄 (寬 84px) 與 2 欄 6 列色票網格');
+console.log('  ✓ PASS: 4.3 index.css 具備左側調色盤 (58px) 與右側工具欄 (84px) 雙翼分離防溢出樣式');
 
 console.log('\n--------------------------------------------------------');
-console.log('🎉 Pokopia 3D 體素直立側邊欄與妙蛙草切片網格修復離線驗收 100% PASS！');
+console.log('🎉 Pokopia 3D 體素雙翼分離佈局與切片網格修復離線驗收 100% PASS！');
 console.log('========================================================\n');

@@ -326,10 +326,17 @@
         🛠️ 體素編輯
       </button>
 
-      <!-- 展開的編輯工具面板 (預設隱藏) -->
+      <!-- 展開的左側專屬調色盤 (預設隱藏，寬 58px 高約 200px 絕不溢出) -->
+      <div class="ve-palette-dock ve-hidden" id="vePaletteDock_${charKey}">
+        <div class="ve-palette-title">🎨 材質</div>
+        <div class="ve-palette-grid">
+          ${paletteHtml}
+        </div>
+      </div>
+
+      <!-- 展開的右側編輯工具面板 (預設隱藏，高度約 310px 絕不溢出) -->
       <div class="voxel-editor-toolbar ve-hidden" id="vePanel_${charKey}">
         <div class="ve-toolbar-header">
-          <span class="ve-header-title">🛠️ 體素工坊</span>
           <button type="button" class="ve-close-btn" id="veCloseBtn_${charKey}" title="收合面板">✖ 收合</button>
         </div>
 
@@ -370,14 +377,6 @@
             <button type="button" class="ve-btn ve-btn-primary" id="btnSubmit_${charKey}" title="永久存檔 (同步雲端與本地)">
               ☁️ 提交存檔
             </button>
-          </div>
-        </div>
-
-        <!-- 調色盤色票列 -->
-        <div class="ve-palette-bar" id="vePaletteBar_${charKey}">
-          <span class="ve-palette-label">材質:</span>
-          <div class="ve-palette-dots">
-            ${paletteHtml}
           </div>
         </div>
       </div>
@@ -580,7 +579,7 @@
       btnMirror.innerHTML = `🪞 鏡像: ${_state.mirrorSymmetry ? '開' : '關'}`;
     }
 
-    // 色票 active
+    // 色票 active (左側調色盤)
     bar.querySelectorAll('.ve-color-dot').forEach(dot => {
       const bid = Number(dot.getAttribute('data-bid'));
       dot.classList.toggle('active', bid === Number(_state.selectedBid));
@@ -599,14 +598,16 @@
 
       const toggleBtn = container.querySelector(`#veToggleBtn_${charKey}`);
       const panel = container.querySelector(`#vePanel_${charKey}`);
+      const paletteDock = container.querySelector(`#vePaletteDock_${charKey}`);
       const closeBtn = container.querySelector(`#veCloseBtn_${charKey}`);
 
-      // 開關面板
+      // 開關面板 (左右雙翼同步展開與收合)
       if (toggleBtn && panel) {
         toggleBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           const isHidden = panel.classList.contains('ve-hidden');
           panel.classList.toggle('ve-hidden', !isHidden);
+          if (paletteDock) paletteDock.classList.toggle('ve-hidden', !isHidden);
           if (isHidden) {
             _state.editorMode = true;
             if (_state.tool === 'rotate') _state.tool = 'paint';
@@ -622,13 +623,30 @@
         closeBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           panel.classList.add('ve-hidden');
+          if (paletteDock) paletteDock.classList.add('ve-hidden');
           _state.editorMode = false;
           _state.tool = 'rotate';
           updateToolbarUI(charKey);
         });
       }
 
-      // 事件綁定
+      // 左側調色盤事件綁定
+      if (paletteDock) {
+        paletteDock.addEventListener('click', (e) => {
+          const target = e.target.closest('button');
+          if (!target) return;
+          if (target.hasAttribute('data-bid')) {
+            _state.selectedBid = Number(target.getAttribute('data-bid'));
+            if (_state.tool === 'rotate' || _state.tool === 'eyedropper' || _state.tool === 'delete') {
+              _state.tool = 'paint';
+              _state.editorMode = true;
+            }
+            updateToolbarUI(charKey);
+          }
+        });
+      }
+
+      // 右側工具面板事件綁定
       panel.addEventListener('click', (e) => {
         const target = e.target.closest('button');
         if (!target) return;
