@@ -102,20 +102,24 @@ assert.ok(appCode.includes('gridEl.addEventListener(\'pointermove\''), 'setupVox
 assert.ok(appCode.includes('ve-cell-mirror-ghost'), 'setupVoxelEditorIntegration 缺少 ve-cell-mirror-ghost 鏡像指示 class 注入');
 console.log('  ✓ PASS: 3.1 四大角色 2D 切片實體方塊邊框全面統一為清晰高對比白框 (rgba(255, 255, 255, 0.85))');
 console.log('  ✓ PASS: 3.2 2D 切片網格完整具備 pointerdown 點選編輯、pointermove 矩形框選與鏡像幽靈懸停指示');
-console.log('  ✓ PASS: 3.3 2D 切片操作與 3D 視圖 (syncThreeMeshFromOverrides) 達成即時雙向同步');
+assert.ok(appCode.includes('function renderBulbaLayer(layerIndex) {\n    if (typeof BULBASAUR_VOXEL_DATA === \'undefined\') return;\n    const data = (typeof VoxelDeltaStore !== \'undefined\') ? VoxelDeltaStore.getEffectiveVoxelData(\'bulbasaur\') : BULBASAUR_VOXEL_DATA;\n    const layer = data.layers[layerIndex - 1];\n    if (!layer) return;\n    const curLayer = layerIndex;'), 'renderBulbaLayer 缺少 const curLayer = layerIndex 定義');
+assert.ok(appCode.includes('function renderBuzzLayer(layerIndex) {\n    if (typeof BUZZ_VOXEL_DATA === \'undefined\') return;\n    const data = (typeof VoxelDeltaStore !== \'undefined\') ? VoxelDeltaStore.getEffectiveVoxelData(\'buzz\') : BUZZ_VOXEL_DATA;\n    const layer = data.layers[layerIndex - 1];\n    if (!layer) return;\n    const curLayer = layerIndex;'), 'renderBuzzLayer 缺少 const curLayer = layerIndex 定義');
+assert.ok(appCode.includes('function renderIvysaurLayer(layerIndex) {\n    if (typeof IVYSAUR_VOXEL_DATA === \'undefined\') return;\n    const data = (typeof VoxelDeltaStore !== \'undefined\') ? VoxelDeltaStore.getEffectiveVoxelData(\'ivysaur\') : IVYSAUR_VOXEL_DATA;\n    const layer = data.layers[layerIndex - 1];\n    if (!layer) return;\n    const curLayer = layerIndex;'), 'renderIvysaurLayer 缺少 const curLayer = layerIndex 定義');
+assert.ok(appCode.includes('function renderVenusaurLayer(layerIndex) {\n    if (typeof VENUSAUR_VOXEL_DATA === \'undefined\') return;\n    const data = (typeof VoxelDeltaStore !== \'undefined\') ? VoxelDeltaStore.getEffectiveVoxelData(\'venusaur\') : VENUSAUR_VOXEL_DATA;\n    const layer = data.layers[layerIndex - 1];\n    if (!layer) return;\n    const curLayer = layerIndex;'), 'renderVenusaurLayer 缺少 const curLayer = layerIndex 定義');
+console.log('  ✓ PASS: 3.4 四大角色 2D 切片函數具備安全 const curLayer = layerIndex 定義，徹底消除 ReferenceError');
 
-// 4. 測試前端資源引入與版本破壞標籤 (v4.42.0)
-console.log('\n【測試組 4: 靜態資源引入與全站版本升級 (v4.42.0)】');
+// 4. 測試前端資源引入與版本破壞標籤 (v4.43.0)
+console.log('\n【測試組 4: 靜態資源引入與全站版本升級 (v4.43.0)】');
 const indexHtml = fs.readFileSync('./index.html', 'utf8');
-assert.ok(indexHtml.includes('voxel_editor.js?v=4.42.0'), 'index.html 缺少 voxel_editor.js?v=4.42.0');
-assert.ok(indexHtml.includes('index.css?v=4.42.0'), 'index.html 未更新至 index.css?v=4.42.0');
-assert.ok(indexHtml.includes('app.js?v=4.42.0'), 'index.html 未更新至 app.js?v=4.42.0');
-console.log('  ✓ PASS: 4.1 index.html 正確引入最新資產且全站版號對齊 v=4.42.0');
+assert.ok(indexHtml.includes('voxel_editor.js?v=4.43.0'), 'index.html 缺少 voxel_editor.js?v=4.43.0');
+assert.ok(indexHtml.includes('index.css?v=4.43.0'), 'index.html 未更新至 index.css?v=4.43.0');
+assert.ok(indexHtml.includes('app.js?v=4.43.0'), 'index.html 未更新至 app.js?v=4.43.0');
+console.log('  ✓ PASS: 4.1 index.html 正確引入最新資產且全站版號對齊 v=4.43.0');
 
 const swCode = fs.readFileSync('./sw.js', 'utf8');
-assert.ok(swCode.includes('pokopia-cache-v4.42.0'), 'sw.js 快取版本未升級至 v4.42.0');
-assert.ok(swCode.includes('./voxel_editor.js?v=4.42.0'), 'sw.js 靜態清單未包含 voxel_editor.js?v=4.42.0');
-console.log('  ✓ PASS: 4.2 sw.js 離線快取成功升級 pokopia-cache-v4.42.0 且納入最新資產');
+assert.ok(swCode.includes('pokopia-cache-v4.43.0'), 'sw.js 快取版本未升級至 v4.43.0');
+assert.ok(swCode.includes('./voxel_editor.js?v=4.43.0'), 'sw.js 靜態清單未包含 voxel_editor.js?v=4.43.0');
+console.log('  ✓ PASS: 4.2 sw.js 離線快取成功升級 pokopia-cache-v4.43.0 且納入最新資產');
 
 const indexCss = fs.readFileSync('./index.css', 'utf8');
 assert.ok(indexCss.includes('.ve-cell-selected'), 'index.css 缺少 .ve-cell-selected 選取高亮樣式');

@@ -7442,6 +7442,7 @@
     const data = (typeof VoxelDeltaStore !== 'undefined') ? VoxelDeltaStore.getEffectiveVoxelData('bulbasaur') : BULBASAUR_VOXEL_DATA;
     const layer = data.layers[layerIndex - 1];
     if (!layer) return;
+    const curLayer = layerIndex;
 
     if (DOM.bulbaLayerBadge) {
       DOM.bulbaLayerBadge.textContent = `第 ${layerIndex} / ${data.layers.length} 層`;
@@ -7595,6 +7596,7 @@
     const data = (typeof VoxelDeltaStore !== 'undefined') ? VoxelDeltaStore.getEffectiveVoxelData('buzz') : BUZZ_VOXEL_DATA;
     const layer = data.layers[layerIndex - 1];
     if (!layer) return;
+    const curLayer = layerIndex;
 
     if (DOM.buzzLayerBadge) {
       DOM.buzzLayerBadge.textContent = `第 ${layerIndex} / ${data.layers.length} 層`;
@@ -8279,6 +8281,7 @@
     const data = (typeof VoxelDeltaStore !== 'undefined') ? VoxelDeltaStore.getEffectiveVoxelData('ivysaur') : IVYSAUR_VOXEL_DATA;
     const layer = data.layers[layerIndex - 1];
     if (!layer) return;
+    const curLayer = layerIndex;
 
     if (DOM.ivysaurLayerBadge) {
       DOM.ivysaurLayerBadge.textContent = `第 ${layerIndex} / ${data.layers.length} 層`;
@@ -8647,6 +8650,7 @@
     const data = (typeof VoxelDeltaStore !== 'undefined') ? VoxelDeltaStore.getEffectiveVoxelData('venusaur') : VENUSAUR_VOXEL_DATA;
     const layer = data.layers[layerIndex - 1];
     if (!layer) return;
+    const curLayer = layerIndex;
 
     if (DOM.venusaurLayerBadge) {
       DOM.venusaurLayerBadge.textContent = `第 ${layerIndex} / ${data.layers.length} 層`;
