@@ -17,9 +17,11 @@
     },
     // 編輯器設定
     editorMode: false, // 是否處於編輯模式
-    tool: 'rotate', // 'rotate' | 'paint' | 'delete' | 'add' | 'eyedropper'
+    tool: 'rotate', // 'rotate' | 'paint' | 'delete' | 'add' | 'eyedropper' | 'select'
     selectedBid: 1, // 當前選擇的材質 ID
     mirrorSymmetry: true, // 是否開啟左右鏡像對稱
+    selectedVoxels: new Set(), // 儲存選取的方塊座標集合 'x,y,z'
+    hoverVoxel: null, // 儲存當前滑鼠懸停資訊 { x, y, z, symX, charKey }
     listeners: []
   };
 
@@ -31,12 +33,38 @@
     return null;
   }
 
-  function getSymmetryX(x, charKey) {
+  const _charBounds = {};
+
+  // 取得角色模型實體的真實幾何邊界與對稱中心
+  function getCharBounds(charKey) {
+    if (_charBounds[charKey]) return _charBounds[charKey];
     const base = getBaseData(charKey);
-    if (!base || !base.dimensions) return null;
-    const w = base.dimensions.width;
-    // 鏡像點：例如寬度 99 (0~98)，則 30 對稱 68 (98 - 30)
-    return w - 1 - x;
+    if (!base) return null;
+    let minX = Infinity, maxX = -Infinity;
+    if (base.layers) {
+      for (let i = 0; i < base.layers.length; i++) {
+        const blks = base.layers[i].blocks;
+        for (let j = 0; j < blks.length; j++) {
+          const bx = blks[j][0];
+          if (bx < minX) minX = bx;
+          if (bx > maxX) maxX = bx;
+        }
+      }
+    }
+    if (minX === Infinity) {
+      const w = base.dimensions ? base.dimensions.width : 0;
+      minX = 0;
+      maxX = Math.max(0, w - 1);
+    }
+    _charBounds[charKey] = { minX, maxX, sum: minX + maxX, center: (minX + maxX) / 2 };
+    return _charBounds[charKey];
+  }
+
+  // 精準真實幾何對稱軸計算 (如妙蛙草以 x = 50 為軸心，x=51 對稱於 x=49)
+  function getSymmetryX(x, charKey) {
+    const bounds = getCharBounds(charKey);
+    if (!bounds) return null;
+    return bounds.sum - x;
   }
 
   // 查詢原始模型在 (x, y, z) 的方塊 bid，若無方塊則回傳 -1
@@ -118,6 +146,85 @@
     }
 
     applyChanges(charKey, changes);
+  }
+
+  // 選取多個方塊（切換或加入）
+  function selectVoxel(charKey, x, y, z, toggle = true) {
+    const key = `${x},${y},${z}`;
+    if (!_state.selectedVoxels) _state.selectedVoxels = new Set();
+    if (toggle && _state.selectedVoxels.has(key)) {
+      _state.selectedVoxels.delete(key);
+      if (_state.mirrorSymmetry) {
+        const symX = getSymmetryX(x, charKey);
+        if (symX !== null && symX !== x) _state.selectedVoxels.delete(`${symX},${y},${z}`);
+      }
+    } else {
+      _state.selectedVoxels.add(key);
+      if (_state.mirrorSymmetry) {
+        const symX = getSymmetryX(x, charKey);
+        if (symX !== null && symX !== x) _state.selectedVoxels.add(`${symX},${y},${z}`);
+      }
+    }
+    notifyListeners(charKey);
+  }
+
+  // 區域矩形範圍框選
+  function selectRegion(charKey, x1, y1, z1, x2, y2, z2, append = true) {
+    if (!_state.selectedVoxels || !append) _state.selectedVoxels = new Set();
+    const minX = Math.min(x1, x2), maxX = Math.max(x1, x2);
+    const minY = Math.min(y1, y2), maxY = Math.max(y1, y2);
+    const minZ = Math.min(z1, z2), maxZ = Math.max(z1, z2);
+
+    for (let y = minY; y <= maxY; y++) {
+      for (let z = minZ; z <= maxZ; z++) {
+        for (let x = minX; x <= maxX; x++) {
+          const bid = getEffectiveBid(charKey, x, y, z);
+          if (bid !== -1) {
+            _state.selectedVoxels.add(`${x},${y},${z}`);
+            if (_state.mirrorSymmetry) {
+              const symX = getSymmetryX(x, charKey);
+              if (symX !== null && symX !== x) {
+                const symBid = getEffectiveBid(charKey, symX, y, z);
+                if (symBid !== -1) _state.selectedVoxels.add(`${symX},${y},${z}`);
+              }
+            }
+          }
+        }
+      }
+    }
+    notifyListeners(charKey);
+  }
+
+  // 清空選取狀態
+  function clearSelection(charKey) {
+    if (_state.selectedVoxels) _state.selectedVoxels.clear();
+    notifyListeners(charKey || _state.activeCharacter);
+  }
+
+  // 批次套用動作（上色或消除，聚合為單一複合 Undo 歷史）
+  function applyBatchAction(charKey, action, targetBid) {
+    if (!_state.selectedVoxels || _state.selectedVoxels.size === 0) return 0;
+    const bidToApply = (action === 'delete') ? -1 : (targetBid !== undefined ? targetBid : _state.selectedBid);
+    const changes = [];
+
+    _state.selectedVoxels.forEach(coordKey => {
+      const [x, y, z] = coordKey.split(',').map(Number);
+      changes.push({ x, y, z, newBid: bidToApply });
+    });
+
+    applyChanges(charKey, changes);
+    return changes.length;
+  }
+
+  // 記錄懸停位置以供幽靈預覽
+  function setHoverVoxel(charKey, x, y, z) {
+    if (x === null || x === undefined) {
+      _state.hoverVoxel = null;
+    } else {
+      const symX = _state.mirrorSymmetry ? getSymmetryX(x, charKey) : null;
+      _state.hoverVoxel = { x, y, z, symX: (symX !== x ? symX : null), charKey };
+    }
+    notifyListeners(charKey);
   }
 
   // 撤銷 (Undo)
@@ -357,11 +464,17 @@
             <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'eyedropper' ? 'active' : ''}" data-tool="eyedropper" title="吸管 (吸取模型上的方塊材質)">
               🧪 吸管
             </button>
+            <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'select' ? 'active' : ''}" data-tool="select" title="選取 (多方塊選取／框選後批次塗色或整批消除)">
+              ⬚ 選取
+            </button>
           </div>
 
           <div class="ve-divider"></div>
 
           <div class="ve-action-group">
+            <button type="button" class="ve-btn ve-btn-danger" id="btnClearSel_${charKey}" title="清空當前選取的方塊" style="${(_state.selectedVoxels && _state.selectedVoxels.size > 0) ? '' : 'display:none;'}">
+              ✖ 清空選取 (${_state.selectedVoxels ? _state.selectedVoxels.size : 0})
+            </button>
             <button type="button" class="ve-btn ${_state.mirrorSymmetry ? 'active' : ''}" id="btnMirror_${charKey}" title="左右鏡像對稱編輯">
               🪞 鏡像: ${_state.mirrorSymmetry ? '開' : '關'}
             </button>
@@ -449,6 +562,13 @@
         voxelZ = Math.round(blockInfo.posZ + cz);
       }
 
+      if (_state.tool === 'select') {
+        selectVoxel(charKey, voxelX, voxelY, voxelZ, true);
+        updateToolbarUI(charKey);
+        syncThreeMeshFromOverrides(charKey, threeState, baseData);
+        return;
+      }
+
       if (_state.tool === 'eyedropper') {
         const effBid = getEffectiveBid(charKey, voxelX, voxelY, voxelZ);
         if (effBid !== -1) {
@@ -475,6 +595,92 @@
       // 即時重新同步 Three.js 實例與動態增補網格
       syncThreeMeshFromOverrides(charKey, threeState, baseData);
     });
+
+    function clear3DGhost() {
+      if (threeState && threeState.ghostMesh && threeState.scene) {
+        threeState.scene.remove(threeState.ghostMesh);
+        if (threeState.ghostMesh.geometry) threeState.ghostMesh.geometry.dispose();
+        if (threeState.ghostMesh.material) threeState.ghostMesh.material.dispose();
+        threeState.ghostMesh = null;
+      }
+    }
+
+    canvas.addEventListener('mousemove', (e) => {
+      if (!_state.editorMode || !_state.mirrorSymmetry || !threeState.camera || typeof THREE === 'undefined') {
+        clear3DGhost();
+        return;
+      }
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(mouse, threeState.camera);
+
+      const targets = [];
+      if (threeState.instancedMesh) targets.push(threeState.instancedMesh);
+      if (threeState.dynamicAddedGroup && threeState.dynamicAddedGroup.children.length > 0) {
+        targets.push(...threeState.dynamicAddedGroup.children);
+      }
+      const intersects = raycaster.intersectObjects(targets, false);
+      if (!intersects || intersects.length === 0) {
+        clear3DGhost();
+        return;
+      }
+
+      const hit = intersects[0];
+      const cx = baseData.dimensions.width / 2;
+      const cy = baseData.dimensions.height / 2;
+      const cz = baseData.dimensions.length / 2;
+      let vx, vy, vz;
+      if (hit.object && hit.object.userData && hit.object.userData.isDynamic) {
+        vx = hit.object.userData.voxelX;
+        vy = hit.object.userData.voxelY;
+        vz = hit.object.userData.voxelZ;
+      } else {
+        const id = hit.instanceId;
+        if (id === undefined || id === null) { clear3DGhost(); return; }
+        const b = threeState.blockDataList ? threeState.blockDataList[id] : null;
+        if (!b) { clear3DGhost(); return; }
+        vx = Math.round(b.posX + cx);
+        vy = Math.round(b.posY + cy);
+        vz = Math.round(b.posZ + cz);
+      }
+
+      if (_state.tool === 'add' && hit.face) {
+        const n = hit.face.normal;
+        vx += Math.round(n.x);
+        vy += Math.round(n.y);
+        vz += Math.round(n.z);
+      }
+
+      const symX = getSymmetryX(vx, charKey);
+      if (symX === null || symX === vx) {
+        clear3DGhost();
+        return;
+      }
+
+      // 建立或更新 3D 50% 半透明幽靈方塊
+      if (!threeState.ghostMesh) {
+        const geom = new THREE.BoxGeometry(1.02, 1.02, 1.02);
+        const mat = new THREE.MeshBasicMaterial({
+          color: 0xec4899,
+          transparent: true,
+          opacity: 0.55,
+          wireframe: false
+        });
+        threeState.ghostMesh = new THREE.Mesh(geom, mat);
+        threeState.scene.add(threeState.ghostMesh);
+      }
+
+      threeState.ghostMesh.position.set(symX - cx, vy - cy, vz - cz);
+      if (_state.tool === 'delete') {
+        threeState.ghostMesh.material.color.set(0xef4444);
+      } else {
+        const pItem = (baseData.palette && baseData.palette[_state.selectedBid]) ? baseData.palette[_state.selectedBid] : null;
+        threeState.ghostMesh.material.color.set(pItem ? pItem.color : 0xec4899);
+      }
+    });
+
+    canvas.addEventListener('mouseleave', clear3DGhost);
   }
 
   // 依據 overrides 即時更新 Three.js InstancedMesh 與動態增補網格
@@ -555,6 +761,29 @@
           }
         }
       });
+
+      // 3. 同步 3D 選取高亮外框群組 (Selection Box Group)
+      if (!threeState.selectionGroup) {
+        threeState.selectionGroup = new THREE.Group();
+        threeState.scene.add(threeState.selectionGroup);
+      }
+      while (threeState.selectionGroup.children.length > 0) {
+        const obj = threeState.selectionGroup.children[0];
+        threeState.selectionGroup.remove(obj);
+        if (obj.geometry) obj.geometry.dispose();
+        if (obj.material) obj.material.dispose();
+      }
+      if (_state.selectedVoxels && _state.selectedVoxels.size > 0) {
+        const boxGeom = new THREE.BoxGeometry(1.05, 1.05, 1.05);
+        const edgesGeom = new THREE.EdgesGeometry(boxGeom);
+        const lineMat = new THREE.LineBasicMaterial({ color: 0xfacc15, linewidth: 2 });
+        _state.selectedVoxels.forEach(coordKey => {
+          const [x, y, z] = coordKey.split(',').map(Number);
+          const wireframe = new THREE.LineSegments(edgesGeom, lineMat);
+          wireframe.position.set(x - cx, y - cy, z - cz);
+          threeState.selectionGroup.add(wireframe);
+        });
+      }
     }
   }
 
@@ -577,6 +806,14 @@
     if (btnMirror) {
       btnMirror.classList.toggle('active', _state.mirrorSymmetry);
       btnMirror.innerHTML = `🪞 鏡像: ${_state.mirrorSymmetry ? '開' : '關'}`;
+    }
+
+    // 清空選取按鈕
+    const btnClearSel = document.getElementById(`btnClearSel_${charKey}`);
+    if (btnClearSel) {
+      const selCount = _state.selectedVoxels ? _state.selectedVoxels.size : 0;
+      btnClearSel.style.display = selCount > 0 ? '' : 'none';
+      btnClearSel.innerHTML = `✖ 清空選取 (${selCount})`;
     }
 
     // 色票 active (左側調色盤)
@@ -637,7 +874,11 @@
           if (!target) return;
           if (target.hasAttribute('data-bid')) {
             _state.selectedBid = Number(target.getAttribute('data-bid'));
-            if (_state.tool === 'rotate' || _state.tool === 'eyedropper' || _state.tool === 'delete') {
+            if (_state.selectedVoxels && _state.selectedVoxels.size > 0) {
+              // 多方塊批次塗色！
+              applyBatchAction(charKey, 'paint', _state.selectedBid);
+              syncThreeMeshFromOverrides(charKey, threeState, baseData);
+            } else if (_state.tool === 'rotate' || _state.tool === 'eyedropper' || _state.tool === 'delete') {
               _state.tool = 'paint';
               _state.editorMode = true;
             }
@@ -651,9 +892,24 @@
         const target = e.target.closest('button');
         if (!target) return;
 
+        // 清空選取
+        if (target.id === `btnClearSel_${charKey}`) {
+          clearSelection(charKey);
+          updateToolbarUI(charKey);
+          syncThreeMeshFromOverrides(charKey, threeState, baseData);
+          return;
+        }
+
         // 工具切換
         if (target.hasAttribute('data-tool')) {
           const t = target.getAttribute('data-tool');
+          if (t === 'delete' && _state.selectedVoxels && _state.selectedVoxels.size > 0) {
+            // 多方塊整批消除！
+            applyBatchAction(charKey, 'delete');
+            syncThreeMeshFromOverrides(charKey, threeState, baseData);
+            updateToolbarUI(charKey);
+            return;
+          }
           _state.tool = t;
           _state.editorMode = (t !== 'rotate');
           updateToolbarUI(charKey);
@@ -663,7 +919,11 @@
         // 選擇材質色票
         if (target.hasAttribute('data-bid')) {
           _state.selectedBid = Number(target.getAttribute('data-bid'));
-          if (_state.tool === 'rotate' || _state.tool === 'eyedropper' || _state.tool === 'delete') {
+          if (_state.selectedVoxels && _state.selectedVoxels.size > 0) {
+            // 多方塊批次塗色！
+            applyBatchAction(charKey, 'paint', _state.selectedBid);
+            syncThreeMeshFromOverrides(charKey, threeState, baseData);
+          } else if (_state.tool === 'rotate' || _state.tool === 'eyedropper' || _state.tool === 'delete') {
             _state.tool = 'paint';
             _state.editorMode = true;
           }
@@ -721,10 +981,16 @@
   const VoxelDeltaStore = {
     state: _state,
     getBaseData,
+    getCharBounds,
     getSymmetryX,
     getOriginalBid,
     getEffectiveBid,
     executeVoxelAction,
+    selectVoxel,
+    selectRegion,
+    clearSelection,
+    applyBatchAction,
+    setHoverVoxel,
     undo,
     redo,
     resetToDefault,

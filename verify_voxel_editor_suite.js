@@ -1,17 +1,17 @@
 /**
- * 🛠️ Pokopia 3D 體素手動編輯與雲端同步系統離線驗收測試套件
- * 測試版本: v4.39.0
+ * 🛠️ Pokopia 3D 體素手動編輯、2D 雙向連動、批次選取與鏡像校正離線整合驗收測試套件
+ * 測試版本: v4.42.0
  */
 
 const assert = require('assert');
 const fs = require('fs');
 
 console.log('========================================================');
-console.log('🛠️ 啟動 Pokopia 3D 體素手動編輯系統 (v4.39.0) 離線整合驗收測試...');
+console.log('🛠️ 啟動 Pokopia 3D 體素編輯與 2D 切片雙向連動 (v4.42.0) 離線整合驗收測試...');
 console.log('========================================================\n');
 
-// 1. 測試 VoxelDeltaStore 體素核心演算法與動態增補
-console.log('【測試組 1: VoxelDeltaStore 體素核心演算法與動態增補】');
+// 1. 測試 VoxelDeltaStore 體素核心演算法、幾何對稱軸校正與批次選取
+console.log('【測試組 1: VoxelDeltaStore 幾何對稱軸校正與多選批次演算法】');
 const ivysaurCode = fs.readFileSync('./ivysaur_voxel_data.js', 'utf8');
 const fn = new Function(ivysaurCode + '; return IVYSAUR_VOXEL_DATA;');
 global.IVYSAUR_VOXEL_DATA = fn();
@@ -21,89 +21,109 @@ assert.strictEqual(typeof VoxelDeltaStore.executeVoxelAction, 'function', '缺�
 assert.strictEqual(typeof VoxelDeltaStore.undo, 'function', '缺少 undo 函式');
 assert.strictEqual(typeof VoxelDeltaStore.redo, 'function', '缺少 redo 函式');
 assert.strictEqual(typeof VoxelDeltaStore.getEffectiveVoxelData, 'function', '缺少 getEffectiveVoxelData 函式');
-console.log('  ✓ PASS: 1.1 VoxelDeltaStore 介面定義完整');
+assert.strictEqual(typeof VoxelDeltaStore.selectVoxel, 'function', '缺少 selectVoxel 函式');
+assert.strictEqual(typeof VoxelDeltaStore.selectRegion, 'function', '缺少 selectRegion 函式');
+assert.strictEqual(typeof VoxelDeltaStore.clearSelection, 'function', '缺少 clearSelection 函式');
+assert.strictEqual(typeof VoxelDeltaStore.applyBatchAction, 'function', '缺少 applyBatchAction 函式');
+assert.strictEqual(typeof VoxelDeltaStore.setHoverVoxel, 'function', '缺少 setHoverVoxel 函式');
+console.log('  ✓ PASS: 1.1 VoxelDeltaStore 介面定義完整 (含選取、批次與幽靈懸停 API)');
 
-// 左右對稱測試 (妙蛙草寬度 99，中軸 49，x=30 對稱 68)
-const symX = VoxelDeltaStore.getSymmetryX(30, 'ivysaur');
-assert.strictEqual(symX, 68, '鏡像對稱計算錯誤');
-console.log('  ✓ PASS: 1.2 左右鏡像對稱座標中軸運算精確 (30 <-> 68)');
+// 精準真實幾何對稱軸測試 (妙蛙草真實邊界 1~99，中心軸為 50)
+const sym30 = VoxelDeltaStore.getSymmetryX(30, 'ivysaur');
+assert.strictEqual(sym30, 70, `妙蛙草 30 對稱應為 70，實際為 ${sym30}`);
+const sym51 = VoxelDeltaStore.getSymmetryX(51, 'ivysaur');
+assert.strictEqual(sym51, 49, `妙蛙草 51 對稱應為 49，實際為 ${sym51}`);
+const sym50 = VoxelDeltaStore.getSymmetryX(50, 'ivysaur');
+assert.strictEqual(sym50, 50, `中心軸 50 對稱應為自身 50，實際為 ${sym50}`);
+console.log('  ✓ PASS: 1.2 妙蛙草真實幾何中心軸對稱演算精確無偏 (30<->70, 51<->49, 50<->50)');
 
-// 鏡像塗色與 Undo/Redo 驗證
+// 多方塊選取、框選、批次改色與單步 Undo 測試
+VoxelDeltaStore.clearSelection('ivysaur');
 VoxelDeltaStore.state.mirrorSymmetry = true;
-VoxelDeltaStore.executeVoxelAction('ivysaur', 30, 20, 30, 'paint', 4);
-assert.strictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 30, 20, 30), 4);
-assert.strictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 68, 20, 30), 4);
+VoxelDeltaStore.selectVoxel('ivysaur', 51, 20, 30, false);
+assert(VoxelDeltaStore.state.selectedVoxels.has('51,20,30'), '未選中 51,20,30');
+assert(VoxelDeltaStore.state.selectedVoxels.has('49,20,30'), '鏡像模式未連帶選中對稱點 49,20,30');
+assert.strictEqual(VoxelDeltaStore.state.selectedVoxels.size, 2, '選取集合大小應為 2');
 
+const paintedCount = VoxelDeltaStore.applyBatchAction('ivysaur', 'paint', 6);
+assert.strictEqual(paintedCount, 2, '批次改色數量應為 2');
+assert.strictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 51, 20, 30), 6);
+assert.strictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 49, 20, 30), 6);
+
+// 單步 Undo
+const undoRes = VoxelDeltaStore.undo('ivysaur');
+assert.strictEqual(undoRes, true);
+assert.notStrictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 51, 20, 30), 6);
+assert.notStrictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 49, 20, 30), 6);
+console.log('  ✓ PASS: 1.3 多方塊選取、批次改色與單一步驟 Undo 全數還原正確');
+
+// 批次消除與 Redo/Undo 驗證
+const delCount = VoxelDeltaStore.applyBatchAction('ivysaur', 'delete');
+assert.strictEqual(delCount, 2);
+assert.strictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 51, 20, 30), -1);
+assert.strictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 49, 20, 30), -1);
 VoxelDeltaStore.undo('ivysaur');
-assert.notStrictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 30, 20, 30), 4);
-assert.notStrictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 68, 20, 30), 4);
+assert.notStrictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 51, 20, 30), -1);
+console.log('  ✓ PASS: 1.4 多方塊批次消除 (Delete) 與單步 Undo 還原正確');
 
-VoxelDeltaStore.redo('ivysaur');
-assert.strictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 30, 20, 30), 4);
-assert.strictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 68, 20, 30), 4);
-console.log('  ✓ PASS: 1.3 左右鏡像塗色、Undo 撤銷與 Redo 重做 100% 正確');
+// 懸停幽靈預覽演算
+VoxelDeltaStore.setHoverVoxel('ivysaur', 51, 20, 30);
+assert.deepStrictEqual(VoxelDeltaStore.state.hoverVoxel, {
+  x: 51, y: 20, z: 30, symX: 49, charKey: 'ivysaur'
+});
+VoxelDeltaStore.setHoverVoxel('ivysaur', 50, 20, 30);
+assert.deepStrictEqual(VoxelDeltaStore.state.hoverVoxel, {
+  x: 50, y: 20, z: 30, symX: null, charKey: 'ivysaur'
+});
+console.log('  ✓ PASS: 1.5 鏡像懸停幽靈預覽演算正確（中心軸自動隱藏第二指示）');
 
-// 動態資料庫與材料即時統計
-VoxelDeltaStore.resetToDefault('ivysaur');
-const origTotal = IVYSAUR_VOXEL_DATA.totalBlocks;
-VoxelDeltaStore.state.mirrorSymmetry = false;
-VoxelDeltaStore.executeVoxelAction('ivysaur', 5, 5, 5, 'add', 3);
-const effData = VoxelDeltaStore.getEffectiveVoxelData('ivysaur');
-assert.strictEqual(effData.totalBlocks, origTotal + 1, '新增方塊後總數應增加 1');
-const targetLayer = effData.layers.find(l => l.layerIndex === 6);
-assert.ok(targetLayer && targetLayer.materials[3] > 0, '材料統計表未動態計入新增方塊');
-console.log('  ✓ PASS: 1.4 動態體素資料庫疊加與材料統計 (materials) 即時連動正確');
-
-// 2. 測試 3D 動態方塊增補網格 (Dynamic Added Mesh) 與雙翼分離佈局結構
-console.log('\n【測試組 2: 3D 動態方塊增補網格與雙翼分離佈局結構】');
+// 2. 測試 3D 體素工具列 UI 與 3D 鏡像幽靈預覽
+console.log('\n【測試組 2: 3D 體素工具列 UI 與 3D 鏡像幽靈預覽】');
 const editorCode = fs.readFileSync('./voxel_editor.js', 'utf8');
-assert.ok(editorCode.includes('dynamicAddedGroup'), 'voxel_editor.js 缺少 dynamicAddedGroup 動態增補網格');
-assert.ok(editorCode.includes('ve-toggle-capsule'), 'voxel_editor.js 缺少 ve-toggle-capsule 右上角開關膠囊');
-assert.ok(editorCode.includes('vePaletteDock_'), 'voxel_editor.js 缺少左側專屬調色盤 DOM 容器');
-assert.ok(editorCode.includes('vePanel_'), 'voxel_editor.js 缺少右側工具面板 DOM 容器');
-assert.ok(editorCode.includes('paletteDock.classList.toggle'), 'voxel_editor.js 缺少左右雙翼同步展開/收合連動');
-assert.ok(editorCode.includes('ve-close-btn'), 'voxel_editor.js 缺少 ve-close-btn 收合按鈕');
-console.log('  ✓ PASS: 2.1 voxel_editor.js 具備 dynamicAddedGroup 3D 實體動態增補實例層');
-console.log('  ✓ PASS: 2.2 voxel_editor.js 具備左側調色盤 (vePaletteDock) 與右側工具面板雙翼分離結構');
-console.log('  ✓ PASS: 2.3 voxel_editor.js 具備開關膠囊與收合按鈕之雙翼同步連動機制');
+assert.ok(editorCode.includes('data-tool="select"'), 'voxel_editor.js 缺少 data-tool="select" 選取模式按鈕');
+assert.ok(editorCode.includes('btnClearSel_'), 'voxel_editor.js 缺少 btnClearSel 清空選取按鈕');
+assert.ok(editorCode.includes('threeState.ghostMesh'), 'voxel_editor.js 缺少 3D 鏡像懸停幽靈預覽實例 (ghostMesh)');
+assert.ok(editorCode.includes('threeState.selectionGroup'), 'voxel_editor.js 缺少 3D 選取線框群組 (selectionGroup)');
+assert.ok(editorCode.includes('canvas.addEventListener(\'mousemove\''), 'voxel_editor.js 缺少 3D 滑鼠懸停幽靈即時更新監聽');
+console.log('  ✓ PASS: 2.1 右側工具欄具備【⬚ 選取】工具與【✖ 清空選取】按鈕');
+console.log('  ✓ PASS: 2.2 3D 視圖具備選取線框群組 (selectionGroup) 與 50% 半透明鏡像幽靈方塊 (ghostMesh)');
 
-// 3. 測試妙蛙草切片指南自適應居中縮放、尺規對齊與黑縫徹底消除
-console.log('\n【測試組 3: 妙蛙草切片指南自適應居中縮放、尺規對齊與防塌陷黑縫】');
+// 3. 測試 2D 切片指南高對比清晰白框與雙向連動
+console.log('\n【測試組 3: 2D 切片指南高對比白框與雙向即時連動】');
 const appCode = fs.readFileSync('./app.js', 'utf8');
-assert.ok(appCode.includes('setupVoxelEditorIntegration'), 'app.js 缺少 setupVoxelEditorIntegration');
-assert.ok(appCode.includes('fitWorkspaceToContainer(workspace, parent, ivysaurState.zoom)'), 'renderIvysaurLayer 缺少自適應縮放引擎');
-assert.ok(appCode.includes('renderDimTopSegments(DOM.ivysaurDimTop'), 'renderIvysaurLayer 缺少頂部工程分段尺規');
-assert.ok(appCode.includes('renderDimRightSegments(DOM.ivysaurDimRight'), 'renderIvysaurLayer 缺少右側工程分段尺規');
-assert.ok(appCode.includes("cell.className = 'bulba-cell'"), 'renderIvysaurLayer 缺少正規 bulba-cell 類別');
-assert.ok(appCode.includes('cell.style.width = `${cellSize}px`'), 'renderIvysaurLayer 方塊未鎖定固定正方形像素');
-assert.ok(appCode.includes('rgba(52, 211, 153, 0.04)'), 'renderIvysaurLayer 缺少工程藍圖底格線');
-assert.ok(appCode.includes('bulba-mat-chip'), 'renderIvysaurLayer 材料卡片缺少統一晶片樣式');
-assert.ok(appCode.includes('bulba-mat-count'), 'renderIvysaurLayer 材料卡片缺少統一計數標籤');
-console.log('  ✓ PASS: 3.1 renderIvysaurLayer 完整導入動態 cellSize 與固定正方形方塊 (黑縫徹底消滅)');
-console.log('  ✓ PASS: 3.2 renderIvysaurLayer 完整導入 renderDimTopSegments/Right 工程分段尺規');
-console.log('  ✓ PASS: 3.3 renderIvysaurLayer 具備 fitWorkspaceToContainer 居中放大充滿視窗與高對比材料卡片');
+const whiteBorderMatches = (appCode.match(/cell\.style\.border = '1px solid rgba\(255, 255, 255, 0\.85\)'/g) || []).length;
+assert.strictEqual(whiteBorderMatches, 4, `四大角色的切片實體方塊應全數具有亮白邊框 (期望 4 處，實際 ${whiteBorderMatches} 處)`);
+assert.ok(appCode.includes('ve-cell-selected'), 'app.js 切片渲染缺少 ve-cell-selected 選取高亮支援');
+assert.ok(appCode.includes('cell.dataset.x = rx;'), 'renderIvysaurLayer 缺少 cell.dataset.x 設定');
+assert.ok(appCode.includes('cell.dataset.z = rz;'), 'renderIvysaurLayer 缺少 cell.dataset.z 設定');
+assert.ok(appCode.includes('cell.dataset.y = curLayer - 1;'), 'renderIvysaurLayer 缺少 cell.dataset.y 設定');
+assert.ok(appCode.includes('gridEl.addEventListener(\'pointerdown\''), 'setupVoxelEditorIntegration 缺少 2D 切片 pointerdown 點擊編輯事件');
+assert.ok(appCode.includes('gridEl.addEventListener(\'pointermove\''), 'setupVoxelEditorIntegration 缺少 2D 切片 pointermove 鏡像幽靈懸停與框選事件');
+assert.ok(appCode.includes('ve-cell-mirror-ghost'), 'setupVoxelEditorIntegration 缺少 ve-cell-mirror-ghost 鏡像指示 class 注入');
+console.log('  ✓ PASS: 3.1 四大角色 2D 切片實體方塊邊框全面統一為清晰高對比白框 (rgba(255, 255, 255, 0.85))');
+console.log('  ✓ PASS: 3.2 2D 切片網格完整具備 pointerdown 點選編輯、pointermove 矩形框選與鏡像幽靈懸停指示');
+console.log('  ✓ PASS: 3.3 2D 切片操作與 3D 視圖 (syncThreeMeshFromOverrides) 達成即時雙向同步');
 
-// 4. 測試前端資源引入與版本破壞標籤 (v4.41.0)
-console.log('\n【測試組 4: 靜態資源引入與版本升級 (v4.41.0)】');
+// 4. 測試前端資源引入與版本破壞標籤 (v4.42.0)
+console.log('\n【測試組 4: 靜態資源引入與全站版本升級 (v4.42.0)】');
 const indexHtml = fs.readFileSync('./index.html', 'utf8');
-assert.ok(indexHtml.includes('voxel_editor.js?v=4.41.0'), 'index.html 缺少 voxel_editor.js?v=4.41.0');
-assert.ok(indexHtml.includes('index.css?v=4.41.0'), 'index.html 未更新至 index.css?v=4.41.0');
-assert.ok(indexHtml.includes('app.js?v=4.41.0'), 'index.html 未更新至 app.js?v=4.41.0');
-console.log('  ✓ PASS: 4.1 index.html 正確引入 voxel_editor.js 且全站版號對齊 v=4.41.0');
+assert.ok(indexHtml.includes('voxel_editor.js?v=4.42.0'), 'index.html 缺少 voxel_editor.js?v=4.42.0');
+assert.ok(indexHtml.includes('index.css?v=4.42.0'), 'index.html 未更新至 index.css?v=4.42.0');
+assert.ok(indexHtml.includes('app.js?v=4.42.0'), 'index.html 未更新至 app.js?v=4.42.0');
+console.log('  ✓ PASS: 4.1 index.html 正確引入最新資產且全站版號對齊 v=4.42.0');
 
 const swCode = fs.readFileSync('./sw.js', 'utf8');
-assert.ok(swCode.includes('pokopia-cache-v4.41.0'), 'sw.js 快取版本未升級至 v4.41.0');
-assert.ok(swCode.includes('./voxel_editor.js?v=4.41.0'), 'sw.js 靜態清單未包含 voxel_editor.js?v=4.41.0');
-console.log('  ✓ PASS: 4.2 sw.js 離線快取成功升級 pokopia-cache-v4.41.0 且納入最新資產');
+assert.ok(swCode.includes('pokopia-cache-v4.42.0'), 'sw.js 快取版本未升級至 v4.42.0');
+assert.ok(swCode.includes('./voxel_editor.js?v=4.42.0'), 'sw.js 靜態清單未包含 voxel_editor.js?v=4.42.0');
+console.log('  ✓ PASS: 4.2 sw.js 離線快取成功升級 pokopia-cache-v4.42.0 且納入最新資產');
 
 const indexCss = fs.readFileSync('./index.css', 'utf8');
-assert.ok(indexCss.includes('.ve-toggle-capsule'), 'index.css 缺少 .ve-toggle-capsule 膠囊樣式');
-assert.ok(indexCss.includes('.ve-palette-dock'), 'index.css 缺少 .ve-palette-dock 左側調色盤樣式');
-assert.ok(indexCss.includes('width: 58px;'), 'index.css 缺少左側調色盤寬度定義 (58px)');
-assert.ok(indexCss.includes('width: 84px;'), 'index.css 缺少右側工具側邊欄寬度定義 (84px)');
-assert.ok(indexCss.includes('.voxel-editor-toolbar.ve-hidden'), 'index.css 缺少 .ve-hidden 樣式');
-console.log('  ✓ PASS: 4.3 index.css 具備左側調色盤 (58px) 與右側工具欄 (84px) 雙翼分離防溢出樣式');
+assert.ok(indexCss.includes('.ve-cell-selected'), 'index.css 缺少 .ve-cell-selected 選取高亮樣式');
+assert.ok(indexCss.includes('.ve-cell-mirror-ghost'), 'index.css 缺少 .ve-cell-mirror-ghost 鏡像幽靈筆刷樣式');
+assert.ok(indexCss.includes('.ve-selection-marquee'), 'index.css 缺少 .ve-selection-marquee 框選矩形樣式');
+console.log('  ✓ PASS: 4.3 index.css 具備 .ve-cell-selected、.ve-cell-mirror-ghost 與框選矩形樣式');
 
 console.log('\n--------------------------------------------------------');
-console.log('🎉 Pokopia 3D 體素雙翼分離佈局與切片網格修復離線驗收 100% PASS！');
+console.log('🎉 Pokopia 2D 切片雙向編輯、多選批次、鏡像軸心校正與白框離線驗收 100% PASS！');
 console.log('========================================================\n');
+

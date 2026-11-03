@@ -7519,14 +7519,20 @@
             cell.className = 'bulba-cell';
             cell.style.width = `${cellSize}px`;
             cell.style.height = `${cellSize}px`;
+            cell.dataset.x = x;
+            cell.dataset.z = z;
+            cell.dataset.y = curLayer - 1;
+
+            const coordKey = `${x},${curLayer - 1},${z}`;
+            if (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.state.selectedVoxels && VoxelDeltaStore.state.selectedVoxels.has(coordKey)) {
+              cell.classList.add('ve-cell-selected');
+            }
 
             if (bid) {
               const pItem = data.palette[bid] || { name: '方塊', color: '#64a395' };
               cell.style.backgroundColor = pItem.color;
-              cell.style.border = '1px solid rgba(15, 23, 42, 0.65)';
+              cell.style.border = '1px solid rgba(255, 255, 255, 0.85)';
               cell.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.35)';
-              cell.dataset.x = x;
-              cell.dataset.z = z;
               cell.dataset.name = pItem.name;
               cell.dataset.color = pItem.color;
 
@@ -7663,14 +7669,20 @@
             cell.className = 'bulba-cell';
             cell.style.width = `${cellSize}px`;
             cell.style.height = `${cellSize}px`;
+            cell.dataset.x = x;
+            cell.dataset.z = z;
+            cell.dataset.y = curLayer - 1;
+
+            const coordKey = `${x},${curLayer - 1},${z}`;
+            if (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.state.selectedVoxels && VoxelDeltaStore.state.selectedVoxels.has(coordKey)) {
+              cell.classList.add('ve-cell-selected');
+            }
 
             if (bid !== undefined) {
               const pItem = data.palette[bid] || { name: '方塊', color: '#f1f5f9' };
               cell.style.backgroundColor = pItem.color;
-              cell.style.border = '1px solid rgba(15, 23, 42, 0.65)';
+              cell.style.border = '1px solid rgba(255, 255, 255, 0.85)';
               cell.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.35)';
-              cell.dataset.x = x;
-              cell.dataset.z = z;
               cell.dataset.name = pItem.name;
               cell.dataset.color = pItem.color;
 
@@ -7746,6 +7758,22 @@
     return texture;
   }
 
+  function getCurrentLayer(charKey) {
+    if (charKey === 'bulbasaur') return bulbaState.curLayer;
+    if (charKey === 'buzz') return buzzState.curLayer;
+    if (charKey === 'ivysaur') return ivysaurState.curLayer;
+    if (charKey === 'venusaur') return venusaurState.curLayer;
+    return 1;
+  }
+
+  function getCharGridEl(charKey) {
+    if (charKey === 'bulbasaur') return DOM.bulbaVoxelGrid;
+    if (charKey === 'buzz') return DOM.buzzVoxelGrid;
+    if (charKey === 'ivysaur') return DOM.ivysaurVoxelGrid;
+    if (charKey === 'venusaur') return DOM.venusaurVoxelGrid;
+    return null;
+  }
+
   // ═══════════════════════════════════════════════════════════════════
   // 通用 3D 體素手動編輯器整合掛載 (Voxel Editor Integration)
   // ═══════════════════════════════════════════════════════════════════
@@ -7761,6 +7789,116 @@
         refreshSliceCallback();
       }
     });
+
+    // 當體素發生任何變更時自動同步刷新 2D 切片與材料統計
+    if (VoxelDeltaStore.addChangeListener) {
+      VoxelDeltaStore.addChangeListener((changedCharKey) => {
+        if (changedCharKey === charKey && typeof refreshSliceCallback === 'function') {
+          refreshSliceCallback();
+        }
+      });
+    }
+
+    // 綁定 2D 切片點陣互動與雙向同步
+    const gridEl = getCharGridEl(charKey);
+    if (gridEl && !gridEl._veAttached) {
+      gridEl._veAttached = true;
+      let isDraggingMarquee = false;
+      let marqueeStart = null;
+
+      function clearMirrorGhost() {
+        gridEl.querySelectorAll('.ve-cell-mirror-ghost').forEach(c => {
+          c.classList.remove('ve-cell-mirror-ghost', 'delete');
+        });
+      }
+
+      function updateMirrorGhost(x, z, y) {
+        clearMirrorGhost();
+        if (typeof VoxelDeltaStore === 'undefined' || !VoxelDeltaStore.state.mirrorSymmetry || !VoxelDeltaStore.state.editorMode) return;
+        const symX = VoxelDeltaStore.getSymmetryX(x, charKey);
+        if (symX === null || symX === x) return;
+
+        const targetCell = gridEl.querySelector(`.bulba-cell[data-x="${symX}"][data-z="${z}"]`);
+        if (targetCell) {
+          targetCell.classList.add('ve-cell-mirror-ghost');
+          if (VoxelDeltaStore.state.tool === 'delete') {
+            targetCell.classList.add('delete');
+          }
+        }
+      }
+
+      gridEl.addEventListener('pointerdown', (e) => {
+        if (typeof VoxelDeltaStore === 'undefined' || !VoxelDeltaStore.state.editorMode) return;
+        const cell = e.target.closest('.bulba-cell');
+        if (!cell || cell.dataset.x === undefined) return;
+
+        const x = Number(cell.dataset.x);
+        const z = Number(cell.dataset.z);
+        const y = Number(cell.dataset.y !== undefined ? cell.dataset.y : (getCurrentLayer(charKey) - 1));
+        const tool = VoxelDeltaStore.state.tool;
+
+        if (tool === 'select') {
+          isDraggingMarquee = true;
+          marqueeStart = { x, z, y };
+          VoxelDeltaStore.selectVoxel(charKey, x, y, z, true);
+          if (typeof refreshSliceCallback === 'function') refreshSliceCallback();
+        } else if (tool === 'paint') {
+          VoxelDeltaStore.executeVoxelAction(charKey, x, y, z, 'paint');
+          VoxelDeltaStore.syncThreeMeshFromOverrides(charKey, threeState, baseData);
+          if (typeof refreshSliceCallback === 'function') refreshSliceCallback();
+        } else if (tool === 'delete') {
+          VoxelDeltaStore.executeVoxelAction(charKey, x, y, z, 'delete');
+          VoxelDeltaStore.syncThreeMeshFromOverrides(charKey, threeState, baseData);
+          if (typeof refreshSliceCallback === 'function') refreshSliceCallback();
+        } else if (tool === 'add') {
+          VoxelDeltaStore.executeVoxelAction(charKey, x, y, z, 'add');
+          VoxelDeltaStore.syncThreeMeshFromOverrides(charKey, threeState, baseData);
+          if (typeof refreshSliceCallback === 'function') refreshSliceCallback();
+        } else if (tool === 'eyedropper') {
+          const effBid = VoxelDeltaStore.getEffectiveBid(charKey, x, y, z);
+          if (effBid !== -1) {
+            VoxelDeltaStore.state.selectedBid = effBid;
+            VoxelDeltaStore.state.tool = 'paint';
+            VoxelDeltaStore.updateToolbarUI(charKey);
+          }
+        }
+      });
+
+      gridEl.addEventListener('pointermove', (e) => {
+        if (typeof VoxelDeltaStore === 'undefined') return;
+        const cell = e.target.closest('.bulba-cell');
+        if (!cell || cell.dataset.x === undefined) {
+          clearMirrorGhost();
+          return;
+        }
+
+        const x = Number(cell.dataset.x);
+        const z = Number(cell.dataset.z);
+        const y = Number(cell.dataset.y !== undefined ? cell.dataset.y : (getCurrentLayer(charKey) - 1));
+
+        updateMirrorGhost(x, z, y);
+        VoxelDeltaStore.setHoverVoxel(charKey, x, y, z);
+
+        if (isDraggingMarquee && marqueeStart && VoxelDeltaStore.state.tool === 'select') {
+          VoxelDeltaStore.selectRegion(charKey, marqueeStart.x, y, marqueeStart.z, x, y, z, true);
+          if (typeof refreshSliceCallback === 'function') refreshSliceCallback();
+        }
+      });
+
+      const onPointerEnd = () => {
+        isDraggingMarquee = false;
+        marqueeStart = null;
+      };
+
+      gridEl.addEventListener('pointerup', onPointerEnd);
+      gridEl.addEventListener('pointerleave', () => {
+        onPointerEnd();
+        clearMirrorGhost();
+        if (typeof VoxelDeltaStore !== 'undefined') {
+          VoxelDeltaStore.setHoverVoxel(charKey, null);
+        }
+      });
+    }
 
     if (window.PokopiaFirebase && window.PokopiaFirebase.loadVoxelOverrides) {
       const saved = window.PokopiaFirebase.loadVoxelOverrides(charKey);
@@ -8220,14 +8358,20 @@
             cell.className = 'bulba-cell';
             cell.style.width = `${cellSize}px`;
             cell.style.height = `${cellSize}px`;
+            cell.dataset.x = rx;
+            cell.dataset.z = rz;
+            cell.dataset.y = curLayer - 1;
+
+            const coordKey = `${rx},${curLayer - 1},${rz}`;
+            if (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.state.selectedVoxels && VoxelDeltaStore.state.selectedVoxels.has(coordKey)) {
+              cell.classList.add('ve-cell-selected');
+            }
 
             if (bid !== undefined) {
               const palItem = data.palette[bid] || { name: '方塊', color: '#00a8c8' };
               cell.style.backgroundColor = palItem.color;
-              cell.style.border = '1px solid rgba(15, 23, 42, 0.65)';
+              cell.style.border = '1px solid rgba(255, 255, 255, 0.85)';
               cell.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.35)';
-              cell.dataset.x = rx;
-              cell.dataset.z = rz;
               cell.dataset.name = palItem.name;
               cell.dataset.color = palItem.color;
               cell.dataset.bid = bid;
@@ -8574,14 +8718,20 @@
             cell.className = 'bulba-cell';
             cell.style.width = `${cellSize}px`;
             cell.style.height = `${cellSize}px`;
+            cell.dataset.x = x;
+            cell.dataset.z = z;
+            cell.dataset.y = curLayer - 1;
+
+            const coordKey = `${x},${curLayer - 1},${z}`;
+            if (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.state.selectedVoxels && VoxelDeltaStore.state.selectedVoxels.has(coordKey)) {
+              cell.classList.add('ve-cell-selected');
+            }
 
             if (bid !== undefined) {
               const pItem = data.palette[bid] || { name: '方塊', color: '#00a8c8' };
               cell.style.backgroundColor = pItem.color;
-              cell.style.border = '1px solid rgba(15, 23, 42, 0.65)';
+              cell.style.border = '1px solid rgba(255, 255, 255, 0.85)';
               cell.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.35)';
-              cell.dataset.x = x;
-              cell.dataset.z = z;
               cell.dataset.name = pItem.name;
               cell.dataset.color = pItem.color;
 

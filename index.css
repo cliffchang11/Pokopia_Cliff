@@ -13039,4 +13039,44 @@ body.has-floating-back .scroll-top-btn {
   }
 }
 
+/* ─────────────────────────────────────────────────────────
+   2D 切片選取高亮、幽靈鏡像筆刷與框選矩形
+   ───────────────────────────────────────────────────────── */
+.ve-cell-selected {
+  outline: 2px solid #facc15 !important;
+  box-shadow: 0 0 10px #facc15, inset 0 0 4px #fef08a !important;
+  z-index: 20 !important;
+  position: relative;
+  animation: ve-pulse 1.4s infinite alternate ease-in-out;
+}
+
+@keyframes ve-pulse {
+  from { filter: brightness(1.1); box-shadow: 0 0 6px #facc15; }
+  to { filter: brightness(1.4); box-shadow: 0 0 14px #fef08a; }
+}
+
+.ve-cell-mirror-ghost {
+  position: relative;
+  z-index: 15 !important;
+  outline: 2px dashed #ec4899 !important;
+  box-shadow: 0 0 8px rgba(236, 72, 153, 0.8) !important;
+  opacity: 0.8 !important;
+}
+
+.ve-cell-mirror-ghost.delete {
+  outline: 2px dashed #ef4444 !important;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.9) !important;
+  background: repeating-linear-gradient(45deg, rgba(239,68,68,0.35), rgba(239,68,68,0.35) 2px, transparent 2px, transparent 5px) !important;
+}
+
+.ve-selection-marquee {
+  position: absolute;
+  border: 1.5px dashed #facc15;
+  background: rgba(250, 204, 21, 0.16);
+  pointer-events: none;
+  z-index: 80;
+  border-radius: 2px;
+}
+
+
 
