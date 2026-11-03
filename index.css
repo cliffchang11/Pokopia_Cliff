@@ -12619,9 +12619,9 @@ body.has-floating-back .scroll-top-btn {
   box-sizing: border-box;
 }
 .bulba-cell:hover {
-  transform: scale(1.35);
+  outline: 1.5px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
   z-index: 5;
-  box-shadow: 0 0 10px #34d399;
 }
 
 /* 方塊 Hover Tooltip */
@@ -13059,10 +13059,10 @@ body.has-floating-back .scroll-top-btn {
 .ve-cell-mirror-ghost {
   position: relative;
   z-index: 20 !important;
-  outline: 2.5px solid #facc15 !important;
-  box-shadow: 0 0 12px #facc15, inset 0 0 6px rgba(250, 204, 21, 0.6) !important;
-  opacity: 0.9 !important;
-  animation: ve-mirror-pulse 1.2s infinite alternate ease-in-out;
+  outline: 3px solid #facc15 !important;
+  box-shadow: 0 0 16px #facc15, inset 0 0 8px rgba(250, 204, 21, 0.7) !important;
+  opacity: 0.95 !important;
+  animation: ve-mirror-pulse 1.1s infinite alternate ease-in-out;
 }
 
 @keyframes ve-mirror-pulse {

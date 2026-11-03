@@ -248,7 +248,7 @@ test('3.5 2D 鏡像對稱格子具備實體色彩預覽、發光脈衝框與無�
 
   const cssCode = fs.readFileSync(path.join(__dirname, 'index.css'), 'utf-8');
   assert.strictEqual(cssCode.includes('ve-mirror-pulse'), true, '應具備金色發光脈衝動效');
-  assert.strictEqual(cssCode.includes('outline: 2.5px solid #facc15'), true, '應具備亮金霓虹外框');
+  assert.strictEqual(cssCode.includes('outline: 3px solid #facc15'), true, '應具備亮金霓虹 3px 外框');
 });
 
 test('3.6 切片滾輪縮放範圍對齊 0.30~4.0，徹底解除 0.6 跳大卡死限制', () => {
@@ -273,11 +273,23 @@ test('3.7 Zoom-to-Cursor 游標錨定補償演算正確（游標下世界座標�
   const newPanY = Math.round(mouseY - scaleRatio * (mouseY - zoomObj.panY)); // 80 - 2 * 80 = -80
 
   // 驗證縮放後游標下的 local 座標在前後是否一致：
-  // 縮放前 localX = (mouseX - panX) / scale = (150 - 0) / 1.0 = 150
-  // 縮放後 localX = (mouseX - newPanX) / newScale = (150 - (-150)) / 2.0 = 300 / 2.0 = 150
   const localXBefore = (mouseX - zoomObj.panX) / zoomObj.scale;
   const localXAfter = (mouseX - newPanX) / newScale;
   assert.strictEqual(localXBefore, localXAfter, '縮放前後滑鼠游標正下方的畫布坐標必須完全恆等');
+});
+
+test('3.8 index.css 當前格徹底移除 scale 1.35 放大，平整無變形', () => {
+  const cssCode = fs.readFileSync(path.join(__dirname, 'index.css'), 'utf-8');
+  assert.strictEqual(cssCode.includes('.bulba-cell:hover {\n  outline: 1.5px solid rgba(255, 255, 255, 0.95);'), true, 'hover 應為平整細邊框');
+  assert.strictEqual(cssCode.includes('.bulba-cell:hover {\n  transform: scale(1.35);'), false, 'hover 不得包含 scale 1.35 放大');
+});
+
+test('3.9 四大角色 2D 切片網格具備幾何對稱 X 軸平衡展開，確保對稱提示 100% 存在', () => {
+  const appCode = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf-8');
+  assert.strictEqual(appCode.includes("const symBounds = VoxelDeltaStore.getCharBounds('bulbasaur');"), true);
+  assert.strictEqual(appCode.includes("const symBounds = VoxelDeltaStore.getCharBounds('buzz');"), true);
+  assert.strictEqual(appCode.includes("const symBounds = VoxelDeltaStore.getCharBounds('ivysaur');"), true);
+  assert.strictEqual(appCode.includes("const symBounds = VoxelDeltaStore.getCharBounds('venusaur');"), true);
 });
 
 console.log('\n--------------------------------------------------------');

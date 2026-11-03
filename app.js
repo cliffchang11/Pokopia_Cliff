@@ -7486,6 +7486,17 @@
           zOccupied.add(z);
         });
 
+        // 幾何對稱展開：確保任何方塊的對稱側點位皆有底格，對稱提示 100% 顯現
+        if (typeof VoxelDeltaStore !== 'undefined') {
+          const symBounds = VoxelDeltaStore.getCharBounds('bulbasaur');
+          if (symBounds) {
+            const symMinX = symBounds.sum - maxX;
+            const symMaxX = symBounds.sum - minX;
+            minX = Math.min(minX, symMinX);
+            maxX = Math.max(maxX, symMaxX);
+          }
+        }
+
         const spanX = maxX - minX + 1;
         const spanZ = maxZ - minZ + 1;
 
@@ -7639,6 +7650,17 @@
           xOccupied.add(x);
           zOccupied.add(z);
         });
+
+        // 幾何對稱展開：確保任何方塊的對稱側點位皆有底格，對稱提示 100% 顯現
+        if (typeof VoxelDeltaStore !== 'undefined') {
+          const symBounds = VoxelDeltaStore.getCharBounds('buzz');
+          if (symBounds) {
+            const symMinX = symBounds.sum - maxX;
+            const symMaxX = symBounds.sum - minX;
+            minX = Math.min(minX, symMinX);
+            maxX = Math.max(maxX, symMaxX);
+          }
+        }
 
         const spanX = maxX - minX + 1;
         const spanZ = maxZ - minZ + 1;
@@ -8441,6 +8463,17 @@
           zOccupied.add(z);
         });
 
+        // 幾何對稱展開：確保任何方塊的對稱側點位皆有底格，對稱提示 100% 顯現
+        if (typeof VoxelDeltaStore !== 'undefined') {
+          const symBounds = VoxelDeltaStore.getCharBounds('ivysaur');
+          if (symBounds) {
+            const symMinX = symBounds.sum - maxX;
+            const symMaxX = symBounds.sum - minX;
+            minX = Math.min(minX, symMinX);
+            maxX = Math.max(maxX, symMaxX);
+          }
+        }
+
         const spanX = maxX - minX + 1;
         const spanZ = maxZ - minZ + 1;
 
@@ -8830,6 +8863,17 @@
           xOccupied.add(x);
           zOccupied.add(z);
         });
+
+        // 幾何對稱展開：確保任何方塊的對稱側點位皆有底格，對稱提示 100% 顯現
+        if (typeof VoxelDeltaStore !== 'undefined') {
+          const symBounds = VoxelDeltaStore.getCharBounds('venusaur');
+          if (symBounds) {
+            const symMinX = symBounds.sum - maxX;
+            const symMaxX = symBounds.sum - minX;
+            minX = Math.min(minX, symMinX);
+            maxX = Math.max(maxX, symMaxX);
+          }
+        }
 
         const spanX = maxX - minX + 1;
         const spanZ = maxZ - minZ + 1;
