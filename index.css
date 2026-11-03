@@ -12751,3 +12751,173 @@ body.has-floating-back .scroll-top-btn {
   }
 }
 
+/* ─────────────────────────────────────────────────────────────
+   Pokopia 3D 體素手動編輯器懸浮工具列 (Voxel Editor Toolbar)
+   現代毛玻璃玻璃擬態 (Glassmorphism) + 靈動微交互
+   ───────────────────────────────────────────────────────────── */
+
+.voxel-editor-toolbar {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  padding: 8px 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.36), 0 2px 6px rgba(0, 0, 0, 0.2);
+  user-select: none;
+  max-width: 95%;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ve-toolbar-inner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.ve-tool-group,
+.ve-action-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ve-divider {
+  width: 1px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.18);
+  margin: 0 2px;
+}
+
+.ve-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 7px;
+  padding: 5px 9px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.ve-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.ve-btn:active {
+  transform: translateY(1px);
+}
+
+.ve-btn.active {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #38bdf8;
+  box-shadow: 0 0 10px rgba(2, 132, 199, 0.45);
+}
+
+.ve-btn-primary {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #ffffff;
+  border-color: rgba(52, 211, 153, 0.5);
+}
+
+.ve-btn-primary:hover {
+  background: linear-gradient(135deg, #047857 0%, #059669 100%);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+}
+
+.ve-btn-danger {
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+.ve-btn-danger:hover {
+  background: rgba(239, 68, 68, 0.25);
+  color: #fee2e2;
+}
+
+/* 色票列 */
+.ve-palette-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  overflow-x: auto;
+}
+
+.ve-palette-label {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+
+.ve-palette-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.ve-color-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+  padding: 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+}
+
+.ve-color-dot:hover {
+  transform: scale(1.22);
+  border-color: #ffffff;
+  z-index: 2;
+}
+
+.ve-color-dot.active {
+  border-color: #38bdf8;
+  transform: scale(1.28);
+  box-shadow: 0 0 8px #38bdf8;
+  outline: 2px solid #ffffff;
+}
+
+@media (max-width: 768px) {
+  .voxel-editor-toolbar {
+    width: 96%;
+    padding: 6px 8px;
+    gap: 6px;
+  }
+  .ve-btn {
+    font-size: 0.75rem;
+    padding: 4px 7px;
+  }
+  .ve-color-dot {
+    width: 17px;
+    height: 17px;
+  }
+}
+
+

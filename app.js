@@ -7439,7 +7439,7 @@
 
   function renderBulbaLayer(layerIndex) {
     if (typeof BULBASAUR_VOXEL_DATA === 'undefined') return;
-    const data = BULBASAUR_VOXEL_DATA;
+    const data = (typeof VoxelDeltaStore !== 'undefined') ? VoxelDeltaStore.getEffectiveVoxelData('bulbasaur') : BULBASAUR_VOXEL_DATA;
     const layer = data.layers[layerIndex - 1];
     if (!layer) return;
 
@@ -7586,7 +7586,7 @@
   // ═══════════════════════════════════════════════════════════════════
   function renderBuzzLayer(layerIndex) {
     if (typeof BUZZ_VOXEL_DATA === 'undefined') return;
-    const data = BUZZ_VOXEL_DATA;
+    const data = (typeof VoxelDeltaStore !== 'undefined') ? VoxelDeltaStore.getEffectiveVoxelData('buzz') : BUZZ_VOXEL_DATA;
     const layer = data.layers[layerIndex - 1];
     if (!layer) return;
 
@@ -7747,6 +7747,34 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════
+  // 通用 3D 體素手動編輯器整合掛載 (Voxel Editor Integration)
+  // ═══════════════════════════════════════════════════════════════════
+  function setupVoxelEditorIntegration(charKey, threeState, baseData, canvasEl, refreshSliceCallback) {
+    if (typeof VoxelDeltaStore === 'undefined' || !VoxelDeltaStore.attachEditorToScene || !canvasEl) return;
+    const curWrap = canvasEl.parentElement;
+    VoxelDeltaStore.attachEditorToScene(charKey, threeState, baseData, curWrap, (k, overrides) => {
+      if (window.PokopiaFirebase && window.PokopiaFirebase.saveVoxelOverrides) {
+        const res = window.PokopiaFirebase.saveVoxelOverrides(k, overrides);
+        alert(res.message || '存檔成功！');
+      }
+      if (typeof refreshSliceCallback === 'function') {
+        refreshSliceCallback();
+      }
+    });
+
+    if (window.PokopiaFirebase && window.PokopiaFirebase.loadVoxelOverrides) {
+      const saved = window.PokopiaFirebase.loadVoxelOverrides(charKey);
+      if (saved && Object.keys(saved).length > 0) {
+        VoxelDeltaStore.loadOverrides(charKey, saved);
+        VoxelDeltaStore.syncThreeMeshFromOverrides(charKey, threeState, baseData);
+        if (typeof refreshSliceCallback === 'function') {
+          refreshSliceCallback();
+        }
+      }
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
   // 巴斯光年 原生 3D Three.js 展台引擎
   // ═══════════════════════════════════════════════════════════════════
   function initBuzzThreeEngine() {
@@ -7865,6 +7893,8 @@
       renderer.render(scene, camera);
     }
     animate();
+
+    setupVoxelEditorIntegration('buzz', t, BUZZ_VOXEL_DATA, DOM.buzz3dCanvas, () => renderBuzzLayer(buzzState.curLayer));
 
     window.addEventListener('resize', () => {
       if (!t.isInit || !DOM.buzz3dCanvas) return;
@@ -8028,6 +8058,8 @@
     }
     animate();
 
+    setupVoxelEditorIntegration('bulbasaur', t, BULBASAUR_VOXEL_DATA, DOM.bulba3dCanvas, () => renderBulbaLayer(bulbaState.curLayer));
+
     // RWD Resize
     window.addEventListener('resize', () => {
       if (!t.isInit || !DOM.bulba3dCanvas) return;
@@ -8106,7 +8138,7 @@
 
   function renderIvysaurLayer(layerIndex) {
     if (typeof IVYSAUR_VOXEL_DATA === 'undefined') return;
-    const data = IVYSAUR_VOXEL_DATA;
+    const data = (typeof VoxelDeltaStore !== 'undefined') ? VoxelDeltaStore.getEffectiveVoxelData('ivysaur') : IVYSAUR_VOXEL_DATA;
     const layer = data.layers[layerIndex - 1];
     if (!layer) return;
 
@@ -8354,6 +8386,8 @@
     }
     animate();
 
+    setupVoxelEditorIntegration('ivysaur', t, IVYSAUR_VOXEL_DATA, DOM.ivysaur3dCanvas, () => renderIvysaurLayer(ivysaurState.curLayer));
+
     window.addEventListener('resize', () => {
       if (!t.isInit || !DOM.ivysaur3dCanvas) return;
       const curWrap = DOM.ivysaur3dCanvas.parentElement;
@@ -8431,7 +8465,7 @@
 
   function renderVenusaurLayer(layerIndex) {
     if (typeof VENUSAUR_VOXEL_DATA === 'undefined') return;
-    const data = VENUSAUR_VOXEL_DATA;
+    const data = (typeof VoxelDeltaStore !== 'undefined') ? VoxelDeltaStore.getEffectiveVoxelData('venusaur') : VENUSAUR_VOXEL_DATA;
     const layer = data.layers[layerIndex - 1];
     if (!layer) return;
 
@@ -8714,6 +8748,8 @@
       renderer.render(scene, camera);
     }
     animate();
+
+    setupVoxelEditorIntegration('venusaur', t, VENUSAUR_VOXEL_DATA, DOM.venusaur3dCanvas, () => renderVenusaurLayer(venusaurState.curLayer));
 
     window.addEventListener('resize', () => {
       if (!t.isInit || !DOM.venusaur3dCanvas) return;

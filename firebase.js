@@ -189,6 +189,21 @@
     } else if (local && local.deletedVideoTags && Array.isArray(local.deletedVideoTags)) {
       merged.deletedVideoTags = local.deletedVideoTags;
     }
+
+    // 體素自訂修改 (Voxel Overrides) 雲端合併
+    if (cloud && cloud.voxelOverrides && typeof cloud.voxelOverrides === 'object') {
+      merged.voxelOverrides = { ...cloud.voxelOverrides };
+      if (local && local.voxelOverrides && typeof local.voxelOverrides === 'object') {
+        Object.keys(local.voxelOverrides).forEach(charKey => {
+          if (!merged.voxelOverrides[charKey]) {
+            merged.voxelOverrides[charKey] = local.voxelOverrides[charKey];
+          }
+        });
+      }
+    } else if (local && local.voxelOverrides && typeof local.voxelOverrides === 'object') {
+      merged.voxelOverrides = { ...local.voxelOverrides };
+    }
+
     return merged;
   }
 
@@ -286,6 +301,41 @@
     }
   }
 
+  function saveVoxelOverrides(charKey, overrides) {
+    try {
+      const storageKey = 'pokopia_voxel_overrides_' + charKey;
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem(storageKey, JSON.stringify(overrides || {}));
+      }
+
+      if (_currentUser) {
+        saveCloudProgress(_currentUser.uid, {
+          voxelOverrides: {
+            [charKey]: overrides || {}
+          }
+        });
+        return { success: true, cloud: true, message: '已成功同步保存至您的 Google 雲端帳號！' };
+      }
+      return { success: true, cloud: false, message: '已保存至本地瀏覽器！登入 Google 帳號可跨裝置永久同步。' };
+    } catch (e) {
+      console.error('[Firebase] saveVoxelOverrides failed:', e);
+      return { success: false, error: e };
+    }
+  }
+
+  function loadVoxelOverrides(charKey) {
+    try {
+      const storageKey = 'pokopia_voxel_overrides_' + charKey;
+      if (typeof localStorage !== 'undefined') {
+        const raw = localStorage.getItem(storageKey);
+        if (raw) return JSON.parse(raw);
+      }
+    } catch (e) {
+      console.warn('[Firebase] loadVoxelOverrides failed:', e);
+    }
+    return {};
+  }
+
   window.PokopiaFirebase = {
     init: initFirebase,
     signInWithGoogle: signInWithGoogle,
@@ -297,7 +347,9 @@
     debouncedSave: debouncedSave,
     subscribeCloudProgress: subscribeCloudProgress,
     unsubscribeCloudProgress: unsubscribeCloudProgress,
-    mergeProgressUnion: mergeProgressUnion
+    mergeProgressUnion: mergeProgressUnion,
+    saveVoxelOverrides: saveVoxelOverrides,
+    loadVoxelOverrides: loadVoxelOverrides
   };
 
 })();
