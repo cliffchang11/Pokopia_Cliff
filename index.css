@@ -12212,23 +12212,37 @@ body.has-floating-back .scroll-top-btn {
 }
 
 @media (min-width: 1280px) {
-  /* 寬螢幕下解鎖 3D 藍圖分頁版心，釋放兩側充裕空間 */
+  /* 寬螢幕下解鎖 3D 藍圖分頁版心，釋放兩側充裕空間 (98vw 極窄留白) */
   body.is-buzz3d-active .main-content,
   .main-content:has(#buzz3dSection.active-section) {
-    max-width: 96vw;
-    padding: 0 1.5rem;
+    max-width: 98vw;
+    width: 98vw;
+    padding: 0 0.75rem;
   }
 
+  /* 解除 .buzz3d-section 寫死的 1600px 上限，全寬貼近螢幕邊緣 */
+  body.is-buzz3d-active .buzz3d-section,
+  .buzz3d-section {
+    max-width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* 雙欄採用 minmax(0, 1fr) 確保嚴格 1:1 絕對 50%/50% 均分 */
   .bulba-builder-layout {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 1.25rem;
     align-items: stretch;
+    width: 100%;
   }
 
   .bulba-3d-card,
   .bulba-slice-card {
     height: 100%;
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     margin-bottom: 0;
@@ -12245,12 +12259,22 @@ body.has-floating-back .scroll-top-btn {
   .bulba-canvas-wrap,
   .buzz-iframe-wrap {
     flex: 1;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
     height: 600px;
     min-height: 540px;
   }
 
+  .bulba-3d-canvas {
+    max-width: 100%;
+  }
+
   .bulba-grid-container {
     flex: 1;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
     height: 600px;
     min-height: 540px;
   }
