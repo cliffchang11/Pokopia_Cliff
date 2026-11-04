@@ -2027,6 +2027,11 @@
     state.isStaggerAnim = true;
     closeTocDropdown();
 
+    // 3D 藍圖寬螢幕版心解鎖：切換分頁時動態管理 is-buzz3d-active
+    if (typeof document !== 'undefined' && document.body) {
+      document.body.classList.toggle('is-buzz3d-active', tab === 'buzz3d');
+    }
+
     // 3D 渲染後台休眠：離開 3D 藍圖分頁時立即停止所有 WebGL requestAnimationFrame，零背景佔用
     if (tab !== 'buzz3d' && typeof stopThreeRendering === 'function') {
       ['buzz', 'bulbasaur', 'ivysaur', 'venusaur'].forEach(stopThreeRendering);

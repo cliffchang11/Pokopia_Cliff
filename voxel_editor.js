@@ -470,7 +470,81 @@
     }
   }
 
-  function notifyListeners(charKey) {
+  // 跨視窗/跨分頁 0 毫秒即塗即現廣播通訊器 (Cross-Window Realtime Sync)
+  const SYNC_CHANNEL_NAME = 'pokopia_voxel_sync_v1';
+  let _syncChannel = null;
+  const _attachedThreeScenes = {};
+
+  try {
+    if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+      _syncChannel = new BroadcastChannel(SYNC_CHANNEL_NAME);
+      _syncChannel.onmessage = function (e) {
+        const msg = e.data;
+        if (!msg || msg.type !== 'VOXEL_DELTA_SYNC' || !msg.charKey) return;
+        handleRemoteOverridesSync(msg.charKey, msg.overrides);
+      };
+    }
+  } catch (_) {}
+
+  // 跨視窗 StorageEvent 降級備用支援
+  if (typeof window !== 'undefined') {
+    window.addEventListener('storage', function (e) {
+      if (e.key === 'pokopia_voxel_storage_sync_v1' && e.newValue) {
+        try {
+          const payload = JSON.parse(e.newValue);
+          if (payload && payload.charKey && payload.overrides) {
+            handleRemoteOverridesSync(payload.charKey, payload.overrides);
+          }
+        } catch (_) {}
+      }
+    });
+  }
+
+  function broadcastVoxelDelta(charKey, overrides) {
+    const data = overrides || getOverrides(charKey);
+    if (_syncChannel) {
+      try {
+        _syncChannel.postMessage({
+          type: 'VOXEL_DELTA_SYNC',
+          charKey: charKey,
+          overrides: data,
+          senderTime: Date.now()
+        });
+      } catch (_) {}
+    }
+    try {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('pokopia_voxel_storage_sync_v1', JSON.stringify({
+          charKey: charKey,
+          overrides: data,
+          t: Date.now()
+        }));
+      }
+    } catch (_) {}
+  }
+
+  function handleRemoteOverridesSync(charKey, remoteOverrides) {
+    const char = _state.characters[charKey];
+    if (!char) return;
+    char.overrides = { ...(remoteOverrides || {}) };
+
+    // 觸發本地更新 (skipBroadcast = true 避免回音循環)
+    notifyListeners(charKey, true);
+  }
+
+  function notifyListeners(charKey, skipBroadcast = false) {
+    // 1. 同步當前視窗此角色的 3D 模型
+    if (_attachedThreeScenes[charKey]) {
+      const { threeState, baseData } = _attachedThreeScenes[charKey];
+      syncThreeMeshFromOverrides(charKey, threeState, baseData);
+    }
+
+    // 2. 廣播給其他視窗 (即塗即現跨視窗同步)
+    if (!skipBroadcast) {
+      broadcastVoxelDelta(charKey, getOverrides(charKey));
+    }
+
+    // 3. 通知監聽器 (刷新 2D 切片網格與材料統計)
     _state.listeners.forEach(cb => {
       try {
         cb(charKey, getOverrides(charKey));
@@ -1078,6 +1152,8 @@
   function attachEditorToScene(charKey, threeState, baseData, canvasWrap, onSubmitCallback) {
     if (!canvasWrap || !threeState) return;
 
+    _attachedThreeScenes[charKey] = { threeState, baseData };
+
     let container = document.getElementById(`voxelToolbar_${charKey}`);
     if (!container) {
       container = createEditorToolbarDOM(charKey, baseData);
@@ -1091,6 +1167,9 @@
 
   function attachEditorTo2D(charKey, threeState, baseData, container2D, onSubmitCallback) {
     if (!container2D || !threeState) return;
+
+    _attachedThreeScenes[charKey] = { threeState, baseData };
+
     let toolbar2D = container2D.querySelector(`#voxelToolbar2D_${charKey}`);
     if (!toolbar2D) {
       toolbar2D = createEditorToolbarDOM(charKey, baseData);
@@ -1124,6 +1203,9 @@
     getOverrides,
     getEffectiveVoxelData,
     addChangeListener,
+    // 跨視窗即時同步廣播模組
+    broadcastVoxelDelta,
+    handleRemoteOverridesSync,
     // Three 編輯器模組
     attachEditorToScene,
     attachEditorTo2D,

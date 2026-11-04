@@ -460,6 +460,35 @@ test('3.18 各角色切片層數與 3D 模式持久化 (setXxxLayer 與 switchXx
   assert.strictEqual(appCode.includes("curLayer: getSaved3DLayer('venusaur', 1)"), true);
 });
 
+test('3.19 3D 藍圖寬螢幕雙聯工作台響應式佈局 (左 3D / 右 2D @media min-width: 1280px)', () => {
+  const cssCode = fs.readFileSync(path.join(__dirname, 'index.css'), 'utf-8');
+  assert.strictEqual(cssCode.includes('@media (min-width: 1280px) {'), true);
+  assert.strictEqual(cssCode.includes('grid-template-columns: 1fr 1fr;'), true);
+  assert.strictEqual(cssCode.includes('max-width: 96vw;'), true);
+
+  const appCode = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf-8');
+  assert.strictEqual(appCode.includes("document.body.classList.toggle('is-buzz3d-active', tab === 'buzz3d');"), true);
+});
+
+test('3.20 跨視窗/跨分頁 BroadcastChannel 0 毫秒即塗即現即時同步', () => {
+  const VoxelDeltaStore = require('./voxel_editor.js');
+  assert.strictEqual(typeof VoxelDeltaStore.broadcastVoxelDelta, 'function');
+  assert.strictEqual(typeof VoxelDeltaStore.handleRemoteOverridesSync, 'function');
+
+  let listenerNotified = false;
+  const unsubscribeListener = (k, overrides) => {
+    if (k === 'ivysaur' && overrides['50,15,50'] === 4) {
+      listenerNotified = true;
+    }
+  };
+  VoxelDeltaStore.addChangeListener(unsubscribeListener);
+
+  // 模擬視窗 B 接收到視窗 A 廣播的 overrides
+  VoxelDeltaStore.handleRemoteOverridesSync('ivysaur', { '50,15,50': 4 });
+  assert.strictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 50, 15, 50), 4, '遠端廣播的方塊資料應即時生效');
+  assert.strictEqual(listenerNotified, true, '本機監聽器應被即時觸發以重繪切片');
+});
+
 console.log('\n--------------------------------------------------------');
 console.log(`🎉 全部 ${passCount} 項離線自動化整合測試全數通過 (100% PASS)！`);
 console.log('========================================================\n');

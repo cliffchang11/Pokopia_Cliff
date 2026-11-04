@@ -12200,7 +12200,10 @@ body.has-floating-back .scroll-top-btn {
   border-color: rgba(139, 92, 246, 0.25) !important;
 }
 
-/* 6. 妙蛙種子上下垂直工作台佈局 (上 3D 寬闊展台 + 下 53 層滿版切片) */
+/* 6. 3D 角色建造工作台佈局：
+   - 小螢幕 (< 1280px)：上下垂直單欄堆疊 (上 3D 展台 + 下 切片指南)
+   - 寬螢幕 (>= 1280px)：自適應雙聯工作台 (左 3D 雕像 + 右 2D 切片 50%/50% 等高並排)
+*/
 .bulba-builder-layout {
   display: flex;
   flex-direction: column;
@@ -12208,7 +12211,44 @@ body.has-floating-back .scroll-top-btn {
   width: 100%;
 }
 
-/* 上半部：3D 方塊雕像展示卡片 (寬闊全幅) */
+@media (min-width: 1280px) {
+  /* 寬螢幕下解鎖 3D 藍圖分頁版心，釋放兩側充裕空間 */
+  body.is-buzz3d-active .main-content,
+  .main-content:has(#buzz3dSection.active-section) {
+    max-width: 96vw;
+    padding: 0 1.5rem;
+  }
+
+  .bulba-builder-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+
+  .bulba-3d-card,
+  .bulba-slice-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+  }
+
+  .bulba-canvas-wrap,
+  .buzz-iframe-wrap {
+    flex: 1;
+    height: 600px;
+    min-height: 540px;
+  }
+
+  .bulba-grid-container {
+    flex: 1;
+    height: 600px;
+    min-height: 540px;
+  }
+}
+
+/* 3D 方塊雕像展示卡片與切片卡片基礎視覺 */
 .bulba-3d-card,
 .bulba-slice-card {
   background: linear-gradient(135deg, rgba(15, 32, 35, 0.82) 0%, rgba(11, 24, 27, 0.9) 100%);
