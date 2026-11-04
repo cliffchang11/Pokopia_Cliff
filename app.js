@@ -23,6 +23,47 @@
   const STORAGE_KEY_DELETED_VIDEO_IDS = 'pokopia_deleted_video_ids_v1';
   const STORAGE_KEY_VIDEO_PLAYBACK_PROGRESS = 'pokopia_video_progress_v1';
   const STORAGE_KEY_ACTIVE_VIDEO = 'pokopia_active_video_id_v1';
+  const STORAGE_KEY_3D_CUR_CHAR = 'pokopia_3d_cur_char_v1';
+  const STORAGE_KEY_3D_LAYER_PREFIX = 'pokopia_3d_layer_v1_';
+  const STORAGE_KEY_3D_MODE_PREFIX = 'pokopia_3d_mode_v1_';
+
+  function getSaved3DChar() {
+    try {
+      const v = localStorage.getItem(STORAGE_KEY_3D_CUR_CHAR);
+      if (['buzz', 'bulba', 'ivysaur', 'venusaur'].includes(v)) return v;
+    } catch (_) {}
+    return 'buzz';
+  }
+
+  function getSaved3DLayer(charKey, defaultLayer = 1) {
+    try {
+      const v = Number(localStorage.getItem(STORAGE_KEY_3D_LAYER_PREFIX + charKey));
+      if (!isNaN(v) && v >= 1) return v;
+    } catch (_) {}
+    return defaultLayer;
+  }
+
+  function getSaved3DMode(charKey, defaultMode = 'full') {
+    try {
+      const v = localStorage.getItem(STORAGE_KEY_3D_MODE_PREFIX + charKey);
+      if (['full', 'slice', 'sketchfab'].includes(v)) return v;
+    } catch (_) {}
+    return defaultMode;
+  }
+
+  function save3DState(charKey, layer = null, mode = null) {
+    try {
+      if (charKey) {
+        localStorage.setItem(STORAGE_KEY_3D_CUR_CHAR, charKey);
+      }
+      if (charKey && layer !== null) {
+        localStorage.setItem(STORAGE_KEY_3D_LAYER_PREFIX + charKey, String(layer));
+      }
+      if (charKey && mode !== null) {
+        localStorage.setItem(STORAGE_KEY_3D_MODE_PREFIX + charKey, String(mode));
+      }
+    } catch (_) {}
+  }
 
   // 我的收納盒預設初始箱號配置 (6 個預設收納盒，使用者可自由增刪與修改)
   const DEFAULT_CUSTOM_BOXES = [
@@ -515,12 +556,14 @@
   function getInitialNavState() {
     const validTabs = ['storage', 'habitat', 'habitatCatalog', 'recipe', 'preferences', 'autofarm', 'customStorage', 'regionMap', 'video', 'buzz3d'];
     const validViews = ['card', 'table'];
+    const valid3DChars = ['buzz', 'bulba', 'ivysaur', 'venusaur'];
 
     let tab = null;
     let view = null;
     let targetId = null;
+    let subChar = null;
 
-    // 1. 嚴格優先讀取 URL Hash (如 #habitatCatalog-table 或 #customStorage-card 或 #video-card 或 #buzz3d-card)
+    // 1. 嚴格優先讀取 URL Hash (如 #habitatCatalog-table 或 #customStorage-card 或 #video-card 或 #buzz3d-card-ivysaur)
     try {
       const hash = (window.location.hash || '').replace(/^#/, '');
       if (hash) {
@@ -542,6 +585,9 @@
         }
         if (parts.length >= 3) {
           targetId = parts.slice(2).join('-');
+          if (tab === 'buzz3d' && valid3DChars.includes(parts[2])) {
+            subChar = parts[2];
+          }
         }
       }
     } catch (e) {}
@@ -564,10 +610,15 @@
       } catch (e) {}
     }
 
+    if (!subChar) {
+      subChar = getSaved3DChar();
+    }
+
     return {
       tab: tab || 'habitat',
       view: view || 'table',
-      targetId: targetId || null
+      targetId: targetId || null,
+      subChar: subChar || 'buzz'
     };
   }
 
@@ -600,13 +651,17 @@
     try {
       localStorage.setItem(STORAGE_KEY_NAV_TAB, state.currentTab);
       localStorage.setItem(STORAGE_KEY_NAV_VIEW, state.currentView);
+      if (state.currentTab === 'buzz3d' && bulbaState && bulbaState.curChar) {
+        save3DState(bulbaState.curChar);
+      }
     } catch (e) {}
 
     try {
       const search = window.location.search || '';
-      const targetHash = `${search}#${state.currentTab}-${state.currentView}`;
-      if (window.location.hash !== `#${state.currentTab}-${state.currentView}`) {
-        history.replaceState({ tab: state.currentTab, view: state.currentView }, '', targetHash);
+      const charSuffix = (state.currentTab === 'buzz3d' && bulbaState && bulbaState.curChar) ? `-${bulbaState.curChar}` : '';
+      const targetHash = `${search}#${state.currentTab}-${state.currentView}${charSuffix}`;
+      if (window.location.hash !== targetHash) {
+        history.replaceState({ tab: state.currentTab, view: state.currentView, subChar: bulbaState ? bulbaState.curChar : null }, '', targetHash);
       }
     } catch (e) {}
   }
@@ -1559,6 +1614,12 @@
       DOM.btnVenusaurZoomReset.addEventListener('click', () => changeSliceZoom(venusaurWorkspace, venusaurState.zoom, 1.0, true, venusaurContainer));
     }
 
+    // 同步初始化四大角色滑桿數值為保存之層數
+    if (DOM.buzzLayerSlider) DOM.buzzLayerSlider.value = buzzState.curLayer;
+    if (DOM.bulbaLayerSlider) DOM.bulbaLayerSlider.value = bulbaState.curLayer;
+    if (DOM.ivysaurLayerSlider) DOM.ivysaurLayerSlider.value = ivysaurState.curLayer;
+    if (DOM.venusaurLayerSlider) DOM.venusaurLayerSlider.value = venusaurState.curLayer;
+
     // View mode switching
     DOM.btnCardView.addEventListener('click', () => {
       switchView('card', true);
@@ -2208,35 +2269,9 @@
       if (DOM.toolbarContainer) DOM.toolbarContainer.classList.remove('hidden');
       if (DOM.toolbarHeaderRow) DOM.toolbarHeaderRow.classList.remove('hidden');
       if (DOM.toolbarTitle) DOM.toolbarTitle.textContent = '3D 藍圖';
-      if (DOM.catalogProgressBadge) DOM.catalogProgressBadge.classList.remove('hidden');
       if (typeof startThreeRendering === 'function') startThreeRendering(bulbaState.curChar || 'buzz');
-      if (bulbaState.curChar === 'venusaur') {
-        if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🌺';
-        const vTotal = (typeof VENUSAUR_VOXEL_DATA !== 'undefined' && VENUSAUR_VOXEL_DATA.totalBlocks) ? VENUSAUR_VOXEL_DATA.totalBlocks.toLocaleString() : '68,180';
-        const vLayers = (typeof VENUSAUR_VOXEL_DATA !== 'undefined' && VENUSAUR_VOXEL_DATA.layers) ? VENUSAUR_VOXEL_DATA.layers.length : '103';
-        if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = `<strong>${vTotal}</strong> 顆方塊 ‧ ${vLayers} 層切片`;
-        if (typeof renderVenusaurLayer === 'function') renderVenusaurLayer(venusaurState.curLayer);
-        if (typeof initVenusaurThreeEngine === 'function') setTimeout(initVenusaurThreeEngine, 60);
-      } else if (bulbaState.curChar === 'ivysaur') {
-        if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🌿';
-        const iTotal = (typeof IVYSAUR_VOXEL_DATA !== 'undefined' && IVYSAUR_VOXEL_DATA.totalBlocks) ? IVYSAUR_VOXEL_DATA.totalBlocks.toLocaleString() : '70,384';
-        const iLayers = (typeof IVYSAUR_VOXEL_DATA !== 'undefined' && IVYSAUR_VOXEL_DATA.layers) ? IVYSAUR_VOXEL_DATA.layers.length : '76';
-        if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = `<strong>${iTotal}</strong> 顆方塊 ‧ ${iLayers} 層切片`;
-        if (typeof renderIvysaurLayer === 'function') renderIvysaurLayer(ivysaurState.curLayer);
-        if (typeof initIvysaurThreeEngine === 'function') setTimeout(initIvysaurThreeEngine, 60);
-      } else if (bulbaState.curChar === 'bulba') {
-        if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🍃';
-        if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = '<strong>8,415</strong> 顆方塊 ‧ 53 層切片';
-        if (typeof renderBulbaLayer === 'function') renderBulbaLayer(bulbaState.curLayer);
-        if (typeof initBulbaThreeEngine === 'function') setTimeout(initBulbaThreeEngine, 60);
-      } else {
-        if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🚀';
-        const buzzTotal = (typeof BUZZ_VOXEL_DATA !== 'undefined' && BUZZ_VOXEL_DATA.totalBlocks) ? BUZZ_VOXEL_DATA.totalBlocks.toLocaleString() : '7,927';
-        const buzzLayers = (typeof BUZZ_VOXEL_DATA !== 'undefined' && BUZZ_VOXEL_DATA.layers) ? BUZZ_VOXEL_DATA.layers.length : '42';
-        if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = `<strong>${buzzTotal}</strong> 顆方塊 ‧ ${buzzLayers} 層切片`;
-        if (typeof renderBuzzLayer === 'function') renderBuzzLayer(buzzState.curLayer);
-        if (typeof initBuzzThreeEngine === 'function') setTimeout(initBuzzThreeEngine, 60);
-      }
+      const targetChar = bulbaState.curChar || getSaved3DChar();
+      switchCharacterBlueprint(targetChar);
       if (DOM.searchRow) DOM.searchRow.classList.add('hidden');
       if (DOM.viewToggleGroup) DOM.viewToggleGroup.classList.add('hidden');
       if (DOM.filterToolbar) DOM.filterToolbar.classList.add('hidden');
@@ -7112,8 +7147,8 @@
      3D 角色藍圖館 (3D Character Blueprint Gallery) - 雙角色體素工作台
      ═══════════════════════════════════════════════════════════════════ */
   const buzzState = {
-    curMode: 'full', // 'full' | 'slice'
-    curLayer: 1,
+    curMode: getSaved3DMode('buzz', 'full'),
+    curLayer: getSaved3DLayer('buzz', 1),
     zoom: { scale: 1.0, panX: 0, panY: 0 },
     three: {
       isInit: false,
@@ -7128,9 +7163,9 @@
   };
 
   const bulbaState = {
-    curChar: 'buzz',
-    curMode: 'full', // 'full' | 'slice'
-    curLayer: 1,
+    curChar: (typeof initialNav !== 'undefined' && initialNav.subChar) ? initialNav.subChar : getSaved3DChar(),
+    curMode: getSaved3DMode('bulba', 'full'),
+    curLayer: getSaved3DLayer('bulba', 1),
     zoom: { scale: 1.0, panX: 0, panY: 0 },
     three: {
       isInit: false,
@@ -7145,8 +7180,8 @@
   };
 
   const ivysaurState = {
-    curMode: 'full', // 'full' | 'slice' | 'sketchfab'
-    curLayer: 1,
+    curMode: getSaved3DMode('ivysaur', 'full'),
+    curLayer: getSaved3DLayer('ivysaur', 1),
     zoom: { scale: 1.0, panX: 0, panY: 0 },
     three: {
       isInit: false,
@@ -7161,8 +7196,8 @@
   };
 
   const venusaurState = {
-    curMode: 'full', // 'full' | 'slice' | 'sketchfab'
-    curLayer: 1,
+    curMode: getSaved3DMode('venusaur', 'full'),
+    curLayer: getSaved3DLayer('venusaur', 1),
     zoom: { scale: 1.0, panX: 0, panY: 0 },
     three: {
       isInit: false,
@@ -7404,6 +7439,10 @@
 
   function switchCharacterBlueprint(char) {
     bulbaState.curChar = char;
+    save3DState(char);
+    if (typeof syncNavStateToURLAndStorage === 'function') {
+      syncNavStateToURLAndStorage();
+    }
     if (typeof startThreeRendering === 'function') {
       startThreeRendering(char);
     }
@@ -7448,6 +7487,7 @@
 
   function switchBuzz3DMode(mode) {
     buzzState.curMode = mode;
+    save3DState('buzz', null, mode);
     if (DOM.btnBuzzModeFull) {
       DOM.btnBuzzModeFull.classList.toggle('active', mode === 'full');
     }
@@ -7477,6 +7517,7 @@
     const maxLayer = BUZZ_VOXEL_DATA.layers.length;
     const target = Math.max(1, Math.min(maxLayer, layerIndex));
     buzzState.curLayer = target;
+    save3DState('buzz', target);
     if (DOM.buzzLayerSlider) DOM.buzzLayerSlider.value = target;
     renderBuzzLayer(target);
     if (buzzState.curMode === 'slice') {
@@ -7486,6 +7527,7 @@
 
   function switchBulba3DMode(mode) {
     bulbaState.curMode = mode;
+    save3DState('bulba', null, mode);
     if (DOM.btnBulbaModeFull) {
       DOM.btnBulbaModeFull.classList.toggle('active', mode === 'full');
     }
@@ -7500,6 +7542,7 @@
     const maxLayer = BULBASAUR_VOXEL_DATA.layers.length;
     const target = Math.max(1, Math.min(maxLayer, layerIndex));
     bulbaState.curLayer = target;
+    save3DState('bulba', target);
     if (DOM.bulbaLayerSlider) DOM.bulbaLayerSlider.value = target;
     renderBulbaLayer(target);
     if (bulbaState.curMode === 'slice') {
@@ -8497,6 +8540,7 @@
   // ═══════════════════════════════════════════════════════════════════
   function switchIvysaur3DMode(mode) {
     ivysaurState.curMode = mode;
+    save3DState('ivysaur', null, mode);
     if (DOM.btnIvysaurModeFull) {
       DOM.btnIvysaurModeFull.classList.toggle('active', mode === 'full');
     }
@@ -8526,6 +8570,7 @@
     const maxLayer = IVYSAUR_VOXEL_DATA.layers.length;
     const target = Math.max(1, Math.min(maxLayer, layerIndex));
     ivysaurState.curLayer = target;
+    save3DState('ivysaur', target);
     if (DOM.ivysaurLayerSlider) DOM.ivysaurLayerSlider.value = target;
     renderIvysaurLayer(target);
     if (ivysaurState.curMode === 'slice') {
@@ -8902,6 +8947,7 @@
   // ═══════════════════════════════════════════════════════════════════
   function switchVenusaur3DMode(mode) {
     venusaurState.curMode = mode;
+    save3DState('venusaur', null, mode);
     if (DOM.btnVenusaurModeFull) {
       DOM.btnVenusaurModeFull.classList.toggle('active', mode === 'full');
     }
@@ -8931,6 +8977,7 @@
     const maxLayer = VENUSAUR_VOXEL_DATA.layers.length;
     const target = Math.max(1, Math.min(maxLayer, layerIndex));
     venusaurState.curLayer = target;
+    save3DState('venusaur', target);
     if (DOM.venusaurLayerSlider) DOM.venusaurLayerSlider.value = target;
     renderVenusaurLayer(target);
     if (venusaurState.curMode === 'slice') {

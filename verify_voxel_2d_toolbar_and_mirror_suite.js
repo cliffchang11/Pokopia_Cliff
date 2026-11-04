@@ -434,6 +434,32 @@ test('3.16 「恢復預設」按鈕物理隔離至 ve-danger-zone 與嚴格二�
   assert.strictEqual(cssCode.includes('.ve-btn-reset-safe:hover'), true);
 });
 
+test('3.17 3D 藍圖停留模型持久化 (LocalStorage + URL Hash 雙向記憶與重整無縫還原)', () => {
+  const appCode = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf-8');
+  assert.strictEqual(appCode.includes("const STORAGE_KEY_3D_CUR_CHAR = 'pokopia_3d_cur_char_v1';"), true);
+  assert.strictEqual(appCode.includes('function getSaved3DChar() {'), true);
+  assert.strictEqual(appCode.includes('function save3DState(charKey, layer = null, mode = null) {'), true);
+  assert.strictEqual(appCode.includes("bulbaState.curChar = char;\n    save3DState(char);"), true);
+  assert.strictEqual(appCode.includes("const charSuffix = (state.currentTab === 'buzz3d' && bulbaState && bulbaState.curChar) ? `-${bulbaState.curChar}` : '';"), true);
+  assert.strictEqual(appCode.includes("if (tab === 'buzz3d' && valid3DChars.includes(parts[2])) {\n            subChar = parts[2];"), true);
+});
+
+test('3.18 各角色切片層數與 3D 模式持久化 (setXxxLayer 與 switchXxx3DMode 同步 LocalStorage)', () => {
+  const appCode = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf-8');
+  assert.strictEqual(appCode.includes("save3DState('buzz', target);"), true);
+  assert.strictEqual(appCode.includes("save3DState('bulba', target);"), true);
+  assert.strictEqual(appCode.includes("save3DState('ivysaur', target);"), true);
+  assert.strictEqual(appCode.includes("save3DState('venusaur', target);"), true);
+  assert.strictEqual(appCode.includes("save3DState('buzz', null, mode);"), true);
+  assert.strictEqual(appCode.includes("save3DState('bulba', null, mode);"), true);
+  assert.strictEqual(appCode.includes("save3DState('ivysaur', null, mode);"), true);
+  assert.strictEqual(appCode.includes("save3DState('venusaur', null, mode);"), true);
+  assert.strictEqual(appCode.includes("curLayer: getSaved3DLayer('buzz', 1)"), true);
+  assert.strictEqual(appCode.includes("curLayer: getSaved3DLayer('bulba', 1)"), true);
+  assert.strictEqual(appCode.includes("curLayer: getSaved3DLayer('ivysaur', 1)"), true);
+  assert.strictEqual(appCode.includes("curLayer: getSaved3DLayer('venusaur', 1)"), true);
+});
+
 console.log('\n--------------------------------------------------------');
 console.log(`🎉 全部 ${passCount} 項離線自動化整合測試全數通過 (100% PASS)！`);
 console.log('========================================================\n');
