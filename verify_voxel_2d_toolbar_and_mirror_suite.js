@@ -460,11 +460,13 @@ test('3.18 各角色切片層數與 3D 模式持久化 (setXxxLayer 與 switchXx
   assert.strictEqual(appCode.includes("curLayer: getSaved3DLayer('venusaur', 1)"), true);
 });
 
-test('3.19 3D 藍圖寬螢幕雙聯工作台響應式佈局 (左 3D / 右 2D @media min-width: 1280px)', () => {
+test('3.19 3D 藍圖寬螢幕雙聯工作台響應式佈局 (左 2D 切片 order: 1 / 右 3D 雕像 order: 2 @media min-width: 1280px)', () => {
   const cssCode = fs.readFileSync(path.join(__dirname, 'index.css'), 'utf-8');
   assert.strictEqual(cssCode.includes('@media (min-width: 1280px) {'), true);
   assert.strictEqual(cssCode.includes('grid-template-columns: 1fr 1fr;'), true);
   assert.strictEqual(cssCode.includes('max-width: 96vw;'), true);
+  assert.strictEqual(cssCode.includes('.bulba-slice-card {\n    order: 1;\n  }'), true, '寬螢幕切片指南應居左 (order: 1)');
+  assert.strictEqual(cssCode.includes('.bulba-3d-card {\n    order: 2;\n  }'), true, '寬螢幕 3D 雕像應居右 (order: 2)');
 
   const appCode = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf-8');
   assert.strictEqual(appCode.includes("document.body.classList.toggle('is-buzz3d-active', tab === 'buzz3d');"), true);

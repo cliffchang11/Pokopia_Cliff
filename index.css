@@ -12234,6 +12234,14 @@ body.has-floating-back .scroll-top-btn {
     margin-bottom: 0;
   }
 
+  /* 寬螢幕雙聯工作台排列：左側 2D 切片指南 (order: 1) ｜ 右側 3D 方塊雕像 (order: 2) */
+  .bulba-slice-card {
+    order: 1;
+  }
+  .bulba-3d-card {
+    order: 2;
+  }
+
   .bulba-canvas-wrap,
   .buzz-iframe-wrap {
     flex: 1;
