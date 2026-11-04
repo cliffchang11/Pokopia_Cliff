@@ -492,6 +492,29 @@ test('3.20 跨視窗/跨分頁 BroadcastChannel 0 毫秒即塗即現即時同步
   assert.strictEqual(listenerNotified, true, '本機監聽器應被即時觸發以重繪切片');
 });
 
+test('3.21 體素編輯與 3D 狀態 Google 雲端全方位同步與 LocalStorage 水合保護', () => {
+  const VoxelDeltaStore = require('./voxel_editor.js');
+  assert.strictEqual(typeof VoxelDeltaStore.getAllOverrides, 'function', '應導出 getAllOverrides 介面');
+  assert.strictEqual(typeof VoxelDeltaStore.hydrateFromCloud, 'function', '應導出 hydrateFromCloud 介面');
+  assert.strictEqual(typeof VoxelDeltaStore.saveOverridesToStorage, 'function', '應導出 saveOverridesToStorage 介面');
+  assert.strictEqual(typeof VoxelDeltaStore.loadOverridesFromStorage, 'function', '應導出 loadOverridesFromStorage 介面');
+
+  // 測試模擬從雲端拉取妙蛙草修改
+  VoxelDeltaStore.hydrateFromCloud({
+    ivysaur: { '45,20,45': 9 }
+  });
+  assert.strictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 45, 20, 45), 9, '雲端水合後的方塊資料應即時生效');
+
+  // 驗證 firebase.js 包含 voxelOverrides 與 blueprint3D 深度合併
+  const fbCode = fs.readFileSync(path.join(__dirname, 'firebase.js'), 'utf-8');
+  assert.strictEqual(fbCode.includes('// 體素自訂修改 (Voxel Overrides) 雲端合併 (本地優先無損合併)'), true);
+  assert.strictEqual(fbCode.includes('// 3D 藍圖停留狀態 (角色與各角色切片層數)'), true);
+
+  // 驗證 app.js save3DState 包含 Google 雲端同步
+  const appCode = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf-8');
+  assert.strictEqual(appCode.includes('window.PokopiaFirebase.debouncedSave(u.uid, { blueprint3D: bpData });'), true);
+});
+
 console.log('\n--------------------------------------------------------');
 console.log(`🎉 全部 ${passCount} 項離線自動化整合測試全數通過 (100% PASS)！`);
 console.log('========================================================\n');

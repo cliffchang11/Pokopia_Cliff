@@ -190,18 +190,33 @@
       merged.deletedVideoTags = local.deletedVideoTags;
     }
 
-    // 體素自訂修改 (Voxel Overrides) 雲端合併
+    // 體素自訂修改 (Voxel Overrides) 雲端合併 (本地優先無損合併)
     if (cloud && cloud.voxelOverrides && typeof cloud.voxelOverrides === 'object') {
       merged.voxelOverrides = { ...cloud.voxelOverrides };
       if (local && local.voxelOverrides && typeof local.voxelOverrides === 'object') {
         Object.keys(local.voxelOverrides).forEach(charKey => {
           if (!merged.voxelOverrides[charKey]) {
             merged.voxelOverrides[charKey] = local.voxelOverrides[charKey];
+          } else {
+            merged.voxelOverrides[charKey] = {
+              ...merged.voxelOverrides[charKey],
+              ...local.voxelOverrides[charKey]
+            };
           }
         });
       }
     } else if (local && local.voxelOverrides && typeof local.voxelOverrides === 'object') {
       merged.voxelOverrides = { ...local.voxelOverrides };
+    }
+
+    // 3D 藍圖停留狀態 (角色與各角色切片層數)
+    if (cloud && cloud.blueprint3D && typeof cloud.blueprint3D === 'object') {
+      merged.blueprint3D = { ...cloud.blueprint3D };
+      if (local && local.blueprint3D && typeof local.blueprint3D === 'object') {
+        merged.blueprint3D = { ...cloud.blueprint3D, ...local.blueprint3D };
+      }
+    } else if (local && local.blueprint3D && typeof local.blueprint3D === 'object') {
+      merged.blueprint3D = { ...local.blueprint3D };
     }
 
     return merged;

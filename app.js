@@ -62,6 +62,24 @@
       if (charKey && mode !== null) {
         localStorage.setItem(STORAGE_KEY_3D_MODE_PREFIX + charKey, String(mode));
       }
+
+      // 同步至 Google 雲端帳號
+      if (typeof window !== 'undefined' && window.PokopiaFirebase) {
+        const u = window.PokopiaFirebase.getCurrentUser();
+        if (u) {
+          const bpData = {
+            curChar: charKey || getSaved3DChar(),
+            layers: {
+              buzz: getSaved3DLayer('buzz', 1),
+              bulba: getSaved3DLayer('bulba', 1),
+              ivysaur: getSaved3DLayer('ivysaur', 1),
+              venusaur: getSaved3DLayer('venusaur', 1)
+            }
+          };
+          if (charKey && layer !== null) bpData.layers[charKey] = layer;
+          window.PokopiaFirebase.debouncedSave(u.uid, { blueprint3D: bpData });
+        }
+      }
     } catch (_) {}
   }
 
@@ -1044,7 +1062,17 @@
             customVideos:      state.customVideos      || [],
             customVideoTags:   state.customVideoTags   || [],
             deletedVideoTags:  state.deletedVideoTags  || [],
-            regionAssignments: state.regionAssignments || (typeof getRegionAssignments === 'function' ? getRegionAssignments() : {})
+            regionAssignments: state.regionAssignments || (typeof getRegionAssignments === 'function' ? getRegionAssignments() : {}),
+            voxelOverrides:    (typeof VoxelDeltaStore !== 'undefined' && typeof VoxelDeltaStore.getAllOverrides === 'function') ? VoxelDeltaStore.getAllOverrides() : {},
+            blueprint3D: {
+              curChar: getSaved3DChar(),
+              layers: {
+                buzz: getSaved3DLayer('buzz', 1),
+                bulba: getSaved3DLayer('bulba', 1),
+                ivysaur: getSaved3DLayer('ivysaur', 1),
+                venusaur: getSaved3DLayer('venusaur', 1)
+              }
+            }
           };
           const merged = fb.mergeProgressUnion(localSnapshot, cloudData);
 
@@ -1077,6 +1105,23 @@
             const currentDelIds = new Set(state.deletedVideoIds || []);
             merged.deletedVideoIds.forEach(id => currentDelIds.add(id));
             state.deletedVideoIds = Array.from(currentDelIds);
+          }
+
+          // 體素自訂修改 (Voxel Overrides) 雲端水合
+          if (merged.voxelOverrides && typeof VoxelDeltaStore !== 'undefined' && typeof VoxelDeltaStore.hydrateFromCloud === 'function') {
+            VoxelDeltaStore.hydrateFromCloud(merged.voxelOverrides);
+          }
+          // 3D 藍圖停留狀態雲端對齊
+          if (merged.blueprint3D && typeof merged.blueprint3D === 'object') {
+            if (merged.blueprint3D.curChar) {
+              try { localStorage.setItem(STORAGE_KEY_3D_CUR_CHAR, merged.blueprint3D.curChar); } catch (e) {}
+              if (bulbaState) bulbaState.curChar = merged.blueprint3D.curChar;
+            }
+            if (merged.blueprint3D.layers && typeof merged.blueprint3D.layers === 'object') {
+              Object.keys(merged.blueprint3D.layers).forEach(ck => {
+                try { localStorage.setItem(STORAGE_KEY_3D_LAYER_PREFIX + ck, String(merged.blueprint3D.layers[ck])); } catch (e) {}
+              });
+            }
           }
           saveProgress(STORAGE_KEY_CAT,            state.catChecked);
           saveProgress(STORAGE_KEY_PKM,            state.pkmChecked);
@@ -1112,7 +1157,17 @@
               customVideoTags:   state.customVideoTags   || [],
               deletedVideoTags:  state.deletedVideoTags  || [],
               deletedVideoIds:   state.deletedVideoIds   || [],
-              regionAssignments: state.regionAssignments || (typeof getRegionAssignments === 'function' ? getRegionAssignments() : {})
+              regionAssignments: state.regionAssignments || (typeof getRegionAssignments === 'function' ? getRegionAssignments() : {}),
+              voxelOverrides:    (typeof VoxelDeltaStore !== 'undefined' && typeof VoxelDeltaStore.getAllOverrides === 'function') ? VoxelDeltaStore.getAllOverrides() : {},
+              blueprint3D: {
+                curChar: getSaved3DChar(),
+                layers: {
+                  buzz: getSaved3DLayer('buzz', 1),
+                  bulba: getSaved3DLayer('bulba', 1),
+                  ivysaur: getSaved3DLayer('ivysaur', 1),
+                  venusaur: getSaved3DLayer('venusaur', 1)
+                }
+              }
             };
             const updated = fb.mergeProgressUnion(currentSnap, remoteData);
             const isChanged = JSON.stringify(state.pkmChecked) !== JSON.stringify(updated.pkmChecked) ||
@@ -1124,7 +1179,9 @@
                               JSON.stringify(state.customVideoTags) !== JSON.stringify(updated.customVideoTags) ||
                               JSON.stringify(state.deletedVideoTags) !== JSON.stringify(updated.deletedVideoTags) ||
                               JSON.stringify(state.deletedVideoIds) !== JSON.stringify(updated.deletedVideoIds) ||
-                              JSON.stringify(state.regionAssignments) !== JSON.stringify(updated.regionAssignments);
+                              JSON.stringify(state.regionAssignments) !== JSON.stringify(updated.regionAssignments) ||
+                              JSON.stringify(currentSnap.voxelOverrides) !== JSON.stringify(updated.voxelOverrides) ||
+                              JSON.stringify(currentSnap.blueprint3D) !== JSON.stringify(updated.blueprint3D);
             if (isChanged) {
               state.catChecked      = updated.catChecked      || {};
               state.pkmChecked      = updated.pkmChecked      || {};
@@ -1151,6 +1208,17 @@
                 try {
                   localStorage.setItem('pokopia_region_assignments', JSON.stringify(state.regionAssignments));
                 } catch (e) {}
+              }
+
+              // 實時監聽體素修改水合 (跨裝置即塗即現)
+              if (updated.voxelOverrides && typeof VoxelDeltaStore !== 'undefined' && typeof VoxelDeltaStore.hydrateFromCloud === 'function') {
+                VoxelDeltaStore.hydrateFromCloud(updated.voxelOverrides);
+              }
+              // 實時監聽 3D 狀態水合
+              if (updated.blueprint3D && typeof updated.blueprint3D === 'object') {
+                if (updated.blueprint3D.curChar && bulbaState && bulbaState.curChar !== updated.blueprint3D.curChar) {
+                  switchCharacterBlueprint(updated.blueprint3D.curChar);
+                }
               }
               try {
                 localStorage.setItem(STORAGE_KEY_CAT,            JSON.stringify(state.catChecked));

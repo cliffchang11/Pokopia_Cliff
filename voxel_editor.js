@@ -6,14 +6,53 @@
 (function (global) {
   'use strict';
 
+  // 本地持久化存取 (防重整或未登入丟失)
+  function saveOverridesToStorage(charKey) {
+    try {
+      if (typeof localStorage !== 'undefined') {
+        const storageKey = 'pokopia_voxel_overrides_' + charKey;
+        localStorage.setItem(storageKey, JSON.stringify(getOverrides(charKey)));
+      }
+    } catch (e) {
+      console.warn('[VoxelStore] LocalStorage save error:', e);
+    }
+  }
+
+  function loadOverridesFromStorage(charKey) {
+    try {
+      if (typeof localStorage !== 'undefined') {
+        const storageKey = 'pokopia_voxel_overrides_' + charKey;
+        const raw = localStorage.getItem(storageKey);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') return parsed;
+        }
+      }
+    } catch (e) {
+      console.warn('[VoxelStore] LocalStorage load error:', e);
+    }
+    return {};
+  }
+
+  let _cloudDebounceTimer = null;
+  function syncOverridesToCloud(charKey) {
+    if (typeof window === 'undefined') return;
+    if (_cloudDebounceTimer) clearTimeout(_cloudDebounceTimer);
+    _cloudDebounceTimer = setTimeout(() => {
+      if (window.PokopiaFirebase && typeof window.PokopiaFirebase.saveVoxelOverrides === 'function') {
+        window.PokopiaFirebase.saveVoxelOverrides(charKey, getOverrides(charKey));
+      }
+    }, 400);
+  }
+
   // 儲存各角色的修改歷史與 overrides
   const _state = {
     activeCharacter: 'ivysaur',
     characters: {
-      bulbasaur: { overrides: {}, history: [], redoStack: [] },
-      ivysaur: { overrides: {}, history: [], redoStack: [] },
-      venusaur: { overrides: {}, history: [], redoStack: [] },
-      buzz: { overrides: {}, history: [], redoStack: [] }
+      bulbasaur: { overrides: loadOverridesFromStorage('bulbasaur'), history: [], redoStack: [] },
+      ivysaur: { overrides: loadOverridesFromStorage('ivysaur'), history: [], redoStack: [] },
+      venusaur: { overrides: loadOverridesFromStorage('venusaur'), history: [], redoStack: [] },
+      buzz: { overrides: loadOverridesFromStorage('buzz'), history: [], redoStack: [] }
     },
     // 編輯器設定
     editorMode: false, // 是否處於編輯模式
@@ -550,6 +589,44 @@
         cb(charKey, getOverrides(charKey));
       } catch (e) {
         console.error('VoxelDeltaStore listener error:', e);
+      }
+    });
+
+    // 4. 持久化存儲至本地 LocalStorage (防重整或未登入丟失)
+    saveOverridesToStorage(charKey);
+
+    // 5. 自動同步至 Google 雲端帳號 Firestore
+    if (!skipBroadcast) {
+      syncOverridesToCloud(charKey);
+    }
+  }
+
+  // 取得全部 4 個角色的修改覆蓋物件 (打包給雲端同步)
+  function getAllOverrides() {
+    const all = {};
+    ['bulbasaur', 'ivysaur', 'venusaur', 'buzz'].forEach(k => {
+      const o = getOverrides(k);
+      if (o && Object.keys(o).length > 0) {
+        all[k] = o;
+      }
+    });
+    return all;
+  }
+
+  // 從 Google 雲端水合注入修改 (跨裝置手機載入時還原)
+  function hydrateFromCloud(cloudOverrides) {
+    if (!cloudOverrides || typeof cloudOverrides !== 'object') return;
+    ['bulbasaur', 'ivysaur', 'venusaur', 'buzz'].forEach(k => {
+      const remote = cloudOverrides[k];
+      if (remote && typeof remote === 'object') {
+        const local = _state.characters[k] ? _state.characters[k].overrides : {};
+        // 聯集合併：本地既有修改優先保護保留，遠端新增修改同步補入
+        const merged = { ...remote, ...local };
+        if (_state.characters[k]) {
+          _state.characters[k].overrides = merged;
+        }
+        saveOverridesToStorage(k);
+        notifyListeners(k, true);
       }
     });
   }
@@ -1206,12 +1283,30 @@
     // 跨視窗即時同步廣播模組
     broadcastVoxelDelta,
     handleRemoteOverridesSync,
+    // 雲端與本地持久化模組
+    getAllOverrides,
+    hydrateFromCloud,
+    saveOverridesToStorage,
+    loadOverridesFromStorage,
     // Three 編輯器模組
     attachEditorToScene,
     attachEditorTo2D,
     syncThreeMeshFromOverrides,
     updateToolbarUI
   };
+
+  // 網頁載入時主動為 4 大角色做一次本地備份與雲端同步觸發 (保護當前成果)
+  if (typeof window !== 'undefined') {
+    setTimeout(() => {
+      ['bulbasaur', 'ivysaur', 'venusaur', 'buzz'].forEach(k => {
+        saveOverridesToStorage(k);
+        const ov = getOverrides(k);
+        if (ov && Object.keys(ov).length > 0) {
+          syncOverridesToCloud(k);
+        }
+      });
+    }, 1000);
+  }
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = VoxelDeltaStore;
