@@ -7210,7 +7210,7 @@
     }
   }
 
-  // 啟動指定角色的 3D 渲染監聽 (與 controls 連動按需繪製，休眠其他角色)
+  // 啟動指定角色的 3D 渲染 (當前操作角色 60fps 全速流暢渲染與 2D 即時連動，休眠其餘非作用角色)
   function startThreeRendering(charKey) {
     ['buzz', 'bulbasaur', 'ivysaur', 'venusaur'].forEach(k => {
       if (k !== charKey && (charKey !== 'bulba' || k !== 'bulbasaur')) {
@@ -7219,13 +7219,15 @@
     });
 
     const t = getThreeStateByChar(charKey);
-    if (!t || !t.isInit) return;
+    if (!t || !t.isInit || !t.renderer || !t.scene || !t.camera) return;
 
-    requestThreeRender(charKey);
-
-    if (t.controls && !t.controls._onDemandAttached) {
-      t.controls._onDemandAttached = true;
-      t.controls.addEventListener('change', () => requestThreeRender(charKey));
+    if (!t.animFrameId) {
+      function animate() {
+        t.animFrameId = requestAnimationFrame(animate);
+        if (t.controls) t.controls.update();
+        t.renderer.render(t.scene, t.camera);
+      }
+      animate();
     }
   }
 
@@ -7361,9 +7363,16 @@
       }
     }, { passive: false });
 
-    // 拖曳平移 (Pointer Events: 滑鼠與觸控完全相容)
+    // 拖曳平移 (Pointer Events: 滑鼠與觸控完全相容，嚴格過濾工具列與編輯操作)
     container.addEventListener('pointerdown', (e) => {
-      if (e.target.closest('button, input')) return;
+      // 點擊按鈕、輸入框、或 2D 體素工具列/膠囊面板任何區域，絕不觸發畫布拖曳平移
+      if (e.target.closest('button, input, .voxel-editor-2d-toolbar, .voxel-editor-toolbar, .ve-toggle-capsule, .ve-palette-dock')) return;
+
+      // 當處於體素編輯模式且不是選取純視角時，點選方塊格子不誤觸畫布平移
+      if (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.state.editorMode && VoxelDeltaStore.state.tool !== 'rotate') {
+        if (e.target.closest('.bulba-cell')) return;
+      }
+
       isDragging = true;
       startX = e.clientX;
       startY = e.clientY;
@@ -7941,7 +7950,7 @@
   function getCharSliceCardEl(charKey) {
     const grid = getCharGridEl(charKey);
     if (!grid) return null;
-    return grid.closest('.bulba-grid-container') || grid.closest('.blueprint-slice-card') || grid.parentElement;
+    return grid.closest('.bulba-slice-card') || grid.closest('.bulba-grid-container') || grid.parentElement;
   }
 
   function appendSymmetryAxisLine(gridEl, charKey, minX, maxX, cellSize) {

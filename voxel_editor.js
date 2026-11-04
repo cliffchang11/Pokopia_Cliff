@@ -571,11 +571,16 @@
             <button type="button" class="ve-btn" id="btnRedo_${charKey}" title="重做">
               ↪️ 重做
             </button>
-            <button type="button" class="ve-btn ve-btn-danger" id="btnReset_${charKey}" title="清除自訂修改，恢復官方預設值">
-              🔄 恢復預設
-            </button>
             <button type="button" class="ve-btn ve-btn-primary" id="btnSubmit_${charKey}" title="永久存檔 (同步雲端與本地)">
               ☁️ 提交存檔
+            </button>
+          </div>
+
+          <div class="ve-divider" style="margin: 6px 0 4px 0;"></div>
+
+          <div class="ve-danger-zone" style="width: 100%;">
+            <button type="button" class="ve-btn ve-btn-reset-safe" id="btnReset_${charKey}" title="清除所有自訂修改，恢復官方預設模型 (需二次確認)" style="background:transparent;border:1px dashed rgba(239, 68, 68, 0.4);color:#f87171;font-size:10px;padding:3px 2px;opacity:0.75;width:100%;">
+              🔄 恢復預設
             </button>
           </div>
         </div>
@@ -1049,7 +1054,8 @@
       }
 
       if (target.id.startsWith('btnReset_')) {
-        if (confirm('確定要清空所有自訂修改，恢復官方原版模型嗎？')) {
+        const confirmMsg = '⚠️ 警告：這將會清除您對當前角色的所有自訂方塊與改動，恢復為官方預設值，且無法撤銷！\n\n確定要重置嗎？';
+        if (confirm(confirmMsg)) {
           resetToDefault(charKey);
           syncThreeMeshFromOverrides(charKey, threeState, baseData);
           if (typeof onSubmitCallback === 'function') {

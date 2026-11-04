@@ -301,13 +301,10 @@ test('3.10 3D 渲染後台休眠與 cancelAnimationFrame 機制 (離開 3D 藍�
   assert.strictEqual(appCode.includes("if (typeof startThreeRendering === 'function') startThreeRendering(bulbaState.curChar || 'buzz');"), true);
 });
 
-test('3.11 3D Render-on-Demand 按需渲染 (四大角色移除無窮迴圈 animate，改為 controls change 觸發)', () => {
+test('3.11 3D 當前角色 60fps 全速渲染與 2D 雙向即時連動 (startThreeRendering 啟動動畫迴圈，非作用角色與切頁完全休眠)', () => {
   const appCode = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf-8');
-  // 四大角色皆具備 controls change 監聽與 startThreeRendering
-  assert.strictEqual(appCode.includes("controls.addEventListener('change', () => requestThreeRender('buzz'));"), true);
-  assert.strictEqual(appCode.includes("controls.addEventListener('change', () => requestThreeRender('bulbasaur'));"), true);
-  assert.strictEqual(appCode.includes("controls.addEventListener('change', () => requestThreeRender('ivysaur'));"), true);
-  assert.strictEqual(appCode.includes("controls.addEventListener('change', () => requestThreeRender('venusaur'));"), true);
+  assert.strictEqual(appCode.includes('function startThreeRendering(charKey) {'), true);
+  assert.strictEqual(appCode.includes('t.animFrameId = requestAnimationFrame(animate);'), true);
   assert.strictEqual(appCode.includes("startThreeRendering('buzz');"), true);
   assert.strictEqual(appCode.includes("startThreeRendering('bulbasaur');"), true);
   assert.strictEqual(appCode.includes("startThreeRendering('ivysaur');"), true);
@@ -409,6 +406,32 @@ test('3.13 離線模擬 handleCellMirrorHover 鏡像外框觸發、中心軸避�
   // 3. 滑鼠移入中心軸自身的格子 (X: 20)，不應觸發重複自體發光
   testHandleCellMirrorHover(mockGrid, 'buzz', cellCenter, true);
   assert.strictEqual(cellCenter.classList.contains('ve-cell-mirror-ghost'), false, '中軸自身格子不應重複發光');
+});
+
+test('3.14 2D 編輯工具列層級固定懸浮 (getCharSliceCardEl 優先尋找 bulba-slice-card，CSS 不隨平移移動)', () => {
+  const appCode = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf-8');
+  assert.strictEqual(appCode.includes("return grid.closest('.bulba-slice-card') || grid.closest('.bulba-grid-container') || grid.parentElement;"), true);
+
+  const cssCode = fs.readFileSync(path.join(__dirname, 'index.css'), 'utf-8');
+  assert.strictEqual(cssCode.includes('.bulba-slice-card {\n  position: relative;'), true);
+  assert.strictEqual(cssCode.includes('.voxel-editor-2d-toolbar {\n  position: absolute;'), true);
+  assert.strictEqual(cssCode.includes('pointer-events: none;'), true);
+});
+
+test('3.15 切片指南平移事件精確隔離 (pointerdown 過濾工具列本體與編輯狀態下的方塊點擊)', () => {
+  const appCode = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf-8');
+  assert.strictEqual(appCode.includes("e.target.closest('button, input, .voxel-editor-2d-toolbar, .voxel-editor-toolbar, .ve-toggle-capsule, .ve-palette-dock')"), true);
+  assert.strictEqual(appCode.includes("if (e.target.closest('.bulba-cell')) return;"), true);
+});
+
+test('3.16 「恢復預設」按鈕物理隔離至 ve-danger-zone 與嚴格二次確認對話框', () => {
+  const editorCode = fs.readFileSync(path.join(__dirname, 'voxel_editor.js'), 'utf-8');
+  assert.strictEqual(editorCode.includes('<div class="ve-danger-zone" style="width: 100%;">'), true);
+  assert.strictEqual(editorCode.includes('ve-btn-reset-safe'), true);
+  assert.strictEqual(editorCode.includes('⚠️ 警告：這將會清除您對當前角色的所有自訂方塊與改動，恢復為官方預設值，且無法撤銷！'), true);
+
+  const cssCode = fs.readFileSync(path.join(__dirname, 'index.css'), 'utf-8');
+  assert.strictEqual(cssCode.includes('.ve-btn-reset-safe:hover'), true);
 });
 
 console.log('\n--------------------------------------------------------');
