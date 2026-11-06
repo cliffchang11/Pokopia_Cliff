@@ -297,6 +297,26 @@ VoxelDeltaStore.hydrateFromCloud({
 assert.strictEqual(Object.keys(VoxelDeltaStore.getOverrides('ivysaur')).length, 1161, '本地 1,161 顆方塊絕不可被遠端空資料清空');
 console.log('  ✓ 1,161 顆歷史方塊注入完備，且空資料防沖刷保護生效！');
 
+// 14. 測試跨裝置手機登入時，Firebase 雲端直接優先水合 (Cloud-First)
+console.log('🧪 測試跨裝置手機登入時，Firebase 雲端直接優先水合...');
+// 模擬手機剛打開，本地未有手動操作 (_lastLocalActionTime = 0)，但可能帶有預設或假時間戳 (例如 999999999)
+VoxelDeltaStore.resetLocalActionTime();
+VoxelDeltaStore.state.characters.ivysaur.overrides = { '1,1,1': 1, '2,2,2': 1, '3,3,3': 1, '4,4,4': 1, '5,5,5': 1 };
+VoxelDeltaStore.state.characters.ivysaur.updatedAt = 999999999;
+
+// 模擬 Firebase 雲端傳來電腦端稍早存檔的 1,161 顆方塊 (時間戳 500000000 比手機舊)
+VoxelDeltaStore.hydrateFromCloud({
+  ivysaur: {
+    data: savedOverrides,
+    updatedAt: 500000000
+  }
+});
+
+// 驗證：手機端必須直接無條件採用 Firebase 雲端的真實存檔 (1,161 顆)，完全不被手機本地假時間戳攔截！
+assert.strictEqual(Object.keys(VoxelDeltaStore.getOverrides('ivysaur')).length, 1161, '手機必須無條件以 Firebase 雲端存檔優先水合');
+console.log('  ✓ 跨裝置手機登入時，Firebase 雲端直接優先水合 100% 成功！');
+
 console.log('🎉 所有離線整合單元測試 100% 全數通過 (PASS)！');
+
 
 

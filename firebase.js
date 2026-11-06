@@ -207,19 +207,13 @@
           const lCount = (lData && typeof lData === 'object') ? Object.keys(lData).length : 0;
           const cCount = (cData && typeof cData === 'object') ? Object.keys(cData).length : 0;
 
-          // 核心搶救防護：若雲端有歷史存檔資料，而本地為空，100% 絕對優先保留雲端存檔！
-          if (cCount > 0 && lCount === 0) {
+          // 核心雲端優先：只要雲端有存檔資料 (cCount > 0)，100% 絕對以 Firebase 雲端存檔為最高優先！
+          if (cCount > 0) {
             merged.voxelOverrides[charKey] = cVal;
-          } else if (lCount > 0 && cCount === 0) {
+          } else if (lCount > 0) {
             merged.voxelOverrides[charKey] = lVal;
           } else {
-            const lTime = (typeof lVal === 'object' && lVal.updatedAt) ? Number(lVal.updatedAt) : 0;
-            const cTime = (typeof cVal === 'object' && cVal.updatedAt) ? Number(cVal.updatedAt) : 0;
-            if (lTime >= cTime) {
-              merged.voxelOverrides[charKey] = lVal;
-            } else {
-              merged.voxelOverrides[charKey] = cVal;
-            }
+            merged.voxelOverrides[charKey] = cVal || lVal;
           }
         });
       }

@@ -90,7 +90,7 @@
         window.PokopiaFirebase.saveVoxelOverrides(charKey, getOverrides(charKey), charTime);
       }
       updateAutoSaveBadgeUI(charKey, 'saved');
-    }, 500);
+    }, 300);
   }
 
   // 儲存各角色的修改歷史與 overrides
@@ -502,6 +502,7 @@
     char.overrides = {};
     char.history = [];
     char.redoStack = [];
+    _lastLocalActionTime = 0;
     notifyListeners(charKey);
   }
 
@@ -705,7 +706,7 @@
     return all;
   }
 
-  // 從 Google 雲端水合注入修改 (跨裝置手機載入時還原)
+  // 從 Google 雲端水合注入修改 (跨裝置手機載入時 100% 直接以雲端為最高權威優先水合)
   function hydrateFromCloud(cloudOverrides) {
     if (!cloudOverrides || typeof cloudOverrides !== 'object') return;
     ['bulbasaur', 'ivysaur', 'venusaur', 'buzz'].forEach(k => {
@@ -716,19 +717,17 @@
         const localOverrides = (_state.characters[k] && _state.characters[k].overrides) || {};
         const localCount = Object.keys(localOverrides).length;
         const remoteCount = (remoteData && typeof remoteData === 'object') ? Object.keys(remoteData).length : 0;
-        const localTime = (_state.characters[k] && _state.characters[k].updatedAt) ? Number(_state.characters[k].updatedAt) : loadTimeFromStorage(k);
 
-        // 核心歷史存檔搶救與防回彈邏輯：
-        // 1. 若遠端有明確時間戳，嚴格比對 remoteTime > localTime (舊資料與同版回彈絕對安全略過)
-        // 2. 若遠端為昨天存檔的舊格式 (無 updatedAt 欄位)：只要雲端有方塊資料，強制優先還原！
+        // 核心邏輯：
+        // 1. 若本地在過去 10 秒內剛執行過手動操作 (_lastLocalActionTime)，且遠端時間早於該操作，阻斷舊快照回彈 (防方塊長回)
+        // 2. 其餘情況 (重新整理、跨裝置手機打開)：只要遠端有資料 (remoteCount > 0)，100% 無條件強制水合覆寫本地！
         let shouldHydrate = false;
-        if (remoteTime !== null) {
-          if (remoteCount === 0 && localCount > 0) {
-            shouldHydrate = false;
-          } else {
-            shouldHydrate = (remoteTime > localTime);
-          }
+        const isRecentLocalAction = (_lastLocalActionTime > 0 && (Date.now() - _lastLocalActionTime < 10000));
+        if (isRecentLocalAction && remoteTime !== null) {
+          shouldHydrate = (remoteTime > _lastLocalActionTime);
         } else if (remoteCount > 0) {
+          shouldHydrate = true;
+        } else if (remoteTime !== null && localCount === 0) {
           shouldHydrate = true;
         }
 
@@ -1476,6 +1475,7 @@
     hydrateFromCloud,
     saveOverridesToStorage,
     loadOverridesFromStorage,
+    resetLocalActionTime: function () { _lastLocalActionTime = 0; },
     // Three 編輯器模組
     attachEditorToScene,
     attachEditorTo2D,
