@@ -30,6 +30,20 @@
     return 'users/' + uid + '/progress/pokopia';
   }
 
+  function normalizeCloudData(data) {
+    if (!data || typeof data !== 'object') return data;
+    if (!data.voxelOverrides || typeof data.voxelOverrides !== 'object') {
+      data.voxelOverrides = {};
+    }
+    ['bulbasaur', 'ivysaur', 'venusaur', 'buzz'].forEach(k => {
+      const dotKey = 'voxelOverrides.' + k;
+      if (data[dotKey]) {
+        data.voxelOverrides[k] = data[dotKey];
+      }
+    });
+    return data;
+  }
+
   async function loadCloudProgress(uid) {
     try {
       const timeoutPromise = new Promise((_, reject) =>
@@ -39,7 +53,7 @@
         const { doc, getDoc } = await import(CDN + '/firebase-firestore.js');
         const docRef = doc(_db, progressDocPath(uid));
         const snap = await getDoc(docRef);
-        if (snap.exists()) return snap.data();
+        if (snap.exists()) return normalizeCloudData(snap.data());
         return null;
       })();
       return await Promise.race([fetchPromise, timeoutPromise]);
@@ -243,7 +257,7 @@
       const docRef = doc(_db, progressDocPath(uid));
       _progressUnsubscribe = onSnapshot(docRef, function (snap) {
         if (snap.exists()) {
-          const data = snap.data();
+          const data = normalizeCloudData(snap.data());
           const hasPendingWrites = snap.metadata ? snap.metadata.hasPendingWrites : false;
           callback(data, hasPendingWrites);
         }
@@ -339,8 +353,14 @@
       }
 
       if (_currentUser) {
-        // 使用 dot-notation 確保 Firestore 角色層級完整替換，絕不進行內部子 key 的 deep merge
+        // 雙軌儲存：同時寫入標準嵌套結構與 dot-notation，確保 Firestore 不論如何存讀均 100% 相容
         saveCloudProgress(_currentUser.uid, {
+          voxelOverrides: {
+            [charKey]: {
+              data: overrides || {},
+              updatedAt: now
+            }
+          },
           [`voxelOverrides.${charKey}`]: {
             data: overrides || {},
             updatedAt: now

@@ -1,15 +1,15 @@
 ========================================
       Pokopia 模型存檔確認清單
 ========================================
-存檔建立時間: 2026-11-06 17:30:21
+存檔建立時間: 2026-11-06 18:41:24
 
-✔ [已存檔] bulbasaur_voxel_data.js (117,816 bytes)
-✔ [已存檔] ivysaur_voxel_data.js (1,188,782 bytes)
-✔ [已存檔] venusaur_voxel_data.js (730,852 bytes)
-✔ [已存檔] buzz_voxel_data.js (102,425 bytes)
-✔ [已存檔] ivysaur_saved_overrides.json (19,924 bytes)
+✔ [已存檔] bulbasaur_voxel_data.js (妙蛙種子模型)
+✔ [已存檔] ivysaur_voxel_data.js   (妙蛙草官方模型)
+✔ [已存檔] venusaur_voxel_data.js  (妙蛙花模型)
+✔ [已存檔] buzz_voxel_data.js      (巴斯光年模型)
+✔ [已存檔] ivysaur_saved_overrides.json (妙蛙草最新修改 1,321 顆方塊)
 
-★ 妙蛙草自訂修改方塊總數: 1,161 顆
+★ 妙蛙草自訂修改方塊總數: 1,321 顆
 ★ 狀態: 已完整寫入程式碼核心、LocalStorage 快取與實體備份檔案
 ★ 安全等級: 100% 永久保存，即使清空瀏覽器快取也絕不丟失
 ========================================
