@@ -173,5 +173,84 @@ VoxelDeltaStore.hydrateFromCloud(oldCloudOverrides);
 assert.strictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 10, 10, 10), -1, '消除之方塊絕不可被舊雲端資料回彈長出');
 console.log('  ✓ 消除方塊後，舊雲端資料回彈被時間戳與抑制機制成功攔截，方塊未長回！');
 
+// 10. 測試 updateToolbarUI 即時解鎖重做按鈕與計數
+console.log('🧪 測試 updateToolbarUI 重做按鈕即時解鎖與步數...');
+// 模擬 DOM 環境
+const mockBar = {
+  querySelectorAll: function (selector) {
+    if (selector.includes('btnUndo')) return [mockBtnUndo];
+    if (selector.includes('btnRedo')) return [mockBtnRedo];
+    return [];
+  }
+};
+const mockBtnUndo = { disabled: true, style: {}, innerHTML: '' };
+const mockBtnRedo = { disabled: true, style: {}, innerHTML: '' };
+
+global.document = {
+  querySelectorAll: function () {
+    return [mockBar];
+  }
+};
+
+VoxelDeltaStore.resetToDefault('ivysaur');
+// 一開始 undo 與 redo 皆應禁用
+VoxelDeltaStore.updateToolbarUI('ivysaur');
+assert.strictEqual(mockBtnUndo.disabled, true);
+assert.strictEqual(mockBtnRedo.disabled, true);
+
+// 進行一次操作
+VoxelDeltaStore.executeVoxelAction('ivysaur', 20, 20, 20, 'paint', 4);
+assert.strictEqual(mockBtnUndo.disabled, false);
+assert.strictEqual(mockBtnRedo.disabled, true);
+assert.strictEqual(mockBtnUndo.innerHTML, '↩️ 復原 (1)');
+
+// 執行 Undo
+const undoOk = VoxelDeltaStore.undo('ivysaur');
+assert.strictEqual(undoOk, true);
+// Undo 後，Redo 按鈕必須瞬間解鎖！
+assert.strictEqual(mockBtnRedo.disabled, false, 'Undo 後 Redo 按鈕必須解除禁用 (disabled = false)');
+assert.strictEqual(mockBtnRedo.innerHTML, '↪️ 重做 (1)', 'Redo 按鈕步數應顯示為 (1)');
+assert.strictEqual(mockBtnUndo.disabled, true, 'Undo 堆疊清空後應禁用');
+console.log('  ✓ Undo 後 Redo 按鈕瞬間解鎖，disabled 正確解除且步數顯示為 (1)');
+
+// 執行 Redo
+const redoOk = VoxelDeltaStore.redo('ivysaur');
+assert.strictEqual(redoOk, true);
+assert.strictEqual(mockBtnRedo.disabled, true, 'Redo 執行完畢後應重新禁用');
+assert.strictEqual(mockBtnUndo.disabled, false, 'Redo 後 Undo 按鈕應重新解鎖');
+console.log('  ✓ Redo 執行後按鈕狀態即時切換，無任何殘留鎖死');
+
+// 11. 測試定向局部更新效能 (受影響方塊 vs 9 萬方塊)
+console.log('🧪 測試 3D 定向局部更新效能...');
+const mockMesh = {
+  setMatrixAt: () => {},
+  setColorAt: () => {},
+  instanceMatrix: {},
+  instanceColor: {}
+};
+const dummyBlockList = [];
+for (let i = 0; i < 90923; i++) {
+  dummyBlockList.push({ posX: i % 100, posY: 20, posZ: Math.floor(i / 100), index: i, layerIndex: 21 });
+}
+const mockThreeState = {
+  instancedMesh: mockMesh,
+  blockDataList: dummyBlockList
+};
+
+// 首次冷啟動 (包含索引 Map 建置)
+VoxelDeltaStore.syncThreeMeshFromOverrides('ivysaur', mockThreeState, IVYSAUR_VOXEL_DATA, [
+  { x: 30, y: 20, z: 30 }
+]);
+
+// 定向熱更新 (復用索引 Map 進行極速定向同步)
+const startTime = Date.now();
+VoxelDeltaStore.syncThreeMeshFromOverrides('ivysaur', mockThreeState, IVYSAUR_VOXEL_DATA, [
+  { x: 30, y: 20, z: 30 },
+  { x: 70, y: 20, z: 30 }
+]);
+const elapsed = Date.now() - startTime;
+assert(elapsed < 5, `定向熱更新耗時應極短 (<5ms)，實際為 ${elapsed}ms`);
+console.log(`  ✓ 9 萬方塊模型中定向局部更新 2 顆方塊耗時僅 ${elapsed}ms (真正 0ms 瞬間響應)`);
+
 console.log('🎉 所有離線整合單元測試 100% 全數通過 (PASS)！');
 

@@ -202,7 +202,8 @@
       }
       char.redoStack = []; // 清空重做堆疊
       _lastLocalActionTime = Date.now();
-      notifyListeners(charKey);
+      const affectedCoords = historyRecord.map(h => ({ x: h.x, y: h.y, z: h.z }));
+      notifyListeners(charKey, false, affectedCoords);
     }
   }
 
@@ -422,9 +423,8 @@
       char.redoStack.shift();
     }
     _lastLocalActionTime = Date.now();
-    saveOverridesToStorage(charKey);
-    syncOverridesToCloud(charKey);
-    notifyListeners(charKey);
+    const affectedCoords = redoRecord.map(h => ({ x: h.x, y: h.y, z: h.z }));
+    notifyListeners(charKey, false, affectedCoords);
     return true;
   }
 
@@ -461,9 +461,8 @@
       char.history.shift();
     }
     _lastLocalActionTime = Date.now();
-    saveOverridesToStorage(charKey);
-    syncOverridesToCloud(charKey);
-    notifyListeners(charKey);
+    const affectedCoords = historyRecord.map(h => ({ x: h.x, y: h.y, z: h.z }));
+    notifyListeners(charKey, false, affectedCoords);
     return true;
   }
 
@@ -628,11 +627,11 @@
     notifyListeners(charKey, true);
   }
 
-  function notifyListeners(charKey, skipBroadcast = false) {
-    // 1. 同步當前視窗此角色的 3D 模型
+  function notifyListeners(charKey, skipBroadcast = false, affectedCoords = null) {
+    // 1. 同步當前視窗此角色的 3D 模型 (定向局部極速同步)
     if (_attachedThreeScenes[charKey]) {
       const { threeState, baseData } = _attachedThreeScenes[charKey];
-      syncThreeMeshFromOverrides(charKey, threeState, baseData);
+      syncThreeMeshFromOverrides(charKey, threeState, baseData, affectedCoords);
     }
 
     // 2. 廣播給其他視窗 (即塗即現跨視窗同步)
@@ -649,10 +648,13 @@
       }
     });
 
-    // 4. 持久化存儲至本地 LocalStorage (防重整或未登入丟失)
+    // 4. 即時刷新工具列 UI (立即解鎖 ↩️ 復原與 ↪️ 重做按鈕之 disabled 狀態與步數數字)
+    updateToolbarUI(charKey);
+
+    // 5. 持久化存儲至本地 LocalStorage (防重整或未登入丟失)
     saveOverridesToStorage(charKey);
 
-    // 5. 自動同步至 Google 雲端帳號 Firestore
+    // 6. 自動同步至 Google 雲端帳號 Firestore
     if (!skipBroadcast) {
       syncOverridesToCloud(charKey);
     }
@@ -998,8 +1000,8 @@
     canvas.addEventListener('mouseleave', clear3DGhost);
   }
 
-  // 依據 overrides 即時更新 Three.js InstancedMesh 與動態增補網格
-  function syncThreeMeshFromOverrides(charKey, threeState, baseData) {
+  // 依據 overrides 即時更新 Three.js InstancedMesh 與動態增補網格 (支援 affectedCoords 定向局部極速更新)
+  function syncThreeMeshFromOverrides(charKey, threeState, baseData, affectedCoords = null) {
     if (!threeState || !threeState.instancedMesh || !threeState.blockDataList) return;
 
     const mesh = threeState.instancedMesh;
@@ -1010,8 +1012,30 @@
     const cy = baseData.dimensions.height / 2;
     const cz = baseData.dimensions.length / 2;
 
-    // 1. 同步原版方塊的顏色與刪除縮放
-    blockList.forEach(item => {
+    // 建立或復用座標索引快取 Map (只在首次建構，後續 0ms 瞬間反查)
+    if (!threeState._coordBlockMap) {
+      threeState._coordBlockMap = new Map();
+      blockList.forEach(item => {
+        const vx = Math.round(item.posX + cx);
+        const vy = Math.round(item.posY + cy);
+        const vz = Math.round(item.posZ + cz);
+        threeState._coordBlockMap.set(`${vx},${vy},${vz}`, item);
+      });
+    }
+
+    // 判斷更新範圍：若有傳入受影響座標，則只定向取這 1~2 顆方塊，否則才執行全量更新
+    let targetItems = [];
+    if (Array.isArray(affectedCoords) && affectedCoords.length > 0) {
+      affectedCoords.forEach(c => {
+        const item = threeState._coordBlockMap.get(`${c.x},${c.y},${c.z}`);
+        if (item) targetItems.push(item);
+      });
+    } else {
+      targetItems = blockList;
+    }
+
+    // 1. 同步方塊的顏色與刪除縮放 (定向局部更新)
+    targetItems.forEach(item => {
       const vx = Math.round(item.posX + cx);
       const vy = Math.round(item.posY + cy);
       const vz = Math.round(item.posZ + cz);
@@ -1054,13 +1078,49 @@
         threeState.scene.add(threeState.dynamicAddedGroup);
       }
 
-      // 清空舊的動態增補方塊
-      while (threeState.dynamicAddedGroup.children.length > 0) {
-        const obj = threeState.dynamicAddedGroup.children[0];
-        threeState.dynamicAddedGroup.remove(obj);
-        if (obj.geometry && obj.geometry !== mesh.geometry) obj.geometry.dispose();
-        if (obj.material) obj.material.dispose();
-      }
+      // 若有定向受影響座標，只精確增刪或改色這幾顆動態方塊
+      if (Array.isArray(affectedCoords) && affectedCoords.length > 0) {
+        affectedCoords.forEach(c => {
+          if (getOriginalBid(charKey, c.x, c.y, c.z) === -1) {
+            const effBid = getEffectiveBid(charKey, c.x, c.y, c.z);
+            const existingChild = threeState.dynamicAddedGroup.children.find(ch =>
+              ch.userData && ch.userData.voxelX === c.x && ch.userData.voxelY === c.y && ch.userData.voxelZ === c.z
+            );
+            if (effBid === -1) {
+              if (existingChild) {
+                threeState.dynamicAddedGroup.remove(existingChild);
+                if (existingChild.geometry && existingChild.geometry !== mesh.geometry) existingChild.geometry.dispose();
+                if (existingChild.material) existingChild.material.dispose();
+              }
+            } else {
+              const pItem = (baseData.palette && baseData.palette[effBid]) ? baseData.palette[effBid] : { color: '#00a8c8' };
+              if (existingChild) {
+                if (existingChild.material) existingChild.material.color.set(pItem.color);
+              } else {
+                const geom = mesh.geometry || new THREE.BoxGeometry(1, 1, 1);
+                const outlineMap = (mesh && mesh.material && mesh.material.map) ? mesh.material.map : null;
+                const mat = new THREE.MeshStandardMaterial({
+                  map: outlineMap,
+                  color: pItem.color,
+                  roughness: 0.88,
+                  metalness: 0.0
+                });
+                const cube = new THREE.Mesh(geom, mat);
+                cube.position.set(c.x - cx, c.y - cy, c.z - cz);
+                cube.userData = { voxelX: c.x, voxelY: c.y, voxelZ: c.z, isDynamic: true };
+                threeState.dynamicAddedGroup.add(cube);
+              }
+            }
+          }
+        });
+      } else {
+        // 清空舊的動態增補方塊
+        while (threeState.dynamicAddedGroup.children.length > 0) {
+          const obj = threeState.dynamicAddedGroup.children[0];
+          threeState.dynamicAddedGroup.remove(obj);
+          if (obj.geometry && obj.geometry !== mesh.geometry) obj.geometry.dispose();
+          if (obj.material) obj.material.dispose();
+        }
 
       // 檢查所有 overrides 中屬於「新增方塊」者
       const overrides = getOverrides(charKey);
@@ -1093,6 +1153,7 @@
           }
         }
       });
+      }
 
       // 3. 同步 3D 選取高亮外框群組 (Selection Box Group)
       if (!threeState.selectionGroup) {
@@ -1120,6 +1181,7 @@
   }
 
   function updateToolbarUI(charKey) {
+    if (typeof document === 'undefined') return;
     const bars = document.querySelectorAll(`[id="voxelToolbar_${charKey}"], [id="voxelToolbar2D_${charKey}"]`);
     bars.forEach(bar => {
       // 工具按鈕 active
@@ -1285,13 +1347,11 @@
 
       if (target.id.startsWith('btnUndo_')) {
         undo(charKey);
-        syncThreeMeshFromOverrides(charKey, threeState, baseData);
         return;
       }
 
       if (target.id.startsWith('btnRedo_')) {
         redo(charKey);
-        syncThreeMeshFromOverrides(charKey, threeState, baseData);
         return;
       }
 
