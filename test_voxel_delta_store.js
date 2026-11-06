@@ -117,7 +117,61 @@ VoxelDeltaStore.setHoverVoxel('ivysaur', 50, 20, 30);
 assert.deepStrictEqual(VoxelDeltaStore.state.hoverVoxel, {
   x: 50, y: 20, z: 30, symX: null, charKey: 'ivysaur'
 });
-console.log('  ✓ 懸停幽靈預覽演算正確（中心軸自動不重疊）');
+// 8. 測試 10 步 Undo / Redo 上限控制
+console.log('🧪 測試 10 步 Undo / Redo 上限控制...');
+VoxelDeltaStore.resetToDefault('ivysaur');
+VoxelDeltaStore.state.mirrorSymmetry = false;
 
-console.log('🎉 任務 2 與 任務 3 單元測試 100% 通過！');
+// 連續執行 15 次獨立修改動作
+for (let i = 1; i <= 15; i++) {
+  VoxelDeltaStore.executeVoxelAction('ivysaur', i, 20, 30, 'paint', i);
+}
+
+const ivysaurChar = VoxelDeltaStore.state.characters.ivysaur;
+assert.strictEqual(ivysaurChar.history.length, 10, `歷史記錄應被嚴格限制在 10 步，目前為 ${ivysaurChar.history.length}`);
+console.log('  ✓ 連續執行 15 次動作，歷史步驟精準截斷保留最新 10 步');
+
+// 連續 Undo 10 次，驗證每一步皆成功
+for (let i = 0; i < 10; i++) {
+  const success = VoxelDeltaStore.undo('ivysaur');
+  assert.strictEqual(success, true, `第 ${i + 1} 次 Undo 應成功`);
+}
+// 第 11 次 Undo 應失敗
+assert.strictEqual(VoxelDeltaStore.undo('ivysaur'), false, '第 11 次 Undo 應無法再撤銷');
+assert.strictEqual(ivysaurChar.redoStack.length, 10, `Redo 堆疊應累積 10 步，目前為 ${ivysaurChar.redoStack.length}`);
+console.log('  ✓ 連續 Undo 10 次成功復原，第 11 次安全終止');
+
+// 連續 Redo 10 次，驗證每一步皆成功
+for (let i = 0; i < 10; i++) {
+  const success = VoxelDeltaStore.redo('ivysaur');
+  assert.strictEqual(success, true, `第 ${i + 1} 次 Redo 應成功`);
+}
+assert.strictEqual(VoxelDeltaStore.redo('ivysaur'), false, '第 11 次 Redo 應無法再重做');
+console.log('  ✓ 連續 Redo 10 次成功重做，第 11 次安全終止');
+
+// 9. 測試消除方塊與雲端防回彈
+console.log('🧪 測試消除方塊與雲端防回彈 (Anti-Bounce)...');
+VoxelDeltaStore.resetToDefault('ivysaur');
+// 新增方塊 (10, 10, 10)
+VoxelDeltaStore.executeVoxelAction('ivysaur', 10, 10, 10, 'add', 3);
+assert.strictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 10, 10, 10), 3);
+
+// 消除方塊
+VoxelDeltaStore.executeVoxelAction('ivysaur', 10, 10, 10, 'delete');
+assert.strictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 10, 10, 10), -1);
+
+// 模擬雲端舊資料回傳 (舊資料帶有 10,10,10 方塊，時間戳早於本地)
+const oldCloudOverrides = {
+  ivysaur: {
+    data: { '10,10,10': 3 },
+    updatedAt: Date.now() - 5000 // 5 秒前的舊資料
+  }
+};
+VoxelDeltaStore.hydrateFromCloud(oldCloudOverrides);
+
+// 驗證方塊絕對沒有長回來！
+assert.strictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 10, 10, 10), -1, '消除之方塊絕不可被舊雲端資料回彈長出');
+console.log('  ✓ 消除方塊後，舊雲端資料回彈被時間戳與抑制機制成功攔截，方塊未長回！');
+
+console.log('🎉 所有離線整合單元測試 100% 全數通過 (PASS)！');
 

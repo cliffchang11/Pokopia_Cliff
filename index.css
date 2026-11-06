@@ -13008,6 +13008,51 @@ body.has-floating-back .scroll-top-btn {
   box-shadow: 0 0 10px rgba(16, 185, 129, 0.45);
 }
 
+/* 自動儲存動態微標籤 */
+.ve-autosave-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 4px 6px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.25);
+  border-radius: 6px;
+  user-select: none;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ve-autosave-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 6px #10b981;
+  transition: all 0.2s ease;
+}
+
+.ve-autosave-badge.saving {
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(251, 191, 36, 0.3);
+}
+
+.ve-autosave-badge.saving .ve-autosave-dot {
+  background: #f59e0b;
+  box-shadow: 0 0 6px #f59e0b;
+  animation: ve-pulse 0.8s infinite alternate ease-in-out;
+}
+
+@keyframes ve-pulse {
+  from { opacity: 0.4; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1.15); }
+}
+
 .ve-btn-danger {
   color: #fca5a5;
   background: rgba(239, 68, 68, 0.12);

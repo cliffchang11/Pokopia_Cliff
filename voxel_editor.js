@@ -6,16 +6,36 @@
 (function (global) {
   'use strict';
 
+  let _lastLocalActionTime = 0; // 記錄最近一次本地操作時間，用於阻斷 onSnapshot 舊資料回彈
+  const MAX_HISTORY_STEPS = 10; // 嚴格限制最多 10 步復原與重做
+
   // 本地持久化存取 (防重整或未登入丟失)
-  function saveOverridesToStorage(charKey) {
+  function saveOverridesToStorage(charKey, customTime) {
     try {
+      const now = customTime || Date.now();
+      if (_state.characters[charKey]) {
+        _state.characters[charKey].updatedAt = now;
+      }
       if (typeof localStorage !== 'undefined') {
         const storageKey = 'pokopia_voxel_overrides_' + charKey;
+        const timeKey = 'pokopia_voxel_time_' + charKey;
         localStorage.setItem(storageKey, JSON.stringify(getOverrides(charKey)));
+        localStorage.setItem(timeKey, String(now));
       }
     } catch (e) {
       console.warn('[VoxelStore] LocalStorage save error:', e);
     }
+  }
+
+  function loadTimeFromStorage(charKey) {
+    try {
+      if (typeof localStorage !== 'undefined') {
+        const timeKey = 'pokopia_voxel_time_' + charKey;
+        const raw = localStorage.getItem(timeKey);
+        if (raw) return Number(raw);
+      }
+    } catch (e) {}
+    return 0;
   }
 
   function loadOverridesFromStorage(charKey) {
@@ -25,7 +45,9 @@
         const raw = localStorage.getItem(storageKey);
         if (raw) {
           const parsed = JSON.parse(raw);
-          if (parsed && typeof parsed === 'object') return parsed;
+          if (parsed && typeof parsed === 'object') {
+            return parsed.data !== undefined ? parsed.data : parsed;
+          }
         }
       }
     } catch (e) {
@@ -35,24 +57,43 @@
   }
 
   let _cloudDebounceTimer = null;
+  function updateAutoSaveBadgeUI(charKey, status) {
+    if (typeof document === 'undefined') return;
+    const badges = document.querySelectorAll(`[id="autoSaveBadge_${charKey}"], .ve-autosave-badge`);
+    badges.forEach(b => {
+      const dot = b.querySelector('.ve-autosave-dot');
+      const text = b.querySelector('.ve-autosave-text');
+      if (status === 'saving') {
+        b.classList.add('saving');
+        if (text) text.textContent = '同步中...';
+      } else {
+        b.classList.remove('saving');
+        if (text) text.textContent = '已自動保存 ✓';
+      }
+    });
+  }
+
   function syncOverridesToCloud(charKey) {
     if (typeof window === 'undefined') return;
+    updateAutoSaveBadgeUI(charKey, 'saving');
     if (_cloudDebounceTimer) clearTimeout(_cloudDebounceTimer);
     _cloudDebounceTimer = setTimeout(() => {
+      const charTime = (_state.characters[charKey] && _state.characters[charKey].updatedAt) || Date.now();
       if (window.PokopiaFirebase && typeof window.PokopiaFirebase.saveVoxelOverrides === 'function') {
-        window.PokopiaFirebase.saveVoxelOverrides(charKey, getOverrides(charKey));
+        window.PokopiaFirebase.saveVoxelOverrides(charKey, getOverrides(charKey), charTime);
       }
-    }, 400);
+      updateAutoSaveBadgeUI(charKey, 'saved');
+    }, 500);
   }
 
   // 儲存各角色的修改歷史與 overrides
   const _state = {
     activeCharacter: 'ivysaur',
     characters: {
-      bulbasaur: { overrides: loadOverridesFromStorage('bulbasaur'), history: [], redoStack: [] },
-      ivysaur: { overrides: loadOverridesFromStorage('ivysaur'), history: [], redoStack: [] },
-      venusaur: { overrides: loadOverridesFromStorage('venusaur'), history: [], redoStack: [] },
-      buzz: { overrides: loadOverridesFromStorage('buzz'), history: [], redoStack: [] }
+      bulbasaur: { overrides: loadOverridesFromStorage('bulbasaur'), updatedAt: loadTimeFromStorage('bulbasaur'), history: [], redoStack: [] },
+      ivysaur: { overrides: loadOverridesFromStorage('ivysaur'), updatedAt: loadTimeFromStorage('ivysaur'), history: [], redoStack: [] },
+      venusaur: { overrides: loadOverridesFromStorage('venusaur'), updatedAt: loadTimeFromStorage('venusaur'), history: [], redoStack: [] },
+      buzz: { overrides: loadOverridesFromStorage('buzz'), updatedAt: loadTimeFromStorage('buzz'), history: [], redoStack: [] }
     },
     // 編輯器設定
     editorMode: false, // 是否處於編輯模式
@@ -156,7 +197,11 @@
 
     if (historyRecord.length > 0) {
       char.history.push(historyRecord);
+      if (char.history.length > MAX_HISTORY_STEPS) {
+        char.history.shift(); // 先進先出淘汰最舊步驟，維持最多 10 步
+      }
       char.redoStack = []; // 清空重做堆疊
+      _lastLocalActionTime = Date.now();
       notifyListeners(charKey);
     }
   }
@@ -373,6 +418,12 @@
     });
 
     char.redoStack.push(redoRecord);
+    if (char.redoStack.length > MAX_HISTORY_STEPS) {
+      char.redoStack.shift();
+    }
+    _lastLocalActionTime = Date.now();
+    saveOverridesToStorage(charKey);
+    syncOverridesToCloud(charKey);
     notifyListeners(charKey);
     return true;
   }
@@ -406,6 +457,12 @@
     });
 
     char.history.push(historyRecord);
+    if (char.history.length > MAX_HISTORY_STEPS) {
+      char.history.shift();
+    }
+    _lastLocalActionTime = Date.now();
+    saveOverridesToStorage(charKey);
+    syncOverridesToCloud(charKey);
     notifyListeners(charKey);
     return true;
   }
@@ -606,8 +663,12 @@
     const all = {};
     ['bulbasaur', 'ivysaur', 'venusaur', 'buzz'].forEach(k => {
       const o = getOverrides(k);
+      const time = (_state.characters[k] && _state.characters[k].updatedAt) || loadTimeFromStorage(k);
       if (o && Object.keys(o).length > 0) {
-        all[k] = o;
+        all[k] = {
+          data: o,
+          updatedAt: time
+        };
       }
     });
     return all;
@@ -619,14 +680,22 @@
     ['bulbasaur', 'ivysaur', 'venusaur', 'buzz'].forEach(k => {
       const remote = cloudOverrides[k];
       if (remote && typeof remote === 'object') {
-        const local = _state.characters[k] ? _state.characters[k].overrides : {};
-        // 聯集合併：本地既有修改優先保護保留，遠端新增修改同步補入
-        const merged = { ...remote, ...local };
-        if (_state.characters[k]) {
-          _state.characters[k].overrides = merged;
+        const remoteData = (remote.data !== undefined) ? remote.data : remote;
+        const remoteTime = (remote.updatedAt !== undefined) ? Number(remote.updatedAt) : null;
+        const localTime = (_state.characters[k] && _state.characters[k].updatedAt) ? Number(_state.characters[k].updatedAt) : loadTimeFromStorage(k);
+
+        // 若遠端有時間戳，嚴格比對 remoteTime > localTime (舊資料或同版本回彈安全略過)
+        // 若遠端無時間戳 (相容直接傳入 overrides 物件)，則視為有效快照整筆替換
+        const shouldHydrate = remoteTime !== null ? (remoteTime > localTime) : true;
+
+        if (shouldHydrate) {
+          if (_state.characters[k]) {
+            _state.characters[k].overrides = { ...remoteData };
+            _state.characters[k].updatedAt = remoteTime || Date.now();
+          }
+          saveOverridesToStorage(k, remoteTime || Date.now());
+          notifyListeners(k, true);
         }
-        saveOverridesToStorage(k);
-        notifyListeners(k, true);
       }
     });
   }
@@ -716,15 +785,18 @@
                 ⮃ 右鏡左
               </button>
             </div>
-            <button type="button" class="ve-btn" id="btnUndo_${charKey}" title="撤銷上一步">
-              ↩️ 撤銷
-            </button>
-            <button type="button" class="ve-btn" id="btnRedo_${charKey}" title="重做">
-              ↪️ 重做
-            </button>
-            <button type="button" class="ve-btn ve-btn-primary" id="btnSubmit_${charKey}" title="永久存檔 (同步雲端與本地)">
-              ☁️ 提交存檔
-            </button>
+            <div class="ve-undo-redo-row" style="display:flex;gap:4px;width:100%;">
+              <button type="button" class="ve-btn" id="btnUndo_${charKey}" title="復原上一步 (最多 10 步)" style="flex:1;">
+                ↩️ 復原
+              </button>
+              <button type="button" class="ve-btn" id="btnRedo_${charKey}" title="重做下一步 (最多 10 步)" style="flex:1;">
+                ↪️ 重做
+              </button>
+            </div>
+            <div class="ve-autosave-badge" id="autoSaveBadge_${charKey}" title="體素編輯每步已即時自動儲存">
+              <span class="ve-autosave-dot"></span>
+              <span class="ve-autosave-text">已自動保存 ✓</span>
+            </div>
           </div>
 
           <div class="ve-divider" style="margin: 6px 0 4px 0;"></div>
@@ -1078,6 +1150,25 @@
         const bid = Number(dot.getAttribute('data-bid'));
         dot.classList.toggle('active', bid === Number(_state.selectedBid));
       });
+
+      // 復原與重做按鈕狀態與 10 步計數更新
+      const char = _state.characters[charKey];
+      const historyCount = (char && char.history) ? char.history.length : 0;
+      const redoCount = (char && char.redoStack) ? char.redoStack.length : 0;
+
+      bar.querySelectorAll(`[id^="btnUndo_"]`).forEach(btnUndo => {
+        btnUndo.disabled = (historyCount === 0);
+        btnUndo.style.opacity = (historyCount === 0) ? '0.45' : '1';
+        btnUndo.style.cursor = (historyCount === 0) ? 'not-allowed' : 'pointer';
+        btnUndo.innerHTML = historyCount > 0 ? `↩️ 復原 (${historyCount})` : '↩️ 復原';
+      });
+
+      bar.querySelectorAll(`[id^="btnRedo_"]`).forEach(btnRedo => {
+        btnRedo.disabled = (redoCount === 0);
+        btnRedo.style.opacity = (redoCount === 0) ? '0.45' : '1';
+        btnRedo.style.cursor = (redoCount === 0) ? 'not-allowed' : 'pointer';
+        btnRedo.innerHTML = redoCount > 0 ? `↪️ 重做 (${redoCount})` : '↪️ 重做';
+      });
     });
   }
 
@@ -1208,18 +1299,13 @@
         const confirmMsg = '⚠️ 警告：這將會清除您對當前角色的所有自訂方塊與改動，恢復為官方預設值，且無法撤銷！\n\n確定要重置嗎？';
         if (confirm(confirmMsg)) {
           resetToDefault(charKey);
+          _lastLocalActionTime = Date.now();
+          saveOverridesToStorage(charKey);
+          syncOverridesToCloud(charKey);
           syncThreeMeshFromOverrides(charKey, threeState, baseData);
           if (typeof onSubmitCallback === 'function') {
             onSubmitCallback(charKey, {});
           }
-        }
-        return;
-      }
-
-      if (target.id.startsWith('btnSubmit_')) {
-        const overrides = getOverrides(charKey);
-        if (typeof onSubmitCallback === 'function') {
-          onSubmitCallback(charKey, overrides);
         }
         return;
       }

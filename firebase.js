@@ -191,17 +191,26 @@
     }
 
     // 體素自訂修改 (Voxel Overrides) 雲端合併 (本地優先無損合併)
+    // 角色層級全量快照 + 時間戳判定，徹底解決回彈
     if (cloud && cloud.voxelOverrides && typeof cloud.voxelOverrides === 'object') {
       merged.voxelOverrides = { ...cloud.voxelOverrides };
       if (local && local.voxelOverrides && typeof local.voxelOverrides === 'object') {
         Object.keys(local.voxelOverrides).forEach(charKey => {
-          if (!merged.voxelOverrides[charKey]) {
-            merged.voxelOverrides[charKey] = local.voxelOverrides[charKey];
+          const lVal = local.voxelOverrides[charKey];
+          const cVal = merged.voxelOverrides[charKey];
+          if (!cVal) {
+            merged.voxelOverrides[charKey] = lVal;
+          } else if (!lVal) {
+            merged.voxelOverrides[charKey] = cVal;
           } else {
-            merged.voxelOverrides[charKey] = {
-              ...merged.voxelOverrides[charKey],
-              ...local.voxelOverrides[charKey]
-            };
+            const lTime = (typeof lVal === 'object' && lVal.updatedAt) ? Number(lVal.updatedAt) : 0;
+            const cTime = (typeof cVal === 'object' && cVal.updatedAt) ? Number(cVal.updatedAt) : 0;
+            // 完整替換快照，絕不進行只增不減的 key 聯集合併
+            if (lTime >= cTime) {
+              merged.voxelOverrides[charKey] = lVal;
+            } else {
+              merged.voxelOverrides[charKey] = cVal;
+            }
           }
         });
       }
@@ -316,20 +325,25 @@
     }
   }
 
-  function saveVoxelOverrides(charKey, overrides) {
+  function saveVoxelOverrides(charKey, overrides, updatedAt) {
     try {
+      const now = updatedAt || Date.now();
       const storageKey = 'pokopia_voxel_overrides_' + charKey;
+      const timeKey = 'pokopia_voxel_time_' + charKey;
       if (typeof localStorage !== 'undefined') {
         localStorage.setItem(storageKey, JSON.stringify(overrides || {}));
+        localStorage.setItem(timeKey, String(now));
       }
 
       if (_currentUser) {
+        // 使用 dot-notation 確保 Firestore 角色層級完整替換，絕不進行內部子 key 的 deep merge
         saveCloudProgress(_currentUser.uid, {
-          voxelOverrides: {
-            [charKey]: overrides || {}
+          [`voxelOverrides.${charKey}`]: {
+            data: overrides || {},
+            updatedAt: now
           }
         });
-        return { success: true, cloud: true, message: '已成功同步保存至您的 Google 雲端帳號！' };
+        return { success: true, cloud: true, message: '已成功自動同步至您的 Google 雲端帳號！' };
       }
       return { success: true, cloud: false, message: '已保存至本地瀏覽器！登入 Google 帳號可跨裝置永久同步。' };
     } catch (e) {
@@ -343,7 +357,12 @@
       const storageKey = 'pokopia_voxel_overrides_' + charKey;
       if (typeof localStorage !== 'undefined') {
         const raw = localStorage.getItem(storageKey);
-        if (raw) return JSON.parse(raw);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            return parsed.data !== undefined ? parsed.data : parsed;
+          }
+        }
       }
     } catch (e) {
       console.warn('[Firebase] loadVoxelOverrides failed:', e);

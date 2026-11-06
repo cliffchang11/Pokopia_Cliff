@@ -8115,8 +8115,7 @@
     if (VoxelDeltaStore.attachEditorToScene) {
       VoxelDeltaStore.attachEditorToScene(charKey, threeState, baseData, curWrap, (k, overrides) => {
         if (window.PokopiaFirebase && window.PokopiaFirebase.saveVoxelOverrides) {
-          const res = window.PokopiaFirebase.saveVoxelOverrides(k, overrides);
-          alert(res.message || '存檔成功！');
+          window.PokopiaFirebase.saveVoxelOverrides(k, overrides);
         }
         if (typeof refreshSliceCallback === 'function') {
           refreshSliceCallback();
@@ -8129,8 +8128,7 @@
     if (sliceCard && VoxelDeltaStore.attachEditorTo2D) {
       VoxelDeltaStore.attachEditorTo2D(charKey, threeState, baseData, sliceCard, (k, overrides) => {
         if (window.PokopiaFirebase && window.PokopiaFirebase.saveVoxelOverrides) {
-          const res = window.PokopiaFirebase.saveVoxelOverrides(k, overrides);
-          alert(res.message || '存檔成功！');
+          window.PokopiaFirebase.saveVoxelOverrides(k, overrides);
         }
         if (typeof refreshSliceCallback === 'function') {
           refreshSliceCallback();
