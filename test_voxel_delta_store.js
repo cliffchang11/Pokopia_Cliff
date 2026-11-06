@@ -273,5 +273,30 @@ assert.strictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 40, 20, 40), 7, '�
 assert.strictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 41, 20, 40), 7, '昨天的方塊 2 必須成功還原');
 console.log('  ✓ 昨天純座標舊格式存檔 100% 優先還原成功，完全不受無時間戳影響！');
 
+// 13. 測試 1,161 顆歷史方塊自動搶救還原與空資料防沖刷保護
+console.log('🧪 測試 1,161 顆歷史方塊自動搶救還原與防空沖刷...');
+const path = require('path');
+const jsonPath = path.join(__dirname, 'ivysaur_saved_overrides.json');
+assert.ok(fs.existsSync(jsonPath), 'ivysaur_saved_overrides.json 必須永久存在於專案目錄中');
+const savedOverrides = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
+assert.strictEqual(Object.keys(savedOverrides).length, 1161, 'ivysaur_saved_overrides.json 筆數必須精確為 1,161 顆');
+
+// 測試初始載入 fallback
+const initialOverrides = VoxelDeltaStore.loadOverridesFromStorage('ivysaur');
+assert.strictEqual(Object.keys(initialOverrides).length, 1161, '妙蛙草初始 Overrides 應完整取得 1,161 顆方塊');
+
+// 測試雲端空資料防沖刷 (Anti-Wipeout)：即使遠端送來空字典與較新時間戳，本地 1,161 顆也絕不被清空
+VoxelDeltaStore.state.characters.ivysaur.overrides = { ...savedOverrides };
+VoxelDeltaStore.state.characters.ivysaur.updatedAt = 1000;
+VoxelDeltaStore.hydrateFromCloud({
+  ivysaur: {
+    data: {},
+    updatedAt: 999999999
+  }
+});
+assert.strictEqual(Object.keys(VoxelDeltaStore.getOverrides('ivysaur')).length, 1161, '本地 1,161 顆方塊絕不可被遠端空資料清空');
+console.log('  ✓ 1,161 顆歷史方塊注入完備，且空資料防沖刷保護生效！');
+
 console.log('🎉 所有離線整合單元測試 100% 全數通過 (PASS)！');
+
 
