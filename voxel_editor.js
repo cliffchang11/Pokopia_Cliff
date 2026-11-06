@@ -91,17 +91,28 @@
     });
   }
 
-  function syncOverridesToCloud(charKey) {
+  function syncOverridesToCloud(charKey, isDrag = false) {
     if (typeof window === 'undefined') return;
     updateAutoSaveBadgeUI(charKey, 'saving');
     if (_cloudDebounceTimer) clearTimeout(_cloudDebounceTimer);
-    _cloudDebounceTimer = setTimeout(() => {
+    const delay = isDrag ? 100 : 0;
+    if (delay === 0) {
+      _cloudDebounceTimer = null;
       const charTime = (_state.characters[charKey] && _state.characters[charKey].updatedAt) || Date.now();
       if (window.PokopiaFirebase && typeof window.PokopiaFirebase.saveVoxelOverrides === 'function') {
         window.PokopiaFirebase.saveVoxelOverrides(charKey, getOverrides(charKey), charTime);
       }
       updateAutoSaveBadgeUI(charKey, 'saved');
-    }, 300);
+    } else {
+      _cloudDebounceTimer = setTimeout(() => {
+        _cloudDebounceTimer = null;
+        const charTime = (_state.characters[charKey] && _state.characters[charKey].updatedAt) || Date.now();
+        if (window.PokopiaFirebase && typeof window.PokopiaFirebase.saveVoxelOverrides === 'function') {
+          window.PokopiaFirebase.saveVoxelOverrides(charKey, getOverrides(charKey), charTime);
+        }
+        updateAutoSaveBadgeUI(charKey, 'saved');
+      }, delay);
+    }
   }
 
   // 儲存各角色的修改歷史與 overrides
@@ -671,7 +682,7 @@
     notifyListeners(charKey, true);
   }
 
-  function notifyListeners(charKey, skipBroadcast = false, affectedCoords = null) {
+  function notifyListeners(charKey, skipBroadcast = false, affectedCoords = null, isDrag = false) {
     // 1. 同步當前視窗此角色的 3D 模型 (定向局部極速同步)
     if (_attachedThreeScenes[charKey]) {
       const { threeState, baseData } = _attachedThreeScenes[charKey];
@@ -698,9 +709,9 @@
     // 5. 持久化存儲至本地 LocalStorage (防重整或未登入丟失)
     saveOverridesToStorage(charKey);
 
-    // 6. 自動同步至 Google 雲端帳號 Firestore
+    // 6. 自動同步至 Google 雲端帳號 Firestore (單點 0ms / 拖曳 100ms)
     if (!skipBroadcast) {
-      syncOverridesToCloud(charKey);
+      syncOverridesToCloud(charKey, isDrag);
     }
   }
 

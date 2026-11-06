@@ -216,18 +216,20 @@
             merged.voxelOverrides[charKey] = lVal;
           } else if (!lVal) {
             merged.voxelOverrides[charKey] = cVal;
-          const lData = (lVal && lVal.data !== undefined) ? lVal.data : lVal;
-          const cData = (cVal && cVal.data !== undefined) ? cVal.data : cVal;
-          const lCount = (lData && typeof lData === 'object') ? Object.keys(lData).length : 0;
-          const cCount = (cData && typeof cData === 'object') ? Object.keys(cData).length : 0;
-
-          // 核心雲端優先：只要雲端有存檔資料 (cCount > 0)，100% 絕對以 Firebase 雲端存檔為最高優先！
-          if (cCount > 0) {
-            merged.voxelOverrides[charKey] = cVal;
-          } else if (lCount > 0) {
-            merged.voxelOverrides[charKey] = lVal;
           } else {
-            merged.voxelOverrides[charKey] = cVal || lVal;
+            const lData = (lVal && lVal.data !== undefined) ? lVal.data : lVal;
+            const cData = (cVal && cVal.data !== undefined) ? cVal.data : cVal;
+            const lCount = (lData && typeof lData === 'object') ? Object.keys(lData).length : 0;
+            const cCount = (cData && typeof cData === 'object') ? Object.keys(cData).length : 0;
+
+            // 核心雲端優先：只要雲端有存檔資料 (cCount > 0)，100% 絕對以 Firebase 雲端存檔為最高優先！
+            if (cCount > 0) {
+              merged.voxelOverrides[charKey] = cVal;
+            } else if (lCount > 0) {
+              merged.voxelOverrides[charKey] = lVal;
+            } else {
+              merged.voxelOverrides[charKey] = cVal || lVal;
+            }
           }
         });
       }
