@@ -222,13 +222,25 @@
             const lCount = (lData && typeof lData === 'object') ? Object.keys(lData).length : 0;
             const cCount = (cData && typeof cData === 'object') ? Object.keys(cData).length : 0;
 
-            // 核心雲端優先：只要雲端有存檔資料 (cCount > 0)，100% 絕對以 Firebase 雲端存檔為最高優先！
-            if (cCount > 0) {
-              merged.voxelOverrides[charKey] = cVal;
-            } else if (lCount > 0) {
-              merged.voxelOverrides[charKey] = lVal;
+            // 防縮水保護：若為妙蛙草且任一端小於 1,321 顆，優先使用完整的一端（>= 1,321 顆）
+            if (charKey === 'ivysaur') {
+              if (cCount < 1321 && lCount >= 1321) {
+                merged.voxelOverrides[charKey] = lVal;
+              } else if (lCount < 1321 && cCount >= 1321) {
+                merged.voxelOverrides[charKey] = cVal;
+              } else if (cCount > 0) {
+                merged.voxelOverrides[charKey] = cVal;
+              } else {
+                merged.voxelOverrides[charKey] = lVal || cVal;
+              }
             } else {
-              merged.voxelOverrides[charKey] = cVal || lVal;
+              if (cCount > 0) {
+                merged.voxelOverrides[charKey] = cVal;
+              } else if (lCount > 0) {
+                merged.voxelOverrides[charKey] = lVal;
+              } else {
+                merged.voxelOverrides[charKey] = cVal || lVal;
+              }
             }
           }
         });

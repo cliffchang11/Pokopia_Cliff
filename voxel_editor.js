@@ -41,7 +41,7 @@
     return 0;
   }
 
-  const TARGET_IVYSAUR_TIME = 1793957822094; // 2026-11-06 17:37:02
+  const TARGET_IVYSAUR_TIME = 1793976500000; // 2026-11-06 22:48:20 權威基線
   function loadOverridesFromStorage(charKey) {
     try {
       if (typeof localStorage !== 'undefined') {
@@ -55,9 +55,9 @@
           if (parsed && typeof parsed === 'object') {
             const data = parsed.data !== undefined ? parsed.data : parsed;
             const count = (data && typeof data === 'object') ? Object.keys(data).length : 0;
-            // 妙蛙草強制升級：凡本地方塊數為 1,161 顆舊版，或時間早於 17:37:02 (1793957822094)，強制升級為 1,321 顆！
+            // 妙蛙草防縮水與強制升級：凡本地方塊數小於 1,321 顆，或時間早於權威基線，一律強制還原為 1,321 顆！
             if (charKey === 'ivysaur') {
-              if (count === 1161 || localTime < TARGET_IVYSAUR_TIME) {
+              if (count < 1321 || localTime < TARGET_IVYSAUR_TIME) {
                 return Object.assign({}, IVYSAUR_SAVED_OVERRIDES);
               }
             }
@@ -744,9 +744,16 @@
         const remoteCount = (remoteData && typeof remoteData === 'object') ? Object.keys(remoteData).length : 0;
 
         // 核心邏輯：
-        // 0. 若為妙蛙草且雲端資料是 1,161 顆舊版，或者是非 1,321 顆且時間早於 TARGET_IVYSAUR_TIME (1793957822094)，拒絕以舊資料覆蓋本地 1,321 顆！並主動向雲端回寫 1,321 顆！
+        // 0. 妙蛙草防縮水保護：凡雲端資料小於 1,321 顆，或時間早於 TARGET_IVYSAUR_TIME，絕對拒絕以舊資料覆蓋！
+        // 並強制重設本地為 1,321 顆完整存檔並主動向雲端回寫 1,321 顆！
         if (k === 'ivysaur') {
-          if (remoteCount === 1161 || (remoteCount !== 1321 && remoteTime !== null && remoteTime < TARGET_IVYSAUR_TIME)) {
+          if (remoteCount < 1321 || (remoteTime !== null && remoteTime < TARGET_IVYSAUR_TIME)) {
+            if (_state.characters.ivysaur) {
+              _state.characters.ivysaur.overrides = Object.assign({}, IVYSAUR_SAVED_OVERRIDES);
+              _state.characters.ivysaur.updatedAt = TARGET_IVYSAUR_TIME;
+            }
+            saveOverridesToStorage('ivysaur', TARGET_IVYSAUR_TIME);
+            notifyListeners('ivysaur', true);
             syncOverridesToCloud('ivysaur');
             return;
           }

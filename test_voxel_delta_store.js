@@ -252,14 +252,14 @@ const elapsed = Date.now() - startTime;
 assert(elapsed < 5, `定向熱更新耗時應極短 (<5ms)，實際為 ${elapsed}ms`);
 console.log(`  ✓ 9 萬方塊模型中定向局部更新 2 顆方塊耗時僅 ${elapsed}ms (真正 0ms 瞬間響應)`);
 
-// 12. 測試昨天舊版「純座標格式 (無 updatedAt)」的優先搶救與無損還原
-console.log('🧪 測試昨天舊版純座標存檔的優先搶救還原...');
-VoxelDeltaStore.resetToDefault('ivysaur');
-assert.strictEqual(Object.keys(VoxelDeltaStore.getOverrides('ivysaur')).length, 0);
+// 12. 測試舊版「純座標格式 (無 updatedAt)」的優先搶救與無損還原
+console.log('🧪 測試舊版純座標存檔的優先搶救還原 (以 bulbasaur 驗證)...');
+VoxelDeltaStore.resetToDefault('bulbasaur');
+assert.strictEqual(Object.keys(VoxelDeltaStore.getOverrides('bulbasaur')).length, 0);
 
-// 模擬昨天存入雲端的純座標字典 (無 updatedAt 欄位)
+// 模擬存入雲端的純座標字典 (無 updatedAt 欄位)
 const yesterdayLegacyCloud = {
-  ivysaur: {
+  bulbasaur: {
     '40,20,40': 7,
     '41,20,40': 7
   }
@@ -268,10 +268,10 @@ const yesterdayLegacyCloud = {
 // 執行水合
 VoxelDeltaStore.hydrateFromCloud(yesterdayLegacyCloud);
 
-// 驗證昨天的方塊資料被 100% 成功還原！
-assert.strictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 40, 20, 40), 7, '昨天的方塊 1 必須成功還原');
-assert.strictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 41, 20, 40), 7, '昨天的方塊 2 必須成功還原');
-console.log('  ✓ 昨天純座標舊格式存檔 100% 優先還原成功，完全不受無時間戳影響！');
+// 驗證方塊資料被 100% 成功還原！
+assert.strictEqual(VoxelDeltaStore.getEffectiveBid('bulbasaur', 40, 20, 40), 7, '純座標格式方塊 1 必須成功還原');
+assert.strictEqual(VoxelDeltaStore.getEffectiveBid('bulbasaur', 41, 20, 40), 7, '純座標格式方塊 2 必須成功還原');
+console.log('  ✓ 純座標舊格式存檔 100% 優先還原成功，完全不受無時間戳影響！');
 
 // 13. 測試 1,161 顆歷史方塊自動搶救還原與空資料防沖刷保護
 console.log('🧪 測試 1,161 顆歷史方塊自動搶救還原與防空沖刷...');
@@ -331,16 +331,16 @@ global.localStorage = {
 const forceUpgraded = VoxelDeltaStore.loadOverridesFromStorage('ivysaur');
 assert.strictEqual(Object.keys(forceUpgraded).length, 1321, 'LocalStorage 中 1,161 顆舊版必須被強制升級為 1,321 顆');
 
-// 測試雲端送來 1,161 顆舊版快照時被拒絕，本地維持 1,321 顆
+// 測試雲端送來少於 1,321 顆（例如 500 顆）的縮水舊資料時被拒絕，本地維持 1,321 顆
 VoxelDeltaStore.state.characters.ivysaur.overrides = { ...savedOverrides };
 VoxelDeltaStore.hydrateFromCloud({
   ivysaur: {
-    data: { count: 1161, ...Array(1160).fill(1).reduce((acc, _, i) => ({ ...acc, [i + ',0,0']: 1 }), {}) },
-    updatedAt: 1730718000000
+    data: Array(500).fill(1).reduce((acc, _, i) => ({ ...acc, [i + ',0,0']: 1 }), {}),
+    updatedAt: Date.now()
   }
 });
-assert.strictEqual(Object.keys(VoxelDeltaStore.getOverrides('ivysaur')).length, 1321, '雲端 1,161 顆舊版快照必須被阻斷，本地維持 1,321 顆');
-console.log('  ✓ 1,161 舊版與過期存檔成功被強制清洗升級為 1,321 顆最新版本！');
+assert.strictEqual(Object.keys(VoxelDeltaStore.getOverrides('ivysaur')).length, 1321, '雲端小於 1,321 顆縮水存檔必須被阻斷，本地維持 1,321 顆');
+console.log('  ✓ 雲端小於 1,321 顆縮水舊存檔成功被阻斷，本地維持 1,321 顆！');
 
 console.log('🎉 所有離線整合單元測試 100% 全數通過 (PASS)！');
 

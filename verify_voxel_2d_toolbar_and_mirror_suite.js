@@ -499,11 +499,11 @@ test('3.21 體素編輯與 3D 狀態 Google 雲端全方位同步與 LocalStorag
   assert.strictEqual(typeof VoxelDeltaStore.saveOverridesToStorage, 'function', '應導出 saveOverridesToStorage 介面');
   assert.strictEqual(typeof VoxelDeltaStore.loadOverridesFromStorage, 'function', '應導出 loadOverridesFromStorage 介面');
 
-  // 測試模擬從雲端拉取妙蛙草修改
+  // 測試模擬從雲端拉取修改 (以 bulbasaur 驗證通用水合)
   VoxelDeltaStore.hydrateFromCloud({
-    ivysaur: { '45,20,45': 9 }
+    bulbasaur: { '45,20,45': 9 }
   });
-  assert.strictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 45, 20, 45), 9, '雲端水合後的方塊資料應即時生效');
+  assert.strictEqual(VoxelDeltaStore.getEffectiveBid('bulbasaur', 45, 20, 45), 9, '雲端水合後的方塊資料應即時生效');
 
   // 驗證 firebase.js 包含 voxelOverrides 與 blueprint3D 深度合併
   const fbCode = fs.readFileSync(path.join(__dirname, 'firebase.js'), 'utf-8');
