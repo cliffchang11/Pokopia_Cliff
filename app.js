@@ -8234,6 +8234,15 @@
       });
     }
 
+    // 第一時間以 VoxelDeltaStore 內建之最新 Overrides 同步 3D 模型與切片
+    const initialOverrides = VoxelDeltaStore.getOverrides ? VoxelDeltaStore.getOverrides(charKey) : null;
+    if (initialOverrides && Object.keys(initialOverrides).length > 0) {
+      VoxelDeltaStore.syncThreeMeshFromOverrides(charKey, threeState, baseData);
+      if (typeof refreshSliceCallback === 'function') {
+        refreshSliceCallback();
+      }
+    }
+
     if (window.PokopiaFirebase && window.PokopiaFirebase.loadVoxelOverrides) {
       const saved = window.PokopiaFirebase.loadVoxelOverrides(charKey);
       if (saved && Object.keys(saved).length > 0) {

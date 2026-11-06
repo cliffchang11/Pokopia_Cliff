@@ -41,16 +41,27 @@
     return 0;
   }
 
+  const TARGET_IVYSAUR_TIME = 1793957822094; // 2026-11-06 17:37:02
   function loadOverridesFromStorage(charKey) {
     try {
       if (typeof localStorage !== 'undefined') {
         const storageKey = 'pokopia_voxel_overrides_' + charKey;
+        const timeKey = 'pokopia_voxel_time_' + charKey;
         const raw = localStorage.getItem(storageKey);
+        const rawTime = localStorage.getItem(timeKey);
+        const localTime = rawTime ? Number(rawTime) : 0;
         if (raw) {
           const parsed = JSON.parse(raw);
           if (parsed && typeof parsed === 'object') {
             const data = parsed.data !== undefined ? parsed.data : parsed;
-            if (data && Object.keys(data).length > 0) return data;
+            const count = (data && typeof data === 'object') ? Object.keys(data).length : 0;
+            // 妙蛙草強制升級：凡本地方塊數為 1,161 顆舊版，或時間早於 17:37:02 (1793957822094)，強制升級為 1,321 顆！
+            if (charKey === 'ivysaur') {
+              if (count === 1161 || localTime < TARGET_IVYSAUR_TIME) {
+                return Object.assign({}, IVYSAUR_SAVED_OVERRIDES);
+              }
+            }
+            if (count > 0) return data;
           }
         }
       }
@@ -112,21 +123,24 @@
     listeners: []
   };
 
-  // 妙蛙草歷史存檔自救水合：若 LocalStorage 為空或 0 筆，自動寫入搶救出的 1,161 顆方塊並同步雲端
+  // 妙蛙草歷史存檔自救水合：若 LocalStorage 為空、或方塊數為 1,161 舊版、或時間戳早於 1793957822094，自動寫入 1,321 顆並同步覆蓋雲端！
   if (typeof localStorage !== 'undefined' && _state.characters.ivysaur) {
     try {
       const storageKey = 'pokopia_voxel_overrides_ivysaur';
+      const timeKey = 'pokopia_voxel_time_ivysaur';
       const localRaw = localStorage.getItem(storageKey);
+      const localTime = Number(localStorage.getItem(timeKey) || 0);
       let localCount = 0;
       if (localRaw) {
         const parsed = JSON.parse(localRaw);
         const data = (parsed && parsed.data !== undefined) ? parsed.data : parsed;
         localCount = Object.keys(data || {}).length;
       }
-      if (localCount === 0 && Object.keys(_state.characters.ivysaur.overrides || {}).length > 0) {
-        saveOverridesToStorage('ivysaur', 1730718000000);
+      const TARGET_TIME = 1793957822094;
+      if (localCount === 0 || localCount === 1161 || localTime < TARGET_TIME) {
+        saveOverridesToStorage('ivysaur', TARGET_TIME);
         if (typeof window !== 'undefined' && window.PokopiaFirebase && typeof window.PokopiaFirebase.saveVoxelOverrides === 'function') {
-          window.PokopiaFirebase.saveVoxelOverrides('ivysaur', _state.characters.ivysaur.overrides, 1730718000000);
+          window.PokopiaFirebase.saveVoxelOverrides('ivysaur', _state.characters.ivysaur.overrides, TARGET_TIME);
         }
       }
     } catch (e) {
@@ -719,6 +733,14 @@
         const remoteCount = (remoteData && typeof remoteData === 'object') ? Object.keys(remoteData).length : 0;
 
         // 核心邏輯：
+        // 0. 若為妙蛙草且雲端資料是 1,161 顆舊版，或者是非 1,321 顆且時間早於 TARGET_IVYSAUR_TIME (1793957822094)，拒絕以舊資料覆蓋本地 1,321 顆！並主動向雲端回寫 1,321 顆！
+        if (k === 'ivysaur') {
+          if (remoteCount === 1161 || (remoteCount !== 1321 && remoteTime !== null && remoteTime < TARGET_IVYSAUR_TIME)) {
+            syncOverridesToCloud('ivysaur');
+            return;
+          }
+        }
+
         // 1. 若本地在過去 10 秒內剛執行過手動操作 (_lastLocalActionTime)，且遠端時間早於該操作，阻斷舊快照回彈 (防方塊長回)
         // 2. 其餘情況 (重新整理、跨裝置手機打開)：只要遠端有資料 (remoteCount > 0)，100% 無條件強制水合覆寫本地！
         let shouldHydrate = false;

@@ -316,6 +316,32 @@ VoxelDeltaStore.hydrateFromCloud({
 assert.strictEqual(Object.keys(VoxelDeltaStore.getOverrides('ivysaur')).length, 1321, '手機必須無條件以 Firebase 雲端存檔優先水合');
 console.log('  ✓ 跨裝置手機登入時，Firebase 雲端直接優先水合 100% 成功！');
 
+// 15. 測試 1,161 舊版與 17:37:02 (1793957822094) 強制升級與防回彈
+console.log('🧪 測試 1,161 舊版或過期存檔強制清洗升級至 1,321 顆...');
+// 模擬 LocalStorage 裡留存 1,161 顆舊版且時間戳為舊時間
+global.localStorage = {
+  getItem: (key) => {
+    if (key === 'pokopia_voxel_overrides_ivysaur') return JSON.stringify({ data: { count: 1161, ...Array(1160).fill(1).reduce((acc, _, i) => ({ ...acc, [i + ',0,0']: 1 }), {}) } });
+    if (key === 'pokopia_voxel_time_ivysaur') return '1730718000000';
+    return null;
+  },
+  setItem: () => {}
+};
+
+const forceUpgraded = VoxelDeltaStore.loadOverridesFromStorage('ivysaur');
+assert.strictEqual(Object.keys(forceUpgraded).length, 1321, 'LocalStorage 中 1,161 顆舊版必須被強制升級為 1,321 顆');
+
+// 測試雲端送來 1,161 顆舊版快照時被拒絕，本地維持 1,321 顆
+VoxelDeltaStore.state.characters.ivysaur.overrides = { ...savedOverrides };
+VoxelDeltaStore.hydrateFromCloud({
+  ivysaur: {
+    data: { count: 1161, ...Array(1160).fill(1).reduce((acc, _, i) => ({ ...acc, [i + ',0,0']: 1 }), {}) },
+    updatedAt: 1730718000000
+  }
+});
+assert.strictEqual(Object.keys(VoxelDeltaStore.getOverrides('ivysaur')).length, 1321, '雲端 1,161 顆舊版快照必須被阻斷，本地維持 1,321 顆');
+console.log('  ✓ 1,161 舊版與過期存檔成功被強制清洗升級為 1,321 顆最新版本！');
+
 console.log('🎉 所有離線整合單元測試 100% 全數通過 (PASS)！');
 
 
