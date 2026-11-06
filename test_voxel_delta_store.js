@@ -252,5 +252,26 @@ const elapsed = Date.now() - startTime;
 assert(elapsed < 5, `定向熱更新耗時應極短 (<5ms)，實際為 ${elapsed}ms`);
 console.log(`  ✓ 9 萬方塊模型中定向局部更新 2 顆方塊耗時僅 ${elapsed}ms (真正 0ms 瞬間響應)`);
 
+// 12. 測試昨天舊版「純座標格式 (無 updatedAt)」的優先搶救與無損還原
+console.log('🧪 測試昨天舊版純座標存檔的優先搶救還原...');
+VoxelDeltaStore.resetToDefault('ivysaur');
+assert.strictEqual(Object.keys(VoxelDeltaStore.getOverrides('ivysaur')).length, 0);
+
+// 模擬昨天存入雲端的純座標字典 (無 updatedAt 欄位)
+const yesterdayLegacyCloud = {
+  ivysaur: {
+    '40,20,40': 7,
+    '41,20,40': 7
+  }
+};
+
+// 執行水合
+VoxelDeltaStore.hydrateFromCloud(yesterdayLegacyCloud);
+
+// 驗證昨天的方塊資料被 100% 成功還原！
+assert.strictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 40, 20, 40), 7, '昨天的方塊 1 必須成功還原');
+assert.strictEqual(VoxelDeltaStore.getEffectiveBid('ivysaur', 41, 20, 40), 7, '昨天的方塊 2 必須成功還原');
+console.log('  ✓ 昨天純座標舊格式存檔 100% 優先還原成功，完全不受無時間戳影響！');
+
 console.log('🎉 所有離線整合單元測試 100% 全數通過 (PASS)！');
 

@@ -684,11 +684,20 @@
       if (remote && typeof remote === 'object') {
         const remoteData = (remote.data !== undefined) ? remote.data : remote;
         const remoteTime = (remote.updatedAt !== undefined) ? Number(remote.updatedAt) : null;
+        const localOverrides = (_state.characters[k] && _state.characters[k].overrides) || {};
+        const localCount = Object.keys(localOverrides).length;
+        const remoteCount = (remoteData && typeof remoteData === 'object') ? Object.keys(remoteData).length : 0;
         const localTime = (_state.characters[k] && _state.characters[k].updatedAt) ? Number(_state.characters[k].updatedAt) : loadTimeFromStorage(k);
 
-        // 若遠端有時間戳，嚴格比對 remoteTime > localTime (舊資料或同版本回彈安全略過)
-        // 若遠端無時間戳 (相容直接傳入 overrides 物件)，則視為有效快照整筆替換
-        const shouldHydrate = remoteTime !== null ? (remoteTime > localTime) : true;
+        // 核心歷史存檔搶救與防回彈邏輯：
+        // 1. 若遠端有明確時間戳，嚴格比對 remoteTime > localTime (舊資料與同版回彈絕對安全略過)
+        // 2. 若遠端為昨天存檔的舊格式 (無 updatedAt 欄位)：只要雲端有方塊資料，強制優先還原！
+        let shouldHydrate = false;
+        if (remoteTime !== null) {
+          shouldHydrate = (remoteTime > localTime);
+        } else if (remoteCount > 0) {
+          shouldHydrate = true;
+        }
 
         if (shouldHydrate) {
           if (_state.characters[k]) {
@@ -1441,13 +1450,13 @@
     updateToolbarUI
   };
 
-  // 網頁載入時主動為 4 大角色做一次本地備份與雲端同步觸發 (保護當前成果)
+  // 網頁載入時若有已存在的修改，主動為其做一次備份與雲端同步觸發 (若無修改絕不空寫時間戳)
   if (typeof window !== 'undefined') {
     setTimeout(() => {
       ['bulbasaur', 'ivysaur', 'venusaur', 'buzz'].forEach(k => {
-        saveOverridesToStorage(k);
         const ov = getOverrides(k);
         if (ov && Object.keys(ov).length > 0) {
+          saveOverridesToStorage(k);
           syncOverridesToCloud(k);
         }
       });
