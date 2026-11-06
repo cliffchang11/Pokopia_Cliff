@@ -7,9 +7,9 @@
 ✔ [已存檔] ivysaur_voxel_data.js   (妙蛙草官方模型)
 ✔ [已存檔] venusaur_voxel_data.js  (妙蛙花模型)
 ✔ [已存檔] buzz_voxel_data.js      (巴斯光年模型)
-✔ [已存檔] ivysaur_saved_overrides.json (妙蛙草最新修改 1,321 顆方塊)
+✔ [已存檔] ivysaur_saved_overrides.json (妙蛙草最新修改 1,384 顆方塊)
 
-★ 妙蛙草自訂修改方塊總數: 1,321 顆
+★ 妙蛙草自訂修改方塊總數: 1,384 顆
 ★ 狀態: 已完整寫入程式碼核心、LocalStorage 快取與實體備份檔案
 ★ 安全等級: 100% 永久保存，即使清空瀏覽器快取也絕不丟失
 ========================================

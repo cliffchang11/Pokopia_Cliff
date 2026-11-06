@@ -222,12 +222,19 @@
             const lCount = (lData && typeof lData === 'object') ? Object.keys(lData).length : 0;
             const cCount = (cData && typeof cData === 'object') ? Object.keys(cData).length : 0;
 
-            // 防縮水保護：若為妙蛙草且任一端小於 1,321 顆，優先使用完整的一端（>= 1,321 顆）
+            // 體素修改合併：若任一端為過期舊版 (<= 1161 顆) 或空，優先使用完整的一端 (> 1161 顆)
+            const lTime = (lVal && lVal.updatedAt !== undefined) ? Number(lVal.updatedAt) : 0;
+            const cTime = (cVal && cVal.updatedAt !== undefined) ? Number(cVal.updatedAt) : 0;
+
             if (charKey === 'ivysaur') {
-              if (cCount < 1321 && lCount >= 1321) {
+              if (cCount <= 1161 && lCount > 1161) {
                 merged.voxelOverrides[charKey] = lVal;
-              } else if (lCount < 1321 && cCount >= 1321) {
+              } else if (lCount <= 1161 && cCount > 1161) {
                 merged.voxelOverrides[charKey] = cVal;
+              } else if (cTime > lTime) {
+                merged.voxelOverrides[charKey] = cVal;
+              } else if (lTime > cTime) {
+                merged.voxelOverrides[charKey] = lVal;
               } else if (cCount > 0) {
                 merged.voxelOverrides[charKey] = cVal;
               } else {

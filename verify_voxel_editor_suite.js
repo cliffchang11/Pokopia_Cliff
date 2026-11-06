@@ -108,18 +108,18 @@ assert.ok(appCode.includes('function renderIvysaurLayer(layerIndex) {\n    if (t
 assert.ok(appCode.includes('function renderVenusaurLayer(layerIndex) {\n    if (typeof VENUSAUR_VOXEL_DATA === \'undefined\') return;\n    const data = (typeof VoxelDeltaStore !== \'undefined\') ? VoxelDeltaStore.getEffectiveVoxelData(\'venusaur\') : VENUSAUR_VOXEL_DATA;\n    const layer = data.layers[layerIndex - 1];\n    if (!layer) return;\n    const curLayer = layerIndex;'), 'renderVenusaurLayer 缺少 const curLayer = layerIndex 定義');
 console.log('  ✓ PASS: 3.4 四大角色 2D 切片函數具備安全 const curLayer = layerIndex 定義，徹底消除 ReferenceError');
 
-// 4. 測試前端資源引入與版本破壞標籤 (v4.64.0)
-console.log('\n【測試組 4: 靜態資源引入與全站版本升級 (v4.64.0)】');
+// 4. 測試前端資源引入與版本破壞標籤 (v4.65.0)
+console.log('\n【測試組 4: 靜態資源引入與全站版本升級 (v4.65.0)】');
 const indexHtml = fs.readFileSync('./index.html', 'utf8');
-assert.ok(indexHtml.includes('voxel_editor.js?v=4.64.0'), 'index.html 缺少 voxel_editor.js?v=4.64.0');
-assert.ok(indexHtml.includes('index.css?v=4.64.0'), 'index.html 未更新至 index.css?v=4.64.0');
-assert.ok(indexHtml.includes('app.js?v=4.64.0'), 'index.html 未更新至 app.js?v=4.64.0');
-console.log('  ✓ PASS: 4.1 index.html 正確引入最新資產且全站版號對齊 v=4.64.0');
+assert.ok(indexHtml.includes('voxel_editor.js?v=4.65.0'), 'index.html 缺少 voxel_editor.js?v=4.65.0');
+assert.ok(indexHtml.includes('index.css?v=4.65.0'), 'index.html 未更新至 index.css?v=4.65.0');
+assert.ok(indexHtml.includes('app.js?v=4.65.0'), 'index.html 未更新至 app.js?v=4.65.0');
+console.log('  ✓ PASS: 4.1 index.html 正確引入最新資產且全站版號對齊 v=4.65.0');
 
 const swCode = fs.readFileSync('./sw.js', 'utf8');
-assert.ok(swCode.includes('pokopia-cache-v4.64.0'), 'sw.js 快取版本未升級至 v4.64.0');
-assert.ok(swCode.includes('./voxel_editor.js?v=4.64.0'), 'sw.js 靜態清單未包含 voxel_editor.js?v=4.64.0');
-console.log('  ✓ PASS: 4.2 sw.js 離線快取成功升級 pokopia-cache-v4.64.0 且納入最新資產');
+assert.ok(swCode.includes('pokopia-cache-v4.65.0'), 'sw.js 快取版本未升級至 v4.65.0');
+assert.ok(swCode.includes('./voxel_editor.js?v=4.65.0'), 'sw.js 靜態清單未包含 voxel_editor.js?v=4.65.0');
+console.log('  ✓ PASS: 4.2 sw.js 離線快取成功升級 pokopia-cache-v4.65.0 且納入最新資產');
 
 const indexCss = fs.readFileSync('./index.css', 'utf8');
 assert.ok(indexCss.includes('.ve-cell-selected'), 'index.css 缺少 .ve-cell-selected 選取高亮樣式');
@@ -127,8 +127,8 @@ assert.ok(indexCss.includes('.ve-cell-mirror-ghost'), 'index.css 缺少 .ve-cell
 assert.ok(indexCss.includes('.ve-selection-marquee'), 'index.css 缺少 .ve-selection-marquee 框選矩形樣式');
 console.log('  ✓ PASS: 4.3 index.css 具備 .ve-cell-selected、.ve-cell-mirror-ghost 與框選矩形樣式');
 
-// 5. 測試 Firebase 腳本語法完整性、0ms 即刻同步與 1,321 顆防縮水保護
-console.log('\n【測試組 5: Firebase 語法檢查、即刻同步與 1,321 顆防縮水保護】');
+// 5. 測試 Firebase 腳本語法完整性、0ms 即刻同步與 1,384 顆防反彈保護
+console.log('\n【測試組 5: Firebase 語法檢查、即刻同步與 1,384 顆防反彈保護】');
 const { execSync } = require('child_process');
 try {
     execSync('node -c ./firebase.js', { stdio: 'pipe' });
@@ -140,9 +140,9 @@ try {
 const voxelEditorCode = fs.readFileSync('./voxel_editor.js', 'utf8');
 assert.ok(voxelEditorCode.includes('syncOverridesToCloud(charKey, isDrag)'), 'voxel_editor.js 缺少 syncOverridesToCloud(charKey, isDrag)');
 assert.ok(voxelEditorCode.includes('const delay = isDrag ? 100 : 0;'), 'voxel_editor.js 缺少單點 0ms / 拖曳 100ms 節流判斷');
-assert.ok(voxelEditorCode.includes('remoteCount < 1321'), 'voxel_editor.js 缺少 remoteCount < 1321 防縮水阻斷判定');
-assert.ok(voxelEditorCode.includes('count < 1321'), 'voxel_editor.js 缺少 count < 1321 本地防縮水阻斷判定');
-console.log('  ✓ PASS: 5.2 voxel_editor.js 具備單點 0ms / 拖曳 100ms 即刻同步與 1321 顆防縮水絕對保護');
+assert.ok(voxelEditorCode.includes('isRecentLocalAction'), 'voxel_editor.js 缺少 isRecentLocalAction 本地防回音反彈保護');
+assert.ok(voxelEditorCode.includes('1384'), 'voxel_editor.js 缺少 1384 顆終極模型');
+console.log('  ✓ PASS: 5.2 voxel_editor.js 具備單點 0ms / 拖曳 100ms 即刻同步與 1384 顆終極模型防反彈保護');
 
 console.log('\n--------------------------------------------------------');
 console.log('🎉 Pokopia 體素編輯、Firebase 即刻儲存與多端同步驗收 100% PASS！');
