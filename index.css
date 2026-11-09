@@ -12258,7 +12258,8 @@ body.has-floating-back .scroll-top-btn {
 
   .bulba-canvas-wrap,
   .buzz-iframe-wrap {
-    flex: 1;
+    flex: 1 0 auto;
+    flex-shrink: 0;
     min-width: 0;
     width: 100%;
     max-width: 100%;
@@ -12271,7 +12272,8 @@ body.has-floating-back .scroll-top-btn {
   }
 
   .bulba-grid-container {
-    flex: 1;
+    flex: 1 0 auto;
+    flex-shrink: 0;
     min-width: 0;
     width: 100%;
     max-width: 100%;
@@ -12351,6 +12353,7 @@ body.has-floating-back .scroll-top-btn {
 /* 3D 畫布容器 (黃金比例大器展台，高 480px，手機版 320px) */
 .bulba-canvas-wrap {
   position: relative;
+  flex-shrink: 0;
   width: 100%;
   height: 480px;
   background: radial-gradient(circle at center, #1b383d 0%, #0c1a1d 100%);
@@ -12825,47 +12828,52 @@ body.has-floating-back .scroll-top-btn {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Pokopia 3D 體素手動編輯器懸浮工具列 (Voxel Editor Toolbar)
-   現代毛玻璃玻璃擬態 (Glassmorphism) + 右上角輕量開關膠囊
+   Pokopia 3D/2D 體素手動編輯器嵌入式工具列 (PWA 觸控友善與零遮擋)
    ───────────────────────────────────────────────────────────── */
 
-.voxel-editor-container {
-  position: absolute;
-  top: 0;
-  left: 0;
+.voxel-editor-container,
+.voxel-editor-2d-toolbar {
+  position: static;
   width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 40;
+  pointer-events: auto;
+  z-index: 10;
+  margin-bottom: 0.75rem;
 }
 
-/* 右上角精簡開關膠囊按鈕 (預設常駐，完全零遮擋) */
+/* 體素編輯常駐膠囊開關列 (PWA 標準：高度 42px，居中或靠右自適應，大點擊熱區) */
+.ve-toggle-capsule-wrap {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
 .ve-toggle-capsule {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  pointer-events: auto;
+  position: static;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: rgba(15, 23, 42, 0.82);
+  justify-content: center;
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.88);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(56, 189, 248, 0.45);
-  border-radius: 20px;
-  padding: 6px 14px;
+  border: 1.5px solid rgba(56, 189, 248, 0.55);
+  border-radius: 9999px;
+  min-height: 42px;
+  padding: 8px 18px;
   color: #38bdf8;
   font-family: inherit;
-  font-size: 0.85rem;
+  font-size: 0.92rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35), 0 0 10px rgba(56, 189, 248, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35), 0 0 12px rgba(56, 189, 248, 0.25);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .ve-toggle-capsule:hover {
-  background: rgba(2, 132, 199, 0.88);
+  background: rgba(2, 132, 199, 0.92);
   color: #ffffff;
   border-color: #7dd3fc;
   box-shadow: 0 4px 20px rgba(2, 132, 199, 0.5);
@@ -12876,27 +12884,36 @@ body.has-floating-back .scroll-top-btn {
   transform: translateY(0);
 }
 
-/* 展開的右側直立工具面板 (預設隱藏，寬度約 84px，高度約 310px，不含色票) */
+.ve-toggle-capsule.active {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  border-color: #38bdf8;
+  box-shadow: 0 0 16px rgba(2, 132, 199, 0.6);
+}
+
+/* 展開後的嵌入式卡片面板 (全寬橫向網格，絕不破框，絕不遮擋任何元素) */
 .voxel-editor-toolbar {
-  position: absolute;
-  top: 52px;
-  right: 14px;
-  width: 84px;
+  position: static;
+  width: 100%;
   pointer-events: auto;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  background: rgba(15, 23, 42, 0.92);
+  gap: 10px;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.96) 0%, rgba(30, 41, 59, 0.94) 100%);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(56, 189, 248, 0.35);
-  border-radius: 12px;
-  padding: 8px 6px;
+  border: 1.5px solid rgba(56, 189, 248, 0.45);
+  border-radius: 14px;
+  padding: 12px 14px;
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
   user-select: none;
-  z-index: 100;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   box-sizing: border-box;
+  animation: ve-fade-slide-in 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes ve-fade-slide-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .voxel-editor-toolbar.ve-hidden,
@@ -12904,80 +12921,79 @@ body.has-floating-back .scroll-top-btn {
   display: none !important;
 }
 
+/* 頂部標題與收合列 */
 .ve-toolbar-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  padding-bottom: 5px;
+  padding-bottom: 8px;
   margin-bottom: 2px;
 }
 
 .ve-header-title {
-  font-size: 0.72rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
   font-weight: 700;
   color: #38bdf8;
-  display: none; /* 直立式節省空間，保留收合按鈕 */
 }
 
 .ve-close-btn {
-  background: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: 6px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: 8px;
   color: #fca5a5;
-  font-size: 0.72rem;
-  font-weight: 600;
-  padding: 3px 0;
-  width: 100%;
-  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  min-height: 36px;
   cursor: pointer;
   transition: all 0.15s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .ve-close-btn:hover {
-  background: rgba(239, 68, 68, 0.25);
+  background: rgba(239, 68, 68, 0.3);
   color: #fee2e2;
-  border-color: rgba(239, 68, 68, 0.5);
+  border-color: rgba(239, 68, 68, 0.6);
 }
 
 .ve-toolbar-inner {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 10px;
 }
 
-.ve-tool-group,
-.ve-action-group {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.ve-divider {
+/* PWA 觸控第一區：6 大畫筆工具 (自適應網格，每顆 >= 42px 高度，字體 >= 13px) */
+.ve-tool-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: 6px;
   width: 100%;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.14);
-  margin: 2px 0;
 }
 
 .ve-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  gap: 6px;
   font-family: inherit;
-  font-size: 0.74rem;
+  font-size: 0.86rem;
   font-weight: 600;
   color: #e2e8f0;
   background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 6px;
-  padding: 5px 2px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  padding: 8px 10px;
+  min-height: 42px;
   cursor: pointer;
   transition: all 0.15s ease;
   white-space: nowrap;
-  width: 100%;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .ve-btn:hover {
@@ -12994,42 +13010,142 @@ body.has-floating-back .scroll-top-btn {
   background: #0284c7;
   color: #ffffff;
   border-color: #38bdf8;
-  box-shadow: 0 0 10px rgba(2, 132, 199, 0.5);
+  box-shadow: 0 0 12px rgba(2, 132, 199, 0.6);
+  font-weight: 700;
 }
 
-.ve-btn-primary {
-  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+/* PWA 觸控第二區：整合式材質調色盤 (色票 36px×36px，大點擊熱區，不外凸) */
+.ve-integrated-palette {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+
+.ve-palette-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.ve-palette-cur-color {
+  color: #38bdf8;
+  font-weight: 700;
+}
+
+.ve-palette-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.ve-color-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+  padding: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  box-sizing: border-box;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ve-color-dot:hover {
+  transform: scale(1.12);
+  border-color: #ffffff;
+}
+
+.ve-color-dot.active {
+  border-color: #38bdf8;
+  transform: scale(1.15);
+  box-shadow: 0 0 12px #38bdf8;
+  outline: 2.5px solid #ffffff;
+}
+
+/* PWA 觸控第三區：動作與功能列 (自適應排版，充足寬度，絕不破框) */
+.ve-action-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.ve-mirror-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 6px;
+  width: 100%;
+}
+
+.ve-mirror-actions {
+  display: contents;
+}
+
+.ve-mirror-row .ve-btn,
+.ve-mirror-actions .ve-btn {
+  background: rgba(30, 41, 59, 0.85);
+  border-color: rgba(56, 189, 248, 0.4);
+  color: #7dd3fc;
+  min-height: 40px;
+  padding: 6px 8px;
+  font-size: 0.84rem;
+}
+
+.ve-mirror-row .ve-btn:hover,
+.ve-mirror-actions .ve-btn:hover {
+  background: rgba(2, 132, 199, 0.8);
   color: #ffffff;
-  border-color: rgba(52, 211, 153, 0.5);
+  border-color: #38bdf8;
 }
 
-.ve-btn-primary:hover {
-  background: linear-gradient(135deg, #047857 0%, #059669 100%);
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.45);
+.ve-history-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.4fr;
+  gap: 6px;
+  width: 100%;
 }
 
-/* 手動儲存按鈕與未儲存狀態樣式 */
+.ve-undo-redo-row {
+  display: contents;
+}
+
+.ve-history-row .ve-btn {
+  min-height: 42px;
+}
+
+/* 儲存按鈕樣式 */
 .ve-btn-save-cloud {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  padding: 5px 8px;
-  font-size: 0.72rem;
+  gap: 6px;
+  padding: 8px 12px;
+  min-height: 42px;
+  font-size: 0.86rem;
   font-weight: 700;
   color: #34d399;
-  background: rgba(16, 185, 129, 0.14);
-  border: 1px solid rgba(52, 211, 153, 0.3);
-  border-radius: 6px;
+  background: rgba(16, 185, 129, 0.16);
+  border: 1.5px solid rgba(52, 211, 153, 0.35);
+  border-radius: 8px;
   cursor: pointer;
   user-select: none;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  width: 100%;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .ve-btn-save-cloud:hover:not([disabled]) {
-  background: rgba(16, 185, 129, 0.24);
+  background: rgba(16, 185, 129, 0.28);
   border-color: #34d399;
   transform: translateY(-1px);
 }
@@ -13043,7 +13159,7 @@ body.has-floating-back .scroll-top-btn {
   background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%) !important;
   border-color: #38bdf8 !important;
   color: #ffffff !important;
-  box-shadow: 0 0 10px rgba(14, 165, 233, 0.5);
+  box-shadow: 0 0 14px rgba(14, 165, 233, 0.6);
   animation: ve-pulse-save 1.8s infinite ease-in-out;
 }
 
@@ -13052,152 +13168,60 @@ body.has-floating-back .scroll-top-btn {
   50% { transform: scale(1.02); box-shadow: 0 0 16px rgba(14, 165, 233, 0.75); }
 }
 
-/* 自動儲存動態微標籤相容保留 */
-.ve-autosave-badge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  padding: 4px 6px;
-  font-size: 0.68rem;
-  font-weight: 600;
-  color: #34d399;
-  background: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(52, 211, 153, 0.25);
-  border-radius: 6px;
-  user-select: none;
-  transition: all 0.2s ease;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.ve-autosave-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #10b981;
-  box-shadow: 0 0 6px #10b981;
-  transition: all 0.2s ease;
-}
-
-.ve-autosave-badge.saving {
-  color: #fbbf24;
-  background: rgba(245, 158, 11, 0.12);
-  border-color: rgba(251, 191, 36, 0.3);
-}
-
-.ve-autosave-badge.saving .ve-autosave-dot {
-  background: #f59e0b;
-  box-shadow: 0 0 6px #f59e0b;
-  animation: ve-pulse 0.8s infinite alternate ease-in-out;
-}
-
-@keyframes ve-pulse {
-  from { opacity: 0.4; transform: scale(0.85); }
-  to { opacity: 1; transform: scale(1.15); }
-}
-
 .ve-btn-danger {
   color: #fca5a5;
-  background: rgba(239, 68, 68, 0.12);
-  border-color: rgba(239, 68, 68, 0.25);
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(239, 68, 68, 0.3);
+  min-height: 40px;
 }
 
 .ve-btn-danger:hover {
-  background: rgba(239, 68, 68, 0.25);
+  background: rgba(239, 68, 68, 0.28);
   color: #fee2e2;
 }
 
-/* 展開的左側專屬調色盤 (預設隱藏，寬度約 58px，高度約 200px，絕不溢出) */
-.ve-palette-dock {
-  position: absolute;
-  top: 52px;
-  left: 14px;
-  width: 58px;
-  pointer-events: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  background: rgba(15, 23, 42, 0.92);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(56, 189, 248, 0.35);
-  border-radius: 12px;
-  padding: 8px 5px;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
-  user-select: none;
-  z-index: 100;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-  box-sizing: border-box;
+.ve-danger-zone {
+  width: 100%;
 }
 
-.ve-palette-title {
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: #38bdf8;
-  text-align: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  padding-bottom: 4px;
-  margin-bottom: 1px;
-}
-
-.ve-palette-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 22px);
-  gap: 4px;
-  justify-content: center;
-}
-
-.ve-color-dot {
-  width: 22px;
-  height: 22px;
-  border-radius: 5px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+.ve-btn-reset-safe {
+  width: 100%;
+  min-height: 36px;
+  background: transparent;
+  border: 1px dashed rgba(239, 68, 68, 0.45);
+  color: #f87171;
+  font-size: 0.78rem;
+  padding: 6px 10px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
-  padding: 0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.25);
-  box-sizing: border-box;
+  opacity: 0.8;
+  transition: all 0.2s ease;
 }
 
-.ve-color-dot:hover {
-  transform: scale(1.2);
-  border-color: #ffffff;
-  z-index: 2;
+.ve-btn-reset-safe:hover {
+  opacity: 1 !important;
+  background: rgba(239, 68, 68, 0.18) !important;
+  border-color: #ef4444 !important;
+  color: #fee2e2 !important;
 }
 
-.ve-color-dot.active {
-  border-color: #38bdf8;
-  transform: scale(1.22);
-  box-shadow: 0 0 8px #38bdf8;
-  outline: 2px solid #ffffff;
+/* 舊版調色盤掛架隱蔽相容 (若有動態遺留完全不干擾) */
+.ve-palette-dock {
+  display: none !important;
 }
 
 @media (max-width: 768px) {
-  .voxel-editor-toolbar {
-    width: 74px;
-    right: 6px;
-    top: 48px;
-    padding: 6px 3px;
-    gap: 3px;
+  .ve-tool-group {
+    grid-template-columns: repeat(3, 1fr);
   }
-  .ve-palette-dock {
-    width: 52px;
-    left: 6px;
-    top: 48px;
-    padding: 6px 3px;
+  .ve-mirror-row {
+    grid-template-columns: 1fr;
   }
-  .ve-palette-grid {
-    grid-template-columns: repeat(2, 19px);
-    gap: 3px;
+  .ve-history-row {
+    grid-template-columns: 1fr 1fr;
   }
-  .ve-color-dot {
-    width: 19px;
-    height: 19px;
-  }
-  .ve-btn {
-    font-size: 0.68rem;
-    padding: 3px 1px;
+  .ve-btn-save-cloud {
+    grid-column: 1 / -1;
   }
 }
 
@@ -13301,33 +13325,16 @@ body.has-floating-back .scroll-top-btn {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
-/* 2D 切片區域工具列適配微調 (懸浮於切片卡片上層，不隨平移縮放) */
+/* 2D 切片區域工具列適配微調 (嵌入卡片流，不遮擋滑桿與網格) */
 .bulba-slice-card {
   position: relative;
 }
 
 .voxel-editor-2d-toolbar {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: static;
   width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 35;
-}
-
-.voxel-editor-2d-toolbar .ve-toggle-capsule {
   pointer-events: auto;
-  top: 18px;
-  right: 18px;
-  font-size: 0.8rem;
-  padding: 5px 12px;
-}
-
-.voxel-editor-2d-toolbar .voxel-editor-toolbar {
-  pointer-events: auto;
-  top: 54px;
-  right: 18px;
+  z-index: 20;
 }
 
 .ve-mirror-actions .ve-btn {

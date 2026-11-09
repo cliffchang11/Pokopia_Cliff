@@ -820,7 +820,7 @@
     wrap.className = 'voxel-editor-container';
     wrap.id = `voxelToolbar_${charKey}`;
 
-    // 建立調色盤色票 HTML
+    // 建立整合式調色盤色票 HTML
     const palette = baseData && baseData.palette ? baseData.palette : {};
     let paletteHtml = '';
     const bids = Object.keys(palette);
@@ -828,9 +828,11 @@
       _state.selectedBid = Number(bids[0]);
     }
 
+    let curColorName = '預設材質';
     bids.forEach(bid => {
       const item = palette[bid];
       const isSelected = Number(bid) === Number(_state.selectedBid);
+      if (isSelected && item && item.name) curColorName = item.name;
       paletteHtml += `
         <button type="button" class="ve-color-dot ${isSelected ? 'active' : ''}" data-bid="${bid}" title="${item.name || '方塊'}" style="background-color: ${item.color};">
         </button>
@@ -838,26 +840,22 @@
     });
 
     wrap.innerHTML = `
-      <!-- 右上角精簡開關膠囊按鈕 (預設常駐，零遮擋模型) -->
-      <button type="button" class="ve-toggle-capsule" id="veToggleBtn_${charKey}" title="開啟 / 收合 3D 體素手動編輯器">
-        🛠️ 體素編輯
-      </button>
-
-      <!-- 展開的左側專屬調色盤 (預設隱藏，寬 58px 高約 200px 絕不溢出) -->
-      <div class="ve-palette-dock ve-hidden" id="vePaletteDock_${charKey}">
-        <div class="ve-palette-title">🎨 材質</div>
-        <div class="ve-palette-grid">
-          ${paletteHtml}
-        </div>
+      <!-- PWA 常駐開關膠囊按鈕 (大點擊熱區，高度 42px，居於自然排版流) -->
+      <div class="ve-toggle-capsule-wrap">
+        <button type="button" class="ve-toggle-capsule" id="veToggleBtn_${charKey}" title="開啟 / 收合體素編輯器">
+          🛠️ 體素編輯
+        </button>
       </div>
 
-      <!-- 展開的右側編輯工具面板 (預設隱藏，高度約 310px 絕不溢出) -->
+      <!-- 展開的全寬自然嵌入式工具面板 (符合 PWA 觸控規範，按鈕 >= 40px，色票 36px，絕不破框遮擋) -->
       <div class="voxel-editor-toolbar ve-hidden" id="vePanel_${charKey}">
         <div class="ve-toolbar-header">
+          <span class="ve-header-title">🛠️ 體素編輯面板</span>
           <button type="button" class="ve-close-btn" id="veCloseBtn_${charKey}" title="收合面板">✖ 收合</button>
         </div>
 
         <div class="ve-toolbar-inner">
+          <!-- 第 1 區：6 大畫筆工具 (自適應分區網格) -->
           <div class="ve-tool-group">
             <button type="button" class="ve-btn ${!_state.editorMode ? 'active' : ''}" data-tool="rotate" title="視角旋轉 (可拖曳視角)">
               🖐️ 旋轉
@@ -879,41 +877,59 @@
             </button>
           </div>
 
-          <div class="ve-divider"></div>
+          <!-- 清空選取提示列 (當有選取方塊時顯示) -->
+          <button type="button" class="ve-btn ve-btn-danger" id="btnClearSel_${charKey}" title="清空當前選取的方塊" style="${(_state.selectedVoxels && _state.selectedVoxels.size > 0) ? '' : 'display:none;'}width:100%;">
+            ✖ 清空選取 (${_state.selectedVoxels ? _state.selectedVoxels.size : 0})
+          </button>
 
-          <div class="ve-action-group">
-            <button type="button" class="ve-btn ve-btn-danger" id="btnClearSel_${charKey}" title="清空當前選取的方塊" style="${(_state.selectedVoxels && _state.selectedVoxels.size > 0) ? '' : 'display:none;'}">
-              ✖ 清空選取 (${_state.selectedVoxels ? _state.selectedVoxels.size : 0})
-            </button>
-            <button type="button" class="ve-btn ${_state.mirrorSymmetry ? 'active' : ''}" id="btnMirror_${charKey}" title="左右鏡像對稱編輯">
-              🪞 鏡像: ${_state.mirrorSymmetry ? '開' : '關'}
-            </button>
-            <div class="ve-mirror-actions" style="display:flex;gap:4px;width:100%;">
-              <button type="button" class="ve-btn ve-btn-mirror-ltor" id="btnMirrorLtoR_${charKey}" title="將本層左側方塊完全鏡像複製至右側 (右側原有顏色不變，缺少則補齊，來源無則刪除)" style="flex:1;padding:4px 2px;font-size:11px;">
-                ⮂ 左鏡右
-              </button>
-              <button type="button" class="ve-btn ve-btn-mirror-rtol" id="btnMirrorRtoL_${charKey}" title="將本層右側方塊完全鏡像複製至左側 (左側原有顏色不變，缺少則補齊，來源無則刪除)" style="flex:1;padding:4px 2px;font-size:11px;">
-                ⮃ 右鏡左
-              </button>
+          <!-- 第 2 區：整合式材質調色盤 (色票 36px×36px 大熱區，內嵌整合零遮擋) -->
+          <div class="ve-integrated-palette">
+            <div class="ve-palette-title-row">
+              <span>🎨 材質選擇</span>
+              <span class="ve-palette-cur-color" id="vePaletteCurColor_${charKey}">${curColorName}</span>
             </div>
-            <div class="ve-undo-redo-row" style="display:flex;gap:4px;width:100%;">
-              <button type="button" class="ve-btn" id="btnUndo_${charKey}" title="復原上一步 (最多 10 步)" style="flex:1;">
-                ↩️ 復原
-              </button>
-              <button type="button" class="ve-btn" id="btnRedo_${charKey}" title="重做下一步 (最多 10 步)" style="flex:1;">
-                ↪️ 重做
-              </button>
+            <div class="ve-palette-grid">
+              ${paletteHtml}
             </div>
-            <button type="button" class="ve-btn ve-btn-save-cloud" data-char="${charKey}" id="btnSaveCloud_${charKey}" title="點擊將當前所有修改儲存至 Google 雲端帳號" style="width:100%;margin-top:4px;">
-              <span class="ve-save-icon">✔</span>
-              <span class="ve-save-text">已是最新</span>
-            </button>
           </div>
 
-          <div class="ve-divider" style="margin: 6px 0 4px 0;"></div>
+          <!-- 第 3 區：動作與功能列 (自適應排版，充足寬度，絕不破框) -->
+          <div class="ve-action-group">
+            <!-- 鏡像動作列 -->
+            <div class="ve-mirror-row">
+              <button type="button" class="ve-btn ${_state.mirrorSymmetry ? 'active' : ''}" id="btnMirror_${charKey}" title="左右鏡像對稱編輯">
+                🪞 鏡像: ${_state.mirrorSymmetry ? '開' : '關'}
+              </button>
+              <div class="ve-mirror-actions">
+                <button type="button" class="ve-btn ve-btn-mirror-ltor" id="btnMirrorLtoR_${charKey}" title="將本層左側方塊完全鏡像複製至右側">
+                  ⮂ 左鏡右
+                </button>
+                <button type="button" class="ve-btn ve-btn-mirror-rtol" id="btnMirrorRtoL_${charKey}" title="將本層右側方塊完全鏡像複製至左側">
+                  ⮃ 右鏡左
+                </button>
+              </div>
+            </div>
 
+            <!-- 歷史與儲存列 -->
+            <div class="ve-history-row">
+              <div class="ve-undo-redo-row">
+                <button type="button" class="ve-btn" id="btnUndo_${charKey}" title="復原上一步 (最多 10 步)">
+                  ↩️ 復原
+                </button>
+                <button type="button" class="ve-btn" id="btnRedo_${charKey}" title="重做下一步 (最多 10 步)">
+                  ↪️ 重做
+                </button>
+              </div>
+              <button type="button" class="ve-btn ve-btn-save-cloud" data-char="${charKey}" id="btnSaveCloud_${charKey}" title="點擊將當前所有修改儲存至 Google 雲端帳號">
+                <span class="ve-save-icon">✔</span>
+                <span class="ve-save-text">已是最新</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 危險操作安全隔離區 -->
           <div class="ve-danger-zone" style="width: 100%;">
-            <button type="button" class="ve-btn ve-btn-reset-safe" id="btnReset_${charKey}" title="清除所有自訂修改，恢復官方預設模型 (需二次確認)" style="background:transparent;border:1px dashed rgba(239, 68, 68, 0.4);color:#f87171;font-size:10px;padding:3px 2px;opacity:0.75;width:100%;">
+            <button type="button" class="ve-btn ve-btn-reset-safe" id="btnReset_${charKey}" title="清除所有自訂修改，恢復官方預設模型 (需二次確認)">
               🔄 恢復預設
             </button>
           </div>
@@ -1316,7 +1332,13 @@
         btnClearSel.innerHTML = `✖ 清空選取 (${selCount})`;
       });
 
-      // 色票 active (左側調色盤)
+      // 色票 active 與名稱提示 (整合式調色盤)
+      const curPalette = (baseData && baseData.palette) ? baseData.palette : {};
+      const curItem = curPalette[_state.selectedBid];
+      bar.querySelectorAll(`[id^="vePaletteCurColor_"]`).forEach(el => {
+        el.textContent = curItem && curItem.name ? curItem.name : '已選材質';
+      });
+
       bar.querySelectorAll('.ve-color-dot').forEach(dot => {
         const bid = Number(dot.getAttribute('data-bid'));
         dot.classList.toggle('active', bid === Number(_state.selectedBid));
@@ -1348,6 +1370,28 @@
     }
   }
 
+  function setToolbarExpanded(charKey, expanded) {
+    if (typeof document === 'undefined') return;
+    const bars = document.querySelectorAll(`[id="voxelToolbar_${charKey}"], [id="voxelToolbar2D_${charKey}"]`);
+    bars.forEach(bar => {
+      const panel = bar.querySelector(`[id^="vePanel_"]`);
+      const toggleBtn = bar.querySelector(`[id^="veToggleBtn_"]`);
+      const paletteDock = bar.querySelector(`[id^="vePaletteDock_"]`);
+      if (panel) panel.classList.toggle('ve-hidden', !expanded);
+      if (paletteDock) paletteDock.classList.toggle('ve-hidden', !expanded);
+      if (toggleBtn) toggleBtn.classList.toggle('active', expanded);
+    });
+
+    if (expanded) {
+      _state.editorMode = true;
+      if (_state.tool === 'rotate') _state.tool = 'paint';
+    } else {
+      _state.editorMode = false;
+      _state.tool = 'rotate';
+    }
+    updateToolbarUI(charKey);
+  }
+
   function setupToolbarEvents(container, charKey, threeState, baseData, onSubmitCallback) {
     const toggleBtn = container.querySelector(`[id^="veToggleBtn_"]`);
     const panel = container.querySelector(`[id^="vePanel_"]`);
@@ -1358,28 +1402,14 @@
       toggleBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         const isHidden = panel.classList.contains('ve-hidden');
-        panel.classList.toggle('ve-hidden', !isHidden);
-        if (paletteDock) paletteDock.classList.toggle('ve-hidden', !isHidden);
-        if (isHidden) {
-          _state.editorMode = true;
-          if (_state.tool === 'rotate') _state.tool = 'paint';
-          updateToolbarUI(charKey);
-        } else {
-          _state.editorMode = false;
-          _state.tool = 'rotate';
-          updateToolbarUI(charKey);
-        }
+        setToolbarExpanded(charKey, isHidden);
       });
     }
 
     if (closeBtn && panel) {
       closeBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        panel.classList.add('ve-hidden');
-        if (paletteDock) paletteDock.classList.add('ve-hidden');
-        _state.editorMode = false;
-        _state.tool = 'rotate';
-        updateToolbarUI(charKey);
+        setToolbarExpanded(charKey, false);
       });
     }
 
@@ -1499,8 +1529,12 @@
     let container = document.getElementById(`voxelToolbar_${charKey}`);
     if (!container) {
       container = createEditorToolbarDOM(charKey, baseData);
-      canvasWrap.style.position = 'relative';
-      canvasWrap.appendChild(container);
+      // 自然流嵌入：若 canvasWrap 上方有父層卡片，優先插入於 canvasWrap 之前
+      if (canvasWrap.parentElement) {
+        canvasWrap.parentElement.insertBefore(container, canvasWrap);
+      } else {
+        canvasWrap.appendChild(container);
+      }
 
       setupToolbarEvents(container, charKey, threeState, baseData, onSubmitCallback);
       bindThreeRaycaster(charKey, threeState, baseData, canvasWrap);
@@ -1521,8 +1555,14 @@
       if (saveBtn2D) {
         saveBtn2D.id = `btnSaveCloud2D_${charKey}`;
       }
-      container2D.style.position = 'relative';
-      container2D.appendChild(toolbar2D);
+
+      // 自然流嵌入：優先插入在 2D 切片網格容器 (.bulba-grid-container) 之前，不遮擋滑桿與網格
+      const gridContainer = container2D.querySelector('.bulba-grid-container');
+      if (gridContainer) {
+        container2D.insertBefore(toolbar2D, gridContainer);
+      } else {
+        container2D.appendChild(toolbar2D);
+      }
 
       setupToolbarEvents(toolbar2D, charKey, threeState, baseData, onSubmitCallback);
     }

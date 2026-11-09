@@ -408,14 +408,14 @@ test('3.13 離線模擬 handleCellMirrorHover 鏡像外框觸發、中心軸避�
   assert.strictEqual(cellCenter.classList.contains('ve-cell-mirror-ghost'), false, '中軸自身格子不應重複發光');
 });
 
-test('3.14 2D 編輯工具列層級固定懸浮 (getCharSliceCardEl 優先尋找 bulba-slice-card，CSS 不隨平移移動)', () => {
+test('3.14 2D 編輯工具列層級自然流嵌入 (getCharSliceCardEl 優先尋找 bulba-slice-card，PWA 嵌入且不隨網格平移移動)', () => {
   const appCode = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf-8');
   assert.strictEqual(appCode.includes("return grid.closest('.bulba-slice-card') || grid.closest('.bulba-grid-container') || grid.parentElement;"), true);
 
   const cssCode = fs.readFileSync(path.join(__dirname, 'index.css'), 'utf-8');
   assert.strictEqual(cssCode.includes('.bulba-slice-card {\n  position: relative;'), true);
-  assert.strictEqual(cssCode.includes('.voxel-editor-2d-toolbar {\n  position: absolute;'), true);
-  assert.strictEqual(cssCode.includes('pointer-events: none;'), true);
+  assert.strictEqual(cssCode.includes('.voxel-editor-2d-toolbar {\n  position: static;'), true);
+  assert.strictEqual(cssCode.includes('pointer-events: auto;'), true);
 });
 
 test('3.15 切片指南平移事件精確隔離 (pointerdown 過濾工具列本體與編輯狀態下的方塊點擊)', () => {
