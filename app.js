@@ -1110,6 +1110,12 @@
           // 體素自訂修改 (Voxel Overrides) 雲端水合
           if (merged.voxelOverrides && typeof VoxelDeltaStore !== 'undefined' && typeof VoxelDeltaStore.hydrateFromCloud === 'function') {
             VoxelDeltaStore.hydrateFromCloud(merged.voxelOverrides);
+            // 雲端水合成功後，自動刷新當前活躍角色的 2D 切片與材料統計
+            const activeChar = (bulbaState && bulbaState.curChar) || getSaved3DChar() || 'buzz';
+            if (activeChar === 'ivysaur') renderIvysaurLayer(ivysaurState.curLayer);
+            else if (activeChar === 'bulbasaur' || activeChar === 'bulba') renderBulbaLayer(bulbaState.curLayer);
+            else if (activeChar === 'venusaur') renderVenusaurLayer(venusaurState.curLayer);
+            else if (activeChar === 'buzz') renderBuzzLayer(buzzState.curLayer);
           }
           // 3D 藍圖停留狀態雲端對齊
           if (merged.blueprint3D && typeof merged.blueprint3D === 'object') {
@@ -1213,6 +1219,12 @@
               // 實時監聽體素修改水合 (跨裝置即塗即現)
               if (updated.voxelOverrides && typeof VoxelDeltaStore !== 'undefined' && typeof VoxelDeltaStore.hydrateFromCloud === 'function') {
                 VoxelDeltaStore.hydrateFromCloud(updated.voxelOverrides);
+                // 雲端水合成功後，自動刷新當前活躍角色的 2D 切片與材料統計
+                const activeChar = (bulbaState && bulbaState.curChar) || getSaved3DChar() || 'buzz';
+                if (activeChar === 'ivysaur') renderIvysaurLayer(ivysaurState.curLayer);
+                else if (activeChar === 'bulbasaur' || activeChar === 'bulba') renderBulbaLayer(bulbaState.curLayer);
+                else if (activeChar === 'venusaur') renderVenusaurLayer(venusaurState.curLayer);
+                else if (activeChar === 'buzz') renderBuzzLayer(buzzState.curLayer);
               }
               // 實時監聽 3D 狀態水合
               if (updated.blueprint3D && typeof updated.blueprint3D === 'object') {

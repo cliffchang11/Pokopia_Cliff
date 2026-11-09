@@ -107,7 +107,7 @@
         if (typeof btn.removeAttribute === 'function') btn.removeAttribute('disabled');
         if (icon) icon.textContent = '✔';
         if (text) text.textContent = '已儲存至雲端';
-        setTimeout(() => {
+        if (false) setTimeout(() => {
           if (btn.classList && !btn.classList.contains('is-dirty')) {
             if (icon) icon.textContent = '✔';
             if (text) text.textContent = '已是最新';
@@ -767,6 +767,7 @@
   // 從 Google 雲端水合注入修改 (跨裝置手機載入時 100% 直接以雲端為最高權威優先水合)
   function hydrateFromCloud(cloudOverrides) {
     if (!cloudOverrides || typeof cloudOverrides !== 'object') return;
+    let anyHydrated = false;
     ['bulbasaur', 'ivysaur', 'venusaur', 'buzz'].forEach(k => {
       const remote = cloudOverrides[k];
       if (remote && typeof remote === 'object') {
@@ -775,6 +776,7 @@
         const localOverrides = (_state.characters[k] && _state.characters[k].overrides) || {};
         const localCount = Object.keys(localOverrides).length;
         const remoteCount = (remoteData && typeof remoteData === 'object') ? Object.keys(remoteData).length : 0;
+        const localTime = (_state.characters[k] && _state.characters[k].updatedAt) || loadTimeFromStorage(k) || 0;
 
         // 核心邏輯：
         // 1. 本地編輯保護（Anti-Bounce 反彈阻斷）：
@@ -783,15 +785,31 @@
         let shouldHydrate = false;
         const lastAction = _lastLocalActionTimes[k] || 0;
         const isRecentLocalAction = (lastAction > 0 && (Date.now() - lastAction < 10000));
+        const isLocalDirty = !!(_state.characters[k] && _state.characters[k].isDirty);
+
         if (isRecentLocalAction) {
           if (remoteTime !== null && remoteTime > lastAction) {
             shouldHydrate = true;
           } else {
             shouldHydrate = false; // 阻斷自身回音
           }
-        } else if (_state.characters[k] && _state.characters[k].isDirty) {
-          // 本地正在手動編輯中且尚未點擊儲存，維持本地編輯狀態
-          shouldHydrate = false;
+        } else if (isLocalDirty) {
+          // 本地正在手動編輯中且尚未點擊儲存：
+          // 若遠端確實有更新的存檔，彈出確認詢問使用者
+          if (remoteTime !== null && remoteTime > localTime) {
+            const charName = k === 'ivysaur' ? '妙蛙草' : k === 'bulbasaur' ? '妙蛙種子' : k === 'venusaur' ? '妙蛙花' : '巴斯光年';
+            const userChoice = (typeof confirm === 'function')
+              ? confirm(`☁️ 提示：偵測到 Google 雲端有【${charName}】較新的手動存檔！\n\n您目前在本地有尚未儲存的編輯，是否要放棄當前未存草稿並載入雲端最新版本？\n（點擊「確定」載入雲端版本，點擊「取消」保留目前編輯）`)
+              : false;
+            if (userChoice) {
+              shouldHydrate = true;
+              _state.characters[k].isDirty = false;
+            } else {
+              shouldHydrate = false;
+            }
+          } else {
+            shouldHydrate = false;
+          }
         } else if (remoteTime !== null) {
           // 重新整理或初次載入：雲端手動存檔具備最高權威，無條件直接載入
           shouldHydrate = true;
@@ -803,12 +821,19 @@
           if (_state.characters[k]) {
             _state.characters[k].overrides = { ...remoteData };
             _state.characters[k].updatedAt = remoteTime || Date.now();
+            _state.characters[k].isDirty = false;
           }
           saveOverridesToStorage(k, remoteTime || Date.now());
           notifyListeners(k, true);
+          updateSaveButtonUI(k, 'saved');
+          anyHydrated = true;
         }
       }
     });
+
+    if (anyHydrated && typeof showToast === 'function') {
+      showToast('☁️ 已同步 Google 雲端最新進度！');
+    }
   }
 
   // ─────────────────────────────────────────────────────────
@@ -1431,94 +1456,96 @@
       });
     }
 
-    panel.addEventListener('click', (e) => {
-      const target = e.target.closest('button');
-      if (!target) return;
+    if (panel) {
+      panel.addEventListener('click', (e) => {
+        const target = e.target.closest('button');
+        if (!target) return;
 
-      if (target.id.startsWith('btnClearSel_')) {
-        clearSelection(charKey);
-        updateToolbarUI(charKey);
-        syncThreeMeshFromOverrides(charKey, threeState, baseData);
-        return;
-      }
-
-      if (target.hasAttribute('data-tool')) {
-        const t = target.getAttribute('data-tool');
-        if (t === 'delete' && _state.selectedVoxels && _state.selectedVoxels.size > 0) {
-          applyBatchAction(charKey, 'delete');
+        if (target.id.startsWith('btnClearSel_')) {
+          clearSelection(charKey);
+          updateToolbarUI(charKey);
           syncThreeMeshFromOverrides(charKey, threeState, baseData);
+          return;
+        }
+
+        if (target.hasAttribute('data-tool')) {
+          const t = target.getAttribute('data-tool');
+          if (t === 'delete' && _state.selectedVoxels && _state.selectedVoxels.size > 0) {
+            applyBatchAction(charKey, 'delete');
+            syncThreeMeshFromOverrides(charKey, threeState, baseData);
+            updateToolbarUI(charKey);
+            return;
+          }
+          _state.tool = t;
+          _state.editorMode = (t !== 'rotate');
           updateToolbarUI(charKey);
           return;
         }
-        _state.tool = t;
-        _state.editorMode = (t !== 'rotate');
-        updateToolbarUI(charKey);
-        return;
-      }
 
-      if (target.hasAttribute('data-bid')) {
-        _state.selectedBid = Number(target.getAttribute('data-bid'));
-        if (_state.selectedVoxels && _state.selectedVoxels.size > 0) {
-          applyBatchAction(charKey, 'paint', _state.selectedBid);
-          syncThreeMeshFromOverrides(charKey, threeState, baseData);
-        } else if (_state.tool === 'rotate' || _state.tool === 'eyedropper' || _state.tool === 'delete') {
-          _state.tool = 'paint';
-          _state.editorMode = true;
-        }
-        updateToolbarUI(charKey);
-        return;
-      }
-
-      if (target.id.startsWith('btnMirror_')) {
-        _state.mirrorSymmetry = !_state.mirrorSymmetry;
-        updateToolbarUI(charKey);
-        return;
-      }
-
-      // 一鍵鏡像同步 (左鏡右 / 右鏡左)
-      if (target.id.startsWith('btnMirrorLtoR_') || target.classList.contains('ve-btn-mirror-ltor')) {
-        const curLayer = (threeState._getCurLayer ? threeState._getCurLayer() : 1);
-        mirrorCurrentLayer(charKey, curLayer, 'left-to-right');
-        syncThreeMeshFromOverrides(charKey, threeState, baseData);
-        return;
-      }
-      if (target.id.startsWith('btnMirrorRtoL_') || target.classList.contains('ve-btn-mirror-rtol')) {
-        const curLayer = (threeState._getCurLayer ? threeState._getCurLayer() : 1);
-        mirrorCurrentLayer(charKey, curLayer, 'right-to-left');
-        syncThreeMeshFromOverrides(charKey, threeState, baseData);
-        return;
-      }
-
-      if (target.id.startsWith('btnUndo_')) {
-        undo(charKey);
-        return;
-      }
-
-      if (target.id.startsWith('btnRedo_')) {
-        redo(charKey);
-        return;
-      }
-
-      if (target.id.startsWith('btnSaveCloud_') || target.id.startsWith('btnSaveCloud2D_') || target.classList.contains('ve-btn-save-cloud') || target.closest('.ve-btn-save-cloud') || target.closest('[id^="btnSaveCloud_"]') || target.closest('[id^="btnSaveCloud2D_"]')) {
-        saveOverridesToCloud(charKey);
-        return;
-      }
-
-      if (target.id.startsWith('btnReset_')) {
-        const confirmMsg = '⚠️ 警告：這將會清除您對當前角色的所有自訂方塊與改動，恢復為官方預設值，且無法撤銷！\n\n確定要重置嗎？';
-        if (confirm(confirmMsg)) {
-          resetToDefault(charKey);
-          _lastLocalActionTimes[charKey] = Date.now();
-          saveOverridesToStorage(charKey);
-          saveOverridesToCloud(charKey);
-          syncThreeMeshFromOverrides(charKey, threeState, baseData);
-          if (typeof onSubmitCallback === 'function') {
-            onSubmitCallback(charKey, {});
+        if (target.hasAttribute('data-bid')) {
+          _state.selectedBid = Number(target.getAttribute('data-bid'));
+          if (_state.selectedVoxels && _state.selectedVoxels.size > 0) {
+            applyBatchAction(charKey, 'paint', _state.selectedBid);
+            syncThreeMeshFromOverrides(charKey, threeState, baseData);
+          } else if (_state.tool === 'rotate' || _state.tool === 'eyedropper' || _state.tool === 'delete') {
+            _state.tool = 'paint';
+            _state.editorMode = true;
           }
+          updateToolbarUI(charKey);
+          return;
         }
-        return;
-      }
-    });
+
+        if (target.id.startsWith('btnMirror_')) {
+          _state.mirrorSymmetry = !_state.mirrorSymmetry;
+          updateToolbarUI(charKey);
+          return;
+        }
+
+        // 一鍵鏡像同步 (左鏡右 / 右鏡左)
+        if (target.id.startsWith('btnMirrorLtoR_') || target.classList.contains('ve-btn-mirror-ltor')) {
+          const curLayer = (threeState._getCurLayer ? threeState._getCurLayer() : 1);
+          mirrorCurrentLayer(charKey, curLayer, 'left-to-right');
+          syncThreeMeshFromOverrides(charKey, threeState, baseData);
+          return;
+        }
+        if (target.id.startsWith('btnMirrorRtoL_') || target.classList.contains('ve-btn-mirror-rtol')) {
+          const curLayer = (threeState._getCurLayer ? threeState._getCurLayer() : 1);
+          mirrorCurrentLayer(charKey, curLayer, 'right-to-left');
+          syncThreeMeshFromOverrides(charKey, threeState, baseData);
+          return;
+        }
+
+        if (target.id.startsWith('btnUndo_')) {
+          undo(charKey);
+          return;
+        }
+
+        if (target.id.startsWith('btnRedo_')) {
+          redo(charKey);
+          return;
+        }
+
+        if (target.id.startsWith('btnSaveCloud_') || target.id.startsWith('btnSaveCloud2D_') || target.classList.contains('ve-btn-save-cloud') || target.closest('.ve-btn-save-cloud') || target.closest('[id^="btnSaveCloud_"]') || target.closest('[id^="btnSaveCloud2D_"]')) {
+          saveOverridesToCloud(charKey);
+          return;
+        }
+
+        if (target.id.startsWith('btnReset_')) {
+          const confirmMsg = '⚠️ 警告：這將會清除您對當前角色的所有自訂方塊與改動，恢復為官方預設值，且無法撤銷！\n\n確定要重置嗎？';
+          if (confirm(confirmMsg)) {
+            resetToDefault(charKey);
+            _lastLocalActionTimes[charKey] = Date.now();
+            saveOverridesToStorage(charKey);
+            saveOverridesToCloud(charKey);
+            syncThreeMeshFromOverrides(charKey, threeState, baseData);
+            if (typeof onSubmitCallback === 'function') {
+              onSubmitCallback(charKey, {});
+            }
+          }
+          return;
+        }
+      });
+    }
   }
 
   function attachEditorToScene(charKey, threeState, baseData, canvasWrap, onSubmitCallback) {
@@ -1538,6 +1565,12 @@
 
       setupToolbarEvents(container, charKey, threeState, baseData, onSubmitCallback);
       bindThreeRaycaster(charKey, threeState, baseData, canvasWrap);
+    }
+
+    // 延遲就緒保護：若雲端或本地已有存檔，確保 3D 網格初次掛載即時同步最新狀態
+    const curOv = getOverrides(charKey);
+    if (curOv && Object.keys(curOv).length > 0) {
+      syncThreeMeshFromOverrides(charKey, threeState, baseData);
     }
   }
 
@@ -1617,7 +1650,7 @@
   };
 
   // 網頁載入時若有已存在的修改，主動為其做一次備份
-  if (typeof window !== 'undefined') {
+  if (typeof window !== 'undefined' && typeof window.document !== 'undefined') {
     setTimeout(() => {
       ['bulbasaur', 'ivysaur', 'venusaur', 'buzz'].forEach(k => {
         const ov = getOverrides(k);
