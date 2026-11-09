@@ -40,6 +40,16 @@
       if (data[dotKey]) {
         data.voxelOverrides[k] = data[dotKey];
       }
+      // 確保結構統一，若無 .data 則補全包裹，且確保時間戳不遺失
+      const val = data.voxelOverrides[k];
+      if (val && typeof val === 'object') {
+        if (val.data === undefined) {
+          data.voxelOverrides[k] = {
+            data: val,
+            updatedAt: 1
+          };
+        }
+      }
     });
     return data;
   }
@@ -220,11 +230,11 @@
           } else if (!lVal) {
             merged.voxelOverrides[charKey] = cVal;
           } else {
-            // 體素修改合併：以最新手動儲存時間戳為準，允許合法消除方塊
+            // 體素修改合併：雲端手動存檔具絕對權威，大於等於本地時間戳一律以雲端為準
             const lTime = (lVal && lVal.updatedAt !== undefined) ? Number(lVal.updatedAt) : 0;
             const cTime = (cVal && cVal.updatedAt !== undefined) ? Number(cVal.updatedAt) : 0;
 
-            if (cTime > lTime) {
+            if (cTime >= lTime || cTime > lTime) {
               merged.voxelOverrides[charKey] = cVal;
             } else if (lTime > cTime) {
               merged.voxelOverrides[charKey] = lVal;
@@ -405,6 +415,7 @@
     subscribeCloudProgress: subscribeCloudProgress,
     unsubscribeCloudProgress: unsubscribeCloudProgress,
     mergeProgressUnion: mergeProgressUnion,
+    normalizeCloudData: normalizeCloudData,
     saveVoxelOverrides: saveVoxelOverrides,
     loadVoxelOverrides: loadVoxelOverrides
   };

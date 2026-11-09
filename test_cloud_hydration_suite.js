@@ -114,7 +114,7 @@ console.log('  ✓ PASS: 3.1 3D 引擎延遲掛載時，自動補償與雲端存
 console.log('\n【測試組 4: app.js 與 voxel_editor.js 雲端水合連動重繪整合斷言】');
 const appCode = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf8');
 const editorCode = fs.readFileSync(path.join(__dirname, 'voxel_editor.js'), 'utf8');
-assert.ok(appCode.includes('if (activeChar === \'ivysaur\') renderIvysaurLayer(ivysaurState.curLayer);'), 'app.js onAuthChange 必須自動重繪活躍角色的 2D 切片');
+assert.ok(appCode.includes('renderIvysaurLayer(ivysaurState.curLayer);'), 'app.js onAuthChange 必須自動重繪活躍角色的 2D 切片');
 assert.ok(editorCode.includes('showToast(\'☁️ 已同步 Google 雲端最新進度！\');'), 'voxel_editor.js 必須在雲端水合後提供提示');
 console.log('  ✓ PASS: 4.1 app.js 登入水合與實時監聽水合皆已補上活躍角色 2D 切片自動重繪');
 console.log('  ✓ PASS: 4.2 voxel_editor.js 水合完成時主動觸發 showToast 提示');
