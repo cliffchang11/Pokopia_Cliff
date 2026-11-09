@@ -63,7 +63,7 @@
     return null;
   }
 
-  async function saveCloudProgress(uid, progressData) {
+  async function saveCloudProgress(uid, progressData, mergeFields = null) {
     try {
       const timeoutPromise = new Promise((_, reject) =>
         setTimeout(() => reject(new Error('Firebase save timeout after 5000ms')), 5000)
@@ -71,7 +71,10 @@
       const savePromise = (async () => {
         const { doc, setDoc, serverTimestamp } = await import(CDN + '/firebase-firestore.js');
         const docRef = doc(_db, progressDocPath(uid));
-        await setDoc(docRef, { ...progressData, lastUpdated: serverTimestamp() }, { merge: true });
+        const setOptions = (Array.isArray(mergeFields) && mergeFields.length > 0)
+          ? { mergeFields: [...mergeFields, 'lastUpdated'] }
+          : { merge: true };
+        await setDoc(docRef, { ...progressData, lastUpdated: serverTimestamp() }, setOptions);
         return true;
       })();
       await Promise.race([savePromise, timeoutPromise]);
@@ -355,13 +358,14 @@
       }
 
       if (_currentUser) {
-        // 角色級整份替換：以 dot-notation 完整替換該角色物件，絕不觸發子 key deep merge
+        // 角色級原子整份替換：以 mergeFields 明確鎖定 voxelOverrides.${charKey}
+        // 讓 Firestore 將該角色資料作為單一原子完全覆蓋，徹底清除已消除方塊的舊 key，絕不觸發 recursive deep merge！
         saveCloudProgress(_currentUser.uid, {
           [`voxelOverrides.${charKey}`]: {
             data: overrides || {},
             updatedAt: now
           }
-        });
+        }, [`voxelOverrides.${charKey}`]);
         return { success: true, cloud: true, message: '已成功儲存至您的 Google 雲端帳號！' };
       }
       return { success: true, cloud: false, message: '已保存至本地瀏覽器！登入 Google 帳號可跨裝置永久同步。' };

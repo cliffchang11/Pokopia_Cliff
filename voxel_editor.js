@@ -70,36 +70,51 @@
     return {};
   }
 
-  // 狀態按鈕視覺更新 (未儲存高亮亮起、儲存中、已儲存)
+  // 狀態按鈕視覺更新 (未儲存高亮亮起、儲存中、已儲存，3D 與 2D 雙向完全同步)
   function updateSaveButtonUI(charKey, status) {
-    if (typeof document === 'undefined' || typeof document.getElementById !== 'function') return;
-    const btn = document.getElementById(`btnSaveCloud_${charKey}`);
-    if (!btn) return;
-    const icon = btn.querySelector('.ve-save-icon');
-    const text = btn.querySelector('.ve-save-text');
-
-    if (status === 'dirty') {
-      btn.classList.add('is-dirty');
-      btn.removeAttribute('disabled');
-      if (icon) icon.textContent = '💾';
-      if (text) text.textContent = '儲存修改 (未儲存)';
-    } else if (status === 'saving') {
-      btn.classList.remove('is-dirty');
-      btn.setAttribute('disabled', 'true');
-      if (icon) icon.textContent = '⏳';
-      if (text) text.textContent = '儲存中...';
-    } else {
-      btn.classList.remove('is-dirty');
-      btn.removeAttribute('disabled');
-      if (icon) icon.textContent = '✔';
-      if (text) text.textContent = '已儲存至雲端';
-      setTimeout(() => {
-        if (!btn.classList.contains('is-dirty')) {
-          if (icon) icon.textContent = '✔';
-          if (text) text.textContent = '已是最新';
-        }
-      }, 2500);
+    if (typeof document === 'undefined') return;
+    const buttons = [];
+    if (typeof document.querySelectorAll === 'function') {
+      const list = document.querySelectorAll(
+        `.ve-btn-save-cloud[data-char="${charKey}"], #btnSaveCloud_${charKey}, #btnSaveCloud2D_${charKey}`
+      );
+      list.forEach(b => buttons.push(b));
+    } else if (typeof document.getElementById === 'function') {
+      const b1 = document.getElementById(`btnSaveCloud_${charKey}`);
+      if (b1) buttons.push(b1);
+      const b2 = document.getElementById(`btnSaveCloud2D_${charKey}`);
+      if (b2) buttons.push(b2);
     }
+    if (buttons.length === 0) return;
+
+    buttons.forEach(btn => {
+      if (!btn || !btn.classList) return;
+      const icon = btn.querySelector ? btn.querySelector('.ve-save-icon') : null;
+      const text = btn.querySelector ? btn.querySelector('.ve-save-text') : null;
+
+      if (status === 'dirty') {
+        btn.classList.add('is-dirty');
+        if (typeof btn.removeAttribute === 'function') btn.removeAttribute('disabled');
+        if (icon) icon.textContent = '💾';
+        if (text) text.textContent = '儲存修改 (未儲存)';
+      } else if (status === 'saving') {
+        btn.classList.remove('is-dirty');
+        if (typeof btn.setAttribute === 'function') btn.setAttribute('disabled', 'true');
+        if (icon) icon.textContent = '⏳';
+        if (text) text.textContent = '儲存中...';
+      } else {
+        btn.classList.remove('is-dirty');
+        if (typeof btn.removeAttribute === 'function') btn.removeAttribute('disabled');
+        if (icon) icon.textContent = '✔';
+        if (text) text.textContent = '已儲存至雲端';
+        setTimeout(() => {
+          if (btn.classList && !btn.classList.contains('is-dirty')) {
+            if (icon) icon.textContent = '✔';
+            if (text) text.textContent = '已是最新';
+          }
+        }, 2500);
+      }
+    });
   }
 
   // 手動儲存按鈕動作：點擊時一次性完整寫入 Firebase 與 LocalStorage
@@ -655,7 +670,7 @@
   } catch (_) {}
 
   // 跨視窗 StorageEvent 降級備用支援
-  if (typeof window !== 'undefined') {
+  if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
     window.addEventListener('storage', function (e) {
       if (e.key === 'pokopia_voxel_storage_sync_v1' && e.newValue) {
         try {
@@ -889,7 +904,7 @@
                 ↪️ 重做
               </button>
             </div>
-            <button type="button" class="ve-btn ve-btn-save-cloud" id="btnSaveCloud_${charKey}" title="點擊將當前所有修改儲存至 Google 雲端帳號" style="width:100%;margin-top:4px;">
+            <button type="button" class="ve-btn ve-btn-save-cloud" data-char="${charKey}" id="btnSaveCloud_${charKey}" title="點擊將當前所有修改儲存至 Google 雲端帳號" style="width:100%;margin-top:4px;">
               <span class="ve-save-icon">✔</span>
               <span class="ve-save-text">已是最新</span>
             </button>
@@ -1326,6 +1341,11 @@
         btnRedo.innerHTML = redoCount > 0 ? `↪️ 重做 (${redoCount})` : '↪️ 重做';
       });
     });
+
+    const char = _state.characters[charKey];
+    if (char && char.isDirty) {
+      updateSaveButtonUI(charKey, 'dirty');
+    }
   }
 
   function setupToolbarEvents(container, charKey, threeState, baseData, onSubmitCallback) {
@@ -1449,7 +1469,7 @@
         return;
       }
 
-      if (target.id.startsWith('btnSaveCloud_') || target.closest('[id^="btnSaveCloud_"]')) {
+      if (target.id.startsWith('btnSaveCloud_') || target.id.startsWith('btnSaveCloud2D_') || target.classList.contains('ve-btn-save-cloud') || target.closest('.ve-btn-save-cloud') || target.closest('[id^="btnSaveCloud_"]') || target.closest('[id^="btnSaveCloud2D_"]')) {
         saveOverridesToCloud(charKey);
         return;
       }
@@ -1497,6 +1517,10 @@
       toolbar2D = createEditorToolbarDOM(charKey, baseData);
       toolbar2D.id = `voxelToolbar2D_${charKey}`;
       toolbar2D.classList.add('voxel-editor-2d-toolbar');
+      const saveBtn2D = toolbar2D.querySelector(`#btnSaveCloud_${charKey}`);
+      if (saveBtn2D) {
+        saveBtn2D.id = `btnSaveCloud2D_${charKey}`;
+      }
       container2D.style.position = 'relative';
       container2D.appendChild(toolbar2D);
 
