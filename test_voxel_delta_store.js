@@ -279,13 +279,13 @@ const path = require('path');
 const jsonPath = path.join(__dirname, 'ivysaur_saved_overrides.json');
 assert.ok(fs.existsSync(jsonPath), 'ivysaur_saved_overrides.json 必須永久存在於專案目錄中');
 const savedOverrides = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
-assert.strictEqual(Object.keys(savedOverrides).length, 1384, 'ivysaur_saved_overrides.json 筆數必須精確為 1,384 顆');
+assert.strictEqual(Object.keys(savedOverrides).length, 1321, 'ivysaur_saved_overrides.json 筆數必須精確為 1,321 顆');
 
 // 測試初始載入 fallback
 const initialOverrides = VoxelDeltaStore.loadOverridesFromStorage('ivysaur');
-assert.strictEqual(Object.keys(initialOverrides).length, 1384, '妙蛙草初始 Overrides 應完整取得 1,384 顆方塊');
+assert.strictEqual(Object.keys(initialOverrides).length, 1321, '妙蛙草初始 Overrides 應完整取得 1,321 顆方塊');
 
-// 測試雲端空資料防沖刷 (Anti-Wipeout)：即使遠端送來空字典與較新時間戳，本地 1,384 顆也絕不被清空
+// 測試雲端空資料防沖刷 (Anti-Wipeout)：即使遠端送來空字典與較新時間戳，本地 1,321 顆也絕不被清空
 VoxelDeltaStore.state.characters.ivysaur.overrides = { ...savedOverrides };
 VoxelDeltaStore.state.characters.ivysaur.updatedAt = 1000;
 VoxelDeltaStore.hydrateFromCloud({
@@ -294,8 +294,8 @@ VoxelDeltaStore.hydrateFromCloud({
     updatedAt: 999999999
   }
 });
-assert.strictEqual(Object.keys(VoxelDeltaStore.getOverrides('ivysaur')).length, 1384, '本地 1,384 顆方塊絕不可被遠端空資料清空');
-console.log('  ✓ 1,384 顆歷史方塊注入完備，且空資料防沖刷保護生效！');
+assert.strictEqual(Object.keys(VoxelDeltaStore.getOverrides('ivysaur')).length, 1321, '本地 1,321 顆方塊絕不可被遠端空資料清空');
+console.log('  ✓ 1,321 顆歷史方塊注入完備，且空資料防沖刷保護生效！');
 
 // 14. 測試跨裝置手機登入時，Firebase 雲端直接優先水合 (Cloud-First)
 console.log('🧪 測試跨裝置手機登入時，Firebase 雲端直接優先水合...');
@@ -304,7 +304,7 @@ VoxelDeltaStore.resetLocalActionTime();
 VoxelDeltaStore.state.characters.ivysaur.overrides = { '1,1,1': 1, '2,2,2': 1, '3,3,3': 1, '4,4,4': 1, '5,5,5': 1 };
 VoxelDeltaStore.state.characters.ivysaur.updatedAt = 999999999;
 
-// 模擬 Firebase 雲端傳來電腦端稍早存檔的 1,384 顆方塊 (時間戳 500000000 比手機舊)
+// 模擬 Firebase 雲端傳來電腦端稍早存檔的 1,321 顆方塊 (時間戳 500000000 比手機舊)
 VoxelDeltaStore.hydrateFromCloud({
   ivysaur: {
     data: savedOverrides,
@@ -312,12 +312,12 @@ VoxelDeltaStore.hydrateFromCloud({
   }
 });
 
-// 驗證：手機端必須直接無條件採用 Firebase 雲端的真實存檔 (1,384 顆)，完全不被手機本地假時間戳攔截！
-assert.strictEqual(Object.keys(VoxelDeltaStore.getOverrides('ivysaur')).length, 1384, '手機必須無條件以 Firebase 雲端存檔優先水合');
+// 驗證：手機端必須直接無條件採用 Firebase 雲端的真實存檔 (1,321 顆)，完全不被手機本地假時間戳攔截！
+assert.strictEqual(Object.keys(VoxelDeltaStore.getOverrides('ivysaur')).length, 1321, '手機必須無條件以 Firebase 雲端存檔優先水合');
 console.log('  ✓ 跨裝置手機登入時，Firebase 雲端直接優先水合 100% 成功！');
 
-// 15. 測試 1,161 舊版強制清洗升級至 1,384 顆與塗色防反彈保護
-console.log('🧪 測試 1,161 舊版存檔強制清洗升級至 1,384 顆與塗色防反彈保護...');
+// 15. 測試 1,161 舊版與 1,384 舊版強制清洗升級至 1,321 顆與塗色防反彈保護
+console.log('🧪 測試 1,161 與 1,384 舊版存檔強制清洗升級至 1,321 顆與塗色防反彈保護...');
 global.localStorage = {
   getItem: (key) => {
     if (key === 'pokopia_voxel_overrides_ivysaur') return JSON.stringify({ data: { count: 1161, ...Array(1160).fill(1).reduce((acc, _, i) => ({ ...acc, [i + ',0,0']: 1 }), {}) } });
@@ -327,7 +327,7 @@ global.localStorage = {
 };
 
 const forceUpgraded = VoxelDeltaStore.loadOverridesFromStorage('ivysaur');
-assert.strictEqual(Object.keys(forceUpgraded).length, 1384, 'LocalStorage 中 1,161 顆舊版必須被強制升級為 1,384 顆');
+assert.strictEqual(Object.keys(forceUpgraded).length, 1321, 'LocalStorage 中 1,161 顆舊版必須被強制升級為 1,321 顆');
 
 // 測試本地剛塗色時，雲端自身回音被嚴格阻斷，塗色 100% 保留不反彈！
 VoxelDeltaStore.state.characters.ivysaur.overrides = { ...savedOverrides };

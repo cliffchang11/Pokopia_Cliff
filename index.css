@@ -13008,7 +13008,51 @@ body.has-floating-back .scroll-top-btn {
   box-shadow: 0 0 10px rgba(16, 185, 129, 0.45);
 }
 
-/* 自動儲存動態微標籤 */
+/* 手動儲存按鈕與未儲存狀態樣式 */
+.ve-btn-save-cloud {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 5px 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.14);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ve-btn-save-cloud:hover:not([disabled]) {
+  background: rgba(16, 185, 129, 0.24);
+  border-color: #34d399;
+  transform: translateY(-1px);
+}
+
+.ve-btn-save-cloud[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ve-btn-save-cloud.is-dirty {
+  background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%) !important;
+  border-color: #38bdf8 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 10px rgba(14, 165, 233, 0.5);
+  animation: ve-pulse-save 1.8s infinite ease-in-out;
+}
+
+@keyframes ve-pulse-save {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 8px rgba(14, 165, 233, 0.4); }
+  50% { transform: scale(1.02); box-shadow: 0 0 16px rgba(14, 165, 233, 0.75); }
+}
+
+/* 自動儲存動態微標籤相容保留 */
 .ve-autosave-badge {
   display: flex;
   align-items: center;

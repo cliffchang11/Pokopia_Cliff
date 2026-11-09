@@ -217,37 +217,18 @@
           } else if (!lVal) {
             merged.voxelOverrides[charKey] = cVal;
           } else {
-            const lData = (lVal && lVal.data !== undefined) ? lVal.data : lVal;
-            const cData = (cVal && cVal.data !== undefined) ? cVal.data : cVal;
-            const lCount = (lData && typeof lData === 'object') ? Object.keys(lData).length : 0;
-            const cCount = (cData && typeof cData === 'object') ? Object.keys(cData).length : 0;
-
-            // 體素修改合併：若任一端為過期舊版 (<= 1161 顆) 或空，優先使用完整的一端 (> 1161 顆)
+            // 體素修改合併：以最新手動儲存時間戳為準，允許合法消除方塊
             const lTime = (lVal && lVal.updatedAt !== undefined) ? Number(lVal.updatedAt) : 0;
             const cTime = (cVal && cVal.updatedAt !== undefined) ? Number(cVal.updatedAt) : 0;
 
-            if (charKey === 'ivysaur') {
-              if (cCount <= 1161 && lCount > 1161) {
-                merged.voxelOverrides[charKey] = lVal;
-              } else if (lCount <= 1161 && cCount > 1161) {
-                merged.voxelOverrides[charKey] = cVal;
-              } else if (cTime > lTime) {
-                merged.voxelOverrides[charKey] = cVal;
-              } else if (lTime > cTime) {
-                merged.voxelOverrides[charKey] = lVal;
-              } else if (cCount > 0) {
-                merged.voxelOverrides[charKey] = cVal;
-              } else {
-                merged.voxelOverrides[charKey] = lVal || cVal;
-              }
+            if (cTime > lTime) {
+              merged.voxelOverrides[charKey] = cVal;
+            } else if (lTime > cTime) {
+              merged.voxelOverrides[charKey] = lVal;
+            } else if (cVal) {
+              merged.voxelOverrides[charKey] = cVal;
             } else {
-              if (cCount > 0) {
-                merged.voxelOverrides[charKey] = cVal;
-              } else if (lCount > 0) {
-                merged.voxelOverrides[charKey] = lVal;
-              } else {
-                merged.voxelOverrides[charKey] = cVal || lVal;
-              }
+              merged.voxelOverrides[charKey] = lVal;
             }
           }
         });
@@ -374,20 +355,14 @@
       }
 
       if (_currentUser) {
-        // 雙軌儲存：同時寫入標準嵌套結構與 dot-notation，確保 Firestore 不論如何存讀均 100% 相容
+        // 角色級整份替換：以 dot-notation 完整替換該角色物件，絕不觸發子 key deep merge
         saveCloudProgress(_currentUser.uid, {
-          voxelOverrides: {
-            [charKey]: {
-              data: overrides || {},
-              updatedAt: now
-            }
-          },
           [`voxelOverrides.${charKey}`]: {
             data: overrides || {},
             updatedAt: now
           }
         });
-        return { success: true, cloud: true, message: '已成功自動同步至您的 Google 雲端帳號！' };
+        return { success: true, cloud: true, message: '已成功儲存至您的 Google 雲端帳號！' };
       }
       return { success: true, cloud: false, message: '已保存至本地瀏覽器！登入 Google 帳號可跨裝置永久同步。' };
     } catch (e) {
