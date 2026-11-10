@@ -1296,6 +1296,44 @@
 
       fb.init();
     }
+
+    // ─── PWA Service Worker 註冊與自動即時更新 ────────────────────────
+    registerServiceWorker();
+  }
+
+  function registerServiceWorker() {
+    if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((registration) => {
+            // 每當偵測到 sw.js 有新版本時
+            registration.onupdatefound = () => {
+              const installingWorker = registration.installing;
+              if (installingWorker) {
+                installingWorker.onstatechange = () => {
+                  if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    console.log('Pokopia PWA 偵測到新版本，立即接管更新');
+                    if (installingWorker.postMessage) {
+                      installingWorker.postMessage({ action: 'skipWaiting' });
+                    }
+                  }
+                };
+              }
+            };
+          })
+          .catch((err) => {
+            console.warn('Pokopia ServiceWorker 註冊失敗或略過:', err);
+          });
+
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (!refreshing) {
+            refreshing = true;
+            window.location.reload();
+          }
+        });
+      });
+    }
   }
 
   function handlePopState(e) {
@@ -7342,6 +7380,9 @@
     requestAnimationFrame(() => {
       t.renderRequested = false;
       if (t.controls) t.controls.update();
+      if (t.camera && typeof t.camera.updateMatrixWorld === 'function') {
+        t.camera.updateMatrixWorld(true);
+      }
       if (typeof t._updateDimensions === 'function' && !t._isUpdatingDims) {
         t._isUpdatingDims = true;
         try { t._updateDimensions(); } catch (_) {}
@@ -7571,6 +7612,19 @@
     if (DOM.paneBulba) DOM.paneBulba.classList.toggle('hidden', char !== 'bulba');
     if (DOM.paneIvysaur) DOM.paneIvysaur.classList.toggle('hidden', char !== 'ivysaur');
     if (DOM.paneVenusaur) DOM.paneVenusaur.classList.toggle('hidden', char !== 'venusaur');
+
+    // 守護 Bloxelizer 控制器與尺寸標註層常駐掛載
+    const normKey = (char === 'bulba') ? 'bulbasaur' : char;
+    const curT = getThreeStateByChar(normKey);
+    const curCanvas = (char === 'buzz') ? DOM.buzz3dCanvas : (char === 'ivysaur') ? DOM.ivysaur3dCanvas : (char === 'venusaur') ? DOM.venusaur3dCanvas : DOM.bulba3dCanvas;
+    const curData = (char === 'buzz') ? (typeof BUZZ_VOXEL_DATA !== 'undefined' ? BUZZ_VOXEL_DATA : null) :
+                    (char === 'ivysaur') ? (typeof IVYSAUR_VOXEL_DATA !== 'undefined' ? IVYSAUR_VOXEL_DATA : null) :
+                    (char === 'venusaur') ? (typeof VENUSAUR_VOXEL_DATA !== 'undefined' ? VENUSAUR_VOXEL_DATA : null) :
+                    (typeof BULBASAUR_VOXEL_DATA !== 'undefined' ? BULBASAUR_VOXEL_DATA : null);
+    if (curT && curCanvas && curData) {
+      setupBloxelizerStudioControls(normKey, curT, curData, curCanvas);
+      if (typeof curT._updateDimensions === 'function') curT._updateDimensions();
+    }
 
     if (char === 'buzz') {
       if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🚀';
@@ -8724,10 +8778,12 @@
         const badges = dimOverlay.querySelector('.smart-dim-badges');
         if (svg && badges) {
           const rect = canvasEl.getBoundingClientRect();
-          const w = rect.width;
-          const h = rect.height;
+          const wrapRect = wrap ? wrap.getBoundingClientRect() : null;
+          const w = (rect && rect.width > 0) ? rect.width : (wrapRect && wrapRect.width > 0 ? wrapRect.width : (wrap.clientWidth || 800));
+          const h = (rect && rect.height > 0) ? rect.height : (wrapRect && wrapRect.height > 0 ? wrapRect.height : (wrap.clientHeight || 560));
           if (w > 0 && h > 0) {
             const camera = threeState.camera;
+            if (typeof camera.updateMatrixWorld === 'function') camera.updateMatrixWorld(true);
             const toScreen = (v) => {
               const p = v.clone().project(camera);
               return {
@@ -8754,13 +8810,18 @@
               const p2z = toScreen(new THREE.Vector3(lMinX - 0.5 - 1.2, py, lMaxZ + 0.5));
               const midZ = { x: (p1z.x + p2z.x) / 2, y: (p1z.y + p2z.y) / 2 };
 
+              const tickLen = 6;
               svgHtml += `
-                <line x1="${p1x.x}" y1="${p1x.y}" x2="${p2x.x}" y2="${p2x.y}" stroke="#f97316" stroke-width="2" stroke-linecap="round" />
-                <line x1="${p1z.x}" y1="${p1z.y}" x2="${p2z.x}" y2="${p2z.y}" stroke="#f97316" stroke-width="2" stroke-linecap="round" />
+                <line x1="${p1x.x}" y1="${p1x.y}" x2="${p2x.x}" y2="${p2x.y}" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" />
+                <line x1="${p1x.x}" y1="${p1x.y - tickLen}" x2="${p1x.x}" y2="${p1x.y + tickLen}" stroke="#f97316" stroke-width="2" stroke-linecap="round" />
+                <line x1="${p2x.x}" y1="${p2x.y - tickLen}" x2="${p2x.x}" y2="${p2x.y + tickLen}" stroke="#f97316" stroke-width="2" stroke-linecap="round" />
+                <line x1="${p1z.x}" y1="${p1z.y}" x2="${p2z.x}" y2="${p2z.y}" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" />
+                <line x1="${p1z.x - tickLen}" y1="${p1z.y}" x2="${p1z.x + tickLen}" y2="${p1z.y}" stroke="#f97316" stroke-width="2" stroke-linecap="round" />
+                <line x1="${p2z.x - tickLen}" y1="${p2z.y}" x2="${p2z.x + tickLen}" y2="${p2z.y}" stroke="#f97316" stroke-width="2" stroke-linecap="round" />
               `;
               badgeHtml += `
-                <div class="smart-dim-badge" style="left:${midX.x}px; top:${midX.y}px;">${layerMeta.width}</div>
-                <div class="smart-dim-badge" style="left:${midZ.x}px; top:${midZ.y}px;">${layerMeta.length}</div>
+                <div class="smart-dim-badge" style="left:${midX.x}px; top:${midX.y}px; background:#f97316; color:#ffffff; font-weight:800; font-size:12px; border-radius:9999px; padding:2px 8px; border:1.5px solid #ffffff; box-shadow:0 2px 6px rgba(249,115,22,0.4);">${layerMeta.width}</div>
+                <div class="smart-dim-badge" style="left:${midZ.x}px; top:${midZ.y}px; background:#f97316; color:#ffffff; font-weight:800; font-size:12px; border-radius:9999px; padding:2px 8px; border:1.5px solid #ffffff; box-shadow:0 2px 6px rgba(249,115,22,0.4);">${layerMeta.length}</div>
               `;
             }
 
@@ -8777,13 +8838,18 @@
               const hMidX = { x: (h1x.x + h2x.x) / 2, y: (h1x.y + h2x.y) / 2 };
               const hMidZ = { x: (h1z.x + h2z.x) / 2, y: (h1z.y + h2z.y) / 2 };
 
+              const hTickLen = 5;
               svgHtml += `
-                <line x1="${h1x.x}" y1="${h1x.y}" x2="${h2x.x}" y2="${h2x.y}" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" />
-                <line x1="${h1z.x}" y1="${h1z.y}" x2="${h2z.x}" y2="${h2z.y}" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" />
+                <line x1="${h1x.x}" y1="${h1x.y}" x2="${h2x.x}" y2="${h2x.y}" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" />
+                <line x1="${h1x.x}" y1="${h1x.y - hTickLen}" x2="${h1x.x}" y2="${h1x.y + hTickLen}" stroke="#0d9488" stroke-width="2" stroke-linecap="round" />
+                <line x1="${h2x.x}" y1="${h2x.y - hTickLen}" x2="${h2x.x}" y2="${h2x.y + hTickLen}" stroke="#0d9488" stroke-width="2" stroke-linecap="round" />
+                <line x1="${h1z.x}" y1="${h1z.y}" x2="${h2z.x}" y2="${h2z.y}" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" />
+                <line x1="${h1z.x - hTickLen}" y1="${h1z.y}" x2="${h1z.x + hTickLen}" y2="${h1z.y}" stroke="#0d9488" stroke-width="2" stroke-linecap="round" />
+                <line x1="${h2z.x - hTickLen}" y1="${h2z.y}" x2="${h2z.x + hTickLen}" y2="${h2z.y}" stroke="#0d9488" stroke-width="2" stroke-linecap="round" />
               `;
               badgeHtml += `
-                <div class="smart-dim-badge" style="left:${hMidX.x}px; top:${hMidX.y}px; background:#0d9488;">${hLenX}</div>
-                <div class="smart-dim-badge" style="left:${hMidZ.x}px; top:${hMidZ.y}px; background:#0d9488;">${hLenZ}</div>
+                <div class="smart-dim-badge" style="left:${hMidX.x}px; top:${hMidX.y}px; background:#0d9488; color:#ffffff; font-weight:800; font-size:12px; border-radius:9999px; padding:2px 8px; border:1.5px solid #ffffff; box-shadow:0 2px 6px rgba(13,148,136,0.4);">${hLenX}</div>
+                <div class="smart-dim-badge" style="left:${hMidZ.x}px; top:${hMidZ.y}px; background:#0d9488; color:#ffffff; font-weight:800; font-size:12px; border-radius:9999px; padding:2px 8px; border:1.5px solid #ffffff; box-shadow:0 2px 6px rgba(13,148,136,0.4);">${hLenZ}</div>
               `;
 
               if (gapInfo && gapInfo.length > 0) {
@@ -8795,7 +8861,7 @@
                     <line x1="${g1.x}" y1="${g1.y}" x2="${g2.x}" y2="${g2.y}" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 3" />
                   `;
                   badgeHtml += `
-                    <div class="smart-dim-badge" style="left:${gMid.x}px; top:${gMid.y}px; background:#334155;">${gap.dist}</div>
+                    <div class="smart-dim-badge" style="left:${gMid.x}px; top:${gMid.y}px; background:#334155; color:#ffffff; font-weight:800; font-size:11px; border-radius:9999px; padding:2px 7px; border:1px solid #64748b; box-shadow:0 2px 6px rgba(0,0,0,0.3);">${gap.dist}</div>
                   `;
                 });
               }
@@ -8903,6 +8969,12 @@
 
     // 首次掛載即繪製常駐外圍總尺寸
     updateDimensionOverlay();
+    requestThreeRender(charKey);
+
+    // 監聽視窗變化即時重算尺寸投影
+    window.addEventListener('resize', () => {
+      updateDimensionOverlay();
+    });
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -9097,6 +9169,8 @@
       t.renderer.setSize(width, height);
       t.camera.aspect = width / height;
       t.camera.updateProjectionMatrix();
+      setupBloxelizerStudioControls('buzz', t, BUZZ_VOXEL_DATA, DOM.buzz3dCanvas);
+      if (typeof t._updateDimensions === 'function') t._updateDimensions();
       requestThreeRender('buzz');
       return;
     }
@@ -9199,6 +9273,8 @@
     startThreeRendering('buzz');
 
     setupVoxelEditorIntegration('buzz', t, BUZZ_VOXEL_DATA, DOM.buzz3dCanvas, () => renderBuzzLayer(buzzState.curLayer));
+    setupBloxelizerStudioControls('buzz', t, BUZZ_VOXEL_DATA, DOM.buzz3dCanvas);
+    if (typeof t._updateDimensions === 'function') t._updateDimensions();
 
     window.addEventListener('resize', () => {
       if (!t.isInit || !DOM.buzz3dCanvas) return;
@@ -9279,6 +9355,8 @@
       t.renderer.setSize(width, height);
       t.camera.aspect = width / height;
       t.camera.updateProjectionMatrix();
+      setupBloxelizerStudioControls('bulbasaur', t, BULBASAUR_VOXEL_DATA, DOM.bulba3dCanvas);
+      if (typeof t._updateDimensions === 'function') t._updateDimensions();
       requestThreeRender('bulbasaur');
       return;
     }
@@ -9388,6 +9466,8 @@
     startThreeRendering('bulbasaur');
 
     setupVoxelEditorIntegration('bulbasaur', t, BULBASAUR_VOXEL_DATA, DOM.bulba3dCanvas, () => renderBulbaLayer(bulbaState.curLayer));
+    setupBloxelizerStudioControls('bulbasaur', t, BULBASAUR_VOXEL_DATA, DOM.bulba3dCanvas);
+    if (typeof t._updateDimensions === 'function') t._updateDimensions();
 
     // RWD Resize
     window.addEventListener('resize', () => {
@@ -9702,6 +9782,8 @@
       t.renderer.setSize(width, height);
       t.camera.aspect = width / height;
       t.camera.updateProjectionMatrix();
+      setupBloxelizerStudioControls('ivysaur', t, IVYSAUR_VOXEL_DATA, DOM.ivysaur3dCanvas);
+      if (typeof t._updateDimensions === 'function') t._updateDimensions();
       requestThreeRender('ivysaur');
       return;
     }
@@ -9806,6 +9888,8 @@
     startThreeRendering('ivysaur');
 
     setupVoxelEditorIntegration('ivysaur', t, IVYSAUR_VOXEL_DATA, DOM.ivysaur3dCanvas, () => renderIvysaurLayer(ivysaurState.curLayer));
+    setupBloxelizerStudioControls('ivysaur', t, IVYSAUR_VOXEL_DATA, DOM.ivysaur3dCanvas);
+    if (typeof t._updateDimensions === 'function') t._updateDimensions();
 
     window.addEventListener('resize', () => {
       if (!t.isInit || !DOM.ivysaur3dCanvas) return;
@@ -10120,6 +10204,8 @@
       t.renderer.setSize(width, height);
       t.camera.aspect = width / height;
       t.camera.updateProjectionMatrix();
+      setupBloxelizerStudioControls('venusaur', t, VENUSAUR_VOXEL_DATA, DOM.venusaur3dCanvas);
+      if (typeof t._updateDimensions === 'function') t._updateDimensions();
       requestThreeRender('venusaur');
       return;
     }
@@ -10224,6 +10310,8 @@
     startThreeRendering('venusaur');
 
     setupVoxelEditorIntegration('venusaur', t, VENUSAUR_VOXEL_DATA, DOM.venusaur3dCanvas, () => renderVenusaurLayer(venusaurState.curLayer));
+    setupBloxelizerStudioControls('venusaur', t, VENUSAUR_VOXEL_DATA, DOM.venusaur3dCanvas);
+    if (typeof t._updateDimensions === 'function') t._updateDimensions();
 
     window.addEventListener('resize', () => {
       if (!t.isInit || !DOM.venusaur3dCanvas) return;

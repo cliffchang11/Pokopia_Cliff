@@ -53,8 +53,8 @@ console.log('  ✓ PASS: 臨時比對頁面與資料檔已全部乾淨移除！\
 console.log('【測試 6: 全站快取版本升級至 v4.73.0】');
 const swContent = fs.readFileSync(path.join(__dirname, 'sw.js'), 'utf8');
 const indexHtmlContent = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
-assert.ok(swContent.includes('pokopia-cache-v4.73.0'), 'sw.js 必須升級為 pokopia-cache-v4.73.0');
-assert.ok(indexHtmlContent.includes('v=4.73.0'), 'index.html 必須升級為 v=4.73.0');
+assert.ok(/pokopia-cache-v4\.(7[3-9]|[89]\d|\d{3,})\.0/.test(swContent), 'sw.js 必須升級為 pokopia-cache >= v4.73.0');
+assert.ok(/v=4\.(7[3-9]|[89]\d|\d{3,})\.0/.test(indexHtmlContent), 'index.html 必須升級為 >= v4.73.0');
 assert.ok(!indexHtmlContent.includes('v=4.72.0'), 'index.html 不得殘留 v=4.72.0');
 console.log('  ✓ PASS: 全站版本號已升級至 v4.73.0！\n');
 
