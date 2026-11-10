@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pokopia-cache-v4.78.0';
+const CACHE_NAME = 'pokopia-cache-v4.79.0';
 
 const STATIC_ASSETS = [
   './',

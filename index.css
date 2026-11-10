@@ -12623,6 +12623,18 @@ body.has-floating-back .scroll-top-btn {
   transition: transform 0.1s ease;
 }
 
+/* 擴大觸控與滑鼠命中熱區至 28px，下層滑塊拖曳抓取更輕鬆敏銳 */
+.vlc-dual-thumb::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 28px;
+  height: 28px;
+  pointer-events: auto;
+}
+
 .vlc-dual-thumb:hover,
 .vlc-dual-thumb.is-dragging {
   transform: translate(-50%, -50%) scale(1.2);
@@ -13141,12 +13153,17 @@ body.has-floating-back .scroll-top-btn {
   margin-bottom: 0.5rem;
 }
 
-/* 體素編輯常駐膠囊開關列 (微型 34px 高度，零遮擋) */
+/* 體素編輯常駐膠囊開關列 (微型 34px 高度，零遮擋；展開工具列時自動隱藏，徹底節省 45px 垂直空間) */
 .ve-toggle-capsule-wrap {
   display: flex;
   justify-content: flex-end;
   width: 100%;
   margin-bottom: 0.35rem;
+}
+
+.voxel-editor-container.is-open .ve-toggle-capsule-wrap,
+.voxel-editor-container:has(.voxel-editor-toolbar:not(.ve-hidden)) .ve-toggle-capsule-wrap {
+  display: none !important;
 }
 
 .ve-toggle-capsule {
@@ -13193,7 +13210,7 @@ body.has-floating-back .scroll-top-btn {
   box-shadow: 0 0 12px rgba(2, 132, 199, 0.5);
 }
 
-/* 展開後的極簡緊湊黑曜石工具橫條 (高度約 44~48px，高效能無 GPU 濾鏡負擔) */
+/* 展開後的護眼岩灰藍工具橫條 (高度約 42~46px，柔和護眼無死黑割裂感) */
 .voxel-editor-toolbar {
   position: static;
   width: 100%;
@@ -13202,12 +13219,14 @@ body.has-floating-back .scroll-top-btn {
   align-items: center;
   justify-content: flex-start;
   gap: 8px;
-  background: rgba(15, 23, 42, 0.96);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(30, 41, 59, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(148, 163, 184, 0.25);
   border-radius: 12px;
   padding: 5px 8px;
-  min-height: 44px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  min-height: 42px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
   user-select: none;
   box-sizing: border-box;
   animation: ve-fade-slide-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -13276,6 +13295,22 @@ body.has-floating-back .scroll-top-btn {
   font-weight: 700;
 }
 
+/* 行內緊湊清空選取膠囊 (僅在有選取時顯示，不佔用整行橫幅) */
+.ve-btn.ve-btn-clear-sel {
+  background: rgba(239, 68, 68, 0.22);
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  color: #fca5a5;
+  padding: 0 7px;
+  font-size: 0.76rem;
+  margin-left: 2px;
+}
+
+.ve-btn.ve-btn-clear-sel:hover {
+  background: rgba(239, 68, 68, 0.4);
+  color: #ffffff;
+  border-color: #f87171;
+}
+
 /* 整合式迷你材質調色盤 (色票 20px 圓環，單排緊湊) */
 .ve-integrated-palette {
   display: inline-flex;
@@ -13323,12 +13358,37 @@ body.has-floating-back .scroll-top-btn {
   box-shadow: 0 0 8px #38bdf8;
 }
 
-/* 動作功能列 (鏡像 / 歷史 / 儲存) */
+/* 動作功能列 (透視 / 鏡像 / 歷史 / 儲存 / 收合) */
 .ve-action-group {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   flex-wrap: nowrap;
+}
+
+/* 當前層半透明透視按鈕 */
+.ve-btn-ghost-layer {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #cbd5e1;
+  min-height: 30px;
+  height: 30px;
+  padding: 0 8px;
+  font-size: 0.78rem;
+  border-radius: 6px;
+}
+
+.ve-btn-ghost-layer:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+.ve-btn-ghost-layer.active {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%) !important;
+  color: #ffffff !important;
+  border-color: #c4b5fd !important;
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.5) !important;
+  font-weight: 700;
 }
 
 .ve-mirror-row {
@@ -13358,6 +13418,34 @@ body.has-floating-back .scroll-top-btn {
   background: rgba(2, 132, 199, 0.8);
   color: #ffffff;
   border-color: #38bdf8;
+}
+
+/* 鏡像開啟時專屬琥珀金發光 (區別於藍色塗色選取工具，醒目警示) */
+.ve-mirror-row .ve-btn.active,
+.ve-btn-mirror.active {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%) !important;
+  color: #ffffff !important;
+  border-color: #fbbf24 !important;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.6) !important;
+  font-weight: 700;
+}
+
+/* 工具列微型收合按鈕 */
+.ve-btn-collapse {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #94a3b8;
+  font-size: 0.76rem;
+  padding: 0 7px;
+  min-height: 30px;
+  height: 30px;
+  border-radius: 6px;
+}
+
+.ve-btn-collapse:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .ve-history-row {

@@ -8466,12 +8466,14 @@
       activateVlcSliceMode();
 
       if (isDragging === 'top') {
+        threeState._lastActiveThumb = 'top';
         threeState.maxLayer = clamped;
         if (threeState.layerFilterMode === 'single' || threeState.minLayer > clamped) {
           threeState.minLayer = clamped;
         }
         setCharLayer(threeState.maxLayer, false);
       } else if (isDragging === 'bottom') {
+        threeState._lastActiveThumb = 'bottom';
         threeState.minLayer = clamped;
         if (threeState.layerFilterMode === 'single' || threeState.maxLayer < clamped) {
           threeState.maxLayer = clamped;
@@ -8504,6 +8506,7 @@
       thumbTop.addEventListener('pointerdown', (e) => {
         e.stopPropagation();
         activateVlcSliceMode();
+        threeState._lastActiveThumb = 'top';
         isDragging = 'top';
         thumbTop.classList.add('is-dragging');
         try { thumbTop.setPointerCapture(e.pointerId); } catch (_) {}
@@ -8516,6 +8519,7 @@
       thumbBottom.addEventListener('pointerdown', (e) => {
         e.stopPropagation();
         activateVlcSliceMode();
+        threeState._lastActiveThumb = 'bottom';
         isDragging = 'bottom';
         thumbBottom.classList.add('is-dragging');
         try { thumbBottom.setPointerCapture(e.pointerId); } catch (_) {}
@@ -8524,7 +8528,7 @@
       });
     }
 
-    // 點擊滑軌直達
+    // 點擊滑軌直達 (智能判定靠近上界或下界)
     if (railEl) {
       railEl.addEventListener('click', (e) => {
         if (e.target === thumbTop || e.target === thumbBottom) return;
@@ -8539,12 +8543,14 @@
         const distToBottom = Math.abs(clamped - threeState.minLayer);
 
         if (distToTop <= distToBottom || threeState.layerFilterMode === 'single') {
+          threeState._lastActiveThumb = 'top';
           threeState.maxLayer = clamped;
           if (threeState.layerFilterMode === 'single' || threeState.minLayer > clamped) {
             threeState.minLayer = clamped;
           }
           setCharLayer(clamped);
         } else {
+          threeState._lastActiveThumb = 'bottom';
           threeState.minLayer = clamped;
           if (threeState.maxLayer < clamped) {
             threeState.maxLayer = clamped;
@@ -8562,16 +8568,28 @@
       btnUp.addEventListener('click', (e) => {
         e.stopPropagation();
         activateVlcSliceMode();
-        const cur = threeState.maxLayer || getCharCurLayer();
-        if (cur < maxLayers) {
-          const next = cur + 1;
-          threeState.maxLayer = next;
-          if (threeState.layerFilterMode === 'single') threeState.minLayer = next;
-          setCharLayer(next);
-          updateDualSliderUI();
-          getCharSliceFilter()();
-          if (typeof threeState._updateDimensions === 'function') threeState._updateDimensions();
-          requestThreeRender(charKey);
+        const adjustBottom = (e.shiftKey || threeState._lastActiveThumb === 'bottom') && threeState.layerFilterMode !== 'single';
+        if (adjustBottom) {
+          const cur = threeState.minLayer || 1;
+          if (cur < (threeState.maxLayer || maxLayers)) {
+            threeState.minLayer = cur + 1;
+            updateDualSliderUI();
+            getCharSliceFilter()();
+            if (typeof threeState._updateDimensions === 'function') threeState._updateDimensions();
+            requestThreeRender(charKey);
+          }
+        } else {
+          const cur = threeState.maxLayer || getCharCurLayer();
+          if (cur < maxLayers) {
+            const next = cur + 1;
+            threeState.maxLayer = next;
+            if (threeState.layerFilterMode === 'single') threeState.minLayer = next;
+            setCharLayer(next);
+            updateDualSliderUI();
+            getCharSliceFilter()();
+            if (typeof threeState._updateDimensions === 'function') threeState._updateDimensions();
+            requestThreeRender(charKey);
+          }
         }
       });
     }
@@ -8580,16 +8598,28 @@
       btnDown.addEventListener('click', (e) => {
         e.stopPropagation();
         activateVlcSliceMode();
-        const cur = threeState.maxLayer || getCharCurLayer();
-        if (cur > 1) {
-          const prev = cur - 1;
-          threeState.maxLayer = prev;
-          if (threeState.layerFilterMode === 'single') threeState.minLayer = prev;
-          setCharLayer(prev);
-          updateDualSliderUI();
-          getCharSliceFilter()();
-          if (typeof threeState._updateDimensions === 'function') threeState._updateDimensions();
-          requestThreeRender(charKey);
+        const adjustBottom = (e.shiftKey || threeState._lastActiveThumb === 'bottom') && threeState.layerFilterMode !== 'single';
+        if (adjustBottom) {
+          const cur = threeState.minLayer || 1;
+          if (cur > 1) {
+            threeState.minLayer = cur - 1;
+            updateDualSliderUI();
+            getCharSliceFilter()();
+            if (typeof threeState._updateDimensions === 'function') threeState._updateDimensions();
+            requestThreeRender(charKey);
+          }
+        } else {
+          const cur = threeState.maxLayer || getCharCurLayer();
+          if (cur > 1) {
+            const prev = cur - 1;
+            threeState.maxLayer = prev;
+            if (threeState.layerFilterMode === 'single') threeState.minLayer = prev;
+            setCharLayer(prev);
+            updateDualSliderUI();
+            getCharSliceFilter()();
+            if (typeof threeState._updateDimensions === 'function') threeState._updateDimensions();
+            requestThreeRender(charKey);
+          }
         }
       });
     }
@@ -8946,39 +8976,70 @@
       raycaster.setFromCamera(mouse, threeState.camera);
       const intersects = raycaster.intersectObject(threeState.instancedMesh);
 
-      if (intersects.length > 0 && intersects[0].instanceId !== undefined) {
-        const id = intersects[0].instanceId;
-        const b = threeState.blockDataList && threeState.blockDataList[id];
+      if (intersects.length > 0) {
         const minL = threeState.minLayer || 1;
         const maxL = threeState.maxLayer || curY;
+        const targetLayer = maxL; // 嚴格以當前檢視最高層為基準，徹底消滅下層穿透空格誤判
 
-        if (b && b.layerIndex >= minL && b.layerIndex <= maxL) {
-          const lMeta = layersMap.get(b.layerIndex);
+        let hitBlock = null;
+        for (let k = 0; k < intersects.length; k++) {
+          const instId = intersects[k].instanceId;
+          if (instId !== undefined) {
+            const cand = threeState.blockDataList && threeState.blockDataList[instId];
+            if (cand && cand.layerIndex === targetLayer) {
+              hitBlock = cand;
+              break;
+            }
+          }
+        }
+        if (!hitBlock && intersects[0].instanceId !== undefined) {
+          const firstCand = threeState.blockDataList && threeState.blockDataList[intersects[0].instanceId];
+          if (firstCand && firstCand.layerIndex === targetLayer) {
+            hitBlock = firstCand;
+          }
+        }
+
+        if (hitBlock) {
+          const lMeta = layersMap.get(targetLayer);
           const rawBlocks = lMeta ? lMeta.blocks : [];
-          const bX = Math.round(b.posX + cx);
-          const bZ = Math.round(b.posZ + cz);
+          const bX = Math.round(hitBlock.posX + cx);
+          const bZ = Math.round(hitBlock.posZ + cz);
+          const targetY = targetLayer - 1;
 
-          // 建立當層方塊座標快速查找表
+          // 建立當層方塊座標快速查找表 (嚴格考慮 VoxelDeltaStore 增刪與編輯狀態)
           const blockSet = new Set();
-          rawBlocks.forEach(([x, z]) => blockSet.add(`${x},${z}`));
+          rawBlocks.forEach(([x, z]) => {
+            const effBid = (typeof VoxelDeltaStore !== 'undefined') ? VoxelDeltaStore.getEffectiveBid(charKey, x, targetY, z) : 1;
+            if (effBid !== -1) blockSet.add(`${x},${z}`);
+          });
+          if (typeof VoxelDeltaStore !== 'undefined') {
+            const ovs = VoxelDeltaStore.getOverrides(charKey);
+            Object.keys(ovs).forEach(coordStr => {
+              if (ovs[coordStr] !== -1) {
+                const [ox, oy, oz] = coordStr.split(',').map(Number);
+                if (oy === targetY) blockSet.add(`${ox},${oz}`);
+              }
+            });
+          }
 
-          // 1. 正交 X 軸連續實體段落 (橫向走訪無中斷之相鄰方塊)
-          let startX = bX;
-          while (blockSet.has(`${startX - 1},${bZ}`)) startX--;
-          let endX = bX;
-          while (blockSet.has(`${endX + 1},${bZ}`)) endX++;
-          const runLenX = endX - startX + 1;
+          if (blockSet.has(`${bX},${bZ}`)) {
+            // 1. 正交 X 軸連續實體段落 (橫向走訪無中斷之相鄰方塊，精準計算當層，絕不穿透)
+            let startX = bX;
+            while (blockSet.has(`${startX - 1},${bZ}`)) startX--;
+            let endX = bX;
+            while (blockSet.has(`${endX + 1},${bZ}`)) endX++;
+            const runLenX = endX - startX + 1;
 
-          // 2. 正交 Z 軸連續實體段落 (縱向走訪無中斷之相鄰方塊)
-          let startZ = bZ;
-          while (blockSet.has(`${bX},${startZ - 1}`)) startZ--;
-          let endZ = bZ;
-          while (blockSet.has(`${bX},${endZ + 1}`)) endZ++;
-          const runLenZ = endZ - startZ + 1;
+            // 2. 正交 Z 軸連續實體段落 (縱向走訪無中斷之相鄰方塊)
+            let startZ = bZ;
+            while (blockSet.has(`${bX},${startZ - 1}`)) startZ--;
+            let endZ = bZ;
+            while (blockSet.has(`${bX},${endZ + 1}`)) endZ++;
+            const runLenZ = endZ - startZ + 1;
 
-          // 3. 沿 X/Z 正交方向探測同軸向空隙間距 (到下一個方塊中空了幾格)
-          const gapInfo = [];
-          const py = b.posY + 0.55;
+            // 3. 沿 X/Z 正交方向探測同軸向空隙間距 (到下一個方塊中空了幾格)
+            const gapInfo = [];
+            const py = (targetY - cy) + 0.55;
 
           // X 軸向左尋找間隙
           let scanLeft = startX - 1;
@@ -9050,6 +9111,7 @@
           return;
         }
       }
+    }
 
       currentHoverVoxel = null;
       updateDimensionOverlay();
@@ -9177,6 +9239,7 @@
           marqueeStart = { x, z, y };
           lastMarqueePos = { x, z, y };
           cell.classList.add('ve-cell-selected');
+          try { gridEl.setPointerCapture(e.pointerId); } catch (_) {}
           return;
         } else if (tool === 'paint') {
           VoxelDeltaStore.executeVoxelAction(charKey, x, y, z, 'paint');
@@ -9236,7 +9299,10 @@
         }
       });
 
-      const onPointerEnd = () => {
+      const onPointerEnd = (e) => {
+        if (e && e.pointerId) {
+          try { gridEl.releasePointerCapture(e.pointerId); } catch (_) {}
+        }
         if (isDraggingMarquee && marqueeStart && lastMarqueePos) {
           VoxelDeltaStore.selectRegion(charKey, marqueeStart.x, marqueeStart.y, marqueeStart.z, lastMarqueePos.x, lastMarqueePos.y, lastMarqueePos.z, true);
           if (typeof refreshSliceCallback === 'function') refreshSliceCallback();
@@ -9247,8 +9313,29 @@
       };
 
       gridEl.addEventListener('pointerup', onPointerEnd);
+      gridEl.addEventListener('pointercancel', onPointerEnd);
+      window.addEventListener('pointerup', onPointerEnd);
+      window.addEventListener('pointercancel', onPointerEnd);
+
+      const onKeyCancel = (e) => {
+        if (e.key === 'Escape') {
+          isDraggingMarquee = false;
+          marqueeStart = null;
+          lastMarqueePos = null;
+          if (gridEl._cellMap) {
+            gridEl._cellMap.forEach((cEl) => {
+              const cx = Number(cEl.dataset.x);
+              const cz = Number(cEl.dataset.z);
+              const curY = getCurrentLayer(charKey) - 1;
+              const isSelected = VoxelDeltaStore.state.selectedVoxels && VoxelDeltaStore.state.selectedVoxels.has(`${cx},${curY},${cz}`);
+              cEl.classList.toggle('ve-cell-selected', !!isSelected);
+            });
+          }
+        }
+      };
+      window.addEventListener('keydown', onKeyCancel);
+
       gridEl.addEventListener('pointerleave', () => {
-        onPointerEnd();
         clearMirrorGhost();
         if (typeof VoxelDeltaStore !== 'undefined') {
           VoxelDeltaStore.setHoverVoxel(charKey, null);
@@ -9304,9 +9391,9 @@
     }
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf8fafc);
+    scene.background = new THREE.Color(0xe2e8f0);
 
-    const camera = new THREE.PerspectiveCamera(40, width / height, 1, 1000);
+    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
     camera.position.set(0, 10, 56);
 
     const renderer = new THREE.WebGLRenderer({
@@ -9317,12 +9404,12 @@
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
     scene.add(ambientLight);
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.75);
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.60);
     dirLight1.position.set(45, 80, 45);
     scene.add(dirLight1);
-    const dirLight2 = new THREE.DirectionalLight(0xe2e8f0, 0.45);
+    const dirLight2 = new THREE.DirectionalLight(0xcbd5e1, 0.35);
     dirLight2.position.set(-45, 30, -45);
     scene.add(dirLight2);
 
@@ -9333,7 +9420,7 @@
       controls.dampingFactor = 0.08;
       controls.target.set(0, 0, 0);
       controls.maxDistance = 250;
-      controls.minDistance = 15;
+      controls.minDistance = 2;
     }
 
     const data = BUZZ_VOXEL_DATA;
@@ -9347,8 +9434,25 @@
     });
 
     const instancedMesh = new THREE.InstancedMesh(geometry, material, totalCount);
+    const ghostMaterial = new THREE.MeshStandardMaterial({
+      map: outlineTexture || null,
+      transparent: true,
+      opacity: 0.40,
+      roughness: 0.88,
+      metalness: 0.0,
+      depthWrite: false
+    });
+    const ghostInstancedMesh = new THREE.InstancedMesh(geometry, ghostMaterial, totalCount);
     const dummy = new THREE.Object3D();
     const color = new THREE.Color();
+
+    for (let gi = 0; gi < totalCount; gi++) {
+      dummy.scale.set(0, 0, 0);
+      dummy.updateMatrix();
+      ghostInstancedMesh.setMatrixAt(gi, dummy.matrix);
+    }
+    ghostInstancedMesh.instanceMatrix.needsUpdate = true;
+    scene.add(ghostInstancedMesh);
 
     const cx = data.dimensions.width / 2;
     const cy = data.dimensions.height / 2;
@@ -9393,6 +9497,7 @@
     t.renderer = renderer;
     t.controls = controls;
     t.instancedMesh = instancedMesh;
+    t.ghostInstancedMesh = ghostInstancedMesh;
     t.blockDataList = blockDataList;
 
     if (controls) {
@@ -9431,6 +9536,9 @@
 
     const minL = (t.minLayer !== undefined) ? t.minLayer : (isSingle ? curLayer : 1);
     const maxL = (t.maxLayer !== undefined) ? t.maxLayer : curLayer;
+    const isGhost = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.state && VoxelDeltaStore.state.ghostLayer);
+    const hasGhostMesh = !!t.ghostInstancedMesh;
+    const color = (typeof THREE !== 'undefined') ? new THREE.Color() : null;
 
     for (let i = 0; i < t.blockDataList.length; i++) {
       const item = t.blockDataList[i];
@@ -9444,17 +9552,45 @@
 
       if (isVisible) {
         dummy.position.set(item.posX, item.posY, item.posZ);
-        dummy.scale.set(1, 1, 1);
-        dummy.updateMatrix();
-        t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
+        if (isGhost && hasGhostMesh && item.layerIndex === maxL) {
+          dummy.scale.set(0, 0, 0);
+          dummy.updateMatrix();
+          t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
+
+          dummy.scale.set(1, 1, 1);
+          dummy.updateMatrix();
+          t.ghostInstancedMesh.setMatrixAt(item.index, dummy.matrix);
+          const bid = (typeof VoxelDeltaStore !== 'undefined') ? VoxelDeltaStore.getEffectiveBid('buzz', vx, vy, vz) : item.bid;
+          const pItem = (BUZZ_VOXEL_DATA.palette && BUZZ_VOXEL_DATA.palette[bid]) ? BUZZ_VOXEL_DATA.palette[bid] : { color: '#f1f5f9' };
+          if (color) {
+            color.set(pItem.color);
+            t.ghostInstancedMesh.setColorAt(item.index, color);
+          }
+        } else {
+          dummy.scale.set(1, 1, 1);
+          dummy.updateMatrix();
+          t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
+          if (hasGhostMesh) {
+            dummy.scale.set(0, 0, 0);
+            dummy.updateMatrix();
+            t.ghostInstancedMesh.setMatrixAt(item.index, dummy.matrix);
+          }
+        }
       } else {
         dummy.position.set(item.posX, item.posY, item.posZ);
         dummy.scale.set(0, 0, 0);
         dummy.updateMatrix();
         t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
+        if (hasGhostMesh) {
+          t.ghostInstancedMesh.setMatrixAt(item.index, dummy.matrix);
+        }
       }
     }
     t.instancedMesh.instanceMatrix.needsUpdate = true;
+    if (hasGhostMesh) {
+      t.ghostInstancedMesh.instanceMatrix.needsUpdate = true;
+      if (t.ghostInstancedMesh.instanceColor) t.ghostInstancedMesh.instanceColor.needsUpdate = true;
+    }
 
     if (t.dynamicAddedGroup && t.dynamicAddedGroup.children) {
       t.dynamicAddedGroup.children.forEach(cube => {
@@ -9491,10 +9627,10 @@
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf8fafc);
+    scene.background = new THREE.Color(0xe2e8f0);
 
     // 2. Camera (480px 黃金比例舒展視野)
-    const camera = new THREE.PerspectiveCamera(40, width / height, 1, 1000);
+    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
     camera.position.set(56, 42, 68);
 
     // 3. Renderer
@@ -9506,13 +9642,13 @@
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
-    // 4. Lights (Bloxelizer 乾淨自然立體光影)
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+    // 4. Lights (Bloxelizer 乾淨自然立體光影，柔和護眼降眩光)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
     scene.add(ambientLight);
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.75);
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.60);
     dirLight1.position.set(50, 85, 50);
     scene.add(dirLight1);
-    const dirLight2 = new THREE.DirectionalLight(0xe2e8f0, 0.45);
+    const dirLight2 = new THREE.DirectionalLight(0xcbd5e1, 0.35);
     dirLight2.position.set(-50, 30, -50);
     scene.add(dirLight2);
 
@@ -9524,7 +9660,7 @@
       controls.dampingFactor = 0.08;
       controls.target.set(0, 0, 0);
       controls.maxDistance = 250;
-      controls.minDistance = 15;
+      controls.minDistance = 2;
     }
 
 
@@ -9540,8 +9676,25 @@
     });
 
     const instancedMesh = new THREE.InstancedMesh(geometry, material, totalCount);
+    const ghostMaterial = new THREE.MeshStandardMaterial({
+      map: outlineTexture || null,
+      transparent: true,
+      opacity: 0.40,
+      roughness: 0.88,
+      metalness: 0.0,
+      depthWrite: false
+    });
+    const ghostInstancedMesh = new THREE.InstancedMesh(geometry, ghostMaterial, totalCount);
     const dummy = new THREE.Object3D();
     const color = new THREE.Color();
+
+    for (let gi = 0; gi < totalCount; gi++) {
+      dummy.scale.set(0, 0, 0);
+      dummy.updateMatrix();
+      ghostInstancedMesh.setMatrixAt(gi, dummy.matrix);
+    }
+    ghostInstancedMesh.instanceMatrix.needsUpdate = true;
+    scene.add(ghostInstancedMesh);
 
     const cx = data.dimensions.width / 2;
     const cy = data.dimensions.height / 2;
@@ -9586,6 +9739,7 @@
     t.renderer = renderer;
     t.controls = controls;
     t.instancedMesh = instancedMesh;
+    t.ghostInstancedMesh = ghostInstancedMesh;
     t.blockDataList = blockDataList;
 
     if (controls) {
@@ -9625,6 +9779,9 @@
 
     const minL = (t.minLayer !== undefined) ? t.minLayer : (isSingle ? curLayer : 1);
     const maxL = (t.maxLayer !== undefined) ? t.maxLayer : curLayer;
+    const isGhost = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.state && VoxelDeltaStore.state.ghostLayer);
+    const hasGhostMesh = !!t.ghostInstancedMesh;
+    const color = (typeof THREE !== 'undefined') ? new THREE.Color() : null;
 
     for (let i = 0; i < t.blockDataList.length; i++) {
       const item = t.blockDataList[i];
@@ -9638,17 +9795,45 @@
 
       if (isVisible) {
         dummy.position.set(item.posX, item.posY, item.posZ);
-        dummy.scale.set(1, 1, 1);
-        dummy.updateMatrix();
-        t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
+        if (isGhost && hasGhostMesh && item.layerIndex === maxL) {
+          dummy.scale.set(0, 0, 0);
+          dummy.updateMatrix();
+          t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
+
+          dummy.scale.set(1, 1, 1);
+          dummy.updateMatrix();
+          t.ghostInstancedMesh.setMatrixAt(item.index, dummy.matrix);
+          const bid = (typeof VoxelDeltaStore !== 'undefined') ? VoxelDeltaStore.getEffectiveBid('bulbasaur', vx, vy, vz) : item.bid;
+          const pItem = (BULBASAUR_VOXEL_DATA.palette && BULBASAUR_VOXEL_DATA.palette[bid]) ? BULBASAUR_VOXEL_DATA.palette[bid] : { color: '#64a395' };
+          if (color) {
+            color.set(pItem.color);
+            t.ghostInstancedMesh.setColorAt(item.index, color);
+          }
+        } else {
+          dummy.scale.set(1, 1, 1);
+          dummy.updateMatrix();
+          t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
+          if (hasGhostMesh) {
+            dummy.scale.set(0, 0, 0);
+            dummy.updateMatrix();
+            t.ghostInstancedMesh.setMatrixAt(item.index, dummy.matrix);
+          }
+        }
       } else {
         dummy.position.set(item.posX, item.posY, item.posZ);
         dummy.scale.set(0, 0, 0); // 縮至 0 隱藏
         dummy.updateMatrix();
         t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
+        if (hasGhostMesh) {
+          t.ghostInstancedMesh.setMatrixAt(item.index, dummy.matrix);
+        }
       }
     }
     t.instancedMesh.instanceMatrix.needsUpdate = true;
+    if (hasGhostMesh) {
+      t.ghostInstancedMesh.instanceMatrix.needsUpdate = true;
+      if (t.ghostInstancedMesh.instanceColor) t.ghostInstancedMesh.instanceColor.needsUpdate = true;
+    }
 
     if (t.dynamicAddedGroup && t.dynamicAddedGroup.children) {
       t.dynamicAddedGroup.children.forEach(cube => {
@@ -9923,9 +10108,9 @@
     }
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf8fafc);
+    scene.background = new THREE.Color(0xe2e8f0);
 
-    const camera = new THREE.PerspectiveCamera(40, width / height, 1, 2000);
+    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 2000);
     camera.position.set(110, 80, 125);
 
     const renderer = new THREE.WebGLRenderer({
@@ -9936,14 +10121,14 @@
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
     scene.add(ambientLight);
 
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.75);
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.60);
     dirLight1.position.set(80, 120, 80);
     scene.add(dirLight1);
 
-    const dirLight2 = new THREE.DirectionalLight(0xe2e8f0, 0.45);
+    const dirLight2 = new THREE.DirectionalLight(0xcbd5e1, 0.35);
     dirLight2.position.set(-80, 50, -80);
     scene.add(dirLight2);
 
@@ -9954,7 +10139,7 @@
       controls.dampingFactor = 0.08;
       controls.target.set(0, 0, 0);
       controls.maxDistance = 500;
-      controls.minDistance = 25;
+      controls.minDistance = 2;
     }
 
     const data = IVYSAUR_VOXEL_DATA;
@@ -9968,8 +10153,25 @@
     });
 
     const instancedMesh = new THREE.InstancedMesh(geometry, material, totalCount);
+    const ghostMaterial = new THREE.MeshStandardMaterial({
+      map: outlineTexture || null,
+      transparent: true,
+      opacity: 0.40,
+      roughness: 0.88,
+      metalness: 0.0,
+      depthWrite: false
+    });
+    const ghostInstancedMesh = new THREE.InstancedMesh(geometry, ghostMaterial, totalCount);
     const dummy = new THREE.Object3D();
     const color = new THREE.Color();
+
+    for (let gi = 0; gi < totalCount; gi++) {
+      dummy.scale.set(0, 0, 0);
+      dummy.updateMatrix();
+      ghostInstancedMesh.setMatrixAt(gi, dummy.matrix);
+    }
+    ghostInstancedMesh.instanceMatrix.needsUpdate = true;
+    scene.add(ghostInstancedMesh);
 
     const cx = data.dimensions.width / 2;
     const cy = data.dimensions.height / 2;
@@ -10014,6 +10216,7 @@
     t.renderer = renderer;
     t.controls = controls;
     t.instancedMesh = instancedMesh;
+    t.ghostInstancedMesh = ghostInstancedMesh;
     t.blockDataList = blockDataList;
 
     if (controls) {
@@ -10052,6 +10255,9 @@
 
     const minL = (t.minLayer !== undefined) ? t.minLayer : (isSingle ? curLayer : 1);
     const maxL = (t.maxLayer !== undefined) ? t.maxLayer : curLayer;
+    const isGhost = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.state && VoxelDeltaStore.state.ghostLayer);
+    const hasGhostMesh = !!t.ghostInstancedMesh;
+    const color = (typeof THREE !== 'undefined') ? new THREE.Color() : null;
 
     for (let i = 0; i < t.blockDataList.length; i++) {
       const item = t.blockDataList[i];
@@ -10065,17 +10271,45 @@
 
       if (isVisible) {
         dummy.position.set(item.posX, item.posY, item.posZ);
-        dummy.scale.set(1, 1, 1);
-        dummy.updateMatrix();
-        t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
+        if (isGhost && hasGhostMesh && item.layerIndex === maxL) {
+          dummy.scale.set(0, 0, 0);
+          dummy.updateMatrix();
+          t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
+
+          dummy.scale.set(1, 1, 1);
+          dummy.updateMatrix();
+          t.ghostInstancedMesh.setMatrixAt(item.index, dummy.matrix);
+          const bid = (typeof VoxelDeltaStore !== 'undefined') ? VoxelDeltaStore.getEffectiveBid('ivysaur', vx, vy, vz) : item.bid;
+          const pItem = (IVYSAUR_VOXEL_DATA.palette && IVYSAUR_VOXEL_DATA.palette[bid]) ? IVYSAUR_VOXEL_DATA.palette[bid] : { color: '#00a8c8' };
+          if (color) {
+            color.set(pItem.color);
+            t.ghostInstancedMesh.setColorAt(item.index, color);
+          }
+        } else {
+          dummy.scale.set(1, 1, 1);
+          dummy.updateMatrix();
+          t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
+          if (hasGhostMesh) {
+            dummy.scale.set(0, 0, 0);
+            dummy.updateMatrix();
+            t.ghostInstancedMesh.setMatrixAt(item.index, dummy.matrix);
+          }
+        }
       } else {
         dummy.position.set(item.posX, item.posY, item.posZ);
         dummy.scale.set(0, 0, 0); // 縮至 0 隱藏
         dummy.updateMatrix();
         t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
+        if (hasGhostMesh) {
+          t.ghostInstancedMesh.setMatrixAt(item.index, dummy.matrix);
+        }
       }
     }
     t.instancedMesh.instanceMatrix.needsUpdate = true;
+    if (hasGhostMesh) {
+      t.ghostInstancedMesh.instanceMatrix.needsUpdate = true;
+      if (t.ghostInstancedMesh.instanceColor) t.ghostInstancedMesh.instanceColor.needsUpdate = true;
+    }
 
     if (t.dynamicAddedGroup && t.dynamicAddedGroup.children) {
       t.dynamicAddedGroup.children.forEach(cube => {
@@ -10350,9 +10584,9 @@
     }
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf8fafc);
+    scene.background = new THREE.Color(0xe2e8f0);
 
-    const camera = new THREE.PerspectiveCamera(40, width / height, 1, 2000);
+    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 2000);
     camera.position.set(135, 95, 155);
 
     const renderer = new THREE.WebGLRenderer({
@@ -10363,14 +10597,14 @@
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
     scene.add(ambientLight);
 
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.75);
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.60);
     dirLight1.position.set(90, 150, 90);
     scene.add(dirLight1);
 
-    const dirLight2 = new THREE.DirectionalLight(0xe2e8f0, 0.45);
+    const dirLight2 = new THREE.DirectionalLight(0xcbd5e1, 0.35);
     dirLight2.position.set(-90, 60, -90);
     scene.add(dirLight2);
 
@@ -10381,7 +10615,7 @@
       controls.dampingFactor = 0.08;
       controls.target.set(0, 0, 0);
       controls.maxDistance = 650;
-      controls.minDistance = 30;
+      controls.minDistance = 2;
     }
 
     const data = VENUSAUR_VOXEL_DATA;
@@ -10395,8 +10629,25 @@
     });
 
     const instancedMesh = new THREE.InstancedMesh(geometry, material, totalCount);
+    const ghostMaterial = new THREE.MeshStandardMaterial({
+      map: outlineTexture || null,
+      transparent: true,
+      opacity: 0.40,
+      roughness: 0.88,
+      metalness: 0.0,
+      depthWrite: false
+    });
+    const ghostInstancedMesh = new THREE.InstancedMesh(geometry, ghostMaterial, totalCount);
     const dummy = new THREE.Object3D();
     const color = new THREE.Color();
+
+    for (let gi = 0; gi < totalCount; gi++) {
+      dummy.scale.set(0, 0, 0);
+      dummy.updateMatrix();
+      ghostInstancedMesh.setMatrixAt(gi, dummy.matrix);
+    }
+    ghostInstancedMesh.instanceMatrix.needsUpdate = true;
+    scene.add(ghostInstancedMesh);
 
     const cx = data.dimensions.width / 2;
     const cy = data.dimensions.height / 2;
@@ -10441,6 +10692,7 @@
     t.renderer = renderer;
     t.controls = controls;
     t.instancedMesh = instancedMesh;
+    t.ghostInstancedMesh = ghostInstancedMesh;
     t.blockDataList = blockDataList;
 
     if (controls) {
@@ -10479,6 +10731,9 @@
 
     const minL = (t.minLayer !== undefined) ? t.minLayer : (isSingle ? curLayer : 1);
     const maxL = (t.maxLayer !== undefined) ? t.maxLayer : curLayer;
+    const isGhost = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.state && VoxelDeltaStore.state.ghostLayer);
+    const hasGhostMesh = !!t.ghostInstancedMesh;
+    const color = (typeof THREE !== 'undefined') ? new THREE.Color() : null;
 
     for (let i = 0; i < t.blockDataList.length; i++) {
       const item = t.blockDataList[i];
@@ -10492,17 +10747,45 @@
 
       if (isVisible) {
         dummy.position.set(item.posX, item.posY, item.posZ);
-        dummy.scale.set(1, 1, 1);
-        dummy.updateMatrix();
-        t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
+        if (isGhost && hasGhostMesh && item.layerIndex === maxL) {
+          dummy.scale.set(0, 0, 0);
+          dummy.updateMatrix();
+          t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
+
+          dummy.scale.set(1, 1, 1);
+          dummy.updateMatrix();
+          t.ghostInstancedMesh.setMatrixAt(item.index, dummy.matrix);
+          const bid = (typeof VoxelDeltaStore !== 'undefined') ? VoxelDeltaStore.getEffectiveBid('venusaur', vx, vy, vz) : item.bid;
+          const pItem = (VENUSAUR_VOXEL_DATA.palette && VENUSAUR_VOXEL_DATA.palette[bid]) ? VENUSAUR_VOXEL_DATA.palette[bid] : { color: '#00a8c8' };
+          if (color) {
+            color.set(pItem.color);
+            t.ghostInstancedMesh.setColorAt(item.index, color);
+          }
+        } else {
+          dummy.scale.set(1, 1, 1);
+          dummy.updateMatrix();
+          t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
+          if (hasGhostMesh) {
+            dummy.scale.set(0, 0, 0);
+            dummy.updateMatrix();
+            t.ghostInstancedMesh.setMatrixAt(item.index, dummy.matrix);
+          }
+        }
       } else {
         dummy.position.set(item.posX, item.posY, item.posZ);
         dummy.scale.set(0, 0, 0);
         dummy.updateMatrix();
         t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
+        if (hasGhostMesh) {
+          t.ghostInstancedMesh.setMatrixAt(item.index, dummy.matrix);
+        }
       }
     }
     t.instancedMesh.instanceMatrix.needsUpdate = true;
+    if (hasGhostMesh) {
+      t.ghostInstancedMesh.instanceMatrix.needsUpdate = true;
+      if (t.ghostInstancedMesh.instanceColor) t.ghostInstancedMesh.instanceColor.needsUpdate = true;
+    }
 
     if (t.dynamicAddedGroup && t.dynamicAddedGroup.children) {
       t.dynamicAddedGroup.children.forEach(cube => {

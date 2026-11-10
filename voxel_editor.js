@@ -100,24 +100,18 @@
       if (status === 'dirty') {
         btn.classList.add('is-dirty');
         if (typeof btn.removeAttribute === 'function') btn.removeAttribute('disabled');
-        if (icon) icon.textContent = '💾';
-        if (text) text.textContent = '儲存修改 (未儲存)';
+        if (icon) icon.textContent = '●';
+        if (text) text.textContent = '儲存修改';
       } else if (status === 'saving') {
         btn.classList.remove('is-dirty');
         if (typeof btn.setAttribute === 'function') btn.setAttribute('disabled', 'true');
-        if (icon) icon.textContent = '⏳';
+        if (icon) icon.textContent = '…';
         if (text) text.textContent = '儲存中...';
       } else {
         btn.classList.remove('is-dirty');
         if (typeof btn.removeAttribute === 'function') btn.removeAttribute('disabled');
-        if (icon) icon.textContent = '✔';
-        if (text) text.textContent = '已儲存至雲端';
-        if (false) setTimeout(() => {
-          if (btn.classList && !btn.classList.contains('is-dirty')) {
-            if (icon) icon.textContent = '✔';
-            if (text) text.textContent = '已是最新';
-          }
-        }, 2500);
+        if (icon) icon.textContent = '✓';
+        if (text) text.textContent = '已同步';
       }
     });
   }
@@ -161,6 +155,7 @@
     tool: 'rotate', // 'rotate' | 'paint' | 'delete' | 'add' | 'eyedropper' | 'select'
     selectedBid: 1, // 當前選擇的材質 ID
     mirrorSymmetry: true, // 是否開啟左右鏡像對稱
+    ghostLayer: false, // 是否開啟當前檢視層半透明透視
     selectedVoxels: new Set(), // 儲存選取的方塊座標集合 'x,y,z'
     hoverVoxel: null, // 儲存當前滑鼠懸停資訊 { x, y, z, symX, charKey }
     listeners: []
@@ -893,47 +888,46 @@
     });
 
     wrap.innerHTML = `
-      <!-- PWA 常駐開關膠囊按鈕 (大點擊熱區，高度 42px，居於自然排版流) -->
+      <!-- PWA 常駐開關膠囊按鈕 (大點擊熱區，高度 34px，居於自然排版流) -->
       <div class="ve-toggle-capsule-wrap">
         <button type="button" class="ve-toggle-capsule" id="veToggleBtn_${charKey}" title="開啟 / 收合體素編輯器">
-          🛠️ 體素編輯
+          體素編輯
         </button>
       </div>
 
-      <!-- 展開的全寬自然嵌入式工具面板 (符合 PWA 觸控規範，按鈕 >= 40px，色票 36px，絕不破框遮擋) -->
+      <!-- 展開的全寬自然嵌入式工具面板 (緊湊護眼排版，絕不破框遮擋) -->
       <div class="voxel-editor-toolbar ve-hidden" id="vePanel_${charKey}">
         <div class="ve-toolbar-inner">
-          <!-- 第 1 區：6 大畫筆工具 (自適應分區網格) -->
+          <!-- 第 1 區：6 大畫筆工具 + 行內膠囊清空選取 (零高度浪費) -->
           <div class="ve-tool-group">
             <button type="button" class="ve-btn ${!_state.editorMode ? 'active' : ''}" data-tool="rotate" title="視角旋轉 (可拖曳視角)">
-              🖐️ 旋轉
+              旋轉
             </button>
             <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'paint' ? 'active' : ''}" data-tool="paint" title="塗色 (修改方塊材質)">
-              🎨 塗色
+              塗色
             </button>
             <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'delete' ? 'active' : ''}" data-tool="delete" title="消除 (刪除點擊的方塊)">
-              🧹 消除
+              消除
             </button>
             <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'add' ? 'active' : ''}" data-tool="add" title="新增 (在點擊面上堆疊方塊)">
-              ➕ 新增
+              新增
             </button>
             <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'eyedropper' ? 'active' : ''}" data-tool="eyedropper" title="吸管 (吸取模型上的方塊材質)">
-              🧪 吸管
+              吸管
             </button>
             <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'select' ? 'active' : ''}" data-tool="select" title="選取 (多方塊選取／框選後批次塗色或整批消除)">
-              ⬚ 選取
+              選取
+            </button>
+            <!-- 緊湊行內清空選取膠囊 (僅在有選取時顯示，不佔用整行) -->
+            <button type="button" class="ve-btn ve-btn-danger ve-btn-clear-sel" data-role="clear-sel" id="btnClearSel_${charKey}" title="清空當前選取的方塊" style="${(_state.selectedVoxels && _state.selectedVoxels.size > 0) ? '' : 'display:none;'}">
+              ✕ 清空 (${_state.selectedVoxels ? _state.selectedVoxels.size : 0})
             </button>
           </div>
 
-          <!-- 清空選取提示列 (當有選取方塊時顯示) -->
-          <button type="button" class="ve-btn ve-btn-danger" id="btnClearSel_${charKey}" title="清空當前選取的方塊" style="${(_state.selectedVoxels && _state.selectedVoxels.size > 0) ? '' : 'display:none;'}width:100%;">
-            ✖ 清空選取 (${_state.selectedVoxels ? _state.selectedVoxels.size : 0})
-          </button>
-
-          <!-- 第 2 區：整合式材質調色盤 (色票 36px×36px 大熱區，內嵌整合零遮擋) -->
+          <!-- 第 2 區：整合式材質調色盤 (色票 20px 緊湊單排，內嵌整合零遮擋) -->
           <div class="ve-integrated-palette">
             <div class="ve-palette-title-row">
-              <span>🎨 材質選擇</span>
+              <span>材質</span>
               <span class="ve-palette-cur-color" id="vePaletteCurColor_${charKey}">${curColorName}</span>
             </div>
             <div class="ve-palette-grid">
@@ -941,19 +935,24 @@
             </div>
           </div>
 
-          <!-- 第 3 區：動作與功能列 (自適應排版，充足寬度，絕不破框) -->
+          <!-- 第 3 區：動作與功能列 (透視 / 鏡像 / 歷史 / 儲存 / 收合) -->
           <div class="ve-action-group">
+            <!-- 當前層半透明透視開關 -->
+            <button type="button" class="ve-btn ve-btn-ghost-layer ${_state.ghostLayer ? 'active' : ''}" data-role="ghost-layer" id="btnGhostLayer_${charKey}" title="將當前停留最高層設為 40% 半透明透視">
+              透視: ${_state.ghostLayer ? '開' : '關'}
+            </button>
+
             <!-- 鏡像動作列 -->
             <div class="ve-mirror-row">
-              <button type="button" class="ve-btn ${_state.mirrorSymmetry ? 'active' : ''}" id="btnMirror_${charKey}" title="左右鏡像對稱編輯">
-                🪞 鏡像: ${_state.mirrorSymmetry ? '開' : '關'}
+              <button type="button" class="ve-btn ve-btn-mirror ${_state.mirrorSymmetry ? 'active' : ''}" data-role="mirror" id="btnMirror_${charKey}" title="左右鏡像對稱編輯">
+                鏡像: ${_state.mirrorSymmetry ? '開' : '關'}
               </button>
               <div class="ve-mirror-actions">
-                <button type="button" class="ve-btn ve-btn-mirror-ltor" id="btnMirrorLtoR_${charKey}" title="將本層左側方塊完全鏡像複製至右側">
-                  ⮂ 左鏡右
+                <button type="button" class="ve-btn ve-btn-mirror-ltor" data-role="mirror-ltor" id="btnMirrorLtoR_${charKey}" title="將本層左側方塊完全鏡像複製至右側">
+                  左鏡右
                 </button>
-                <button type="button" class="ve-btn ve-btn-mirror-rtol" id="btnMirrorRtoL_${charKey}" title="將本層右側方塊完全鏡像複製至左側">
-                  ⮃ 右鏡左
+                <button type="button" class="ve-btn ve-btn-mirror-rtol" data-role="mirror-rtol" id="btnMirrorRtoL_${charKey}" title="將本層右側方塊完全鏡像複製至左側">
+                  右鏡左
                 </button>
               </div>
             </div>
@@ -961,18 +960,23 @@
             <!-- 歷史與儲存列 -->
             <div class="ve-history-row">
               <div class="ve-undo-redo-row">
-                <button type="button" class="ve-btn" id="btnUndo_${charKey}" title="復原上一步 (最多 10 步)">
-                  ↩️ 復原
+                <button type="button" class="ve-btn" data-role="undo" id="btnUndo_${charKey}" title="復原上一步 (最多 10 步)">
+                  復原
                 </button>
-                <button type="button" class="ve-btn" id="btnRedo_${charKey}" title="重做下一步 (最多 10 步)">
-                  ↪️ 重做
+                <button type="button" class="ve-btn" data-role="redo" id="btnRedo_${charKey}" title="重做下一步 (最多 10 步)">
+                  重做
                 </button>
               </div>
-              <button type="button" class="ve-btn ve-btn-save-cloud" data-char="${charKey}" id="btnSaveCloud_${charKey}" title="點擊將當前所有修改儲存至 Google 雲端帳號">
-                <span class="ve-save-icon">✔</span>
-                <span class="ve-save-text">已是最新</span>
+              <button type="button" class="ve-btn ve-btn-save-cloud" data-role="save-cloud" data-char="${charKey}" id="btnSaveCloud_${charKey}" title="點擊將當前所有修改儲存至 Google 雲端帳號">
+                <span class="ve-save-icon">✓</span>
+                <span class="ve-save-text">已同步</span>
               </button>
             </div>
+
+            <!-- 工具列收合按鈕 (微型行內按鈕，不浪費整行空間) -->
+            <button type="button" class="ve-btn ve-btn-collapse" data-role="collapse" title="收合體素工具列">
+              ✕ 收合
+            </button>
           </div>
         </div>
       </div>
@@ -1351,7 +1355,7 @@
     const bars = document.querySelectorAll(`[id="voxelToolbar_${charKey}"], [id="voxelToolbar2D_${charKey}"]`);
     bars.forEach(bar => {
       // 工具按鈕 active
-      bar.querySelectorAll('.ve-tool-group .ve-btn').forEach(btn => {
+      bar.querySelectorAll('.ve-tool-group .ve-btn[data-tool]').forEach(btn => {
         const tool = btn.getAttribute('data-tool');
         if (tool === 'rotate') {
           btn.classList.toggle('active', !_state.editorMode || _state.tool === 'rotate');
@@ -1360,23 +1364,30 @@
         }
       });
 
-      // 鏡像按鈕
-      bar.querySelectorAll(`[id^="btnMirror_"]`).forEach(btnMirror => {
+      // 鏡像按鈕 (醒目無 Emoji 狀態切換)
+      bar.querySelectorAll('[data-role="mirror"], [id^="btnMirror_"]').forEach(btnMirror => {
         btnMirror.classList.toggle('active', _state.mirrorSymmetry);
-        btnMirror.innerHTML = `🪞 鏡像: ${_state.mirrorSymmetry ? '開' : '關'}`;
+        btnMirror.innerHTML = `鏡像: ${_state.mirrorSymmetry ? '開' : '關'}`;
       });
 
-      // 清空選取按鈕
-      bar.querySelectorAll(`[id^="btnClearSel_"]`).forEach(btnClearSel => {
+      // 當前層半透明透視按鈕
+      bar.querySelectorAll('[data-role="ghost-layer"], [id^="btnGhostLayer_"]').forEach(btnGhost => {
+        btnGhost.classList.toggle('active', !!_state.ghostLayer);
+        btnGhost.innerHTML = `透視: ${_state.ghostLayer ? '開' : '關'}`;
+      });
+
+      // 清空選取按鈕 (緊湊膠囊行內顯示)
+      bar.querySelectorAll('[data-role="clear-sel"], [id^="btnClearSel_"]').forEach(btnClearSel => {
         const selCount = _state.selectedVoxels ? _state.selectedVoxels.size : 0;
         btnClearSel.style.display = selCount > 0 ? '' : 'none';
-        btnClearSel.innerHTML = `✖ 清空選取 (${selCount})`;
+        btnClearSel.innerHTML = selCount > 0 ? `✕ 清空 (${selCount})` : '✕ 清空';
       });
 
       // 色票 active 與名稱提示 (整合式調色盤)
-      const curPalette = (baseData && baseData.palette) ? baseData.palette : {};
+      const base = getBaseData(charKey);
+      const curPalette = (base && base.palette) ? base.palette : {};
       const curItem = curPalette[_state.selectedBid];
-      bar.querySelectorAll(`[id^="vePaletteCurColor_"]`).forEach(el => {
+      bar.querySelectorAll('[data-role="palette-cur-color"], [id^="vePaletteCurColor_"]').forEach(el => {
         el.textContent = curItem && curItem.name ? curItem.name : '已選材質';
       });
 
@@ -1385,23 +1396,23 @@
         dot.classList.toggle('active', bid === Number(_state.selectedBid));
       });
 
-      // 復原與重做按鈕狀態與 10 步計數更新
+      // 復原與重做按鈕狀態與 10 步計數更新 (純淨專業文字，無 Emoji)
       const char = _state.characters[charKey];
       const historyCount = (char && char.history) ? char.history.length : 0;
       const redoCount = (char && char.redoStack) ? char.redoStack.length : 0;
 
-      bar.querySelectorAll(`[id^="btnUndo_"]`).forEach(btnUndo => {
+      bar.querySelectorAll('[data-role="undo"], [id^="btnUndo_"]').forEach(btnUndo => {
         btnUndo.disabled = (historyCount === 0);
         btnUndo.style.opacity = (historyCount === 0) ? '0.45' : '1';
         btnUndo.style.cursor = (historyCount === 0) ? 'not-allowed' : 'pointer';
-        btnUndo.innerHTML = historyCount > 0 ? `↩️ 復原 (${historyCount})` : '↩️ 復原';
+        btnUndo.innerHTML = historyCount > 0 ? `復原 (${historyCount})` : '復原';
       });
 
-      bar.querySelectorAll(`[id^="btnRedo_"]`).forEach(btnRedo => {
+      bar.querySelectorAll('[data-role="redo"], [id^="btnRedo_"]').forEach(btnRedo => {
         btnRedo.disabled = (redoCount === 0);
         btnRedo.style.opacity = (redoCount === 0) ? '0.45' : '1';
         btnRedo.style.cursor = (redoCount === 0) ? 'not-allowed' : 'pointer';
-        btnRedo.innerHTML = redoCount > 0 ? `↪️ 重做 (${redoCount})` : '↪️ 重做';
+        btnRedo.innerHTML = redoCount > 0 ? `重做 (${redoCount})` : '重做';
       });
     });
 
@@ -1415,8 +1426,9 @@
     if (typeof document === 'undefined') return;
     const bars = document.querySelectorAll(`[id="voxelToolbar_${charKey}"], [id="voxelToolbar2D_${charKey}"]`);
     bars.forEach(bar => {
-      const panel = bar.querySelector(`[id^="vePanel_"]`);
-      const toggleBtn = bar.querySelector(`[id^="veToggleBtn_"]`);
+      bar.classList.toggle('is-open', expanded);
+      const panel = bar.querySelector(`.voxel-editor-toolbar, [id^="vePanel_"]`);
+      const toggleBtn = bar.querySelector(`.ve-toggle-capsule, [id^="veToggleBtn_"]`);
       const paletteDock = bar.querySelector(`[id^="vePaletteDock_"]`);
       if (panel) panel.classList.toggle('ve-hidden', !expanded);
       if (paletteDock) paletteDock.classList.toggle('ve-hidden', !expanded);
@@ -1431,6 +1443,21 @@
       _state.tool = 'rotate';
     }
     updateToolbarUI(charKey);
+  }
+
+  function toggleGhostLayer(charKey) {
+    _state.ghostLayer = !_state.ghostLayer;
+    updateToolbarUI(charKey);
+    const sceneObj = _attachedThreeScenes[charKey];
+    if (sceneObj && sceneObj.threeState) {
+      if (typeof sceneObj.threeState._syncVLC === 'function') {
+        const curL = sceneObj.threeState.maxLayer || (sceneObj.threeState._getCurLayer ? sceneObj.threeState._getCurLayer() : 1);
+        sceneObj.threeState._syncVLC(curL);
+      }
+    }
+    if (typeof requestThreeRender === 'function') {
+      requestThreeRender(charKey);
+    }
   }
 
   function setupToolbarEvents(container, charKey, threeState, baseData, onSubmitCallback) {
@@ -1468,8 +1495,22 @@
       panel.addEventListener('click', (e) => {
         const target = e.target.closest('button');
         if (!target) return;
+        const role = target.getAttribute('data-role');
 
-        if (target.id.startsWith('btnClearSel_')) {
+        // 收合工具列
+        if (role === 'collapse' || target.classList.contains('ve-btn-collapse')) {
+          setToolbarExpanded(charKey, false);
+          return;
+        }
+
+        // 透視開關
+        if (role === 'ghost-layer' || target.id.startsWith('btnGhostLayer_') || target.classList.contains('ve-btn-ghost-layer')) {
+          toggleGhostLayer(charKey);
+          return;
+        }
+
+        // 清空選取
+        if (role === 'clear-sel' || target.id.startsWith('btnClearSel_') || target.classList.contains('ve-btn-clear-sel')) {
           clearSelection(charKey);
           updateToolbarUI(charKey);
           syncThreeMeshFromOverrides(charKey, threeState, baseData);
@@ -1503,43 +1544,43 @@
           return;
         }
 
-        if (target.id.startsWith('btnMirror_')) {
+        if (role === 'mirror' || target.id.startsWith('btnMirror_') || target.classList.contains('ve-btn-mirror')) {
           _state.mirrorSymmetry = !_state.mirrorSymmetry;
           updateToolbarUI(charKey);
           return;
         }
 
         // 一鍵鏡像同步 (左鏡右 / 右鏡左)
-        if (target.id.startsWith('btnMirrorLtoR_') || target.classList.contains('ve-btn-mirror-ltor')) {
+        if (role === 'mirror-ltor' || target.id.startsWith('btnMirrorLtoR_') || target.classList.contains('ve-btn-mirror-ltor')) {
           const curLayer = (threeState._getCurLayer ? threeState._getCurLayer() : 1);
           mirrorCurrentLayer(charKey, curLayer, 'left-to-right');
           syncThreeMeshFromOverrides(charKey, threeState, baseData);
           return;
         }
-        if (target.id.startsWith('btnMirrorRtoL_') || target.classList.contains('ve-btn-mirror-rtol')) {
+        if (role === 'mirror-rtol' || target.id.startsWith('btnMirrorRtoL_') || target.classList.contains('ve-btn-mirror-rtol')) {
           const curLayer = (threeState._getCurLayer ? threeState._getCurLayer() : 1);
           mirrorCurrentLayer(charKey, curLayer, 'right-to-left');
           syncThreeMeshFromOverrides(charKey, threeState, baseData);
           return;
         }
 
-        if (target.id.startsWith('btnUndo_')) {
+        if (role === 'undo' || target.id.startsWith('btnUndo_')) {
           undo(charKey);
           return;
         }
 
-        if (target.id.startsWith('btnRedo_')) {
+        if (role === 'redo' || target.id.startsWith('btnRedo_')) {
           redo(charKey);
           return;
         }
 
-        if (target.id.startsWith('btnSaveCloud_') || target.id.startsWith('btnSaveCloud2D_') || target.classList.contains('ve-btn-save-cloud') || target.closest('.ve-btn-save-cloud') || target.closest('[id^="btnSaveCloud_"]') || target.closest('[id^="btnSaveCloud2D_"]')) {
+        if (role === 'save-cloud' || target.id.startsWith('btnSaveCloud_') || target.id.startsWith('btnSaveCloud2D_') || target.classList.contains('ve-btn-save-cloud') || target.closest('.ve-btn-save-cloud') || target.closest('[id^="btnSaveCloud_"]') || target.closest('[id^="btnSaveCloud2D_"]')) {
           saveOverridesToCloud(charKey);
           return;
         }
 
         if (target.id.startsWith('btnReset_')) {
-          const confirmMsg = '⚠️ 警告：這將會清除您對當前角色的所有自訂方塊與改動，恢復為官方預設值，且無法撤銷！\n\n確定要重置嗎？';
+          const confirmMsg = '警告：這將會清除您對當前角色的所有自訂方塊與改動，恢復為官方預設值，且無法撤銷！\n\n確定要重置嗎？';
           if (confirm(confirmMsg)) {
             resetToDefault(charKey);
             _lastLocalActionTimes[charKey] = Date.now();
@@ -1592,10 +1633,10 @@
       toolbar2D = createEditorToolbarDOM(charKey, baseData);
       toolbar2D.id = `voxelToolbar2D_${charKey}`;
       toolbar2D.classList.add('voxel-editor-2d-toolbar');
-      const saveBtn2D = toolbar2D.querySelector(`#btnSaveCloud_${charKey}`);
-      if (saveBtn2D) {
-        saveBtn2D.id = `btnSaveCloud2D_${charKey}`;
-      }
+      // 徹底根除 2D 與 3D 工具列 DOM ID 碰撞，內部所有子元素皆加上 2D 命名空間
+      toolbar2D.querySelectorAll('[id]').forEach(el => {
+        el.id = el.id.replace(`_${charKey}`, `2D_${charKey}`);
+      });
 
       // 自然流嵌入：優先插入在 2D 切片網格容器 (.bulba-grid-container) 之前，不遮擋滑桿與網格
       const gridContainer = container2D.querySelector('.bulba-grid-container');
@@ -1654,7 +1695,8 @@
     attachEditorToScene,
     attachEditorTo2D,
     syncThreeMeshFromOverrides,
-    updateToolbarUI
+    updateToolbarUI,
+    toggleGhostLayer
   };
 
   if (typeof module !== 'undefined' && module.exports) {
