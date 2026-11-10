@@ -895,50 +895,52 @@
         </button>
       </div>
 
-      <!-- 展開的全寬自然嵌入式工具面板 (緊湊護眼排版，絕不破框遮擋) -->
-      <div class="voxel-editor-toolbar ve-hidden" id="vePanel_${charKey}">
+      <!-- 展開的全寬自然嵌入式工具面板 (恆定雙排零跳動排版，職責分明無彈跳) -->
+      <div class="voxel-editor-toolbar ve-hidden" id="vePanel_${charKey}" data-char="${charKey}">
         <div class="ve-toolbar-inner">
-          <!-- 第 1 區：6 大畫筆工具 + 行內膠囊清空選取 (零高度浪費) -->
-          <div class="ve-tool-group">
-            <button type="button" class="ve-btn ${!_state.editorMode ? 'active' : ''}" data-tool="rotate" title="視角旋轉 (可拖曳視角)">
-              旋轉
-            </button>
-            <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'paint' ? 'active' : ''}" data-tool="paint" title="塗色 (修改方塊材質)">
-              塗色
-            </button>
-            <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'delete' ? 'active' : ''}" data-tool="delete" title="消除 (刪除點擊的方塊)">
-              消除
-            </button>
-            <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'add' ? 'active' : ''}" data-tool="add" title="新增 (在點擊面上堆疊方塊)">
-              新增
-            </button>
-            <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'eyedropper' ? 'active' : ''}" data-tool="eyedropper" title="吸管 (吸取模型上的方塊材質)">
-              吸管
-            </button>
-            <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'select' ? 'active' : ''}" data-tool="select" title="選取 (多方塊選取／框選後批次塗色或整批消除)">
-              選取
-            </button>
-            <!-- 緊湊行內清空選取膠囊 (僅在有選取時顯示，不佔用整行) -->
-            <button type="button" class="ve-btn ve-btn-danger ve-btn-clear-sel" data-role="clear-sel" id="btnClearSel_${charKey}" title="清空當前選取的方塊" style="${(_state.selectedVoxels && _state.selectedVoxels.size > 0) ? '' : 'display:none;'}">
-              ✕ 清空 (${_state.selectedVoxels ? _state.selectedVoxels.size : 0})
-            </button>
+          <!-- 上排：繪筆工具群組 ＋ 緊湊行內清空選取膠囊 ＋ 整合式材質調色盤 (繪製核心區) -->
+          <div class="ve-row ve-row-paint">
+            <div class="ve-tool-group">
+              <button type="button" class="ve-btn ${!_state.editorMode ? 'active' : ''}" data-tool="rotate" title="視角旋轉 (可拖曳視角)">
+                旋轉
+              </button>
+              <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'paint' ? 'active' : ''}" data-tool="paint" title="塗色 (修改方塊材質)">
+                塗色
+              </button>
+              <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'delete' ? 'active' : ''}" data-tool="delete" title="消除 (刪除點擊的方塊)">
+                消除
+              </button>
+              <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'add' ? 'active' : ''}" data-tool="add" title="新增 (在點擊面上堆疊方塊)">
+                新增
+              </button>
+              <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'eyedropper' ? 'active' : ''}" data-tool="eyedropper" title="吸管 (吸取模型上的方塊材質)">
+                吸管
+              </button>
+              <button type="button" class="ve-btn ${_state.editorMode && _state.tool === 'select' ? 'active' : ''}" data-tool="select" title="選取 (多方塊選取／框選後批次塗色或整批消除)">
+                選取
+              </button>
+              <!-- 緊湊行內清空選取膠囊 (僅在有選取時顯示，上排固定不跳動) -->
+              <button type="button" class="ve-btn ve-btn-danger ve-btn-clear-sel" data-role="clear-sel" id="btnClearSel_${charKey}" title="清空當前選取的方塊" style="${(_state.selectedVoxels && _state.selectedVoxels.size > 0) ? '' : 'display:none;'}">
+                ✕ 清空 (${_state.selectedVoxels ? _state.selectedVoxels.size : 0})
+              </button>
+            </div>
+
+            <!-- 整合式材質調色盤 (色票 20px 緊湊單排，內嵌整合零遮擋) -->
+            <div class="ve-integrated-palette">
+              <div class="ve-palette-title-row">
+                <span>材質</span>
+                <span class="ve-palette-cur-color" id="vePaletteCurColor_${charKey}">${curColorName}</span>
+              </div>
+              <div class="ve-palette-grid">
+                ${paletteHtml}
+              </div>
+            </div>
           </div>
 
-          <!-- 第 2 區：整合式材質調色盤 (色票 20px 緊湊單排，內嵌整合零遮擋) -->
-          <div class="ve-integrated-palette">
-            <div class="ve-palette-title-row">
-              <span>材質</span>
-              <span class="ve-palette-cur-color" id="vePaletteCurColor_${charKey}">${curColorName}</span>
-            </div>
-            <div class="ve-palette-grid">
-              ${paletteHtml}
-            </div>
-          </div>
-
-          <!-- 第 3 區：動作與功能列 (透視 / 鏡像 / 歷史 / 儲存 / 收合) -->
-          <div class="ve-action-group">
-            <!-- 當前層半透明透視開關 -->
-            <button type="button" class="ve-btn ve-btn-ghost-layer ${_state.ghostLayer ? 'active' : ''}" data-role="ghost-layer" id="btnGhostLayer_${charKey}" title="將當前停留最高層設為 40% 半透明透視">
+          <!-- 下排：透視 ＋ 鏡像 ＋ 歷史復原重做 ＋ 雲端儲存 ＋ 收合 (輔助功能區，排版永遠恆定) -->
+          <div class="ve-row ve-row-actions">
+            <!-- 當前層半透明透視開關 (60% 原色彩色琉璃質感) -->
+            <button type="button" class="ve-btn ve-btn-ghost-layer ${_state.ghostLayer ? 'active' : ''}" data-role="ghost-layer" id="btnGhostLayer_${charKey}" title="將當前停留最高層設為 60% 彩色琉璃半透明透視">
               透視: ${_state.ghostLayer ? '開' : '關'}
             </button>
 
@@ -1352,7 +1354,7 @@
 
   function updateToolbarUI(charKey) {
     if (typeof document === 'undefined' || typeof document.querySelectorAll !== 'function') return;
-    const bars = document.querySelectorAll(`[id="voxelToolbar_${charKey}"], [id="voxelToolbar2D_${charKey}"]`);
+    const bars = document.querySelectorAll(`[id="voxelToolbar_${charKey}"], [id="voxelToolbar2D_${charKey}"], .voxel-editor-container[data-char="${charKey}"], .voxel-editor-2d-toolbar[data-char="${charKey}"]`);
     bars.forEach(bar => {
       // 工具按鈕 active
       bar.querySelectorAll('.ve-tool-group .ve-btn[data-tool]').forEach(btn => {
@@ -1365,19 +1367,19 @@
       });
 
       // 鏡像按鈕 (醒目無 Emoji 狀態切換)
-      bar.querySelectorAll('[data-role="mirror"], [id^="btnMirror_"]').forEach(btnMirror => {
+      bar.querySelectorAll('[data-role="mirror"], [id^="btnMirror_"], [id^="btnMirror2D_"]').forEach(btnMirror => {
         btnMirror.classList.toggle('active', _state.mirrorSymmetry);
         btnMirror.innerHTML = `鏡像: ${_state.mirrorSymmetry ? '開' : '關'}`;
       });
 
       // 當前層半透明透視按鈕
-      bar.querySelectorAll('[data-role="ghost-layer"], [id^="btnGhostLayer_"]').forEach(btnGhost => {
+      bar.querySelectorAll('[data-role="ghost-layer"], [id^="btnGhostLayer_"], [id^="btnGhostLayer2D_"]').forEach(btnGhost => {
         btnGhost.classList.toggle('active', !!_state.ghostLayer);
         btnGhost.innerHTML = `透視: ${_state.ghostLayer ? '開' : '關'}`;
       });
 
       // 清空選取按鈕 (緊湊膠囊行內顯示)
-      bar.querySelectorAll('[data-role="clear-sel"], [id^="btnClearSel_"]').forEach(btnClearSel => {
+      bar.querySelectorAll('[data-role="clear-sel"], [id^="btnClearSel_"], [id^="btnClearSel2D_"]').forEach(btnClearSel => {
         const selCount = _state.selectedVoxels ? _state.selectedVoxels.size : 0;
         btnClearSel.style.display = selCount > 0 ? '' : 'none';
         btnClearSel.innerHTML = selCount > 0 ? `✕ 清空 (${selCount})` : '✕ 清空';
@@ -1387,7 +1389,7 @@
       const base = getBaseData(charKey);
       const curPalette = (base && base.palette) ? base.palette : {};
       const curItem = curPalette[_state.selectedBid];
-      bar.querySelectorAll('[data-role="palette-cur-color"], [id^="vePaletteCurColor_"]').forEach(el => {
+      bar.querySelectorAll('[data-role="palette-cur-color"], [id^="vePaletteCurColor_"], [id^="vePaletteCurColor2D_"]').forEach(el => {
         el.textContent = curItem && curItem.name ? curItem.name : '已選材質';
       });
 
@@ -1401,14 +1403,14 @@
       const historyCount = (char && char.history) ? char.history.length : 0;
       const redoCount = (char && char.redoStack) ? char.redoStack.length : 0;
 
-      bar.querySelectorAll('[data-role="undo"], [id^="btnUndo_"]').forEach(btnUndo => {
+      bar.querySelectorAll('[data-role="undo"], [id^="btnUndo_"], [id^="btnUndo2D_"]').forEach(btnUndo => {
         btnUndo.disabled = (historyCount === 0);
         btnUndo.style.opacity = (historyCount === 0) ? '0.45' : '1';
         btnUndo.style.cursor = (historyCount === 0) ? 'not-allowed' : 'pointer';
         btnUndo.innerHTML = historyCount > 0 ? `復原 (${historyCount})` : '復原';
       });
 
-      bar.querySelectorAll('[data-role="redo"], [id^="btnRedo_"]').forEach(btnRedo => {
+      bar.querySelectorAll('[data-role="redo"], [id^="btnRedo_"], [id^="btnRedo2D_"]').forEach(btnRedo => {
         btnRedo.disabled = (redoCount === 0);
         btnRedo.style.opacity = (redoCount === 0) ? '0.45' : '1';
         btnRedo.style.cursor = (redoCount === 0) ? 'not-allowed' : 'pointer';
@@ -1427,9 +1429,9 @@
     const bars = document.querySelectorAll(`[id="voxelToolbar_${charKey}"], [id="voxelToolbar2D_${charKey}"]`);
     bars.forEach(bar => {
       bar.classList.toggle('is-open', expanded);
-      const panel = bar.querySelector(`.voxel-editor-toolbar, [id^="vePanel_"]`);
-      const toggleBtn = bar.querySelector(`.ve-toggle-capsule, [id^="veToggleBtn_"]`);
-      const paletteDock = bar.querySelector(`[id^="vePaletteDock_"]`);
+      const panel = bar.querySelector(`.voxel-editor-toolbar, [id^="vePanel_"], [id^="vePanel2D_"]`);
+      const toggleBtn = bar.querySelector(`.ve-toggle-capsule, [id^="veToggleBtn_"], [id^="veToggleBtn2D_"]`);
+      const paletteDock = bar.querySelector(`[id^="vePaletteDock_"], [id^="vePaletteDock2D_"]`);
       if (panel) panel.classList.toggle('ve-hidden', !expanded);
       if (paletteDock) paletteDock.classList.toggle('ve-hidden', !expanded);
       if (toggleBtn) toggleBtn.classList.toggle('active', expanded);
@@ -1450,6 +1452,11 @@
     updateToolbarUI(charKey);
     const sceneObj = _attachedThreeScenes[charKey];
     if (sceneObj && sceneObj.threeState) {
+      if (typeof sceneObj.threeState._sliceFilter === 'function') {
+        sceneObj.threeState._sliceFilter();
+      } else if (typeof sceneObj.threeState._onAfterSync === 'function') {
+        sceneObj.threeState._onAfterSync();
+      }
       if (typeof sceneObj.threeState._syncVLC === 'function') {
         const curL = sceneObj.threeState.maxLayer || (sceneObj.threeState._getCurLayer ? sceneObj.threeState._getCurLayer() : 1);
         sceneObj.threeState._syncVLC(curL);
@@ -1461,9 +1468,9 @@
   }
 
   function setupToolbarEvents(container, charKey, threeState, baseData, onSubmitCallback) {
-    const toggleBtn = container.querySelector(`[id^="veToggleBtn_"]`);
-    const panel = container.querySelector(`[id^="vePanel_"]`);
-    const paletteDock = container.querySelector(`[id^="vePaletteDock_"]`);
+    const toggleBtn = container.querySelector(`.ve-toggle-capsule, [id^="veToggleBtn_"], [id^="veToggleBtn2D_"]`);
+    const panel = container.querySelector(`.voxel-editor-toolbar, [id^="vePanel_"], [id^="vePanel2D_"]`);
+    const paletteDock = container.querySelector(`.ve-palette-dock, [id^="vePaletteDock_"], [id^="vePaletteDock2D_"]`);
 
     if (toggleBtn && panel) {
       toggleBtn.addEventListener('click', (e) => {
@@ -1503,14 +1510,14 @@
           return;
         }
 
-        // 透視開關
-        if (role === 'ghost-layer' || target.id.startsWith('btnGhostLayer_') || target.classList.contains('ve-btn-ghost-layer')) {
+        // 透視開關 (0 毫秒即時生效)
+        if (role === 'ghost-layer' || target.classList.contains('ve-btn-ghost-layer') || (target.id && (target.id.startsWith('btnGhostLayer_') || target.id.startsWith('btnGhostLayer2D_')))) {
           toggleGhostLayer(charKey);
           return;
         }
 
-        // 清空選取
-        if (role === 'clear-sel' || target.id.startsWith('btnClearSel_') || target.classList.contains('ve-btn-clear-sel')) {
+        // 清空選取 (全域雙向即時清空)
+        if (role === 'clear-sel' || target.classList.contains('ve-btn-clear-sel') || (target.id && (target.id.startsWith('btnClearSel_') || target.id.startsWith('btnClearSel2D_')))) {
           clearSelection(charKey);
           updateToolbarUI(charKey);
           syncThreeMeshFromOverrides(charKey, threeState, baseData);

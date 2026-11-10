@@ -9171,6 +9171,12 @@
       if (charKey === 'ivysaur') updateIvysaur3DSliceFilter();
       if (charKey === 'venusaur') updateVenusaur3DSliceFilter();
     };
+    threeState._sliceFilter = () => {
+      if (charKey === 'bulbasaur') updateBulba3DSliceFilter();
+      if (charKey === 'buzz') updateBuzz3DSliceFilter();
+      if (charKey === 'ivysaur') updateIvysaur3DSliceFilter();
+      if (charKey === 'venusaur') updateVenusaur3DSliceFilter();
+    };
 
     const curWrap = canvasEl.parentElement;
     if (VoxelDeltaStore.attachEditorToScene) {
@@ -9265,9 +9271,16 @@
 
       gridEl.addEventListener('pointermove', (e) => {
         if (typeof VoxelDeltaStore === 'undefined' || !VoxelDeltaStore.state || !VoxelDeltaStore.state.editorMode) return;
-        const cell = e.target.closest('.bulba-cell');
+        let cell = (e.target && e.target.closest) ? e.target.closest('.bulba-cell') : null;
         if (!cell || cell.dataset.x === undefined) {
-          clearMirrorGhost();
+          // 在 Pointer Capture 模式下 e.target 會被鎖定為 gridEl 容器，改用座標命中反查真正的 cell
+          if (typeof document !== 'undefined' && typeof document.elementFromPoint === 'function') {
+            const el = document.elementFromPoint(e.clientX, e.clientY);
+            if (el && el.closest) cell = el.closest('.bulba-cell');
+          }
+        }
+        if (!cell || cell.dataset.x === undefined) {
+          if (!isDraggingMarquee) clearMirrorGhost();
           return;
         }
 
@@ -9437,10 +9450,10 @@
     const ghostMaterial = new THREE.MeshStandardMaterial({
       map: outlineTexture || null,
       transparent: true,
-      opacity: 0.40,
+      opacity: 0.60,
       roughness: 0.88,
       metalness: 0.0,
-      depthWrite: false
+      depthWrite: true
     });
     const ghostInstancedMesh = new THREE.InstancedMesh(geometry, ghostMaterial, totalCount);
     const dummy = new THREE.Object3D();
@@ -9474,6 +9487,7 @@
         const pItem = data.palette[bid] || { color: '#f1f5f9' };
         color.set(pItem.color);
         instancedMesh.setColorAt(idx, color);
+        ghostInstancedMesh.setColorAt(idx, color);
 
         blockDataList.push({
           index: idx,
@@ -9481,7 +9495,8 @@
           defaultMatrix: dummy.matrix.clone(),
           posX: x - cx,
           posY: y - cy,
-          posZ: z - cz
+          posZ: z - cz,
+          bid: bid
         });
         idx++;
       });
@@ -9490,6 +9505,9 @@
     instancedMesh.instanceMatrix.needsUpdate = true;
     if (instancedMesh.instanceColor) instancedMesh.instanceColor.needsUpdate = true;
     scene.add(instancedMesh);
+
+    ghostInstancedMesh.instanceMatrix.needsUpdate = true;
+    if (ghostInstancedMesh.instanceColor) ghostInstancedMesh.instanceColor.needsUpdate = true;
 
     t.isInit = true;
     t.scene = scene;
@@ -9560,8 +9578,9 @@
           dummy.scale.set(1, 1, 1);
           dummy.updateMatrix();
           t.ghostInstancedMesh.setMatrixAt(item.index, dummy.matrix);
-          const bid = (typeof VoxelDeltaStore !== 'undefined') ? VoxelDeltaStore.getEffectiveBid('buzz', vx, vy, vz) : item.bid;
-          const pItem = (BUZZ_VOXEL_DATA.palette && BUZZ_VOXEL_DATA.palette[bid]) ? BUZZ_VOXEL_DATA.palette[bid] : { color: '#f1f5f9' };
+          const effBid = (typeof VoxelDeltaStore !== 'undefined') ? VoxelDeltaStore.getEffectiveBid('buzz', vx, vy, vz) : item.bid;
+          const finalBid = (effBid !== -1 && effBid !== undefined) ? effBid : item.bid;
+          const pItem = (BUZZ_VOXEL_DATA.palette && BUZZ_VOXEL_DATA.palette[finalBid]) ? BUZZ_VOXEL_DATA.palette[finalBid] : (BUZZ_VOXEL_DATA.palette[item.bid] || { color: '#f1f5f9' });
           if (color) {
             color.set(pItem.color);
             t.ghostInstancedMesh.setColorAt(item.index, color);
@@ -9599,6 +9618,17 @@
         const hide = isSlice && (isSingle ? cubeLayer !== curLayer : cubeLayer > curLayer);
         cube.scale.set(hide ? 0 : 1, hide ? 0 : 1, hide ? 0 : 1);
         cube.visible = !hide;
+        if (cube.material) {
+          if (isGhost && cubeLayer === maxL && !hide) {
+            cube.material.transparent = true;
+            cube.material.opacity = 0.60;
+            cube.material.depthWrite = true;
+          } else {
+            cube.material.transparent = false;
+            cube.material.opacity = 1.0;
+            cube.material.depthWrite = true;
+          }
+        }
       });
     }
 
@@ -9679,10 +9709,10 @@
     const ghostMaterial = new THREE.MeshStandardMaterial({
       map: outlineTexture || null,
       transparent: true,
-      opacity: 0.40,
+      opacity: 0.60,
       roughness: 0.88,
       metalness: 0.0,
-      depthWrite: false
+      depthWrite: true
     });
     const ghostInstancedMesh = new THREE.InstancedMesh(geometry, ghostMaterial, totalCount);
     const dummy = new THREE.Object3D();
@@ -9716,6 +9746,7 @@
         const pItem = data.palette[bid] || { color: '#64a395' };
         color.set(pItem.color);
         instancedMesh.setColorAt(idx, color);
+        ghostInstancedMesh.setColorAt(idx, color);
 
         blockDataList.push({
           index: idx,
@@ -9723,7 +9754,8 @@
           defaultMatrix: dummy.matrix.clone(),
           posX: x - cx,
           posY: y - cy,
-          posZ: z - cz
+          posZ: z - cz,
+          bid: bid
         });
         idx++;
       });
@@ -9732,6 +9764,9 @@
     instancedMesh.instanceMatrix.needsUpdate = true;
     if (instancedMesh.instanceColor) instancedMesh.instanceColor.needsUpdate = true;
     scene.add(instancedMesh);
+
+    ghostInstancedMesh.instanceMatrix.needsUpdate = true;
+    if (ghostInstancedMesh.instanceColor) ghostInstancedMesh.instanceColor.needsUpdate = true;
 
     t.isInit = true;
     t.scene = scene;
@@ -9803,8 +9838,9 @@
           dummy.scale.set(1, 1, 1);
           dummy.updateMatrix();
           t.ghostInstancedMesh.setMatrixAt(item.index, dummy.matrix);
-          const bid = (typeof VoxelDeltaStore !== 'undefined') ? VoxelDeltaStore.getEffectiveBid('bulbasaur', vx, vy, vz) : item.bid;
-          const pItem = (BULBASAUR_VOXEL_DATA.palette && BULBASAUR_VOXEL_DATA.palette[bid]) ? BULBASAUR_VOXEL_DATA.palette[bid] : { color: '#64a395' };
+          const effBid = (typeof VoxelDeltaStore !== 'undefined') ? VoxelDeltaStore.getEffectiveBid('bulbasaur', vx, vy, vz) : item.bid;
+          const finalBid = (effBid !== -1 && effBid !== undefined) ? effBid : item.bid;
+          const pItem = (BULBASAUR_VOXEL_DATA.palette && BULBASAUR_VOXEL_DATA.palette[finalBid]) ? BULBASAUR_VOXEL_DATA.palette[finalBid] : (BULBASAUR_VOXEL_DATA.palette[item.bid] || { color: '#64a395' });
           if (color) {
             color.set(pItem.color);
             t.ghostInstancedMesh.setColorAt(item.index, color);
@@ -9842,6 +9878,17 @@
         const hide = isSlice && (isSingle ? cubeLayer !== curLayer : cubeLayer > curLayer);
         cube.scale.set(hide ? 0 : 1, hide ? 0 : 1, hide ? 0 : 1);
         cube.visible = !hide;
+        if (cube.material) {
+          if (isGhost && cubeLayer === maxL && !hide) {
+            cube.material.transparent = true;
+            cube.material.opacity = 0.60;
+            cube.material.depthWrite = true;
+          } else {
+            cube.material.transparent = false;
+            cube.material.opacity = 1.0;
+            cube.material.depthWrite = true;
+          }
+        }
       });
     }
 
@@ -10156,10 +10203,10 @@
     const ghostMaterial = new THREE.MeshStandardMaterial({
       map: outlineTexture || null,
       transparent: true,
-      opacity: 0.40,
+      opacity: 0.60,
       roughness: 0.88,
       metalness: 0.0,
-      depthWrite: false
+      depthWrite: true
     });
     const ghostInstancedMesh = new THREE.InstancedMesh(geometry, ghostMaterial, totalCount);
     const dummy = new THREE.Object3D();
@@ -10193,6 +10240,7 @@
         const pItem = data.palette[bid] || { color: '#00a8c8' };
         color.set(pItem.color);
         instancedMesh.setColorAt(idx, color);
+        ghostInstancedMesh.setColorAt(idx, color);
 
         blockDataList.push({
           index: idx,
@@ -10200,7 +10248,8 @@
           defaultMatrix: dummy.matrix.clone(),
           posX: x - cx,
           posY: y - cy,
-          posZ: z - cz
+          posZ: z - cz,
+          bid: bid
         });
         idx++;
       });
@@ -10209,6 +10258,9 @@
     instancedMesh.instanceMatrix.needsUpdate = true;
     if (instancedMesh.instanceColor) instancedMesh.instanceColor.needsUpdate = true;
     scene.add(instancedMesh);
+
+    ghostInstancedMesh.instanceMatrix.needsUpdate = true;
+    if (ghostInstancedMesh.instanceColor) ghostInstancedMesh.instanceColor.needsUpdate = true;
 
     t.isInit = true;
     t.scene = scene;
@@ -10279,8 +10331,9 @@
           dummy.scale.set(1, 1, 1);
           dummy.updateMatrix();
           t.ghostInstancedMesh.setMatrixAt(item.index, dummy.matrix);
-          const bid = (typeof VoxelDeltaStore !== 'undefined') ? VoxelDeltaStore.getEffectiveBid('ivysaur', vx, vy, vz) : item.bid;
-          const pItem = (IVYSAUR_VOXEL_DATA.palette && IVYSAUR_VOXEL_DATA.palette[bid]) ? IVYSAUR_VOXEL_DATA.palette[bid] : { color: '#00a8c8' };
+          const effBid = (typeof VoxelDeltaStore !== 'undefined') ? VoxelDeltaStore.getEffectiveBid('ivysaur', vx, vy, vz) : item.bid;
+          const finalBid = (effBid !== -1 && effBid !== undefined) ? effBid : item.bid;
+          const pItem = (IVYSAUR_VOXEL_DATA.palette && IVYSAUR_VOXEL_DATA.palette[finalBid]) ? IVYSAUR_VOXEL_DATA.palette[finalBid] : (IVYSAUR_VOXEL_DATA.palette[item.bid] || { color: '#00a8c8' });
           if (color) {
             color.set(pItem.color);
             t.ghostInstancedMesh.setColorAt(item.index, color);
@@ -10318,6 +10371,17 @@
         const hide = isSlice && (isSingle ? cubeLayer !== curLayer : cubeLayer > curLayer);
         cube.scale.set(hide ? 0 : 1, hide ? 0 : 1, hide ? 0 : 1);
         cube.visible = !hide;
+        if (cube.material) {
+          if (isGhost && cubeLayer === maxL && !hide) {
+            cube.material.transparent = true;
+            cube.material.opacity = 0.60;
+            cube.material.depthWrite = true;
+          } else {
+            cube.material.transparent = false;
+            cube.material.opacity = 1.0;
+            cube.material.depthWrite = true;
+          }
+        }
       });
     }
 
@@ -10632,10 +10696,10 @@
     const ghostMaterial = new THREE.MeshStandardMaterial({
       map: outlineTexture || null,
       transparent: true,
-      opacity: 0.40,
+      opacity: 0.60,
       roughness: 0.88,
       metalness: 0.0,
-      depthWrite: false
+      depthWrite: true
     });
     const ghostInstancedMesh = new THREE.InstancedMesh(geometry, ghostMaterial, totalCount);
     const dummy = new THREE.Object3D();
@@ -10669,6 +10733,7 @@
         const pItem = data.palette[bid] || { color: '#00a8c8' };
         color.set(pItem.color);
         instancedMesh.setColorAt(idx, color);
+        ghostInstancedMesh.setColorAt(idx, color);
 
         blockDataList.push({
           index: idx,
@@ -10676,7 +10741,8 @@
           defaultMatrix: dummy.matrix.clone(),
           posX: x - cx,
           posY: y - cy,
-          posZ: z - cz
+          posZ: z - cz,
+          bid: bid
         });
         idx++;
       });
@@ -10685,6 +10751,9 @@
     instancedMesh.instanceMatrix.needsUpdate = true;
     if (instancedMesh.instanceColor) instancedMesh.instanceColor.needsUpdate = true;
     scene.add(instancedMesh);
+
+    ghostInstancedMesh.instanceMatrix.needsUpdate = true;
+    if (ghostInstancedMesh.instanceColor) ghostInstancedMesh.instanceColor.needsUpdate = true;
 
     t.isInit = true;
     t.scene = scene;
@@ -10755,8 +10824,9 @@
           dummy.scale.set(1, 1, 1);
           dummy.updateMatrix();
           t.ghostInstancedMesh.setMatrixAt(item.index, dummy.matrix);
-          const bid = (typeof VoxelDeltaStore !== 'undefined') ? VoxelDeltaStore.getEffectiveBid('venusaur', vx, vy, vz) : item.bid;
-          const pItem = (VENUSAUR_VOXEL_DATA.palette && VENUSAUR_VOXEL_DATA.palette[bid]) ? VENUSAUR_VOXEL_DATA.palette[bid] : { color: '#00a8c8' };
+          const effBid = (typeof VoxelDeltaStore !== 'undefined') ? VoxelDeltaStore.getEffectiveBid('venusaur', vx, vy, vz) : item.bid;
+          const finalBid = (effBid !== -1 && effBid !== undefined) ? effBid : item.bid;
+          const pItem = (VENUSAUR_VOXEL_DATA.palette && VENUSAUR_VOXEL_DATA.palette[finalBid]) ? VENUSAUR_VOXEL_DATA.palette[finalBid] : (VENUSAUR_VOXEL_DATA.palette[item.bid] || { color: '#00a8c8' });
           if (color) {
             color.set(pItem.color);
             t.ghostInstancedMesh.setColorAt(item.index, color);
@@ -10794,6 +10864,17 @@
         const hide = isSlice && (isSingle ? cubeLayer !== curLayer : cubeLayer > curLayer);
         cube.scale.set(hide ? 0 : 1, hide ? 0 : 1, hide ? 0 : 1);
         cube.visible = !hide;
+        if (cube.material) {
+          if (isGhost && cubeLayer === maxL && !hide) {
+            cube.material.transparent = true;
+            cube.material.opacity = 0.60;
+            cube.material.depthWrite = true;
+          } else {
+            cube.material.transparent = false;
+            cube.material.opacity = 1.0;
+            cube.material.depthWrite = true;
+          }
+        }
       });
     }
 

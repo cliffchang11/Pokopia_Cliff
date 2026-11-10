@@ -13244,11 +13244,33 @@ body.has-floating-back .scroll-top-btn {
 
 .ve-toolbar-inner {
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 8px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 6px;
   width: 100%;
+}
+
+/* 恆定雙排零跳動排版：上排繪筆材質、下排功能動作，排版結構永遠固定 */
+.ve-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.ve-row::-webkit-scrollbar {
+  display: none;
+}
+
+.ve-row-paint {
+  justify-content: flex-start;
+}
+
+.ve-row-actions {
+  justify-content: flex-start;
+  gap: 6px;
 }
 
 /* 工具分段連續膠囊 (Segmented Control) */
