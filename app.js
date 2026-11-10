@@ -7356,7 +7356,7 @@
     }
   }
 
-  // 啟動指定角色的 3D 渲染 (當前操作角色 60fps 全速流暢渲染與 2D 即時連動，休眠其餘非作用角色)
+  // 啟動指定角色的 3D 渲染 (Bloxelizer 按需渲染架構：靜止時 0% GPU 佔用，互動與連動時即時單幀/順暢刷新)
   function startThreeRendering(charKey) {
     ['buzz', 'bulbasaur', 'ivysaur', 'venusaur'].forEach(k => {
       if (k !== charKey && (charKey !== 'bulba' || k !== 'bulbasaur')) {
@@ -7367,13 +7367,13 @@
     const t = getThreeStateByChar(charKey);
     if (!t || !t.isInit || !t.renderer || !t.scene || !t.camera) return;
 
-    if (!t.animFrameId) {
-      function animate() {
-        t.animFrameId = requestAnimationFrame(animate);
-        if (t.controls) t.controls.update();
-        t.renderer.render(t.scene, t.camera);
-      }
-      animate();
+    // 立即觸發首幀按需渲染
+    requestThreeRender(charKey);
+
+    // 拖曳鏡頭時即時平滑刷新
+    if (t.controls && !t._hasDemandListener) {
+      t.controls.addEventListener('change', () => requestThreeRender(charKey));
+      t._hasDemandListener = true;
     }
   }
 
@@ -7630,6 +7630,9 @@
     buzzState.curLayer = target;
     save3DState('buzz', target);
     if (DOM.buzzLayerSlider) DOM.buzzLayerSlider.value = target;
+    if (buzzState.three && typeof buzzState.three._syncVLC === 'function') {
+      buzzState.three._syncVLC(target);
+    }
     renderBuzzLayer(target);
     if (buzzState.curMode === 'slice') {
       updateBuzz3DSliceFilter();
@@ -7655,6 +7658,9 @@
     bulbaState.curLayer = target;
     save3DState('bulba', target);
     if (DOM.bulbaLayerSlider) DOM.bulbaLayerSlider.value = target;
+    if (bulbaState.three && typeof bulbaState.three._syncVLC === 'function') {
+      bulbaState.three._syncVLC(target);
+    }
     renderBulbaLayer(target);
     if (bulbaState.curMode === 'slice') {
       updateBulba3DSliceFilter();
@@ -8122,6 +8128,338 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════
+  // Bloxelizer 風格：白淨工程展台地面網格與中心準心 (Studio Grid & Crosshair)
+  // ═══════════════════════════════════════════════════════════════════
+  function createStudioGridAndCenterMark(scene, bounds, cx, cy, cz) {
+    if (typeof THREE === 'undefined') return {};
+    const size = Math.max(bounds.width || 40, bounds.length || 40, 40) * 1.6;
+    const divisions = Math.round(size);
+    // 主格線 #94a3b8，細格線 #e2e8f0
+    const gridHelper = new THREE.GridHelper(size, divisions, 0x94a3b8, 0xe2e8f0);
+    gridHelper.position.set(0, -cy - 0.5, 0);
+    scene.add(gridHelper);
+
+    // 地面中心錨點 ⌖ 標記 (深灰細十字線 + 圓圈)
+    const centerGroup = new THREE.Group();
+    centerGroup.position.set(0, -cy - 0.48, 0);
+
+    const lineMat = new THREE.LineBasicMaterial({ color: 0x64748b, linewidth: 2 });
+    const crossGeo = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-1.2, 0, 0), new THREE.Vector3(1.2, 0, 0),
+      new THREE.Vector3(0, 0, -1.2), new THREE.Vector3(0, 0, 1.2)
+    ]);
+    const cross = new THREE.LineSegments(crossGeo, lineMat);
+    centerGroup.add(cross);
+
+    const circlePoints = [];
+    for (let a = 0; a <= 32; a++) {
+      const theta = (a / 32) * Math.PI * 2;
+      circlePoints.push(new THREE.Vector3(Math.cos(theta) * 0.6, 0, Math.sin(theta) * 0.6));
+    }
+    const circleGeo = new THREE.BufferGeometry().setFromPoints(circlePoints);
+    const circle = new THREE.LineLoop(circleGeo, lineMat);
+    centerGroup.add(circle);
+
+    scene.add(centerGroup);
+    return { gridHelper, centerGroup };
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // Bloxelizer 風格：3D 垂直浮動層數控制器與懸停情境智慧尺寸標註
+  // ═══════════════════════════════════════════════════════════════════
+  function setupBloxelizerStudioControls(charKey, threeState, baseData, canvasEl) {
+    if (!canvasEl || !canvasEl.parentElement) return;
+    const wrap = canvasEl.parentElement;
+
+    // 防止重複掛載
+    if (wrap.querySelector(`.vlc-container[data-char="${charKey}"]`)) return;
+
+    const maxLayers = (baseData && baseData.dimensions && baseData.dimensions.height) || (baseData && baseData.layers ? baseData.layers.length : 50);
+
+    // 1. 建立垂直浮動層數控制器 (Vertical Layer Controller)
+    const vlc = document.createElement('div');
+    vlc.className = 'vlc-container';
+    vlc.setAttribute('data-char', charKey);
+
+    const getCharCurLayer = () => {
+      if (charKey === 'bulbasaur') return bulbaState.curLayer;
+      if (charKey === 'buzz') return buzzState.curLayer;
+      if (charKey === 'ivysaur') return ivysaurState.curLayer;
+      if (charKey === 'venusaur') return venusaurState.curLayer;
+      return 1;
+    };
+
+    const curY = getCharCurLayer();
+
+    vlc.innerHTML = `
+      <div class="vlc-header">
+        <div class="vlc-mode-pills">
+          <button type="button" class="vlc-pill-mode active" id="vlcModeBtn_${charKey}" title="切換：單層獨立 (Layer by layer) / 0~Y 累積建造">
+            <span class="vlc-icon">📚</span>
+          </button>
+          <span class="vlc-y-tag">Y</span>
+        </div>
+        <div class="vlc-label-title">Layer</div>
+        <div class="vlc-cur-layer" id="vlcCurLayer_${charKey}">Y <strong>${curY}</strong></div>
+        <div class="vlc-layer-range">1–${maxLayers}</div>
+      </div>
+      <button type="button" class="vlc-step-btn vlc-up" id="vlcUp_${charKey}" title="下一層 (Y+1)">▲</button>
+      <div class="vlc-slider-track">
+        <input type="range" class="vlc-slider-vertical" id="vlcSlider_${charKey}" min="1" max="${maxLayers}" value="${curY}" orient="vertical">
+      </div>
+      <button type="button" class="vlc-step-btn vlc-down" id="vlcDown_${charKey}" title="上一層 (Y-1)">▼</button>
+    `;
+    wrap.appendChild(vlc);
+
+    // 2. 建立懸停智慧尺寸標註 SVG 與 Badges 容器
+    const dimOverlay = document.createElement('div');
+    dimOverlay.className = 'smart-dimension-overlay';
+    dimOverlay.id = `smartDimOverlay_${charKey}`;
+    dimOverlay.innerHTML = `
+      <svg class="smart-dim-svg" id="smartDimSvg_${charKey}"></svg>
+      <div class="smart-dim-badges" id="smartDimBadges_${charKey}"></div>
+    `;
+    wrap.appendChild(dimOverlay);
+
+    // 取得當前角色切片設定函式
+    const setCharLayer = (targetY) => {
+      if (charKey === 'bulbasaur') setBulbaLayer(targetY);
+      else if (charKey === 'buzz') setBuzzLayer(targetY);
+      else if (charKey === 'ivysaur') setIvysaurLayer(targetY);
+      else if (charKey === 'venusaur') setVenusaurLayer(targetY);
+    };
+
+    const getCharSliceFilter = () => {
+      if (charKey === 'bulbasaur') return updateBulba3DSliceFilter;
+      if (charKey === 'buzz') return updateBuzz3DSliceFilter;
+      if (charKey === 'ivysaur') return updateIvysaur3DSliceFilter;
+      if (charKey === 'venusaur') return updateVenusaur3DSliceFilter;
+      return () => {};
+    };
+
+    // 3. 綁定控制器事件
+    const slider = vlc.querySelector(`#vlcSlider_${charKey}`);
+    const curLayerEl = vlc.querySelector(`#vlcCurLayer_${charKey}`);
+    const btnUp = vlc.querySelector(`#vlcUp_${charKey}`);
+    const btnDown = vlc.querySelector(`#vlcDown_${charKey}`);
+    const btnMode = vlc.querySelector(`#vlcModeBtn_${charKey}`);
+
+    const syncVLCUI = (layer) => {
+      if (slider) slider.value = layer;
+      if (curLayerEl) curLayerEl.innerHTML = `Y <strong>${layer}</strong>`;
+    };
+
+    threeState._syncVLC = syncVLCUI;
+
+    if (slider) {
+      slider.addEventListener('input', (e) => {
+        const val = Number(e.target.value);
+        setCharLayer(val);
+        syncVLCUI(val);
+      });
+    }
+
+    if (btnUp) {
+      btnUp.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const cur = getCharCurLayer();
+        if (cur < maxLayers) {
+          setCharLayer(cur + 1);
+          syncVLCUI(cur + 1);
+        }
+      });
+    }
+
+    if (btnDown) {
+      btnDown.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const cur = getCharCurLayer();
+        if (cur > 1) {
+          setCharLayer(cur - 1);
+          syncVLCUI(cur - 1);
+        }
+      });
+    }
+
+    // 模式切換：單層獨立 (single) vs 累積建造 (cumulative)
+    threeState.layerFilterMode = 'single'; // 預設單層獨立 (Bloxelizer Layer-by-layer)
+    if (btnMode) {
+      btnMode.addEventListener('click', (e) => {
+        e.stopPropagation();
+        threeState.layerFilterMode = (threeState.layerFilterMode === 'single') ? 'cumulative' : 'single';
+        btnMode.classList.toggle('active', threeState.layerFilterMode === 'single');
+        btnMode.title = threeState.layerFilterMode === 'single' ? '目前：單層獨立 (Layer by layer)' : '目前：0~Y 累積建造';
+        const filterFn = getCharSliceFilter();
+        filterFn();
+        requestThreeRender(charKey);
+      });
+    }
+
+    // 4. 懸停情境智慧尺寸標註計算 (Hover-Activated Dimensioning)
+    const raycaster = (typeof THREE !== 'undefined' && typeof THREE.Raycaster !== 'undefined') ? new THREE.Raycaster() : null;
+    const mouse = (typeof THREE !== 'undefined' && typeof THREE.Vector2 !== 'undefined') ? new THREE.Vector2() : null;
+    let currentHoverVoxel = null;
+
+    function hideDimensions() {
+      dimOverlay.classList.remove('active');
+      const svg = dimOverlay.querySelector('.smart-dim-svg');
+      const badges = dimOverlay.querySelector('.smart-dim-badges');
+      if (svg) svg.innerHTML = '';
+      if (badges) badges.innerHTML = '';
+      currentHoverVoxel = null;
+    }
+
+    function updateDimensionOverlay() {
+      if (!currentHoverVoxel || !threeState.camera) return;
+      const svg = dimOverlay.querySelector('.smart-dim-svg');
+      const badges = dimOverlay.querySelector('.smart-dim-badges');
+      if (!svg || !badges) return;
+
+      const rect = canvasEl.getBoundingClientRect();
+      const w = rect.width;
+      const h = rect.height;
+      if (w <= 0 || h <= 0) return;
+
+      const { minX, maxX, minZ, maxZ, py, gapInfo } = currentHoverVoxel;
+      const camera = threeState.camera;
+      const toScreen = (v) => {
+        const p = v.clone().project(camera);
+        return {
+          x: (p.x * 0.5 + 0.5) * w,
+          y: (-p.y * 0.5 + 0.5) * h
+        };
+      };
+
+      let svgHtml = '';
+      let badgeHtml = '';
+
+      // X 軸方向尺寸標註線 (前側)
+      const p1x = toScreen(new THREE.Vector3(minX - 0.5, py, maxZ + 0.5 + 1.2));
+      const p2x = toScreen(new THREE.Vector3(maxX + 0.5, py, maxZ + 0.5 + 1.2));
+      const lenX = Math.round(maxX - minX + 1);
+
+      // Z 軸方向尺寸標註線 (左側)
+      const p1z = toScreen(new THREE.Vector3(minX - 0.5 - 1.2, py, minZ - 0.5));
+      const p2z = toScreen(new THREE.Vector3(minX - 0.5 - 1.2, py, maxZ + 0.5));
+      const lenZ = Math.round(maxZ - minZ + 1);
+
+      // 繪製橘色尺寸線與端點標記 (Ticks)
+      svgHtml += `
+        <line x1="${p1x.x}" y1="${p1x.y}" x2="${p2x.x}" y2="${p2x.y}" stroke="#f97316" stroke-width="2" stroke-linecap="round" />
+        <line x1="${p1z.x}" y1="${p1z.y}" x2="${p2z.x}" y2="${p2z.y}" stroke="#f97316" stroke-width="2" stroke-linecap="round" />
+      `;
+
+      // 標註膠囊數字
+      const midX = { x: (p1x.x + p2x.x) / 2, y: (p1x.y + p2x.y) / 2 };
+      const midZ = { x: (p1z.x + p2z.x) / 2, y: (p1z.y + p2z.y) / 2 };
+
+      badgeHtml += `
+        <div class="smart-dim-badge" style="left:${midX.x}px; top:${midX.y}px;">${lenX}</div>
+        <div class="smart-dim-badge" style="left:${midZ.x}px; top:${midZ.y}px;">${lenZ}</div>
+      `;
+
+      // 若有同層鄰近區塊間距，繪製深灰虛線與間距數字
+      if (gapInfo && gapInfo.length > 0) {
+        gapInfo.forEach(gap => {
+          const g1 = toScreen(gap.p1);
+          const g2 = toScreen(gap.p2);
+          const gMid = { x: (g1.x + g2.x) / 2, y: (g1.y + g2.y) / 2 };
+          svgHtml += `
+            <line x1="${g1.x}" y1="${g1.y}" x2="${g2.x}" y2="${g2.y}" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 3" />
+          `;
+          badgeHtml += `
+            <div class="smart-dim-badge" style="left:${gMid.x}px; top:${gMid.y}px; background:#334155;">${gap.dist}</div>
+          `;
+        });
+      }
+
+      svg.innerHTML = svgHtml;
+      badges.innerHTML = badgeHtml;
+      dimOverlay.classList.add('active');
+    }
+
+    threeState._updateDimensions = updateDimensionOverlay;
+
+    canvasEl.addEventListener('pointermove', (e) => {
+      if (!threeState.isInit || !threeState.camera || !threeState.instancedMesh || !raycaster || !mouse) return;
+      const rect = canvasEl.getBoundingClientRect();
+      if (!rect || rect.width <= 0) return;
+      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, threeState.camera);
+      const intersects = raycaster.intersectObject(threeState.instancedMesh);
+
+      if (intersects.length > 0 && intersects[0].instanceId !== undefined) {
+        const id = intersects[0].instanceId;
+        const b = threeState.blockDataList && threeState.blockDataList[id];
+        const curY = getCharCurLayer();
+
+        if (b && b.layerIndex === curY) {
+          const layerBlocks = threeState.blockDataList.filter(item => item.layerIndex === curY);
+          const hX = Math.round(b.posX);
+          const hZ = Math.round(b.posZ);
+
+          // 找出屬於同一連通區塊 (距離小於 6 格) 的方塊
+          const cluster = layerBlocks.filter(item => {
+            return Math.abs(Math.round(item.posX) - hX) <= 6 && Math.abs(Math.round(item.posZ) - hZ) <= 6;
+          });
+
+          let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
+          cluster.forEach(item => {
+            const px = item.posX;
+            const pz = item.posZ;
+            if (px < minX) minX = px;
+            if (px > maxX) maxX = px;
+            if (pz < minZ) minZ = pz;
+            if (pz > maxZ) maxZ = pz;
+          });
+
+          // 尋找相鄰其他區塊並計算懸空距離 (Gaps)
+          const otherBlocks = layerBlocks.filter(item => !cluster.includes(item));
+          const gapInfo = [];
+          if (otherBlocks.length > 0) {
+            let nearest = null;
+            let minDist = Infinity;
+            otherBlocks.forEach(ob => {
+              const d = Math.hypot(ob.posX - b.posX, ob.posZ - b.posZ);
+              if (d < minDist) {
+                minDist = d;
+                nearest = ob;
+              }
+            });
+            if (nearest && minDist > 1.5 && minDist < 35) {
+              gapInfo.push({
+                p1: new THREE.Vector3(b.posX, b.posY, b.posZ),
+                p2: new THREE.Vector3(nearest.posX, nearest.posY, nearest.posZ),
+                dist: Math.round(minDist - 1)
+              });
+            }
+          }
+
+          currentHoverVoxel = {
+            cluster,
+            minX, maxX, minZ, maxZ,
+            py: b.posY,
+            gapInfo
+          };
+          updateDimensionOverlay();
+          return;
+        }
+      }
+      hideDimensions();
+    });
+
+    canvasEl.addEventListener('pointerleave', hideDimensions);
+
+    if (threeState.controls) {
+      threeState.controls.addEventListener('change', () => {
+        if (currentHoverVoxel) updateDimensionOverlay();
+      });
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
   // 通用 3D 體素手動編輯器整合掛載 (Voxel Editor Integration)
   // ═══════════════════════════════════════════════════════════════════
   function setupVoxelEditorIntegration(charKey, threeState, baseData, canvasEl, refreshSliceCallback) {
@@ -8291,6 +8629,9 @@
         }
       }
     }
+
+    // 掛載 Bloxelizer 3D 垂直控制器與懸停智慧尺寸標註
+    setupBloxelizerStudioControls(charKey, threeState, baseData, canvasEl);
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -8315,7 +8656,7 @@
     }
 
     const scene = new THREE.Scene();
-    scene.background = null;
+    scene.background = new THREE.Color(0xf8fafc);
 
     const camera = new THREE.PerspectiveCamera(40, width / height, 1, 1000);
     camera.position.set(0, 10, 56);
@@ -8328,17 +8669,14 @@
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
     scene.add(ambientLight);
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.65);
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.75);
     dirLight1.position.set(45, 80, 45);
     scene.add(dirLight1);
-    const dirLight2 = new THREE.DirectionalLight(0xa78bfa, 0.35);
+    const dirLight2 = new THREE.DirectionalLight(0xe2e8f0, 0.45);
     dirLight2.position.set(-45, 30, -45);
     scene.add(dirLight2);
-    const dirLight3 = new THREE.DirectionalLight(0x0f172a, 0.15);
-    dirLight3.position.set(0, -50, 0);
-    scene.add(dirLight3);
 
     let controls = null;
     if (typeof THREE.OrbitControls !== 'undefined') {
@@ -8367,6 +8705,8 @@
     const cx = data.dimensions.width / 2;
     const cy = data.dimensions.height / 2;
     const cz = data.dimensions.length / 2;
+
+    createStudioGridAndCenterMark(scene, data.dimensions, cx, cy, cz);
 
     const blockDataList = [];
     let idx = 0;
@@ -8433,6 +8773,7 @@
 
     const isSlice = buzzState.curMode === 'slice';
     const curLayer = buzzState.curLayer;
+    const isSingle = (t.layerFilterMode === 'single');
     const dummy = new THREE.Object3D();
     const cx = BUZZ_VOXEL_DATA.dimensions.width / 2;
     const cy = BUZZ_VOXEL_DATA.dimensions.height / 2;
@@ -8445,7 +8786,9 @@
       const vz = Math.round(item.posZ + cz);
       const isDeleted = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.getEffectiveBid('buzz', vx, vy, vz) === -1);
 
-      if (!isDeleted && (!isSlice || item.layerIndex <= curLayer)) {
+      const isVisible = !isDeleted && (!isSlice || (isSingle ? item.layerIndex === curLayer : item.layerIndex <= curLayer));
+
+      if (isVisible) {
         dummy.position.set(item.posX, item.posY, item.posZ);
         dummy.scale.set(1, 1, 1);
         dummy.updateMatrix();
@@ -8462,11 +8805,14 @@
     if (t.dynamicAddedGroup && t.dynamicAddedGroup.children) {
       t.dynamicAddedGroup.children.forEach(cube => {
         if (!cube.userData || !cube.userData.isDynamic) return;
-        const hide = isSlice && ((cube.userData.voxelY + 1) > curLayer);
+        const cubeLayer = cube.userData.voxelY + 1;
+        const hide = isSlice && (isSingle ? cubeLayer !== curLayer : cubeLayer > curLayer);
         cube.scale.set(hide ? 0 : 1, hide ? 0 : 1, hide ? 0 : 1);
         cube.visible = !hide;
       });
     }
+
+    requestThreeRender('buzz');
   }
 
   function initBulbaThreeEngine() {
@@ -8489,7 +8835,7 @@
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = null;
+    scene.background = new THREE.Color(0xf8fafc);
 
     // 2. Camera (480px 黃金比例舒展視野)
     const camera = new THREE.PerspectiveCamera(40, width / height, 1, 1000);
@@ -8504,21 +8850,15 @@
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
-    // 4. Lights (柔和漫射立體光影，消除刺眼金屬光斑)
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+    // 4. Lights (Bloxelizer 乾淨自然立體光影)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
     scene.add(ambientLight);
-    // 主光：右前方高角度柔和光，形成自然階梯陰影
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.65);
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.75);
     dirLight1.position.set(50, 85, 50);
     scene.add(dirLight1);
-    // 側光：左後方草系薄荷微光
-    const dirLight2 = new THREE.DirectionalLight(0x86efac, 0.35);
+    const dirLight2 = new THREE.DirectionalLight(0xe2e8f0, 0.45);
     dirLight2.position.set(-50, 30, -50);
     scene.add(dirLight2);
-    // 仰光：底部微弱環境反光
-    const dirLight3 = new THREE.DirectionalLight(0x0f3b38, 0.15);
-    dirLight3.position.set(0, -60, 0);
-    scene.add(dirLight3);
 
     // 5. Controls
     let controls = null;
@@ -8550,6 +8890,8 @@
     const cx = data.dimensions.width / 2;
     const cy = data.dimensions.height / 2;
     const cz = data.dimensions.length / 2;
+
+    createStudioGridAndCenterMark(scene, data.dimensions, cx, cy, cz);
 
     const blockDataList = [];
     let idx = 0;
@@ -8617,6 +8959,7 @@
 
     const isSlice = bulbaState.curMode === 'slice';
     const curLayer = bulbaState.curLayer;
+    const isSingle = (t.layerFilterMode === 'single');
     const dummy = new THREE.Object3D();
     const cx = BULBASAUR_VOXEL_DATA.dimensions.width / 2;
     const cy = BULBASAUR_VOXEL_DATA.dimensions.height / 2;
@@ -8629,7 +8972,9 @@
       const vz = Math.round(item.posZ + cz);
       const isDeleted = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.getEffectiveBid('bulbasaur', vx, vy, vz) === -1);
 
-      if (!isDeleted && (!isSlice || item.layerIndex <= curLayer)) {
+      const isVisible = !isDeleted && (!isSlice || (isSingle ? item.layerIndex === curLayer : item.layerIndex <= curLayer));
+
+      if (isVisible) {
         dummy.position.set(item.posX, item.posY, item.posZ);
         dummy.scale.set(1, 1, 1);
         dummy.updateMatrix();
@@ -8646,11 +8991,14 @@
     if (t.dynamicAddedGroup && t.dynamicAddedGroup.children) {
       t.dynamicAddedGroup.children.forEach(cube => {
         if (!cube.userData || !cube.userData.isDynamic) return;
-        const hide = isSlice && ((cube.userData.voxelY + 1) > curLayer);
+        const cubeLayer = cube.userData.voxelY + 1;
+        const hide = isSlice && (isSingle ? cubeLayer !== curLayer : cubeLayer > curLayer);
         cube.scale.set(hide ? 0 : 1, hide ? 0 : 1, hide ? 0 : 1);
         cube.visible = !hide;
       });
     }
+
+    requestThreeRender('bulbasaur');
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -8690,6 +9038,9 @@
     ivysaurState.curLayer = target;
     save3DState('ivysaur', target);
     if (DOM.ivysaurLayerSlider) DOM.ivysaurLayerSlider.value = target;
+    if (ivysaurState.three && typeof ivysaurState.three._syncVLC === 'function') {
+      ivysaurState.three._syncVLC(target);
+    }
     renderIvysaurLayer(target);
     if (ivysaurState.curMode === 'slice') {
       updateIvysaur3DSliceFilter();
@@ -8903,7 +9254,7 @@
     }
 
     const scene = new THREE.Scene();
-    scene.background = null;
+    scene.background = new THREE.Color(0xf8fafc);
 
     const camera = new THREE.PerspectiveCamera(40, width / height, 1, 2000);
     camera.position.set(110, 80, 125);
@@ -8916,20 +9267,16 @@
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.72);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
     scene.add(ambientLight);
 
     const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.75);
     dirLight1.position.set(80, 120, 80);
     scene.add(dirLight1);
 
-    const dirLight2 = new THREE.DirectionalLight(0xf472b6, 0.35);
+    const dirLight2 = new THREE.DirectionalLight(0xe2e8f0, 0.45);
     dirLight2.position.set(-80, 50, -80);
     scene.add(dirLight2);
-
-    const dirLight3 = new THREE.DirectionalLight(0x064e3b, 0.2);
-    dirLight3.position.set(0, -60, 0);
-    scene.add(dirLight3);
 
     let controls = null;
     if (typeof THREE.OrbitControls !== 'undefined') {
@@ -8958,6 +9305,8 @@
     const cx = data.dimensions.width / 2;
     const cy = data.dimensions.height / 2;
     const cz = data.dimensions.length / 2;
+
+    createStudioGridAndCenterMark(scene, data.dimensions, cx, cy, cz);
 
     const blockDataList = [];
     let idx = 0;
@@ -9024,6 +9373,7 @@
 
     const isSlice = ivysaurState.curMode === 'slice';
     const curLayer = ivysaurState.curLayer;
+    const isSingle = (t.layerFilterMode === 'single');
     const dummy = new THREE.Object3D();
     const cx = IVYSAUR_VOXEL_DATA.dimensions.width / 2;
     const cy = IVYSAUR_VOXEL_DATA.dimensions.height / 2;
@@ -9036,7 +9386,9 @@
       const vz = Math.round(item.posZ + cz);
       const isDeleted = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.getEffectiveBid('ivysaur', vx, vy, vz) === -1);
 
-      if (!isDeleted && (!isSlice || item.layerIndex <= curLayer)) {
+      const isVisible = !isDeleted && (!isSlice || (isSingle ? item.layerIndex === curLayer : item.layerIndex <= curLayer));
+
+      if (isVisible) {
         dummy.position.set(item.posX, item.posY, item.posZ);
         dummy.scale.set(1, 1, 1);
         dummy.updateMatrix();
@@ -9053,11 +9405,14 @@
     if (t.dynamicAddedGroup && t.dynamicAddedGroup.children) {
       t.dynamicAddedGroup.children.forEach(cube => {
         if (!cube.userData || !cube.userData.isDynamic) return;
-        const hide = isSlice && ((cube.userData.voxelY + 1) > curLayer);
+        const cubeLayer = cube.userData.voxelY + 1;
+        const hide = isSlice && (isSingle ? cubeLayer !== curLayer : cubeLayer > curLayer);
         cube.scale.set(hide ? 0 : 1, hide ? 0 : 1, hide ? 0 : 1);
         cube.visible = !hide;
       });
     }
+
+    requestThreeRender('ivysaur');
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -9097,6 +9452,9 @@
     venusaurState.curLayer = target;
     save3DState('venusaur', target);
     if (DOM.venusaurLayerSlider) DOM.venusaurLayerSlider.value = target;
+    if (venusaurState.three && typeof venusaurState.three._syncVLC === 'function') {
+      venusaurState.three._syncVLC(target);
+    }
     renderVenusaurLayer(target);
     if (venusaurState.curMode === 'slice') {
       updateVenusaur3DSliceFilter();
@@ -9311,7 +9669,7 @@
     }
 
     const scene = new THREE.Scene();
-    scene.background = null;
+    scene.background = new THREE.Color(0xf8fafc);
 
     const camera = new THREE.PerspectiveCamera(40, width / height, 1, 2000);
     camera.position.set(135, 95, 155);
@@ -9324,20 +9682,16 @@
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.68);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
     scene.add(ambientLight);
 
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.72);
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.75);
     dirLight1.position.set(90, 150, 90);
     scene.add(dirLight1);
 
-    const dirLight2 = new THREE.DirectionalLight(0xf472b6, 0.35);
+    const dirLight2 = new THREE.DirectionalLight(0xe2e8f0, 0.45);
     dirLight2.position.set(-90, 60, -90);
     scene.add(dirLight2);
-
-    const dirLight3 = new THREE.DirectionalLight(0x064e3b, 0.18);
-    dirLight3.position.set(0, -80, 0);
-    scene.add(dirLight3);
 
     let controls = null;
     if (typeof THREE.OrbitControls !== 'undefined') {
@@ -9366,6 +9720,8 @@
     const cx = data.dimensions.width / 2;
     const cy = data.dimensions.height / 2;
     const cz = data.dimensions.length / 2;
+
+    createStudioGridAndCenterMark(scene, data.dimensions, cx, cy, cz);
 
     const blockDataList = [];
     let idx = 0;
@@ -9432,6 +9788,7 @@
 
     const isSlice = venusaurState.curMode === 'slice';
     const curLayer = venusaurState.curLayer;
+    const isSingle = (t.layerFilterMode === 'single');
     const dummy = new THREE.Object3D();
     const cx = VENUSAUR_VOXEL_DATA.dimensions.width / 2;
     const cy = VENUSAUR_VOXEL_DATA.dimensions.height / 2;
@@ -9444,7 +9801,9 @@
       const vz = Math.round(item.posZ + cz);
       const isDeleted = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.getEffectiveBid('venusaur', vx, vy, vz) === -1);
 
-      if (!isDeleted && (!isSlice || item.layerIndex <= curLayer)) {
+      const isVisible = !isDeleted && (!isSlice || (isSingle ? item.layerIndex === curLayer : item.layerIndex <= curLayer));
+
+      if (isVisible) {
         dummy.position.set(item.posX, item.posY, item.posZ);
         dummy.scale.set(1, 1, 1);
         dummy.updateMatrix();
@@ -9461,11 +9820,14 @@
     if (t.dynamicAddedGroup && t.dynamicAddedGroup.children) {
       t.dynamicAddedGroup.children.forEach(cube => {
         if (!cube.userData || !cube.userData.isDynamic) return;
-        const hide = isSlice && ((cube.userData.voxelY + 1) > curLayer);
+        const cubeLayer = cube.userData.voxelY + 1;
+        const hide = isSlice && (isSingle ? cubeLayer !== curLayer : cubeLayer > curLayer);
         cube.scale.set(hide ? 0 : 1, hide ? 0 : 1, hide ? 0 : 1);
         cube.visible = !hide;
       });
     }
+
+    requestThreeRender('venusaur');
   }
 
   // 暴露巴斯光年、妙蛙種子與妙蛙花 API

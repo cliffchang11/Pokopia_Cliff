@@ -301,10 +301,10 @@ test('3.10 3D 渲染後台休眠與 cancelAnimationFrame 機制 (離開 3D 藍�
   assert.strictEqual(appCode.includes("if (typeof startThreeRendering === 'function') startThreeRendering(bulbaState.curChar || 'buzz');"), true);
 });
 
-test('3.11 3D 當前角色 60fps 全速渲染與 2D 雙向即時連動 (startThreeRendering 啟動動畫迴圈，非作用角色與切頁完全休眠)', () => {
+test('3.11 3D Bloxelizer 按需渲染 (Render-on-Demand) 與 2D 雙向即時連動 (靜止時 0% GPU 佔用，鏡頭旋轉與切片即時渲染)', () => {
   const appCode = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf-8');
   assert.strictEqual(appCode.includes('function startThreeRendering(charKey) {'), true);
-  assert.strictEqual(appCode.includes('t.animFrameId = requestAnimationFrame(animate);'), true);
+  assert.strictEqual(appCode.includes("requestThreeRender(charKey);"), true);
   assert.strictEqual(appCode.includes("startThreeRendering('buzz');"), true);
   assert.strictEqual(appCode.includes("startThreeRendering('bulbasaur');"), true);
   assert.strictEqual(appCode.includes("startThreeRendering('ivysaur');"), true);
@@ -424,14 +424,10 @@ test('3.15 切片指南平移事件精確隔離 (pointerdown 過濾工具列本�
   assert.strictEqual(appCode.includes("if (e.target.closest('.bulba-cell')) return;"), true);
 });
 
-test('3.16 「恢復預設」按鈕物理隔離至 ve-danger-zone 與嚴格二次確認對話框', () => {
+test('3.16 「恢復預設」按鈕徹底自 UI 移除以達成單列 Dock，底層 resetToDefault 保留供工程測試', () => {
   const editorCode = fs.readFileSync(path.join(__dirname, 'voxel_editor.js'), 'utf-8');
-  assert.strictEqual(editorCode.includes('<div class="ve-danger-zone"'), true);
-  assert.strictEqual(editorCode.includes('ve-btn-reset-safe'), true);
-  assert.strictEqual(editorCode.includes('⚠️ 警告：這將會清除您對當前角色的所有自訂方塊與改動，恢復為官方預設值，且無法撤銷！'), true);
-
-  const cssCode = fs.readFileSync(path.join(__dirname, 'index.css'), 'utf-8');
-  assert.strictEqual(cssCode.includes('.ve-btn-reset-safe:hover'), true);
+  assert.strictEqual(!editorCode.includes('<div class="ve-danger-zone"'), true, 'UI 必須徹底移除 ve-danger-zone');
+  assert.strictEqual(editorCode.includes('function resetToDefault(charKey) {'), true, '底層 resetToDefault 核心邏輯必須保留');
 });
 
 test('3.17 3D 藍圖停留模型持久化 (LocalStorage + URL Hash 雙向記憶與重整無縫還原)', () => {

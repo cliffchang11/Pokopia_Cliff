@@ -12082,6 +12082,7 @@ body.has-floating-back .scroll-top-btn {
   box-shadow: 0 2px 8px rgba(147, 51, 234, 0.35);
   backdrop-filter: blur(8px);
 }
+
 .buzz3d-nav-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 14px rgba(34, 197, 94, 0.45);
@@ -12184,8 +12185,8 @@ body.has-floating-back .scroll-top-btn {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 92, 246, 0.12) !important;
 }
 .buzz-canvas-wrap {
-  background: radial-gradient(circle at center, #2e1065 0%, #09090b 100%) !important;
-  border-color: rgba(167, 139, 250, 0.25) !important;
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
 }
 .buzz-layer-badge {
   background: rgba(139, 92, 246, 0.2) !important;
@@ -12355,17 +12356,17 @@ body.has-floating-back .scroll-top-btn {
   box-shadow: 0 0 12px rgba(16, 185, 129, 0.55);
 }
 
-/* 3D 畫布容器 (黃金比例大器展台，高 480px，手機版 320px) */
+/* 3D 畫布容器 (Bloxelizer 白淨工程展台 Clean White Studio，高 480px，手機版 320px) */
 .bulba-canvas-wrap {
   position: relative;
   flex-shrink: 0;
   width: 100%;
   height: 480px;
-  background: radial-gradient(circle at center, #1b383d 0%, #0c1a1d 100%);
+  background: #f8fafc !important;
   border-radius: 0.875rem;
   overflow: hidden;
-  border: 1px solid rgba(52, 211, 153, 0.15);
-  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 .bulba-3d-canvas {
   width: 100%;
@@ -12393,6 +12394,208 @@ body.has-floating-back .scroll-top-btn {
   border: 1px solid rgba(52, 211, 153, 0.3);
   white-space: nowrap;
   backdrop-filter: blur(8px);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Bloxelizer 風格：3D 垂直浮動層數控制器 (Vertical Layer Controller)
+   ───────────────────────────────────────────────────────────── */
+.vlc-container {
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  bottom: 14px;
+  width: 62px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 8px 6px;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.04);
+  z-index: 15;
+  user-select: none;
+  pointer-events: auto;
+  box-sizing: border-box;
+}
+
+.vlc-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 6px;
+  gap: 2px;
+}
+
+.vlc-mode-pills {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.vlc-pill-mode {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  transition: all 0.15s ease;
+  padding: 0;
+}
+
+.vlc-pill-mode:hover,
+.vlc-pill-mode.active {
+  background: #0d9488;
+  color: #ffffff;
+  border-color: #0f766e;
+}
+
+.vlc-y-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: #0d9488;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  border-radius: 4px;
+}
+
+.vlc-label-title {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+
+.vlc-cur-layer {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.1;
+}
+
+.vlc-cur-layer span {
+  font-size: 0.72rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.vlc-layer-range {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #94a3b8;
+  line-height: 1;
+}
+
+.vlc-step-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 26px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  color: #334155;
+  font-size: 0.75rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vlc-step-btn:hover {
+  background: #f1f5f9;
+  border-color: #0d9488;
+  color: #0d9488;
+}
+
+.vlc-step-btn:active {
+  transform: scale(0.94);
+}
+
+.vlc-slider-track {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 0;
+  width: 100%;
+}
+
+.vlc-slider-vertical {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 6px;
+  height: 100%;
+  accent-color: #0d9488;
+  cursor: pointer;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Bloxelizer 風格：懸停情境智慧尺寸與間距標註 (Smart Dimensions)
+   ───────────────────────────────────────────────────────────── */
+.smart-dimension-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 12;
+  opacity: 0;
+  transition: opacity 0.15s ease-out;
+}
+
+.smart-dimension-overlay.active {
+  opacity: 1;
+}
+
+.smart-dim-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.smart-dim-badge {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background: #1e293b;
+  color: #f8fafc;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 5px;
+  border: 1px solid #475569;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+  white-space: nowrap;
+  pointer-events: none;
+  transition: transform 0.1s ease;
+}
+
+@media (max-width: 768px) {
+  .vlc-container {
+    right: 8px;
+    top: 8px;
+    bottom: 8px;
+    width: 52px;
+    padding: 6px 4px;
+  }
 }
 
 /* 下半部：53 層建造切片指南 (防爆版外框) */
@@ -12897,7 +13100,7 @@ body.has-floating-back .scroll-top-btn {
   box-shadow: 0 0 12px rgba(2, 132, 199, 0.5);
 }
 
-/* 展開後的極簡緊湊黑曜石毛玻璃工具橫條 (高度約 44~48px) */
+/* 展開後的極簡緊湊黑曜石工具橫條 (高度約 44~48px，高效能無 GPU 濾鏡負擔) */
 .voxel-editor-toolbar {
   position: static;
   width: 100%;
@@ -12906,14 +13109,12 @@ body.has-floating-back .scroll-top-btn {
   align-items: center;
   justify-content: flex-start;
   gap: 8px;
-  background: rgba(15, 23, 42, 0.82);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(15, 23, 42, 0.96);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
   padding: 5px 8px;
   min-height: 44px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 0 1px rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   user-select: none;
   box-sizing: border-box;
   animation: ve-fade-slide-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -13142,46 +13343,6 @@ body.has-floating-back .scroll-top-btn {
 .ve-btn-danger:hover {
   background: rgba(239, 68, 68, 0.28);
   color: #fee2e2;
-}
-
-/* 恢復預設微型危險區 (置於最右側隔離防誤觸) */
-.ve-danger-zone {
-  display: inline-flex;
-  align-items: center;
-  width: auto !important;
-  margin-left: auto !important;
-  flex-shrink: 0 !important;
-}
-
-.ve-btn-reset-safe {
-  width: auto;
-  min-height: 28px;
-  height: 28px;
-  background: rgba(239, 68, 68, 0.08);
-  border: 1px dashed rgba(239, 68, 68, 0.4);
-  color: #f87171;
-  font-size: 0.76rem;
-  font-weight: 600;
-  padding: 0 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  white-space: nowrap !important;
-  flex-shrink: 0 !important;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  user-select: none;
-  opacity: 0.85;
-  transition: all 0.2s ease;
-}
-
-.ve-btn-reset-safe:hover {
-  opacity: 1 !important;
-  background: rgba(239, 68, 68, 0.24) !important;
-  border-color: #ef4444 !important;
-  color: #fee2e2 !important;
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.3) !important;
 }
 
 /* 舊版調色盤掛架隱蔽相容 (若有動態遺留完全不干擾) */

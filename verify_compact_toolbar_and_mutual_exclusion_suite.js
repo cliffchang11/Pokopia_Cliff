@@ -17,15 +17,15 @@ assert.ok(cssContent.includes('.voxel-editor-2d-toolbar {\n    display: none !im
 console.log('  ✓ PASS: 寬螢幕 (>= 1280px) 左側 2D 工具列自動隱藏，全域由右側單一工具列接管');
 
 // 2. 驗證 46px 極簡黑曜石毛玻璃樣式規範與右上角防誤觸重置按鈕
-console.log('\n【測試 2: 46px 極簡黑曜石毛玻璃樣式規範與右上角隔離重置】');
+console.log('\n【測試 2: 44px 極簡黑曜石單列 Dock 樣式規範】');
 assert.ok(cssContent.includes('.ve-toggle-capsule {') && cssContent.includes('min-height: 34px;'), '常駐開關膠囊高度必須壓縮至 34px');
 assert.ok(cssContent.includes('min-height: 44px;'), '工具列本體最小高度維持在 44~48px 極簡橫條');
 assert.ok(!cssContent.includes('.ve-close-btn {'), '已徹底移除容易折行的 .ve-close-btn');
+assert.ok(!cssContent.includes('.ve-danger-zone {'), '已徹底移除破壞單列版面的 .ve-danger-zone');
+assert.ok(!cssContent.includes('backdrop-filter: blur(20px);'), '已移除高負載的 backdrop-filter blur 濾鏡，全面提升渲染效能');
 assert.ok(cssContent.includes('.ve-palette-title-row {\n  display: none !important;\n}'), '調色盤冗餘文字必須隱藏');
-assert.ok(cssContent.includes('backdrop-filter: blur(20px);'), '工具列必須具備 blur(20px) 深色黑曜石毛玻璃質感');
-assert.ok(cssContent.includes('.ve-danger-zone {\n  display: inline-flex;\n  align-items: center;\n  width: auto !important;\n  margin-left: auto !important;\n  flex-shrink: 0 !important;\n}'), '危險操作區必須 margin-left: auto 自動錨定於最右端');
-assert.ok(cssContent.includes('white-space: nowrap !important;') && cssContent.includes('flex-shrink: 0 !important;'), '恢復預設按鈕必須強制 white-space: nowrap 與 flex-shrink: 0，杜絕折行');
-console.log('  ✓ PASS: 工具列高度成功瘦身 80%，深色毛玻璃質感、無折行且右側隔離防誤觸 100% 成立');
+assert.ok(cssContent.includes('rgba(15, 23, 42, 0.96);'), '工具列採用高效黑曜石深色背景');
+console.log('  ✓ PASS: 工具列高度成功瘦身 80%，單列 Dock、移除毛玻璃回血效能 100% 成立');
 
 // 3. 驗證 DOM 與功能按鈕完整性
 console.log('\n【測試 3: DOM 與功能按鈕完整性】');
@@ -75,9 +75,9 @@ console.log('  ✓ PASS: 體素核心模組與掛載函式正常運作');
 const voxelEditorCode = fs.readFileSync(path.join(__dirname, 'voxel_editor.js'), 'utf8');
 assert.ok(!voxelEditorCode.includes('ve-close-btn'), 'voxel_editor.js 必須徹底移除多餘的 ve-close-btn');
 assert.ok(!voxelEditorCode.includes('veCloseBtn_'), 'voxel_editor.js 必須徹底移除 veCloseBtn_ 參照與事件監聽');
-assert.ok(voxelEditorCode.includes('btnReset_'), 'voxel_editor.js 必須包含 btnReset_');
-assert.ok(voxelEditorCode.includes("確定要重置嗎？") && voxelEditorCode.includes("confirm("), 'voxel_editor.js 必須保留二次確認對話框');
-console.log('  ✓ PASS: 收合按鈕已拔除，恢復預設安全隔離與二次確認完備');
+assert.ok(!voxelEditorCode.includes('id="btnReset_'), 'voxel_editor.js 必須徹底自 DOM 移除 btnReset_');
+assert.ok(voxelEditorCode.includes("function resetToDefault("), 'voxel_editor.js 必須保留底層 resetToDefault 函式');
+console.log('  ✓ PASS: 收合與重置按鈕已自 UI 拔除，底層重置核心函式保留完備');
 
 console.log('\n🎉 所有大螢幕雙態互斥與極簡毛玻璃工具列測試 100% 通過！');
 process.exit(0);

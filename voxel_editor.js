@@ -948,13 +948,6 @@
               </button>
             </div>
           </div>
-
-          <!-- 危險操作安全隔離區 (最右端防誤觸) -->
-          <div class="ve-danger-zone">
-            <button type="button" class="ve-btn ve-btn-reset-safe" id="btnReset_${charKey}" title="清除所有自訂修改，恢復官方預設模型 (需二次確認)">
-              🔄 恢復預設
-            </button>
-          </div>
         </div>
       </div>
     `;
