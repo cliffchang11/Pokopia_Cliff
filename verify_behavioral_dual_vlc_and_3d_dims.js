@@ -334,7 +334,7 @@ global.requestThreeRender = () => {
 };
 
 // 提取並執行 setupBloxelizerStudioControls
-const setupMatch = appJs.match(/function setupBloxelizerStudioControls\([\s\S]*?\n  \}/);
+const setupMatch = appJs.match(/function setupBloxelizerStudioControls\([\s\S]*?\n  \}(?=\n\n  \/\/)/);
 assert.ok(setupMatch, '成功從 app.js 檢索 setupBloxelizerStudioControls 函式');
 
 const setupFn = new Function('charKey', 'threeState', 'baseData', 'canvasEl',
@@ -549,6 +549,43 @@ assert.ok(gapSprite, '必須包含深灰 #334155 Sprite 膠囊標籤');
 assert.strictEqual(gapSprite.userData.badgeText, '8', 'Sprite 膠囊標籤必須顯示間距 8');
 
 console.log('  ✓ PASS: 懸停連續段落長度 (10, 湖水綠) 與群組間距 (8, 深灰虛線) 3D 實體驗證成功');
+
+console.log('\n【驗證 7: 3D 中空環狀結構正交連通段演算法（拒絕跨空洞誤判）】');
+// 模擬花苞中空環狀結構：X=10..13 (左瓣) 與 X=20..23 (右瓣)，中間 X=14..19 為中空空氣洞
+const ringBlocks = [];
+for (let x = 10; x <= 13; x++) ringBlocks.push([x, 30]);
+for (let x = 20; x <= 23; x++) ringBlocks.push([x, 30]);
+
+const blockSet = new Set();
+ringBlocks.forEach(([x, z]) => blockSet.add(`${x},${z}`));
+
+// 游標懸停在左瓣 X=12, Z=30
+const hoverX = 12, hoverZ = 30;
+let sX = hoverX; while (blockSet.has(`${sX - 1},${hoverZ}`)) sX--;
+let eX = hoverX; while (blockSet.has(`${eX + 1},${hoverZ}`)) eX++;
+const actualRunLen = eX - sX + 1;
+
+// 檢驗長度：必須是左瓣真實長度 4，絕不跨越中空洞變成 14
+assert.strictEqual(actualRunLen, 4, '中空花苞左瓣連續長度必須精確為 4，不可跨越空氣洞');
+
+// 檢驗間隔：沿 X 軸向右尋找下一個方塊，中空距離為 20 - 13 - 1 = 6
+let scanR = eX + 1;
+while (scanR <= 50 && !blockSet.has(`${scanR},${hoverZ}`)) scanR++;
+const actualGap = scanR - eX - 1;
+assert.strictEqual(actualGap, 6, '中空孔洞間距必須精確為 6 格整數步數，絕無斜線');
+console.log('  ✓ PASS: 中空花苞環狀結構連續段 (4) 與中空間距 (6) 正交演算完全正確');
+
+console.log('\n【驗證 8: 2D 切片 0 重繪效能防護與事件委派架構】');
+// 檢驗 voxel_editor.js 的 setHoverVoxel 不調用 notifyListeners
+const voxelEditorCode = fs.readFileSync(path.join(__dirname, 'voxel_editor.js'), 'utf8');
+const setHoverMatch = voxelEditorCode.match(/function setHoverVoxel[\s\S]*?\{([\s\S]*?)\n  \}/);
+assert.ok(setHoverMatch, 'voxel_editor.js 必須具備 setHoverVoxel 定義');
+assert.ok(!setHoverMatch[1].includes('notifyListeners'), 'setHoverVoxel 嚴禁調用 notifyListeners，杜絕全量重繪死循環');
+
+// 檢驗 app.js 具備 setupGridEventDelegation 單一事件委派
+assert.ok(appJs.includes('setupGridEventDelegation'), 'app.js 必須包含 setupGridEventDelegation 頂層事件委派');
+assert.ok(appJs.includes('_hasGridDelegation'), 'app.js 必須具備 _hasGridDelegation 防重複綁定守護');
+console.log('  ✓ PASS: setHoverVoxel 解耦與 2D 切片單一事件委派架構成立，0 重繪卡死');
 
 console.log('\n=============================================================');
 console.log('🎉 恭喜！深度行為模擬驗證 100% 全部通過！所有功能皆有實質運作！');

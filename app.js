@@ -7428,18 +7428,23 @@
   // ═══════════════════════════════════════════════════════════════════
   function handleCellMirrorHover(gridEl, charKey, sourceCell, isEnter) {
     if (!gridEl) return;
-    if (!isEnter) {
-      gridEl.querySelectorAll('.ve-cell-mirror-ghost').forEach(c => {
-        c.classList.remove('ve-cell-mirror-ghost', 'delete', 've-ghost-paint');
-        if (c._origBg !== undefined) {
-          c.style.backgroundColor = c._origBg;
-          delete c._origBg;
-        }
-      });
+    if (gridEl._activeMirrorCell) {
+      const old = gridEl._activeMirrorCell;
+      old.classList.remove('ve-cell-mirror-ghost', 'delete', 've-ghost-paint');
+      if (old._origBg !== undefined) {
+        old.style.backgroundColor = old._origBg;
+        delete old._origBg;
+      }
+      gridEl._activeMirrorCell = null;
+    }
+
+    if (!isEnter || !sourceCell || sourceCell.dataset.x === undefined) return;
+
+    // 只有在體素編輯器啟用狀態時，才計算並顯示鏡像對稱金色指示
+    if (typeof VoxelDeltaStore === 'undefined' || !VoxelDeltaStore.state || !VoxelDeltaStore.state.editorMode) {
       return;
     }
 
-    if (!sourceCell || sourceCell.dataset.x === undefined) return;
     const x = Number(sourceCell.dataset.x);
     const z = Number(sourceCell.dataset.z);
 
@@ -7457,10 +7462,11 @@
 
     const targetCell = gridEl.querySelector(`.bulba-cell[data-x="${symX}"][data-z="${z}"]`);
     if (targetCell) {
+      gridEl._activeMirrorCell = targetCell;
       targetCell.classList.add('ve-cell-mirror-ghost');
       targetCell._origBg = targetCell.style.backgroundColor || '';
 
-      const isDelete = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.state && VoxelDeltaStore.state.tool === 'delete');
+      const isDelete = (VoxelDeltaStore.state.tool === 'delete');
       if (isDelete) {
         targetCell.classList.add('delete');
       } else {
@@ -7469,8 +7475,8 @@
         if (srcColor && !srcColor.includes('rgba(56, 189, 248, 0.04)') && !srcColor.includes('rgba(52, 211, 153, 0.04)')) {
           targetCell.style.backgroundColor = srcColor;
         } else {
-          const selBid = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.state) ? VoxelDeltaStore.state.selectedBid : null;
-          const base = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.getBaseData) ? VoxelDeltaStore.getBaseData(charKey) : null;
+          const selBid = VoxelDeltaStore.state.selectedBid;
+          const base = (VoxelDeltaStore.getBaseData) ? VoxelDeltaStore.getBaseData(charKey) : null;
           if (base && base.palette && selBid !== null && base.palette[selBid]) {
             targetCell.style.backgroundColor = base.palette[selBid].color;
           } else {
@@ -7479,6 +7485,38 @@
         }
       }
     }
+  }
+
+  // 頂層單一事件委派（Event Delegation）：徹底消除 40,000 個事件監聽器與記憶體回流卡死
+  function setupGridEventDelegation(gridEl, charKey, tooltipEl, tooltipColor, tooltipText) {
+    if (!gridEl || gridEl._hasGridDelegation) return;
+    gridEl._hasGridDelegation = true;
+
+    let curHoveredCell = null;
+
+    gridEl.addEventListener('pointerover', (e) => {
+      const cell = e.target.closest('.bulba-cell');
+      if (!cell || cell === curHoveredCell) return;
+      curHoveredCell = cell;
+
+      if (cell.dataset.name && tooltipEl && tooltipColor && tooltipText) {
+        tooltipColor.style.backgroundColor = cell.dataset.color || '#64a395';
+        tooltipText.textContent = `${cell.dataset.name} (${cell.dataset.coord || `X: ${cell.dataset.x}, Z: ${cell.dataset.z}`})`;
+        tooltipEl.classList.remove('hidden');
+      } else if (tooltipEl) {
+        tooltipEl.classList.add('hidden');
+      }
+
+      if (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.state && VoxelDeltaStore.state.editorMode) {
+        handleCellMirrorHover(gridEl, charKey, cell, true);
+      }
+    });
+
+    gridEl.addEventListener('pointerleave', () => {
+      curHoveredCell = null;
+      if (tooltipEl) tooltipEl.classList.add('hidden');
+      handleCellMirrorHover(gridEl, charKey, null, false);
+    });
   }
 
   function applyWorkspaceZoomPan(workspace, zoomObj) {
@@ -7897,10 +7935,6 @@
               cell.classList.add('ve-cell-selected');
             }
 
-            // 直連 2D 鏡像對稱提示 (100% 獨立解耦，滑鼠懸停立即顯現金光外框)
-            cell.addEventListener('mouseenter', () => handleCellMirrorHover(DOM.bulbaVoxelGrid, 'bulbasaur', cell, true));
-            cell.addEventListener('mouseleave', () => handleCellMirrorHover(DOM.bulbaVoxelGrid, 'bulbasaur', cell, false));
-
             if (bid) {
               const pItem = data.palette[bid] || { name: '方塊', color: '#64a395' };
               cell.style.backgroundColor = pItem.color;
@@ -7908,18 +7942,7 @@
               cell.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.35)';
               cell.dataset.name = pItem.name;
               cell.dataset.color = pItem.color;
-
-              cell.addEventListener('mouseenter', (e) => {
-                if (!DOM.bulbaHoverTooltip) return;
-                DOM.bulbaHoverTooltip.classList.remove('hidden');
-                if (DOM.bulbaTooltipColor) DOM.bulbaTooltipColor.style.backgroundColor = pItem.color;
-                if (DOM.bulbaTooltipText) {
-                  DOM.bulbaTooltipText.textContent = `${pItem.name} (X: ${x}, Z: ${z})`;
-                }
-              });
-              cell.addEventListener('mouseleave', () => {
-                if (DOM.bulbaHoverTooltip) DOM.bulbaHoverTooltip.classList.add('hidden');
-              });
+              cell.dataset.coord = `X: ${x}, Z: ${z}`;
             } else {
               // 清新草系工程藍圖座標格線（不再黑死一團）
               cell.style.backgroundColor = 'rgba(52, 211, 153, 0.04)';
@@ -7929,6 +7952,7 @@
           }
         }
         DOM.bulbaVoxelGrid.appendChild(frag);
+        setupGridEventDelegation(DOM.bulbaVoxelGrid, 'bulbasaur', DOM.bulbaHoverTooltip, DOM.bulbaTooltipColor, DOM.bulbaTooltipText);
         appendSymmetryAxisLine(DOM.bulbaVoxelGrid, 'bulbasaur', minX, maxX, cellSize);
         const workspace = DOM.bulbaVoxelGrid.closest('.bulba-grid-workspace');
         if (workspace && parent && bulbaState.zoom.panX === 0 && bulbaState.zoom.panY === 0) {
@@ -8064,10 +8088,6 @@
               cell.classList.add('ve-cell-selected');
             }
 
-            // 直連 2D 鏡像對稱提示 (100% 獨立解耦，滑鼠懸停立即顯現金光外框)
-            cell.addEventListener('mouseenter', () => handleCellMirrorHover(DOM.buzzVoxelGrid, 'buzz', cell, true));
-            cell.addEventListener('mouseleave', () => handleCellMirrorHover(DOM.buzzVoxelGrid, 'buzz', cell, false));
-
             if (bid !== undefined) {
               const pItem = data.palette[bid] || { name: '方塊', color: '#f1f5f9' };
               cell.style.backgroundColor = pItem.color;
@@ -8075,18 +8095,7 @@
               cell.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.35)';
               cell.dataset.name = pItem.name;
               cell.dataset.color = pItem.color;
-
-              cell.addEventListener('mouseenter', () => {
-                if (!DOM.buzzHoverTooltip) return;
-                DOM.buzzHoverTooltip.classList.remove('hidden');
-                if (DOM.buzzTooltipColor) DOM.buzzTooltipColor.style.backgroundColor = pItem.color;
-                if (DOM.buzzTooltipText) {
-                  DOM.buzzTooltipText.textContent = `${pItem.name} (X: ${x}, Z: ${z})`;
-                }
-              });
-              cell.addEventListener('mouseleave', () => {
-                if (DOM.buzzHoverTooltip) DOM.buzzHoverTooltip.classList.add('hidden');
-              });
+              cell.dataset.coord = `X: ${x}, Z: ${z}`;
             } else {
               cell.style.backgroundColor = 'rgba(56, 189, 248, 0.04)';
               cell.style.border = '1px solid rgba(56, 189, 248, 0.1)';
@@ -8095,6 +8104,7 @@
           }
         }
         DOM.buzzVoxelGrid.appendChild(frag);
+        setupGridEventDelegation(DOM.buzzVoxelGrid, 'buzz', DOM.buzzHoverTooltip, DOM.buzzTooltipColor, DOM.buzzTooltipText);
         appendSymmetryAxisLine(DOM.buzzVoxelGrid, 'buzz', minX, maxX, cellSize);
         const workspace = DOM.buzzVoxelGrid.closest('.bulba-grid-workspace');
         if (workspace && parent && buzzState.zoom.panX === 0 && buzzState.zoom.panY === 0) {
@@ -8753,16 +8763,19 @@
         }
 
         if (currentHoverVoxel) {
-          const { minX, maxX, minZ, maxZ, py, gapInfo } = currentHoverVoxel;
-          const h1x = new THREE.Vector3(minX - 0.5, py + 0.8, maxZ + 0.5 + 1.5);
-          const h2x = new THREE.Vector3(maxX + 0.5, py + 0.8, maxZ + 0.5 + 1.5);
-          const hLenX = Math.round(maxX - minX + 1);
-          add3DCalipers(group, h1x, h2x, new THREE.Vector3(0, 0, 1), 0.8, hLenX, 0x0d9488, '#0d9488');
+          const { startX, endX, startZ, endZ, bX, bZ, runLenX, runLenZ, py, gapInfo } = currentHoverVoxel;
 
-          const h1z = new THREE.Vector3(minX - 0.5 - 1.5, py + 0.8, minZ - 0.5);
-          const h2z = new THREE.Vector3(minX - 0.5 - 1.5, py + 0.8, maxZ + 0.5);
-          const hLenZ = Math.round(maxZ - minZ + 1);
-          add3DCalipers(group, h1z, h2z, new THREE.Vector3(-1, 0, 0), 0.8, hLenZ, 0x0d9488, '#0d9488');
+          if (runLenX > 1 || (runLenX === 1 && runLenZ === 1)) {
+            const h1x = new THREE.Vector3(startX - 0.5 - cx, py, bZ - cz);
+            const h2x = new THREE.Vector3(endX + 0.5 - cx, py, bZ - cz);
+            add3DCalipers(group, h1x, h2x, new THREE.Vector3(0, 1, 0), 0.1, runLenX, 0x0d9488, '#0d9488');
+          }
+
+          if (runLenZ > 1) {
+            const h1z = new THREE.Vector3(bX - cx, py, startZ - 0.5 - cz);
+            const h2z = new THREE.Vector3(bX - cx, py, endZ + 0.5 - cz);
+            add3DCalipers(group, h1z, h2z, new THREE.Vector3(0, 1, 0), 0.1, runLenZ, 0x0d9488, '#0d9488');
+          }
 
           if (gapInfo && gapInfo.length > 0) {
             gapInfo.forEach(gap => {
@@ -8826,31 +8839,38 @@
             }
 
             if (currentHoverVoxel) {
-              const { minX, maxX, minZ, maxZ, py, gapInfo } = currentHoverVoxel;
-              const h1x = toScreen(new THREE.Vector3(minX - 0.5, py, maxZ + 0.5 + 0.6));
-              const h2x = toScreen(new THREE.Vector3(maxX + 0.5, py, maxZ + 0.5 + 0.6));
-              const hLenX = Math.round(maxX - minX + 1);
-
-              const h1z = toScreen(new THREE.Vector3(minX - 0.5 - 0.6, py, minZ - 0.5));
-              const h2z = toScreen(new THREE.Vector3(minX - 0.5 - 0.6, py, maxZ + 0.5));
-              const hLenZ = Math.round(maxZ - minZ + 1);
-
-              const hMidX = { x: (h1x.x + h2x.x) / 2, y: (h1x.y + h2x.y) / 2 };
-              const hMidZ = { x: (h1z.x + h2z.x) / 2, y: (h1z.y + h2z.y) / 2 };
-
+              const { startX, endX, startZ, endZ, bX, bZ, runLenX, runLenZ, py, gapInfo } = currentHoverVoxel;
               const hTickLen = 5;
-              svgHtml += `
-                <line x1="${h1x.x}" y1="${h1x.y}" x2="${h2x.x}" y2="${h2x.y}" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" />
-                <line x1="${h1x.x}" y1="${h1x.y - hTickLen}" x2="${h1x.x}" y2="${h1x.y + hTickLen}" stroke="#0d9488" stroke-width="2" stroke-linecap="round" />
-                <line x1="${h2x.x}" y1="${h2x.y - hTickLen}" x2="${h2x.x}" y2="${h2x.y + hTickLen}" stroke="#0d9488" stroke-width="2" stroke-linecap="round" />
-                <line x1="${h1z.x}" y1="${h1z.y}" x2="${h2z.x}" y2="${h2z.y}" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" />
-                <line x1="${h1z.x - hTickLen}" y1="${h1z.y}" x2="${h1z.x + hTickLen}" y2="${h1z.y}" stroke="#0d9488" stroke-width="2" stroke-linecap="round" />
-                <line x1="${h2z.x - hTickLen}" y1="${h2z.y}" x2="${h2z.x + hTickLen}" y2="${h2z.y}" stroke="#0d9488" stroke-width="2" stroke-linecap="round" />
-              `;
-              badgeHtml += `
-                <div class="smart-dim-badge" style="left:${hMidX.x}px; top:${hMidX.y}px; background:#0d9488; color:#ffffff; font-weight:800; font-size:12px; border-radius:9999px; padding:2px 8px; border:1.5px solid #ffffff; box-shadow:0 2px 6px rgba(13,148,136,0.4);">${hLenX}</div>
-                <div class="smart-dim-badge" style="left:${hMidZ.x}px; top:${hMidZ.y}px; background:#0d9488; color:#ffffff; font-weight:800; font-size:12px; border-radius:9999px; padding:2px 8px; border:1.5px solid #ffffff; box-shadow:0 2px 6px rgba(13,148,136,0.4);">${hLenZ}</div>
-              `;
+
+              if (runLenX > 1 || (runLenX === 1 && runLenZ === 1)) {
+                const h1x = toScreen(new THREE.Vector3(startX - 0.5 - cx, py, bZ - cz));
+                const h2x = toScreen(new THREE.Vector3(endX + 0.5 - cx, py, bZ - cz));
+                const hMidX = { x: (h1x.x + h2x.x) / 2, y: (h1x.y + h2x.y) / 2 };
+
+                svgHtml += `
+                  <line x1="${h1x.x}" y1="${h1x.y}" x2="${h2x.x}" y2="${h2x.y}" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" />
+                  <line x1="${h1x.x}" y1="${h1x.y - hTickLen}" x2="${h1x.x}" y2="${h1x.y + hTickLen}" stroke="#0d9488" stroke-width="2" stroke-linecap="round" />
+                  <line x1="${h2x.x}" y1="${h2x.y - hTickLen}" x2="${h2x.x}" y2="${h2x.y + hTickLen}" stroke="#0d9488" stroke-width="2" stroke-linecap="round" />
+                `;
+                badgeHtml += `
+                  <div class="smart-dim-badge" style="left:${hMidX.x}px; top:${hMidX.y}px; background:#0d9488; color:#ffffff; font-weight:800; font-size:12px; border-radius:9999px; padding:2px 8px; border:1.5px solid #ffffff; box-shadow:0 2px 6px rgba(13,148,136,0.4);">${runLenX}</div>
+                `;
+              }
+
+              if (runLenZ > 1) {
+                const h1z = toScreen(new THREE.Vector3(bX - cx, py, startZ - 0.5 - cz));
+                const h2z = toScreen(new THREE.Vector3(bX - cx, py, endZ + 0.5 - cz));
+                const hMidZ = { x: (h1z.x + h2z.x) / 2, y: (h1z.y + h2z.y) / 2 };
+
+                svgHtml += `
+                  <line x1="${h1z.x}" y1="${h1z.y}" x2="${h2z.x}" y2="${h2z.y}" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" />
+                  <line x1="${h1z.x - hTickLen}" y1="${h1z.y}" x2="${h1z.x + hTickLen}" y2="${h1z.y}" stroke="#0d9488" stroke-width="2" stroke-linecap="round" />
+                  <line x1="${h2z.x - hTickLen}" y1="${h2z.y}" x2="${h2z.x + hTickLen}" y2="${h2z.y}" stroke="#0d9488" stroke-width="2" stroke-linecap="round" />
+                `;
+                badgeHtml += `
+                  <div class="smart-dim-badge" style="left:${hMidZ.x}px; top:${hMidZ.y}px; background:#0d9488; color:#ffffff; font-weight:800; font-size:12px; border-radius:9999px; padding:2px 8px; border:1.5px solid #ffffff; box-shadow:0 2px 6px rgba(13,148,136,0.4);">${runLenZ}</div>
+                `;
+              }
 
               if (gapInfo && gapInfo.length > 0) {
                 gapInfo.forEach(gap => {
@@ -8900,44 +8920,91 @@
           const bX = Math.round(b.posX + cx);
           const bZ = Math.round(b.posZ + cz);
 
-          // 僅在當層極小規模 (通常數十顆) 尋找連通相鄰方塊
-          const clusterBlocks = rawBlocks.filter(([x, z]) => Math.abs(x - bX) <= 5 && Math.abs(z - bZ) <= 5);
+          // 建立當層方塊座標快速查找表
+          const blockSet = new Set();
+          rawBlocks.forEach(([x, z]) => blockSet.add(`${x},${z}`));
 
-          let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
-          clusterBlocks.forEach(([x, z]) => {
-            const px = x - cx;
-            const pz = z - cz;
-            if (px < minX) minX = px;
-            if (px > maxX) maxX = px;
-            if (pz < minZ) minZ = pz;
-            if (pz > maxZ) maxZ = pz;
-          });
+          // 1. 正交 X 軸連續實體段落 (橫向走訪無中斷之相鄰方塊)
+          let startX = bX;
+          while (blockSet.has(`${startX - 1},${bZ}`)) startX--;
+          let endX = bX;
+          while (blockSet.has(`${endX + 1},${bZ}`)) endX++;
+          const runLenX = endX - startX + 1;
 
-          // 尋找最近鄰其他小群組
-          const otherBlocks = rawBlocks.filter(([x, z]) => !clusterBlocks.some(([cx2, cz2]) => cx2 === x && cz2 === z));
+          // 2. 正交 Z 軸連續實體段落 (縱向走訪無中斷之相鄰方塊)
+          let startZ = bZ;
+          while (blockSet.has(`${bX},${startZ - 1}`)) startZ--;
+          let endZ = bZ;
+          while (blockSet.has(`${bX},${endZ + 1}`)) endZ++;
+          const runLenZ = endZ - startZ + 1;
+
+          // 3. 沿 X/Z 正交方向探測同軸向空隙間距 (到下一個方塊中空了幾格)
           const gapInfo = [];
-          if (otherBlocks.length > 0) {
-            let nearest = null;
-            let minDist = Infinity;
-            otherBlocks.forEach(([ox, oz]) => {
-              const d = Math.hypot(ox - bX, oz - bZ);
-              if (d < minDist) {
-                minDist = d;
-                nearest = [ox, oz];
-              }
-            });
-            if (nearest && minDist > 1.5 && minDist < 35) {
+          const py = b.posY + 0.55;
+
+          // X 軸向左尋找間隙
+          let scanLeft = startX - 1;
+          while (scanLeft >= 0 && !blockSet.has(`${scanLeft},${bZ}`)) scanLeft--;
+          if (scanLeft >= 0 && blockSet.has(`${scanLeft},${bZ}`)) {
+            const gapDist = startX - scanLeft - 1;
+            if (gapDist >= 1 && gapDist <= 40) {
               gapInfo.push({
-                p1: new THREE.Vector3(b.posX, b.posY, b.posZ),
-                p2: new THREE.Vector3(nearest[0] - cx, b.posY, nearest[1] - cz),
-                dist: Math.round(minDist - 1)
+                p1: new THREE.Vector3(startX - 0.5 - cx, py, bZ - cz),
+                p2: new THREE.Vector3(scanLeft + 0.5 - cx, py, bZ - cz),
+                dist: gapDist
+              });
+            }
+          }
+
+          // X 軸向右尋找間隙
+          let scanRight = endX + 1;
+          const maxDimX = (baseData.dimensions && baseData.dimensions.width) || 120;
+          while (scanRight <= maxDimX && !blockSet.has(`${scanRight},${bZ}`)) scanRight++;
+          if (scanRight <= maxDimX && blockSet.has(`${scanRight},${bZ}`)) {
+            const gapDist = scanRight - endX - 1;
+            if (gapDist >= 1 && gapDist <= 40) {
+              gapInfo.push({
+                p1: new THREE.Vector3(endX + 0.5 - cx, py, bZ - cz),
+                p2: new THREE.Vector3(scanRight - 0.5 - cx, py, bZ - cz),
+                dist: gapDist
+              });
+            }
+          }
+
+          // Z 軸向前尋找間隙
+          let scanBack = startZ - 1;
+          while (scanBack >= 0 && !blockSet.has(`${bX},${scanBack}`)) scanBack--;
+          if (scanBack >= 0 && blockSet.has(`${bX},${scanBack}`)) {
+            const gapDist = startZ - scanBack - 1;
+            if (gapDist >= 1 && gapDist <= 40) {
+              gapInfo.push({
+                p1: new THREE.Vector3(bX - cx, py, startZ - 0.5 - cz),
+                p2: new THREE.Vector3(bX - cx, py, scanBack + 0.5 - cz),
+                dist: gapDist
+              });
+            }
+          }
+
+          // Z 軸向後尋找間隙
+          let scanFront = endZ + 1;
+          const maxDimZ = (baseData.dimensions && baseData.dimensions.length) || 120;
+          while (scanFront <= maxDimZ && !blockSet.has(`${bX},${scanFront}`)) scanFront++;
+          if (scanFront <= maxDimZ && blockSet.has(`${bX},${scanFront}`)) {
+            const gapDist = scanFront - endZ - 1;
+            if (gapDist >= 1 && gapDist <= 40) {
+              gapInfo.push({
+                p1: new THREE.Vector3(bX - cx, py, endZ + 0.5 - cz),
+                p2: new THREE.Vector3(bX - cx, py, scanFront - 0.5 - cz),
+                dist: gapDist
               });
             }
           }
 
           currentHoverVoxel = {
-            minX, maxX, minZ, maxZ,
-            py: b.posY,
+            startX, endX, startZ, endZ,
+            bX, bZ,
+            runLenX, runLenZ,
+            py,
             gapInfo
           };
           updateDimensionOverlay();
@@ -9093,7 +9160,7 @@
       });
 
       gridEl.addEventListener('pointermove', (e) => {
-        if (typeof VoxelDeltaStore === 'undefined') return;
+        if (typeof VoxelDeltaStore === 'undefined' || !VoxelDeltaStore.state || !VoxelDeltaStore.state.editorMode) return;
         const cell = e.target.closest('.bulba-cell');
         if (!cell || cell.dataset.x === undefined) {
           clearMirrorGhost();
@@ -9685,10 +9752,6 @@
               cell.classList.add('ve-cell-selected');
             }
 
-            // 直連 2D 鏡像對稱提示 (100% 獨立解耦，滑鼠懸停立即顯現金光外框)
-            cell.addEventListener('mouseenter', () => handleCellMirrorHover(DOM.ivysaurVoxelGrid, 'ivysaur', cell, true));
-            cell.addEventListener('mouseleave', () => handleCellMirrorHover(DOM.ivysaurVoxelGrid, 'ivysaur', cell, false));
-
             if (bid !== undefined) {
               const palItem = data.palette[bid] || { name: '方塊', color: '#00a8c8' };
               cell.style.backgroundColor = palItem.color;
@@ -9698,16 +9761,6 @@
               cell.dataset.color = palItem.color;
               cell.dataset.bid = bid;
               cell.dataset.coord = `X: ${rx}, Z: ${rz}`;
-              cell.addEventListener('mouseenter', () => {
-                if (DOM.ivysaurHoverTooltip && DOM.ivysaurTooltipColor && DOM.ivysaurTooltipText) {
-                  DOM.ivysaurTooltipColor.style.backgroundColor = palItem.color;
-                  DOM.ivysaurTooltipText.textContent = `${palItem.name} (${cell.dataset.coord})`;
-                  DOM.ivysaurHoverTooltip.classList.remove('hidden');
-                }
-              });
-              cell.addEventListener('mouseleave', () => {
-                if (DOM.ivysaurHoverTooltip) DOM.ivysaurHoverTooltip.classList.add('hidden');
-              });
             } else {
               // 柔和清新草系工程藍圖底格線，告別死黑
               cell.style.backgroundColor = 'rgba(52, 211, 153, 0.04)';
@@ -9717,6 +9770,7 @@
           }
         }
         DOM.ivysaurVoxelGrid.appendChild(frag);
+        setupGridEventDelegation(DOM.ivysaurVoxelGrid, 'ivysaur', DOM.ivysaurHoverTooltip, DOM.ivysaurTooltipColor, DOM.ivysaurTooltipText);
         appendSymmetryAxisLine(DOM.ivysaurVoxelGrid, 'ivysaur', minX, maxX, cellSize);
 
         const workspace = DOM.ivysaurVoxelGrid.closest('.bulba-grid-workspace');
@@ -10098,10 +10152,6 @@
               cell.classList.add('ve-cell-selected');
             }
 
-            // 直連 2D 鏡像對稱提示 (100% 獨立解耦，滑鼠懸停立即顯現金光外框)
-            cell.addEventListener('mouseenter', () => handleCellMirrorHover(DOM.venusaurVoxelGrid, 'venusaur', cell, true));
-            cell.addEventListener('mouseleave', () => handleCellMirrorHover(DOM.venusaurVoxelGrid, 'venusaur', cell, false));
-
             if (bid !== undefined) {
               const pItem = data.palette[bid] || { name: '方塊', color: '#00a8c8' };
               cell.style.backgroundColor = pItem.color;
@@ -10109,18 +10159,7 @@
               cell.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.35)';
               cell.dataset.name = pItem.name;
               cell.dataset.color = pItem.color;
-
-              cell.addEventListener('mouseenter', () => {
-                if (!DOM.venusaurHoverTooltip) return;
-                DOM.venusaurHoverTooltip.classList.remove('hidden');
-                if (DOM.venusaurTooltipColor) DOM.venusaurTooltipColor.style.backgroundColor = pItem.color;
-                if (DOM.venusaurTooltipText) {
-                  DOM.venusaurTooltipText.textContent = `${pItem.name} (X: ${x}, Z: ${z})`;
-                }
-              });
-              cell.addEventListener('mouseleave', () => {
-                if (DOM.venusaurHoverTooltip) DOM.venusaurHoverTooltip.classList.add('hidden');
-              });
+              cell.dataset.coord = `X: ${x}, Z: ${z}`;
             } else {
               cell.style.backgroundColor = 'rgba(236, 72, 153, 0.03)';
               cell.style.border = '1px solid rgba(236, 72, 153, 0.08)';
@@ -10129,6 +10168,7 @@
           }
         }
         DOM.venusaurVoxelGrid.appendChild(frag);
+        setupGridEventDelegation(DOM.venusaurVoxelGrid, 'venusaur', DOM.venusaurHoverTooltip, DOM.venusaurTooltipColor, DOM.venusaurTooltipText);
         appendSymmetryAxisLine(DOM.venusaurVoxelGrid, 'venusaur', minX, maxX, cellSize);
 
         const workspace = DOM.venusaurVoxelGrid.closest('.bulba-grid-workspace');

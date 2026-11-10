@@ -463,7 +463,7 @@
     return changes.length;
   }
 
-  // 記錄懸停位置以供幽靈預覽
+  // 記錄懸停位置以供幽靈預覽 (純內部狀態記錄，絕不可觸發 notifyListeners 引發重繪卡死)
   function setHoverVoxel(charKey, x, y, z) {
     if (x === null || x === undefined) {
       _state.hoverVoxel = null;
@@ -471,7 +471,6 @@
       const symX = _state.mirrorSymmetry ? getSymmetryX(x, charKey) : null;
       _state.hoverVoxel = { x, y, z, symX: (symX !== x ? symX : null), charKey };
     }
-    notifyListeners(charKey);
   }
 
   // 撤銷 (Undo)
