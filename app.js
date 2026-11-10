@@ -7342,6 +7342,11 @@
     requestAnimationFrame(() => {
       t.renderRequested = false;
       if (t.controls) t.controls.update();
+      if (typeof t._updateDimensions === 'function' && !t._isUpdatingDims) {
+        t._isUpdatingDims = true;
+        try { t._updateDimensions(); } catch (_) {}
+        t._isUpdatingDims = false;
+      }
       t.renderer.render(t.scene, t.camera);
     });
   }
@@ -7634,9 +7639,8 @@
       buzzState.three._syncVLC(target);
     }
     renderBuzzLayer(target);
-    if (buzzState.curMode === 'slice') {
-      updateBuzz3DSliceFilter();
-    }
+    updateBuzz3DSliceFilter();
+    requestThreeRender('buzz');
   }
 
   function switchBulba3DMode(mode) {
@@ -7649,6 +7653,7 @@
       DOM.btnBulbaModeSlice.classList.toggle('active', mode === 'slice');
     }
     updateBulba3DSliceFilter();
+    requestThreeRender('bulbasaur');
   }
 
   function setBulbaLayer(layerIndex) {
@@ -7662,9 +7667,8 @@
       bulbaState.three._syncVLC(target);
     }
     renderBulbaLayer(target);
-    if (bulbaState.curMode === 'slice') {
-      updateBulba3DSliceFilter();
-    }
+    updateBulba3DSliceFilter();
+    requestThreeRender('bulbasaur');
   }
 
   // 分析軸向投影的實體段落與中空間隔段落
@@ -8284,6 +8288,14 @@
       else if (charKey === 'venusaur') setVenusaurLayer(targetY);
     };
 
+    const activateVlcSliceMode = () => {
+      threeState.isVlcActive = true;
+      if (charKey === 'bulbasaur') switchBulba3DMode('slice');
+      else if (charKey === 'buzz') switchBuzz3DMode('slice');
+      else if (charKey === 'ivysaur') switchIvysaur3DMode('slice');
+      else if (charKey === 'venusaur') switchVenusaur3DMode('slice');
+    };
+
     const getCharSliceFilter = () => {
       if (charKey === 'bulbasaur') return updateBulba3DSliceFilter;
       if (charKey === 'buzz') return updateBuzz3DSliceFilter;
@@ -8332,13 +8344,13 @@
         threeState.minLayer = layer;
       }
       updateDualSliderUI();
-      if (typeof updateDimensionOverlay === 'function') updateDimensionOverlay();
+      if (typeof threeState._updateDimensions === 'function') threeState._updateDimensions();
     };
 
     threeState._syncVLC = syncVLCUI;
     updateDualSliderUI();
 
-    // 雙滑桿拖曳控制
+    // 雙滑桿拖曳控制（具備智能推擠機制：上下邊界互推不卡死）
     let isDragging = null;
     const handleDragMove = (e) => {
       if (!isDragging || !railEl) return;
@@ -8349,22 +8361,37 @@
       const targetLayer = Math.round(maxLayers - pct * (maxLayers - 1));
       const clamped = Math.max(1, Math.min(maxLayers, targetLayer));
 
+      activateVlcSliceMode();
+
       if (isDragging === 'top') {
-        threeState.maxLayer = Math.max(threeState.minLayer, clamped);
+        threeState.maxLayer = clamped;
+        if (threeState.layerFilterMode === 'single' || threeState.minLayer > clamped) {
+          threeState.minLayer = clamped;
+        }
         setCharLayer(threeState.maxLayer);
       } else if (isDragging === 'bottom') {
-        threeState.minLayer = Math.min(threeState.maxLayer, clamped);
+        threeState.minLayer = clamped;
+        if (threeState.layerFilterMode === 'single' || threeState.maxLayer < clamped) {
+          threeState.maxLayer = clamped;
+          setCharLayer(threeState.maxLayer);
+        }
       }
       updateDualSliderUI();
       getCharSliceFilter()();
+      if (typeof threeState._updateDimensions === 'function') threeState._updateDimensions();
       requestThreeRender(charKey);
-      if (typeof updateDimensionOverlay === 'function') updateDimensionOverlay();
     };
 
-    const handleDragEnd = () => {
+    const handleDragEnd = (e) => {
       if (isDragging) {
-        if (thumbTop) thumbTop.classList.remove('is-dragging');
-        if (thumbBottom) thumbBottom.classList.remove('is-dragging');
+        if (thumbTop) {
+          thumbTop.classList.remove('is-dragging');
+          try { thumbTop.releasePointerCapture(e.pointerId); } catch (_) {}
+        }
+        if (thumbBottom) {
+          thumbBottom.classList.remove('is-dragging');
+          try { thumbBottom.releasePointerCapture(e.pointerId); } catch (_) {}
+        }
         isDragging = null;
         window.removeEventListener('pointermove', handleDragMove);
         window.removeEventListener('pointerup', handleDragEnd);
@@ -8374,8 +8401,10 @@
     if (thumbTop) {
       thumbTop.addEventListener('pointerdown', (e) => {
         e.stopPropagation();
+        activateVlcSliceMode();
         isDragging = 'top';
         thumbTop.classList.add('is-dragging');
+        try { thumbTop.setPointerCapture(e.pointerId); } catch (_) {}
         window.addEventListener('pointermove', handleDragMove, { passive: true });
         window.addEventListener('pointerup', handleDragEnd);
       });
@@ -8384,8 +8413,10 @@
     if (thumbBottom) {
       thumbBottom.addEventListener('pointerdown', (e) => {
         e.stopPropagation();
+        activateVlcSliceMode();
         isDragging = 'bottom';
         thumbBottom.classList.add('is-dragging');
+        try { thumbBottom.setPointerCapture(e.pointerId); } catch (_) {}
         window.addEventListener('pointermove', handleDragMove, { passive: true });
         window.addEventListener('pointerup', handleDragEnd);
       });
@@ -8397,6 +8428,7 @@
         if (e.target === thumbTop || e.target === thumbBottom) return;
         const rect = railEl.getBoundingClientRect();
         if (rect.height <= 0) return;
+        activateVlcSliceMode();
         const pct = (e.clientY - rect.top) / rect.height;
         const targetLayer = Math.round(maxLayers - pct * (maxLayers - 1));
         const clamped = Math.max(1, Math.min(maxLayers, targetLayer));
@@ -8406,21 +8438,28 @@
 
         if (distToTop <= distToBottom || threeState.layerFilterMode === 'single') {
           threeState.maxLayer = clamped;
-          if (threeState.layerFilterMode === 'single') threeState.minLayer = clamped;
+          if (threeState.layerFilterMode === 'single' || threeState.minLayer > clamped) {
+            threeState.minLayer = clamped;
+          }
           setCharLayer(clamped);
         } else {
           threeState.minLayer = clamped;
+          if (threeState.maxLayer < clamped) {
+            threeState.maxLayer = clamped;
+            setCharLayer(clamped);
+          }
         }
         updateDualSliderUI();
         getCharSliceFilter()();
+        if (typeof threeState._updateDimensions === 'function') threeState._updateDimensions();
         requestThreeRender(charKey);
-        if (typeof updateDimensionOverlay === 'function') updateDimensionOverlay();
       });
     }
 
     if (btnUp) {
       btnUp.addEventListener('click', (e) => {
         e.stopPropagation();
+        activateVlcSliceMode();
         const cur = threeState.maxLayer || getCharCurLayer();
         if (cur < maxLayers) {
           const next = cur + 1;
@@ -8429,8 +8468,8 @@
           setCharLayer(next);
           updateDualSliderUI();
           getCharSliceFilter()();
+          if (typeof threeState._updateDimensions === 'function') threeState._updateDimensions();
           requestThreeRender(charKey);
-          if (typeof updateDimensionOverlay === 'function') updateDimensionOverlay();
         }
       });
     }
@@ -8438,6 +8477,7 @@
     if (btnDown) {
       btnDown.addEventListener('click', (e) => {
         e.stopPropagation();
+        activateVlcSliceMode();
         const cur = threeState.maxLayer || getCharCurLayer();
         if (cur > 1) {
           const prev = cur - 1;
@@ -8446,8 +8486,8 @@
           setCharLayer(prev);
           updateDualSliderUI();
           getCharSliceFilter()();
+          if (typeof threeState._updateDimensions === 'function') threeState._updateDimensions();
           requestThreeRender(charKey);
-          if (typeof updateDimensionOverlay === 'function') updateDimensionOverlay();
         }
       });
     }
@@ -8464,6 +8504,7 @@
       popup.querySelectorAll('.vlc-mode-item').forEach(item => {
         item.addEventListener('click', (e) => {
           e.stopPropagation();
+          activateVlcSliceMode();
           const mode = item.getAttribute('data-mode') || 'single';
           popup.querySelectorAll('.vlc-mode-item').forEach(i => i.classList.remove('active'));
           item.classList.add('active');
@@ -8479,18 +8520,138 @@
           }
           updateDualSliderUI();
           getCharSliceFilter()();
+          if (typeof threeState._updateDimensions === 'function') threeState._updateDimensions();
           requestThreeRender(charKey);
-          if (typeof updateDimensionOverlay === 'function') updateDimensionOverlay();
           popup.classList.add('hidden');
         });
       });
     }
 
-    // 4. 懸停情境智慧尺寸標註計算 (Hover-Activated Dimensioning + 常駐外圍總尺寸)
+    // 4. 懸停情境智慧尺寸標註計算 (Three.js 3D 原生卡尺 + 常駐外圍總尺寸 + 2D SVG 投影雙軌)
     const raycaster = (typeof THREE !== 'undefined' && typeof THREE.Raycaster !== 'undefined') ? new THREE.Raycaster() : null;
     const mouse = (typeof THREE !== 'undefined' && typeof THREE.Vector2 !== 'undefined') ? new THREE.Vector2() : null;
     let currentHoverVoxel = null;
     let hoverDebounceTimer = null;
+
+    if (threeState.scene && typeof THREE !== 'undefined' && typeof THREE.Group !== 'undefined') {
+      if (!threeState.dimensionGroup) {
+        threeState.dimensionGroup = new THREE.Group();
+        threeState.dimensionGroup.name = `dimGroup_${charKey}`;
+        threeState.scene.add(threeState.dimensionGroup);
+      }
+    }
+
+    function makeBadgeSprite(text, bgHex = '#f97316', textHex = '#ffffff') {
+      if (typeof THREE === 'undefined' || typeof THREE.Sprite !== 'function') return null;
+      let sprite;
+      try {
+        let canvas = null;
+        if (typeof document !== 'undefined' && document.createElement) {
+          canvas = document.createElement('canvas');
+        }
+        if (canvas) {
+          canvas.width = 128;
+          canvas.height = 64;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.clearRect(0, 0, 128, 64);
+            ctx.fillStyle = bgHex;
+            const r = 16, x = 14, y = 10, w = 100, h = 44;
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.arcTo(x + w, y, x + w, y + h, r);
+            ctx.arcTo(x + w, y + h, x, y + h, r);
+            ctx.arcTo(x, y + h, x, y, r);
+            ctx.arcTo(x, y, x + r, y, r);
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            ctx.fillStyle = textHex;
+            ctx.font = 'bold 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(String(text), 64, 32);
+          }
+          const texture = new THREE.CanvasTexture(canvas);
+          const mat = new THREE.SpriteMaterial({
+            map: texture,
+            depthTest: false,
+            depthWrite: false,
+            transparent: true
+          });
+          sprite = new THREE.Sprite(mat);
+        } else {
+          sprite = new THREE.Sprite(new THREE.SpriteMaterial({ depthTest: false, depthWrite: false }));
+        }
+      } catch (_) {
+        sprite = new THREE.Sprite();
+      }
+      sprite.userData = { badgeText: String(text), bgHex };
+      sprite.scale.set(6, 3, 1);
+      sprite.renderOrder = 1000;
+      return sprite;
+    }
+
+    function add3DCalipers(group, p1, p2, tickDir, tickLen, val, colorHex = 0xf97316, bgHex = '#f97316') {
+      const p1TickA = p1.clone().addScaledVector(tickDir, tickLen);
+      const p1TickB = p1.clone().addScaledVector(tickDir, -tickLen);
+      const p2TickA = p2.clone().addScaledVector(tickDir, tickLen);
+      const p2TickB = p2.clone().addScaledVector(tickDir, -tickLen);
+
+      const pts = [
+        p1, p2,
+        p1TickA, p1TickB,
+        p2TickA, p2TickB
+      ];
+      const geom = new THREE.BufferGeometry().setFromPoints(pts);
+      const mat = new THREE.LineBasicMaterial({
+        color: colorHex,
+        linewidth: 2,
+        depthTest: false,
+        depthWrite: false,
+        transparent: true
+      });
+      const lines = new THREE.LineSegments(geom, mat);
+      lines.renderOrder = 998;
+      lines.userData = { caliperValue: val, colorHex };
+      group.add(lines);
+
+      const mid = p1.clone().add(p2).multiplyScalar(0.5);
+      mid.addScaledVector(tickDir, tickLen * 1.5);
+      const badge = makeBadgeSprite(val, bgHex);
+      if (badge) {
+        badge.position.copy(mid);
+        group.add(badge);
+      }
+    }
+
+    function add3DGapLine(group, p1, p2, val) {
+      const geom = new THREE.BufferGeometry().setFromPoints([p1, p2]);
+      const mat = new THREE.LineDashedMaterial({
+        color: 0x94a3b8,
+        dashSize: 1.2,
+        gapSize: 0.8,
+        linewidth: 2,
+        depthTest: false,
+        depthWrite: false,
+        transparent: true
+      });
+      const line = new THREE.LineSegments(geom, mat);
+      if (typeof line.computeLineDistances === 'function') line.computeLineDistances();
+      line.renderOrder = 998;
+      line.userData = { gapDistance: val };
+      group.add(line);
+
+      const mid = p1.clone().add(p2).multiplyScalar(0.5);
+      mid.y += 1.2;
+      const badge = makeBadgeSprite(val, '#334155');
+      if (badge) {
+        badge.position.copy(mid);
+        group.add(badge);
+      }
+    }
 
     function hideDimensions() {
       if (hoverDebounceTimer) {
@@ -8498,105 +8659,157 @@
         hoverDebounceTimer = null;
       }
       currentHoverVoxel = null;
-      updateDimensionOverlay();
+      updateDimensions();
+      requestThreeRender(charKey);
     }
 
-    function updateDimensionOverlay() {
-      if (!threeState.camera) return;
-      const svg = dimOverlay.querySelector('.smart-dim-svg');
-      const badges = dimOverlay.querySelector('.smart-dim-badges');
-      if (!svg || !badges) return;
-
-      const rect = canvasEl.getBoundingClientRect();
-      const w = rect.width;
-      const h = rect.height;
-      if (w <= 0 || h <= 0) return;
-
-      const camera = threeState.camera;
-      const toScreen = (v) => {
-        const p = v.clone().project(camera);
-        return {
-          x: (p.x * 0.5 + 0.5) * w,
-          y: (-p.y * 0.5 + 0.5) * h
-        };
-      };
-
-      let svgHtml = '';
-      let badgeHtml = '';
-
-      // 4.1 常駐顯示：當前層外圍總尺寸 (Outer Bounding Calipers，如截圖中的 19 與 22)
+    function updateDimensions() {
       const activeLayer = threeState.maxLayer || curY;
       const layerMeta = layersMap.get(activeLayer);
-      if (layerMeta && layerMeta.width > 0 && layerMeta.length > 0) {
-        const py = (activeLayer - 1) - cy;
-        const lMinX = layerMeta.minX - cx;
-        const lMaxX = layerMeta.maxX - cx;
-        const lMinZ = layerMeta.minZ - cz;
-        const lMaxZ = layerMeta.maxZ - cz;
 
-        // X 軸方向總長寬標註線 (前側)
-        const p1x = toScreen(new THREE.Vector3(lMinX - 0.5, py, lMaxZ + 0.5 + 1.2));
-        const p2x = toScreen(new THREE.Vector3(lMaxX + 0.5, py, lMaxZ + 0.5 + 1.2));
-        const midX = { x: (p1x.x + p2x.x) / 2, y: (p1x.y + p2x.y) / 2 };
+      // 4.1 更新 Three.js 3D 原生幾何卡尺與 3D Sprite 標籤
+      if (threeState.dimensionGroup && typeof THREE !== 'undefined') {
+        const group = threeState.dimensionGroup;
+        while (group.children.length > 0) {
+          const c = group.children[0];
+          if (c.geometry) c.geometry.dispose();
+          if (c.material) {
+            if (c.material.map) c.material.map.dispose();
+            c.material.dispose();
+          }
+          group.remove(c);
+        }
 
-        // Z 軸方向總長寬標註線 (左側)
-        const p1z = toScreen(new THREE.Vector3(lMinX - 0.5 - 1.2, py, lMinZ - 0.5));
-        const p2z = toScreen(new THREE.Vector3(lMinX - 0.5 - 1.2, py, lMaxZ + 0.5));
-        const midZ = { x: (p1z.x + p2z.x) / 2, y: (p1z.y + p2z.y) / 2 };
+        if (layerMeta && layerMeta.width > 0 && layerMeta.length > 0) {
+          const py = (activeLayer - 1) - cy + 0.5;
+          const lMinX = layerMeta.minX - cx;
+          const lMaxX = layerMeta.maxX - cx;
+          const lMinZ = layerMeta.minZ - cz;
+          const lMaxZ = layerMeta.maxZ - cz;
 
-        svgHtml += `
-          <line x1="${p1x.x}" y1="${p1x.y}" x2="${p2x.x}" y2="${p2x.y}" stroke="#f97316" stroke-width="2" stroke-linecap="round" />
-          <line x1="${p1z.x}" y1="${p1z.y}" x2="${p2z.x}" y2="${p2z.y}" stroke="#f97316" stroke-width="2" stroke-linecap="round" />
-        `;
-        badgeHtml += `
-          <div class="smart-dim-badge" style="left:${midX.x}px; top:${midX.y}px;">${layerMeta.width}</div>
-          <div class="smart-dim-badge" style="left:${midZ.x}px; top:${midZ.y}px;">${layerMeta.length}</div>
-        `;
-      }
+          // X 軸方向常駐總寬度 (前側)
+          const p1x = new THREE.Vector3(lMinX - 0.5, py, lMaxZ + 0.5 + 3.0);
+          const p2x = new THREE.Vector3(lMaxX + 0.5, py, lMaxZ + 0.5 + 3.0);
+          add3DCalipers(group, p1x, p2x, new THREE.Vector3(0, 0, 1), 1.2, layerMeta.width, 0xf97316, '#f97316');
 
-      // 4.2 懸停時動態呈現：連續方塊段落長度與區塊間距虛線
-      if (currentHoverVoxel) {
-        const { minX, maxX, minZ, maxZ, py, gapInfo } = currentHoverVoxel;
-        const h1x = toScreen(new THREE.Vector3(minX - 0.5, py, maxZ + 0.5 + 0.6));
-        const h2x = toScreen(new THREE.Vector3(maxX + 0.5, py, maxZ + 0.5 + 0.6));
-        const hLenX = Math.round(maxX - minX + 1);
+          // Z 軸方向常駐總長度 (左側)
+          const p1z = new THREE.Vector3(lMinX - 0.5 - 3.0, py, lMinZ - 0.5);
+          const p2z = new THREE.Vector3(lMinX - 0.5 - 3.0, py, lMaxZ + 0.5);
+          add3DCalipers(group, p1z, p2z, new THREE.Vector3(-1, 0, 0), 1.2, layerMeta.length, 0xf97316, '#f97316');
+        }
 
-        const h1z = toScreen(new THREE.Vector3(minX - 0.5 - 0.6, py, minZ - 0.5));
-        const h2z = toScreen(new THREE.Vector3(minX - 0.5 - 0.6, py, maxZ + 0.5));
-        const hLenZ = Math.round(maxZ - minZ + 1);
+        if (currentHoverVoxel) {
+          const { minX, maxX, minZ, maxZ, py, gapInfo } = currentHoverVoxel;
+          const h1x = new THREE.Vector3(minX - 0.5, py + 0.8, maxZ + 0.5 + 1.5);
+          const h2x = new THREE.Vector3(maxX + 0.5, py + 0.8, maxZ + 0.5 + 1.5);
+          const hLenX = Math.round(maxX - minX + 1);
+          add3DCalipers(group, h1x, h2x, new THREE.Vector3(0, 0, 1), 0.8, hLenX, 0x0d9488, '#0d9488');
 
-        const hMidX = { x: (h1x.x + h2x.x) / 2, y: (h1x.y + h2x.y) / 2 };
-        const hMidZ = { x: (h1z.x + h2z.x) / 2, y: (h1z.y + h2z.y) / 2 };
+          const h1z = new THREE.Vector3(minX - 0.5 - 1.5, py + 0.8, minZ - 0.5);
+          const h2z = new THREE.Vector3(minX - 0.5 - 1.5, py + 0.8, maxZ + 0.5);
+          const hLenZ = Math.round(maxZ - minZ + 1);
+          add3DCalipers(group, h1z, h2z, new THREE.Vector3(-1, 0, 0), 0.8, hLenZ, 0x0d9488, '#0d9488');
 
-        svgHtml += `
-          <line x1="${h1x.x}" y1="${h1x.y}" x2="${h2x.x}" y2="${h2x.y}" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" />
-          <line x1="${h1z.x}" y1="${h1z.y}" x2="${h2z.x}" y2="${h2z.y}" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" />
-        `;
-        badgeHtml += `
-          <div class="smart-dim-badge" style="left:${hMidX.x}px; top:${hMidX.y}px; background:#0d9488;">${hLenX}</div>
-          <div class="smart-dim-badge" style="left:${hMidZ.x}px; top:${hMidZ.y}px; background:#0d9488;">${hLenZ}</div>
-        `;
-
-        if (gapInfo && gapInfo.length > 0) {
-          gapInfo.forEach(gap => {
-            const g1 = toScreen(gap.p1);
-            const g2 = toScreen(gap.p2);
-            const gMid = { x: (g1.x + g2.x) / 2, y: (g1.y + g2.y) / 2 };
-            svgHtml += `
-              <line x1="${g1.x}" y1="${g1.y}" x2="${g2.x}" y2="${g2.y}" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 3" />
-            `;
-            badgeHtml += `
-              <div class="smart-dim-badge" style="left:${gMid.x}px; top:${gMid.y}px; background:#334155;">${gap.dist}</div>
-            `;
-          });
+          if (gapInfo && gapInfo.length > 0) {
+            gapInfo.forEach(gap => {
+              add3DGapLine(group, gap.p1, gap.p2, gap.dist);
+            });
+          }
         }
       }
 
-      svg.innerHTML = svgHtml;
-      badges.innerHTML = badgeHtml;
+      // 4.2 更新 DOM 2D SVG 投影標註 (提供瀏覽器 DOM 渲染雙重保障)
+      if (threeState.camera && canvasEl) {
+        const svg = dimOverlay.querySelector('.smart-dim-svg');
+        const badges = dimOverlay.querySelector('.smart-dim-badges');
+        if (svg && badges) {
+          const rect = canvasEl.getBoundingClientRect();
+          const w = rect.width;
+          const h = rect.height;
+          if (w > 0 && h > 0) {
+            const camera = threeState.camera;
+            const toScreen = (v) => {
+              const p = v.clone().project(camera);
+              return {
+                x: (p.x * 0.5 + 0.5) * w,
+                y: (-p.y * 0.5 + 0.5) * h
+              };
+            };
+
+            let svgHtml = '';
+            let badgeHtml = '';
+
+            if (layerMeta && layerMeta.width > 0 && layerMeta.length > 0) {
+              const py = (activeLayer - 1) - cy;
+              const lMinX = layerMeta.minX - cx;
+              const lMaxX = layerMeta.maxX - cx;
+              const lMinZ = layerMeta.minZ - cz;
+              const lMaxZ = layerMeta.maxZ - cz;
+
+              const p1x = toScreen(new THREE.Vector3(lMinX - 0.5, py, lMaxZ + 0.5 + 1.2));
+              const p2x = toScreen(new THREE.Vector3(lMaxX + 0.5, py, lMaxZ + 0.5 + 1.2));
+              const midX = { x: (p1x.x + p2x.x) / 2, y: (p1x.y + p2x.y) / 2 };
+
+              const p1z = toScreen(new THREE.Vector3(lMinX - 0.5 - 1.2, py, lMinZ - 0.5));
+              const p2z = toScreen(new THREE.Vector3(lMinX - 0.5 - 1.2, py, lMaxZ + 0.5));
+              const midZ = { x: (p1z.x + p2z.x) / 2, y: (p1z.y + p2z.y) / 2 };
+
+              svgHtml += `
+                <line x1="${p1x.x}" y1="${p1x.y}" x2="${p2x.x}" y2="${p2x.y}" stroke="#f97316" stroke-width="2" stroke-linecap="round" />
+                <line x1="${p1z.x}" y1="${p1z.y}" x2="${p2z.x}" y2="${p2z.y}" stroke="#f97316" stroke-width="2" stroke-linecap="round" />
+              `;
+              badgeHtml += `
+                <div class="smart-dim-badge" style="left:${midX.x}px; top:${midX.y}px;">${layerMeta.width}</div>
+                <div class="smart-dim-badge" style="left:${midZ.x}px; top:${midZ.y}px;">${layerMeta.length}</div>
+              `;
+            }
+
+            if (currentHoverVoxel) {
+              const { minX, maxX, minZ, maxZ, py, gapInfo } = currentHoverVoxel;
+              const h1x = toScreen(new THREE.Vector3(minX - 0.5, py, maxZ + 0.5 + 0.6));
+              const h2x = toScreen(new THREE.Vector3(maxX + 0.5, py, maxZ + 0.5 + 0.6));
+              const hLenX = Math.round(maxX - minX + 1);
+
+              const h1z = toScreen(new THREE.Vector3(minX - 0.5 - 0.6, py, minZ - 0.5));
+              const h2z = toScreen(new THREE.Vector3(minX - 0.5 - 0.6, py, maxZ + 0.5));
+              const hLenZ = Math.round(maxZ - minZ + 1);
+
+              const hMidX = { x: (h1x.x + h2x.x) / 2, y: (h1x.y + h2x.y) / 2 };
+              const hMidZ = { x: (h1z.x + h2z.x) / 2, y: (h1z.y + h2z.y) / 2 };
+
+              svgHtml += `
+                <line x1="${h1x.x}" y1="${h1x.y}" x2="${h2x.x}" y2="${h2x.y}" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" />
+                <line x1="${h1z.x}" y1="${h1z.y}" x2="${h2z.x}" y2="${h2z.y}" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" />
+              `;
+              badgeHtml += `
+                <div class="smart-dim-badge" style="left:${hMidX.x}px; top:${hMidX.y}px; background:#0d9488;">${hLenX}</div>
+                <div class="smart-dim-badge" style="left:${hMidZ.x}px; top:${hMidZ.y}px; background:#0d9488;">${hLenZ}</div>
+              `;
+
+              if (gapInfo && gapInfo.length > 0) {
+                gapInfo.forEach(gap => {
+                  const g1 = toScreen(gap.p1);
+                  const g2 = toScreen(gap.p2);
+                  const gMid = { x: (g1.x + g2.x) / 2, y: (g1.y + g2.y) / 2 };
+                  svgHtml += `
+                    <line x1="${g1.x}" y1="${g1.y}" x2="${g2.x}" y2="${g2.y}" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 3" />
+                  `;
+                  badgeHtml += `
+                    <div class="smart-dim-badge" style="left:${gMid.x}px; top:${gMid.y}px; background:#334155;">${gap.dist}</div>
+                  `;
+                });
+              }
+            }
+
+            svg.innerHTML = svgHtml;
+            badges.innerHTML = badgeHtml;
+          }
+        }
+      }
     }
 
-    threeState._updateDimensions = updateDimensionOverlay;
+    threeState._updateDimensions = updateDimensions;
+    const updateDimensionOverlay = updateDimensions;
 
     // 4.3 120ms 靜止判定 (Debounce) + 分層檢測，杜絕任何 pointermove 卡頓
     const handleStationaryHover = (e) => {
@@ -8662,12 +8875,14 @@
             gapInfo
           };
           updateDimensionOverlay();
+          requestThreeRender(charKey);
           return;
         }
       }
 
       currentHoverVoxel = null;
       updateDimensionOverlay();
+      requestThreeRender(charKey);
     };
 
     canvasEl.addEventListener('pointermove', (e) => {
@@ -9000,9 +9215,9 @@
 
   function updateBuzz3DSliceFilter() {
     const t = buzzState.three;
-    if (!t.isInit || !t.instancedMesh || !t.blockDataList.length) return;
+    if (!t || !t.isInit || !t.instancedMesh || !t.blockDataList || !t.blockDataList.length) return;
 
-    const isSlice = buzzState.curMode === 'slice';
+    const isSlice = (buzzState.curMode === 'slice' || !!t.isVlcActive);
     const curLayer = buzzState.curLayer;
     const isSingle = (t.layerFilterMode === 'single');
     const dummy = new THREE.Object3D();
@@ -9190,9 +9405,9 @@
 
   function updateBulba3DSliceFilter() {
     const t = bulbaState.three;
-    if (!t.isInit || !t.instancedMesh || !t.blockDataList.length) return;
+    if (!t || !t.isInit || !t.instancedMesh || !t.blockDataList || !t.blockDataList.length) return;
 
-    const isSlice = bulbaState.curMode === 'slice';
+    const isSlice = (bulbaState.curMode === 'slice' || !!t.isVlcActive);
     const curLayer = bulbaState.curLayer;
     const isSingle = (t.layerFilterMode === 'single');
     const dummy = new THREE.Object3D();
@@ -9281,9 +9496,8 @@
       ivysaurState.three._syncVLC(target);
     }
     renderIvysaurLayer(target);
-    if (ivysaurState.curMode === 'slice') {
-      updateIvysaur3DSliceFilter();
-    }
+    updateIvysaur3DSliceFilter();
+    requestThreeRender('ivysaur');
   }
 
   function renderIvysaurLayer(layerIndex) {
@@ -9608,9 +9822,9 @@
 
   function updateIvysaur3DSliceFilter() {
     const t = ivysaurState.three;
-    if (!t.isInit || !t.instancedMesh || !t.blockDataList.length) return;
+    if (!t || !t.isInit || !t.instancedMesh || !t.blockDataList || !t.blockDataList.length) return;
 
-    const isSlice = ivysaurState.curMode === 'slice';
+    const isSlice = (ivysaurState.curMode === 'slice' || !!t.isVlcActive);
     const curLayer = ivysaurState.curLayer;
     const isSingle = (t.layerFilterMode === 'single');
     const dummy = new THREE.Object3D();
@@ -9699,9 +9913,8 @@
       venusaurState.three._syncVLC(target);
     }
     renderVenusaurLayer(target);
-    if (venusaurState.curMode === 'slice') {
-      updateVenusaur3DSliceFilter();
-    }
+    updateVenusaur3DSliceFilter();
+    requestThreeRender('venusaur');
   }
 
   function renderVenusaurLayer(layerIndex) {
@@ -10027,9 +10240,9 @@
 
   function updateVenusaur3DSliceFilter() {
     const t = venusaurState.three;
-    if (!t.isInit || !t.instancedMesh || !t.blockDataList.length) return;
+    if (!t || !t.isInit || !t.instancedMesh || !t.blockDataList || !t.blockDataList.length) return;
 
-    const isSlice = venusaurState.curMode === 'slice';
+    const isSlice = (venusaurState.curMode === 'slice' || !!t.isVlcActive);
     const curLayer = venusaurState.curLayer;
     const isSingle = (t.layerFilterMode === 'single');
     const dummy = new THREE.Object3D();

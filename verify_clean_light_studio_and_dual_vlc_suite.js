@@ -1,13 +1,13 @@
 /**
  * verify_clean_light_studio_and_dual_vlc_suite.js
- * 驗證 Pokopia Clean Light Studio 純淨工作室視覺、120ms 防卡死引擎、雙滑塊 VLC 控制器與外圍/懸停雙層尺寸標註 (v4.74.0)
+ * 驗證 Pokopia Clean Light Studio 純淨工作室視覺、120ms 防卡死引擎、雙滑塊 VLC 控制器與外圍/懸停雙層尺寸標註 (v4.75.0)
  */
 
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 
-console.log('🧪 啟動：Pokopia Clean Light Studio 與雙滑塊 VLC 控制器驗證套件 (v4.74.0)...\n');
+console.log('🧪 啟動：Pokopia Clean Light Studio 與雙滑塊 VLC 控制器驗證套件 (v4.75.0)...\n');
 
 const appJs = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf8');
 const indexCss = fs.readFileSync(path.join(__dirname, 'index.css'), 'utf8');
@@ -59,3 +59,4 @@ console.log('  ✓ PASS: 外圍常駐總尺寸與懸停連續段落/群組間距
 
 console.log('\n🎉 Clean Light Studio 與雙滑塊 VLC 控制器 100% 驗收通過！');
 process.exit(0);
+
