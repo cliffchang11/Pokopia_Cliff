@@ -12120,18 +12120,13 @@ body.has-floating-back .scroll-top-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-hover, #e2e8f0);
+  background: #f1f5f9;
   padding: 4px;
   border-radius: 9999px;
-  border: 1px solid var(--border-subtle, rgba(0, 0, 0, 0.08));
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
   margin: 0 auto 1.25rem;
   max-width: 100%;
-}
-:root[data-theme="dark"] .char-pill-bar {
-  background: #1e293b;
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35);
 }
 .char-pill-btn {
   display: inline-flex;
@@ -12142,31 +12137,20 @@ body.has-floating-back .scroll-top-btn {
   background: transparent;
   border: none;
   border-radius: 9999px;
-  color: var(--text-muted, #64748b);
+  color: #64748b;
   font-size: 0.9375rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   white-space: nowrap;
 }
-:root[data-theme="dark"] .char-pill-btn {
-  color: #94a3b8;
-}
 .char-pill-btn:hover {
-  color: var(--text-main, #0f172a);
-}
-:root[data-theme="dark"] .char-pill-btn:hover {
-  color: #f8fafc;
+  color: #0f172a;
 }
 .char-pill-btn.active {
-  background: #ffffff;
-  color: #0f172a;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
-}
-:root[data-theme="dark"] .char-pill-btn.active {
-  background: #334155;
-  color: #38bdf8;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  background: #0d9488 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3), 0 1px 2px rgba(13, 148, 136, 0.15) !important;
 }
 
 /* 4. 角色窗格切換控制 */
@@ -12177,28 +12161,32 @@ body.has-floating-back .scroll-top-btn {
   display: none !important;
 }
 
-/* 5. 巴斯光年專屬太空藍紫主題裝飾 */
+/* 5. Bloxelizer Clean Light Studio 現代純白卡片視覺 */
 .buzz-3d-card,
-.buzz-slice-card {
-  background: linear-gradient(135deg, rgba(24, 24, 43, 0.85) 0%, rgba(15, 15, 26, 0.92) 100%) !important;
-  border: 1px solid rgba(167, 139, 250, 0.25) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 92, 246, 0.12) !important;
+.buzz-slice-card,
+.bulba-3d-card,
+.bulba-slice-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 1.25rem;
+  padding: 1.25rem;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.02) !important;
 }
 .buzz-canvas-wrap {
   background: #f8fafc !important;
   border-color: #e2e8f0 !important;
 }
 .buzz-layer-badge {
-  background: rgba(139, 92, 246, 0.2) !important;
-  color: #c4b5fd !important;
-  border-color: rgba(167, 139, 250, 0.45) !important;
+  background: #f0fdfa !important;
+  color: #0d9488 !important;
+  border: 1px solid #99f6e4 !important;
 }
 .buzz-slider {
-  accent-color: #8b5cf6 !important;
+  accent-color: #0d9488 !important;
 }
 .buzz-grid-container {
-  background: #090914 !important;
-  border-color: rgba(139, 92, 246, 0.25) !important;
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
 }
 
 /* 6. 3D 角色建造工作台佈局：
@@ -12288,15 +12276,14 @@ body.has-floating-back .scroll-top-btn {
   }
 }
 
-/* 3D 方塊雕像展示卡片與切片卡片基礎視覺 */
+/* 3D 方塊雕像展示卡片與切片卡片基礎視覺 (Bloxelizer 俐落白淨工作室主題) */
 .bulba-3d-card,
 .bulba-slice-card {
-  background: linear-gradient(135deg, rgba(15, 32, 35, 0.82) 0%, rgba(11, 24, 27, 0.9) 100%);
-  border: 1px solid rgba(52, 211, 153, 0.22);
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
   border-radius: 1.25rem;
   padding: 1.25rem;
-  backdrop-filter: blur(14px);
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(16, 185, 129, 0.08);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.02) !important;
 }
 
 .bulba-card-header {
@@ -12305,13 +12292,13 @@ body.has-floating-back .scroll-top-btn {
   justify-content: space-between;
   margin-bottom: 1rem;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid rgba(52, 211, 153, 0.15);
+  border-bottom: 1px solid #f1f5f9;
 }
 .bulba-card-title {
   margin: 0;
   font-size: 1.125rem;
   font-weight: 700;
-  color: #f0fdf4;
+  color: #0f172a !important;
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -12319,9 +12306,9 @@ body.has-floating-back .scroll-top-btn {
 .bulba-total-stat {
   font-size: 0.8125rem;
   padding: 0.2rem 0.625rem;
-  background: rgba(16, 185, 129, 0.18);
-  color: #6ee7b7;
-  border: 1px solid rgba(52, 211, 153, 0.4);
+  background: #f0fdfa !important;
+  color: #0d9488 !important;
+  border: 1px solid #ccfbf1 !important;
   border-radius: 9999px;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -12331,29 +12318,29 @@ body.has-floating-back .scroll-top-btn {
 .bulba-mode-switch {
   display: inline-flex;
   gap: 0.25rem;
-  background: rgba(6, 18, 20, 0.6);
+  background: #f1f5f9;
   padding: 0.25rem;
   border-radius: 9999px;
-  border: 1px solid rgba(52, 211, 153, 0.2);
+  border: 1px solid #e2e8f0;
 }
 .bulba-mode-btn {
   padding: 0.3rem 0.875rem;
   border-radius: 9999px;
   border: none;
   background: transparent;
-  color: #94a3b8;
+  color: #64748b;
   font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .bulba-mode-btn:hover {
-  color: #f0fdf4;
+  color: #0f172a;
 }
 .bulba-mode-btn.active {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: #ffffff;
-  box-shadow: 0 0 12px rgba(16, 185, 129, 0.55);
+  background: #0d9488 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.3) !important;
 }
 
 /* 3D 畫布容器 (Bloxelizer 白淨工程展台 Clean White Studio，高 480px，手機版 320px) */
@@ -12385,15 +12372,16 @@ body.has-floating-back .scroll-top-btn {
   bottom: 0.75rem;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(11, 24, 27, 0.85);
-  color: #a7f3d0;
+  background: rgba(255, 255, 255, 0.92);
+  color: #334155;
   padding: 0.35rem 1rem;
   border-radius: 9999px;
   font-size: 0.75rem;
+  font-weight: 600;
   pointer-events: none;
-  border: 1px solid rgba(52, 211, 153, 0.3);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   white-space: nowrap;
-  backdrop-filter: blur(8px);
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -12408,7 +12396,7 @@ body.has-floating-back .scroll-top-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.96);
   border: 1px solid #e2e8f0;
   border-radius: 14px;
   padding: 8px 6px;
@@ -12426,6 +12414,7 @@ body.has-floating-back .scroll-top-btn {
   width: 100%;
   margin-bottom: 6px;
   gap: 2px;
+  position: relative;
 }
 
 .vlc-mode-pills {
@@ -12441,13 +12430,14 @@ body.has-floating-back .scroll-top-btn {
   justify-content: center;
   width: 28px;
   height: 28px;
-  background: #f1f5f9;
+  background: #ffffff;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.82rem;
   transition: all 0.15s ease;
   padding: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .vlc-pill-mode:hover,
@@ -12461,13 +12451,78 @@ body.has-floating-back .scroll-top-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 28px;
   background: #0d9488;
   color: #ffffff;
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   font-weight: 800;
-  border-radius: 4px;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(13, 148, 136, 0.25);
+}
+
+/* 模式浮動彈出清單 (Layer by layer / Step by step) */
+.vlc-mode-popup {
+  position: absolute;
+  top: 36px;
+  right: 0;
+  width: 200px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  padding: 6px;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vlc-mode-popup.hidden {
+  display: none !important;
+}
+
+.vlc-mode-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.vlc-mode-item:hover {
+  background: #f8fafc;
+}
+
+.vlc-mode-item.active {
+  background: #f0fdfa;
+}
+
+.vlc-mode-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.vlc-mode-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.vlc-mode-item.active .vlc-mode-title {
+  color: #0f766e;
+}
+
+.vlc-mode-desc {
+  font-size: 0.7rem;
+  color: #64748b;
 }
 
 .vlc-label-title {
@@ -12480,22 +12535,22 @@ body.has-floating-back .scroll-top-btn {
 }
 
 .vlc-cur-layer {
-  font-size: 1.05rem;
-  font-weight: 800;
+  font-size: 1.25rem;
+  font-weight: 900;
   color: #0f172a;
   line-height: 1.1;
 }
 
 .vlc-cur-layer span {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   color: #64748b;
   font-weight: 600;
 }
 
 .vlc-layer-range {
   font-size: 0.65rem;
-  font-weight: 600;
-  color: #94a3b8;
+  font-weight: 700;
+  color: #64748b;
   line-height: 1;
 }
 
@@ -12513,6 +12568,7 @@ body.has-floating-back .scroll-top-btn {
   font-weight: bold;
   cursor: pointer;
   transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .vlc-step-btn:hover {
@@ -12530,8 +12586,47 @@ body.has-floating-back .scroll-top-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 0;
+  padding: 8px 0;
   width: 100%;
+  position: relative;
+}
+
+/* 垂直雙向軌道 (Dual Rail) */
+.vlc-dual-rail {
+  position: relative;
+  width: 4px;
+  height: 100%;
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+.vlc-dual-fill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: #0d9488;
+  border-radius: 9999px;
+}
+
+.vlc-dual-thumb {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #0f172a;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  cursor: ns-resize;
+  z-index: 5;
+  transition: transform 0.1s ease;
+}
+
+.vlc-dual-thumb:hover,
+.vlc-dual-thumb.is-dragging {
+  transform: translate(-50%, -50%) scale(1.2);
+  border-color: #0d9488;
 }
 
 .vlc-slider-vertical {
@@ -12554,11 +12649,6 @@ body.has-floating-back .scroll-top-btn {
   height: 100%;
   pointer-events: none;
   z-index: 12;
-  opacity: 0;
-  transition: opacity 0.15s ease-out;
-}
-
-.smart-dimension-overlay.active {
   opacity: 1;
 }
 
@@ -12598,7 +12688,7 @@ body.has-floating-back .scroll-top-btn {
   }
 }
 
-/* 下半部：53 層建造切片指南 (防爆版外框) */
+/* 下半部：建造切片指南 (Clean Light Studio 風格) */
 .bulba-slice-card {
   max-width: 100%;
   box-sizing: border-box;
@@ -12606,9 +12696,9 @@ body.has-floating-back .scroll-top-btn {
 }
 
 .bulba-layer-badge {
-  background: rgba(16, 185, 129, 0.2);
-  color: #34d399;
-  border: 1px solid rgba(52, 211, 153, 0.45);
+  background: #f0fdfa !important;
+  color: #0d9488 !important;
+  border: 1px solid #99f6e4 !important;
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
   font-weight: 700;
@@ -12616,13 +12706,13 @@ body.has-floating-back .scroll-top-btn {
 }
 .bulba-count-stat {
   font-size: 0.9375rem;
-  color: #94a3b8;
+  color: #64748b !important;
   font-weight: 600;
 }
 
 .bulba-slice-ctrl {
-  background: rgba(6, 18, 20, 0.45);
-  border: 1px solid rgba(52, 211, 153, 0.18);
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
   border-radius: 0.75rem;
   padding: 0.75rem 1.25rem;
   margin-bottom: 0.875rem;
@@ -12634,23 +12724,24 @@ body.has-floating-back .scroll-top-btn {
 }
 .bulba-step-btn {
   padding: 0.4rem 1rem;
-  background: rgba(52, 211, 153, 0.12);
-  border: 1px solid rgba(52, 211, 153, 0.3);
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
   border-radius: 0.5rem;
-  color: #34d399;
+  color: #0f172a !important;
   font-size: 0.9375rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 .bulba-step-btn:hover {
-  background: rgba(52, 211, 153, 0.25);
-  color: #ffffff;
-  border-color: #34d399;
+  background: #0d9488 !important;
+  color: #ffffff !important;
+  border-color: #0d9488 !important;
 }
 .bulba-slider {
   flex-grow: 1;
-  accent-color: #10b981;
+  accent-color: #0d9488 !important;
   cursor: pointer;
   height: 8px;
 }
@@ -12660,10 +12751,10 @@ body.has-floating-back .scroll-top-btn {
   justify-content: space-between;
   margin-top: 0.625rem;
   padding-top: 0.5rem;
-  border-top: 1px dashed rgba(52, 211, 153, 0.2);
+  border-top: 1px solid #e2e8f0 !important;
 }
 .buzz-zoom-toolbar {
-  border-top-color: rgba(167, 139, 250, 0.25) !important;
+  border-top-color: #e2e8f0 !important;
 }
 .bulba-zoom-btn-group {
   display: flex;
@@ -12672,27 +12763,26 @@ body.has-floating-back .scroll-top-btn {
 }
 .bulba-zoom-btn {
   padding: 0.25rem 0.625rem;
-  background: rgba(52, 211, 153, 0.12);
-  border: 1px solid rgba(52, 211, 153, 0.35);
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
   border-radius: 0.375rem;
-  color: #34d399;
+  color: #334155 !important;
   font-size: 0.75rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 .buzz-zoom-btn {
-  background: rgba(167, 139, 250, 0.15) !important;
-  border-color: rgba(167, 139, 250, 0.4) !important;
-  color: #c4b5fd !important;
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #334155 !important;
 }
-.bulba-zoom-btn:hover {
-  background: rgba(52, 211, 153, 0.25);
-  color: #ffffff;
-}
+.bulba-zoom-btn:hover,
 .buzz-zoom-btn:hover {
-  background: rgba(167, 139, 250, 0.3) !important;
-  color: #ffffff !important;
+  background: #f1f5f9 !important;
+  color: #0d9488 !important;
+  border-color: #0d9488 !important;
 }
 .bulba-zoom-tip {
   font-size: 0.75rem;
@@ -12700,18 +12790,18 @@ body.has-floating-back .scroll-top-btn {
   user-select: none;
 }
 
-/* 2D 點陣切片網格容器 (固定觀察鏡頭框＋強制防溢出裁切) */
+/* 2D 點陣切片網格容器 (固定觀察鏡頭框＋強制防溢出裁切，Clean White Studio) */
 .bulba-grid-container {
   position: relative;
   width: 100%;
   max-width: 100%;
   height: 580px;
-  background: #0d1e22;
+  background: #ffffff !important;
   background-image: 
-    linear-gradient(rgba(52, 211, 153, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(52, 211, 153, 0.08) 1px, transparent 1px);
-  background-size: 18px 18px;
-  border: 1px solid rgba(52, 211, 153, 0.25);
+    linear-gradient(#f1f5f9 1px, transparent 1px),
+    linear-gradient(90deg, #f1f5f9 1px, transparent 1px) !important;
+  background-size: 18px 18px !important;
+  border: 1px solid #e2e8f0 !important;
   border-radius: 0.875rem;
   padding: 1rem;
   box-sizing: border-box;
@@ -12719,7 +12809,7 @@ body.has-floating-back .scroll-top-btn {
   justify-content: center;
   align-items: center;
   overflow: hidden !important;
-  box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.02) !important;
   cursor: grab;
   user-select: none;
   -webkit-user-select: none;
@@ -12781,7 +12871,7 @@ body.has-floating-back .scroll-top-btn {
 .dim-tick {
   width: 1.5px;
   height: 9px;
-  background: #34d399;
+  background: #f97316;
   border-radius: 1px;
   flex-shrink: 0;
 }
@@ -12791,31 +12881,31 @@ body.has-floating-back .scroll-top-btn {
 .dim-line {
   flex-grow: 1;
   height: 1.5px;
-  background: rgba(52, 211, 153, 0.45);
+  background: #f97316;
 }
 .dim-seg-gap .dim-line {
   height: 0;
-  border-top: 1.5px dashed rgba(148, 163, 184, 0.5);
+  border-top: 1.5px dashed rgba(148, 163, 184, 0.6);
   background: transparent;
 }
 .dim-num {
   padding: 0 4px;
-  background: rgba(6, 44, 40, 0.95);
-  border: 1px solid rgba(52, 211, 153, 0.7);
+  background: #334155;
+  border: 1px solid #475569;
   border-radius: 4px;
   font-size: 0.72rem;
   font-weight: 800;
-  color: #a7f3d0;
+  color: #ffffff;
   white-space: nowrap;
   line-height: 1.15;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
   margin: 0 2px;
   z-index: 1;
 }
 .dim-seg-gap .dim-num {
-  background: rgba(15, 23, 42, 0.9);
-  border-color: rgba(148, 163, 184, 0.5);
-  color: #cbd5e1;
+  background: #475569;
+  border-color: #64748b;
+  color: #ffffff;
 }
 
 .bulba-grid-row {
@@ -12847,7 +12937,7 @@ body.has-floating-back .scroll-top-btn {
 .dim-tick-v {
   width: 9px;
   height: 1.5px;
-  background: #34d399;
+  background: #f97316;
   border-radius: 1px;
   flex-shrink: 0;
 }
@@ -12857,41 +12947,41 @@ body.has-floating-back .scroll-top-btn {
 .dim-line-v {
   flex-grow: 1;
   width: 1.5px;
-  background: rgba(52, 211, 153, 0.45);
+  background: #f97316;
 }
 .dim-seg-gap .dim-line-v {
   width: 0;
-  border-left: 1.5px dashed rgba(148, 163, 184, 0.5);
+  border-left: 1.5px dashed rgba(148, 163, 184, 0.6);
   background: transparent;
 }
 .dim-num-v {
   padding: 2px 2px;
-  background: rgba(6, 44, 40, 0.95);
-  border: 1px solid rgba(52, 211, 153, 0.7);
+  background: #334155;
+  border: 1px solid #475569;
   border-radius: 4px;
   font-size: 0.72rem;
   font-weight: 800;
-  color: #a7f3d0;
+  color: #ffffff;
   line-height: 1.1;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
   margin: 2px 0;
   z-index: 1;
   white-space: nowrap;
 }
 .dim-seg-gap .dim-num-v {
-  background: rgba(15, 23, 42, 0.9);
-  border-color: rgba(148, 163, 184, 0.5);
-  color: #cbd5e1;
+  background: #475569;
+  border-color: #64748b;
+  color: #ffffff;
 }
 
 .bulba-voxel-grid {
   display: grid;
   gap: 1px;
-  background: rgba(8, 20, 24, 0.6);
+  background: #ffffff;
   padding: 8px;
   border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(52, 211, 153, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
   margin: 0;
   flex-shrink: 0;
 }
@@ -12903,27 +12993,26 @@ body.has-floating-back .scroll-top-btn {
 }
 .bulba-cell:hover {
   outline: 1.5px solid rgba(255, 255, 255, 0.95);
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 6px rgba(13, 148, 136, 0.6);
   z-index: 5;
 }
 
-/* 方塊 Hover Tooltip */
+/* 方塊 Hover Tooltip (Clean Light) */
 .bulba-hover-tooltip {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: rgba(11, 24, 27, 0.95);
-  border: 1px solid rgba(52, 211, 153, 0.4);
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #cbd5e1;
   padding: 0.4rem 0.875rem;
   border-radius: 0.5rem;
   font-size: 0.8125rem;
-  color: #ffffff;
+  color: #0f172a;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   pointer-events: none;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
   z-index: 10;
 }
 .bulba-hover-tooltip.hidden {
@@ -12933,7 +13022,7 @@ body.has-floating-back .scroll-top-btn {
   width: 14px;
   height: 14px;
   border-radius: 3px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(0, 0, 0, 0.15);
   flex-shrink: 0;
 }
 
@@ -12941,7 +13030,7 @@ body.has-floating-back .scroll-top-btn {
 .bulba-materials-section {
   margin-top: 1.25rem;
   padding-top: 1rem;
-  border-top: 1px solid rgba(52, 211, 153, 0.15);
+  border-top: 1px solid #f1f5f9;
 }
 .bulba-mat-header {
   display: flex;
@@ -12952,13 +13041,13 @@ body.has-floating-back .scroll-top-btn {
 .bulba-mat-title {
   font-size: 0.9375rem;
   font-weight: 700;
-  color: #a7f3d0;
+  color: #0f172a;
 }
 .bulba-mat-count-badge {
   font-size: 0.8125rem;
-  color: #34d399;
-  background: rgba(16, 185, 129, 0.15);
-  border: 1px solid rgba(52, 211, 153, 0.3);
+  color: #0d9488;
+  background: #f0fdfa;
+  border: 1px solid #ccfbf1;
   padding: 0.15rem 0.6rem;
   border-radius: 9999px;
   font-weight: 600;
@@ -12976,8 +13065,12 @@ body.has-floating-back .scroll-top-btn {
   align-items: center;
   gap: 0.5rem;
   padding: 0.45rem 0.75rem;
-  background: rgba(52, 211, 153, 0.05);
-  border: 1px solid rgba(52, 211, 153, 0.15);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  color: #0f172a;
+}
   border-radius: 0.5rem;
   font-size: 0.875rem;
   transition: background 0.15s ease;
