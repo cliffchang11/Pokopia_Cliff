@@ -16,14 +16,16 @@ const cssContent = fs.readFileSync(path.join(__dirname, 'index.css'), 'utf8');
 assert.ok(cssContent.includes('.voxel-editor-2d-toolbar {\n    display: none !important;\n  }'), '寬螢幕 (min-width: 1280px) 必須強制隱藏 .voxel-editor-2d-toolbar，消除雙工具列冗餘！');
 console.log('  ✓ PASS: 寬螢幕 (>= 1280px) 左側 2D 工具列自動隱藏，全域由右側單一工具列接管');
 
-// 2. 驗證 46px 極簡黑曜石毛玻璃樣式
-console.log('\n【測試 2: 46px 極簡黑曜石毛玻璃樣式規範】');
+// 2. 驗證 46px 極簡黑曜石毛玻璃樣式規範與右上角防誤觸重置按鈕
+console.log('\n【測試 2: 46px 極簡黑曜石毛玻璃樣式規範與右上角隔離重置】');
 assert.ok(cssContent.includes('.ve-toggle-capsule {') && cssContent.includes('min-height: 34px;'), '常駐開關膠囊高度必須壓縮至 34px');
 assert.ok(cssContent.includes('min-height: 44px;'), '工具列本體最小高度維持在 44~48px 極簡橫條');
-assert.ok(cssContent.includes('.ve-header-title {\n  display: none !important;\n}'), '厚重的大標題必須隱藏');
+assert.ok(!cssContent.includes('.ve-close-btn {'), '已徹底移除容易折行的 .ve-close-btn');
 assert.ok(cssContent.includes('.ve-palette-title-row {\n  display: none !important;\n}'), '調色盤冗餘文字必須隱藏');
 assert.ok(cssContent.includes('backdrop-filter: blur(20px);'), '工具列必須具備 blur(20px) 深色黑曜石毛玻璃質感');
-console.log('  ✓ PASS: 工具列高度成功瘦身 80%，深色毛玻璃質感與分段膠囊規範 100% 成立');
+assert.ok(cssContent.includes('.ve-danger-zone {\n  display: inline-flex;\n  align-items: center;\n  width: auto !important;\n  margin-left: auto !important;\n  flex-shrink: 0 !important;\n}'), '危險操作區必須 margin-left: auto 自動錨定於最右端');
+assert.ok(cssContent.includes('white-space: nowrap !important;') && cssContent.includes('flex-shrink: 0 !important;'), '恢復預設按鈕必須強制 white-space: nowrap 與 flex-shrink: 0，杜絕折行');
+console.log('  ✓ PASS: 工具列高度成功瘦身 80%，深色毛玻璃質感、無折行且右側隔離防誤觸 100% 成立');
 
 // 3. 驗證 DOM 與功能按鈕完整性
 console.log('\n【測試 3: DOM 與功能按鈕完整性】');
@@ -70,5 +72,13 @@ assert.ok(typeof VoxelDeltaStore.attachEditorToScene === 'function', 'attachEdit
 assert.ok(typeof VoxelDeltaStore.attachEditorTo2D === 'function', 'attachEditorTo2D 函式正常匯出');
 console.log('  ✓ PASS: 體素核心模組與掛載函式正常運作');
 
+const voxelEditorCode = fs.readFileSync(path.join(__dirname, 'voxel_editor.js'), 'utf8');
+assert.ok(!voxelEditorCode.includes('ve-close-btn'), 'voxel_editor.js 必須徹底移除多餘的 ve-close-btn');
+assert.ok(!voxelEditorCode.includes('veCloseBtn_'), 'voxel_editor.js 必須徹底移除 veCloseBtn_ 參照與事件監聽');
+assert.ok(voxelEditorCode.includes('btnReset_'), 'voxel_editor.js 必須包含 btnReset_');
+assert.ok(voxelEditorCode.includes("確定要重置嗎？") && voxelEditorCode.includes("confirm("), 'voxel_editor.js 必須保留二次確認對話框');
+console.log('  ✓ PASS: 收合按鈕已拔除，恢復預設安全隔離與二次確認完備');
+
 console.log('\n🎉 所有大螢幕雙態互斥與極簡毛玻璃工具列測試 100% 通過！');
 process.exit(0);
+

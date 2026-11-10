@@ -12929,40 +12929,6 @@ body.has-floating-back .scroll-top-btn {
   display: none !important;
 }
 
-/* 頂部標題在緊湊條中隱藏，收合按鈕微縮整合於右側 */
-.ve-toolbar-header {
-  display: contents;
-}
-
-.ve-header-title {
-  display: none !important;
-}
-
-.ve-close-btn {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 6px;
-  color: #94a3b8;
-  font-size: 0.78rem;
-  font-weight: 600;
-  padding: 0 8px;
-  min-height: 30px;
-  height: 30px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  user-select: none;
-  margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.ve-close-btn:hover {
-  background: rgba(239, 68, 68, 0.25);
-  color: #fee2e2;
-  border-color: rgba(239, 68, 68, 0.5);
-}
-
 .ve-toolbar-inner {
   display: flex;
   align-items: center;
@@ -13178,33 +13144,44 @@ body.has-floating-back .scroll-top-btn {
   color: #fee2e2;
 }
 
-/* 恢復預設微型危險區 */
+/* 恢復預設微型危險區 (置於最右側隔離防誤觸) */
 .ve-danger-zone {
   display: inline-flex;
+  align-items: center;
   width: auto !important;
-  margin: 0;
+  margin-left: auto !important;
+  flex-shrink: 0 !important;
 }
 
 .ve-btn-reset-safe {
   width: auto;
-  min-height: 30px;
-  height: 30px;
-  background: transparent;
+  min-height: 28px;
+  height: 28px;
+  background: rgba(239, 68, 68, 0.08);
   border: 1px dashed rgba(239, 68, 68, 0.4);
   color: #f87171;
-  font-size: 0.75rem;
-  padding: 0 8px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 0 10px;
   border-radius: 6px;
   cursor: pointer;
-  opacity: 0.8;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  user-select: none;
+  opacity: 0.85;
   transition: all 0.2s ease;
 }
 
 .ve-btn-reset-safe:hover {
   opacity: 1 !important;
-  background: rgba(239, 68, 68, 0.2) !important;
+  background: rgba(239, 68, 68, 0.24) !important;
   border-color: #ef4444 !important;
   color: #fee2e2 !important;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.3) !important;
 }
 
 /* 舊版調色盤掛架隱蔽相容 (若有動態遺留完全不干擾) */

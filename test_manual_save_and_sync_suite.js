@@ -49,13 +49,13 @@ assert.ok(!fs.existsSync(path.join(__dirname, 'compare.html')), 'compare.html �
 assert.ok(!fs.existsSync(path.join(__dirname, 'compare_data.js')), 'compare_data.js 必須已刪除');
 console.log('  ✓ PASS: 臨時比對頁面與資料檔已全部乾淨移除！\n');
 
-// 6. 驗證全站版本號推進至 v4.71.0
-console.log('【測試 6: 全站快取版本升級至 v4.71.0】');
+// 6. 驗證全站版本號推進至 v4.72.0
+console.log('【測試 6: 全站快取版本升級至 v4.72.0】');
 const swContent = fs.readFileSync(path.join(__dirname, 'sw.js'), 'utf8');
 const indexHtmlContent = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
-assert.ok(swContent.includes('pokopia-cache-v4.71.0'), 'sw.js 必須升級為 pokopia-cache-v4.71.0');
-assert.ok(indexHtmlContent.includes('v=4.71.0'), 'index.html 必須升級為 v=4.71.0');
-assert.ok(!indexHtmlContent.includes('v=4.70.0'), 'index.html 不得殘留 v=4.70.0');
-console.log('  ✓ PASS: 全站版本號已升級至 v4.71.0！\n');
+assert.ok(swContent.includes('pokopia-cache-v4.72.0'), 'sw.js 必須升級為 pokopia-cache-v4.72.0');
+assert.ok(indexHtmlContent.includes('v=4.72.0'), 'index.html 必須升級為 v=4.72.0');
+assert.ok(!indexHtmlContent.includes('v=4.71.0'), 'index.html 不得殘留 v=4.71.0');
+console.log('  ✓ PASS: 全站版本號已升級至 v4.72.0！\n');
 
 console.log('🎉🎉 全部 6 大項離線整合自動化測試 100% 全數通過 (PASS)！');

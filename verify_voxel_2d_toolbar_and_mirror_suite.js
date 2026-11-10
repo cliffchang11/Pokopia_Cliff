@@ -426,7 +426,7 @@ test('3.15 切片指南平移事件精確隔離 (pointerdown 過濾工具列本�
 
 test('3.16 「恢復預設」按鈕物理隔離至 ve-danger-zone 與嚴格二次確認對話框', () => {
   const editorCode = fs.readFileSync(path.join(__dirname, 'voxel_editor.js'), 'utf-8');
-  assert.strictEqual(editorCode.includes('<div class="ve-danger-zone" style="width: 100%;">'), true);
+  assert.strictEqual(editorCode.includes('<div class="ve-danger-zone"'), true);
   assert.strictEqual(editorCode.includes('ve-btn-reset-safe'), true);
   assert.strictEqual(editorCode.includes('⚠️ 警告：這將會清除您對當前角色的所有自訂方塊與改動，恢復為官方預設值，且無法撤銷！'), true);
 

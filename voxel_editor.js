@@ -876,11 +876,6 @@
 
       <!-- 展開的全寬自然嵌入式工具面板 (符合 PWA 觸控規範，按鈕 >= 40px，色票 36px，絕不破框遮擋) -->
       <div class="voxel-editor-toolbar ve-hidden" id="vePanel_${charKey}">
-        <div class="ve-toolbar-header">
-          <span class="ve-header-title">🛠️ 體素編輯面板</span>
-          <button type="button" class="ve-close-btn" id="veCloseBtn_${charKey}" title="收合面板">✖ 收合</button>
-        </div>
-
         <div class="ve-toolbar-inner">
           <!-- 第 1 區：6 大畫筆工具 (自適應分區網格) -->
           <div class="ve-tool-group">
@@ -954,8 +949,8 @@
             </div>
           </div>
 
-          <!-- 危險操作安全隔離區 -->
-          <div class="ve-danger-zone" style="width: 100%;">
+          <!-- 危險操作安全隔離區 (最右端防誤觸) -->
+          <div class="ve-danger-zone">
             <button type="button" class="ve-btn ve-btn-reset-safe" id="btnReset_${charKey}" title="清除所有自訂修改，恢復官方預設模型 (需二次確認)">
               🔄 恢復預設
             </button>
@@ -1423,20 +1418,12 @@
     const toggleBtn = container.querySelector(`[id^="veToggleBtn_"]`);
     const panel = container.querySelector(`[id^="vePanel_"]`);
     const paletteDock = container.querySelector(`[id^="vePaletteDock_"]`);
-    const closeBtn = container.querySelector(`[id^="veCloseBtn_"]`);
 
     if (toggleBtn && panel) {
       toggleBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         const isHidden = panel.classList.contains('ve-hidden');
         setToolbarExpanded(charKey, isHidden);
-      });
-    }
-
-    if (closeBtn && panel) {
-      closeBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        setToolbarExpanded(charKey, false);
       });
     }
 
