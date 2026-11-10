@@ -418,11 +418,29 @@
     });
 
     const changes = [];
+    let excludedCount = 0;
+
+    // 檢查是否有選取排除保護遮罩 (若有框選方塊，將選取區作為免死遮罩)
+    const hasSelection = (_state.selectedVoxels && _state.selectedVoxels.size > 0);
+    const isExcluded = (cx, cz) => {
+      if (!hasSelection) return false;
+      const key = `${cx},${y},${cz}`;
+      const sym = getSymmetryX(cx, charKey);
+      const symKey = (sym !== null) ? `${sym},${y},${cz}` : null;
+      // 雙向對稱完全保護：只要該座標或其對映側在選取區內，皆享有絕對免死金牌
+      return _state.selectedVoxels.has(key) || (symKey !== null && _state.selectedVoxels.has(symKey));
+    };
 
     allXCoords.forEach(coordStr => {
       const [x, z] = coordStr.split(',').map(Number);
       const symX = getSymmetryX(x, charKey);
       if (symX === null || symX === x) return;
+
+      // 雙向對稱保護檢查：若 x 或 symX 任一方在排除區，整組 100% 豁免跳過
+      if (isExcluded(x, z) || isExcluded(symX, z)) {
+        excludedCount++;
+        return;
+      }
 
       if (isLtoR) {
         if (x < center) {
@@ -460,6 +478,15 @@
     if (changes.length > 0) {
       applyChanges(charKey, changes);
     }
+
+    if (typeof showToast === 'function') {
+      if (hasSelection && excludedCount > 0) {
+        showToast(`🪞 鏡像完成！已排除保護 ${excludedCount} 處框選/對稱方塊`);
+      } else if (changes.length > 0) {
+        showToast('🪞 已完成本層鏡像同步！');
+      }
+    }
+
     return changes.length;
   }
 
@@ -1320,7 +1347,7 @@
   }
 
   function updateToolbarUI(charKey) {
-    if (typeof document === 'undefined') return;
+    if (typeof document === 'undefined' || typeof document.querySelectorAll !== 'function') return;
     const bars = document.querySelectorAll(`[id="voxelToolbar_${charKey}"], [id="voxelToolbar2D_${charKey}"]`);
     bars.forEach(bar => {
       // 工具按鈕 active

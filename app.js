@@ -1302,7 +1302,7 @@
   }
 
   function registerServiceWorker() {
-    if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
           .then((registration) => {
@@ -1966,7 +1966,7 @@
           state.prefItemCat = 'all';
           state.prefSearch = '';
           if (DOM.prefDrawerSearch) DOM.prefDrawerSearch.value = '';
-          const db = window.POKOPIA_PREFERENCES_DB;
+          const db = (typeof window !== 'undefined' && window.POKOPIA_PREFERENCES_DB) || (typeof POKOPIA_PREFERENCES_DB !== 'undefined' ? POKOPIA_PREFERENCES_DB : null);
           renderPrefDrawerItems(db ? (db.items || {}) : {}, '', itemName, db);
           return;
         }
@@ -3723,7 +3723,7 @@
   // 取得物品圖示 (支援 preferences_db.js 1800+ 物品圖示庫與容錯)
   function getItemIcon(itemName) {
     if (!itemName) return FALLBACK_SPRITE;
-    const db = window.POKOPIA_PREFERENCES_DB;
+    const db = (typeof window !== 'undefined' && window.POKOPIA_PREFERENCES_DB) || (typeof POKOPIA_PREFERENCES_DB !== 'undefined' ? POKOPIA_PREFERENCES_DB : null);
     if (db && db.itemIcons) {
       if (db.itemIcons[itemName]) return db.itemIcons[itemName];
       const keys = Object.keys(db.itemIcons);
@@ -3738,7 +3738,7 @@
   function getTrayItemOrderMap() {
     if (_trayItemOrderMap && _trayItemOrderMap.size > 0) return _trayItemOrderMap;
     _trayItemOrderMap = new Map();
-    const db = window.POKOPIA_PREFERENCES_DB;
+    const db = (typeof window !== 'undefined' && window.POKOPIA_PREFERENCES_DB) || (typeof POKOPIA_PREFERENCES_DB !== 'undefined' ? POKOPIA_PREFERENCES_DB : null);
     const itemsDb = (db && db.items) ? db.items : {};
     let idx = 0;
     Object.keys(itemsDb).forEach(cat => {
@@ -4244,7 +4244,7 @@
 
   // 渲染素材庫官方分類下拉選單與相容標籤列 (100% 完整收錄 14 大官方選項)
   function renderCustomTrayCategoryPills() {
-    const db = window.POKOPIA_PREFERENCES_DB;
+    const db = (typeof window !== 'undefined' && window.POKOPIA_PREFERENCES_DB) || (typeof POKOPIA_PREFERENCES_DB !== 'undefined' ? POKOPIA_PREFERENCES_DB : null);
     const categories = (db && db.items) ? Object.keys(db.items) : [];
 
     // 計算去重總數與各分類計數
@@ -4310,7 +4310,7 @@
 
     renderCustomTrayCategoryPills();
 
-    const db = window.POKOPIA_PREFERENCES_DB;
+    const db = (typeof window !== 'undefined' && window.POKOPIA_PREFERENCES_DB) || (typeof POKOPIA_PREFERENCES_DB !== 'undefined' ? POKOPIA_PREFERENCES_DB : null);
     const itemsDb = (db && db.items) ? db.items : {};
     const activeCat = state.activeTrayCategory || 'all';
 
@@ -7429,11 +7429,11 @@
   function handleCellMirrorHover(gridEl, charKey, sourceCell, isEnter) {
     if (!gridEl) return;
     if (gridEl._activeMirrorCell) {
-      const old = gridEl._activeMirrorCell;
-      old.classList.remove('ve-cell-mirror-ghost', 'delete', 've-ghost-paint');
-      if (old._origBg !== undefined) {
-        old.style.backgroundColor = old._origBg;
-        delete old._origBg;
+      const c = gridEl._activeMirrorCell;
+      c.classList.remove('ve-cell-mirror-ghost', 'delete', 've-ghost-paint');
+      if (c._origBg !== undefined) {
+        c.style.backgroundColor = c._origBg;
+        delete c._origBg;
       }
       gridEl._activeMirrorCell = null;
     }
@@ -7460,7 +7460,8 @@
     // 中心軸自身格子不重複顯示金色發光提示
     if (symX === null || symX === x) return;
 
-    const targetCell = gridEl.querySelector(`.bulba-cell[data-x="${symX}"][data-z="${z}"]`);
+    // 優先使用記憶體座標查表 O(1) 瞬時提取，徹底消滅全域 querySelector 遍歷
+    const targetCell = (gridEl._cellMap ? gridEl._cellMap.get(`${symX},${z}`) : gridEl.querySelector(`.bulba-cell[data-x="${symX}"][data-z="${z}"]`));
     if (targetCell) {
       gridEl._activeMirrorCell = targetCell;
       targetCell.classList.add('ve-cell-mirror-ghost');
@@ -7595,6 +7596,9 @@
 
     // 拖曳平移 (Pointer Events: 滑鼠與觸控完全相容，嚴格過濾工具列與編輯操作)
     container.addEventListener('pointerdown', (e) => {
+      // 按住 Shift 鍵作為直接框選排除區，絕不誤觸畫布拖曳平移
+      if (e.shiftKey) return;
+
       // 點擊按鈕、輸入框、或 2D 體素工具列/膠囊面板任何區域，絕不觸發畫布拖曳平移
       if (e.target.closest('button, input, .voxel-editor-2d-toolbar, .voxel-editor-toolbar, .ve-toggle-capsule, .ve-palette-dock')) return;
 
@@ -7720,19 +7724,33 @@
     }
   }
 
-  function setBuzzLayer(layerIndex) {
+  let _buzzLayerRaf = null;
+  function setBuzzLayer(layerIndex, immediate = false) {
     if (typeof BUZZ_VOXEL_DATA === 'undefined') return;
     const maxLayer = BUZZ_VOXEL_DATA.layers.length;
     const target = Math.max(1, Math.min(maxLayer, layerIndex));
     buzzState.curLayer = target;
     save3DState('buzz', target);
     if (DOM.buzzLayerSlider) DOM.buzzLayerSlider.value = target;
+    if (DOM.buzzLayerBadge) DOM.buzzLayerBadge.textContent = `第 ${target} / ${maxLayer} 層`;
     if (buzzState.three && typeof buzzState.three._syncVLC === 'function') {
       buzzState.three._syncVLC(target);
     }
-    renderBuzzLayer(target);
-    updateBuzz3DSliceFilter();
-    requestThreeRender('buzz');
+    const doRender = () => {
+      renderBuzzLayer(target);
+      updateBuzz3DSliceFilter();
+      requestThreeRender('buzz');
+    };
+    if (immediate) {
+      if (_buzzLayerRaf) { cancelAnimationFrame(_buzzLayerRaf); _buzzLayerRaf = null; }
+      doRender();
+    } else {
+      if (_buzzLayerRaf) cancelAnimationFrame(_buzzLayerRaf);
+      _buzzLayerRaf = requestAnimationFrame(() => {
+        _buzzLayerRaf = null;
+        doRender();
+      });
+    }
   }
 
   function switchBulba3DMode(mode) {
@@ -7748,19 +7766,33 @@
     requestThreeRender('bulbasaur');
   }
 
-  function setBulbaLayer(layerIndex) {
+  let _bulbaLayerRaf = null;
+  function setBulbaLayer(layerIndex, immediate = false) {
     if (typeof BULBASAUR_VOXEL_DATA === 'undefined') return;
     const maxLayer = BULBASAUR_VOXEL_DATA.layers.length;
     const target = Math.max(1, Math.min(maxLayer, layerIndex));
     bulbaState.curLayer = target;
     save3DState('bulba', target);
     if (DOM.bulbaLayerSlider) DOM.bulbaLayerSlider.value = target;
+    if (DOM.bulbaLayerBadge) DOM.bulbaLayerBadge.textContent = `第 ${target} / ${maxLayer} 層`;
     if (bulbaState.three && typeof bulbaState.three._syncVLC === 'function') {
       bulbaState.three._syncVLC(target);
     }
-    renderBulbaLayer(target);
-    updateBulba3DSliceFilter();
-    requestThreeRender('bulbasaur');
+    const doRender = () => {
+      renderBulbaLayer(target);
+      updateBulba3DSliceFilter();
+      requestThreeRender('bulbasaur');
+    };
+    if (immediate) {
+      if (_bulbaLayerRaf) { cancelAnimationFrame(_bulbaLayerRaf); _bulbaLayerRaf = null; }
+      doRender();
+    } else {
+      if (_bulbaLayerRaf) cancelAnimationFrame(_bulbaLayerRaf);
+      _bulbaLayerRaf = requestAnimationFrame(() => {
+        _bulbaLayerRaf = null;
+        doRender();
+      });
+    }
   }
 
   // 分析軸向投影的實體段落與中空間隔段落
@@ -7918,11 +7950,14 @@
         renderDimTopSegments(DOM.bulbaDimTop, xSegments, cellSize, gridTotalWidth);
         renderDimRightSegments(DOM.bulbaDimRight, zSegments, cellSize, gridTotalHeight);
 
+        const cellMap = new Map();
+        DOM.bulbaVoxelGrid._cellMap = cellMap;
         const frag = document.createDocumentFragment();
         for (let z = minZ; z <= maxZ; z++) {
           for (let x = minX; x <= maxX; x++) {
             const bid = blockMap.get(`${x},${z}`);
             const cell = document.createElement('div');
+            cellMap.set(`${x},${z}`, cell);
             cell.className = 'bulba-cell';
             cell.style.width = `${cellSize}px`;
             cell.style.height = `${cellSize}px`;
@@ -8071,11 +8106,14 @@
         renderDimTopSegments(DOM.buzzDimTop, xSegments, cellSize, gridTotalWidth);
         renderDimRightSegments(DOM.buzzDimRight, zSegments, cellSize, gridTotalHeight);
 
+        const cellMap = new Map();
+        DOM.buzzVoxelGrid._cellMap = cellMap;
         const frag = document.createDocumentFragment();
         for (let z = minZ; z <= maxZ; z++) {
           for (let x = minX; x <= maxX; x++) {
             const bid = blockMap.get(`${x},${z}`);
             const cell = document.createElement('div');
+            cellMap.set(`${x},${z}`, cell);
             cell.className = 'bulba-cell';
             cell.style.width = `${cellSize}px`;
             cell.style.height = `${cellSize}px`;
@@ -8344,12 +8382,12 @@
     `;
     wrap.appendChild(dimOverlay);
 
-    // 取得當前角色切片設定函式
-    const setCharLayer = (targetY) => {
-      if (charKey === 'bulbasaur') setBulbaLayer(targetY);
-      else if (charKey === 'buzz') setBuzzLayer(targetY);
-      else if (charKey === 'ivysaur') setIvysaurLayer(targetY);
-      else if (charKey === 'venusaur') setVenusaurLayer(targetY);
+    // 取得當前角色切片設定函式 (支援即時或 rAF 鎖幀節流排程)
+    const setCharLayer = (targetY, immediate = false) => {
+      if (charKey === 'bulbasaur') setBulbaLayer(targetY, immediate);
+      else if (charKey === 'buzz') setBuzzLayer(targetY, immediate);
+      else if (charKey === 'ivysaur') setIvysaurLayer(targetY, immediate);
+      else if (charKey === 'venusaur') setVenusaurLayer(targetY, immediate);
     };
 
     const activateVlcSliceMode = () => {
@@ -8432,18 +8470,16 @@
         if (threeState.layerFilterMode === 'single' || threeState.minLayer > clamped) {
           threeState.minLayer = clamped;
         }
-        setCharLayer(threeState.maxLayer);
+        setCharLayer(threeState.maxLayer, false);
       } else if (isDragging === 'bottom') {
         threeState.minLayer = clamped;
         if (threeState.layerFilterMode === 'single' || threeState.maxLayer < clamped) {
           threeState.maxLayer = clamped;
-          setCharLayer(threeState.maxLayer);
+          setCharLayer(threeState.maxLayer, false);
         }
       }
       updateDualSliderUI();
-      getCharSliceFilter()();
       if (typeof threeState._updateDimensions === 'function') threeState._updateDimensions();
-      requestThreeRender(charKey);
     };
 
     const handleDragEnd = (e) => {
@@ -8459,6 +8495,8 @@
         isDragging = null;
         window.removeEventListener('pointermove', handleDragMove);
         window.removeEventListener('pointerup', handleDragEnd);
+        // 拖曳結束時強制立即執行最終目標層渲染，確保 100% 畫面精準同步
+        setCharLayer(threeState.maxLayer, true);
       }
     };
 
@@ -9112,13 +9150,14 @@
       gridEl._veAttached = true;
       let isDraggingMarquee = false;
       let marqueeStart = null;
+      let lastMarqueePos = null;
 
       function clearMirrorGhost() {
         handleCellMirrorHover(gridEl, charKey, null, false);
       }
 
       function updateMirrorGhost(x, z, y) {
-        const sourceCell = gridEl.querySelector(`.bulba-cell[data-x="${x}"][data-z="${z}"]`);
+        const sourceCell = (gridEl._cellMap ? gridEl._cellMap.get(`${x},${z}`) : gridEl.querySelector(`.bulba-cell[data-x="${x}"][data-z="${z}"]`));
         handleCellMirrorHover(gridEl, charKey, sourceCell, true);
       }
 
@@ -9131,12 +9170,14 @@
         const z = Number(cell.dataset.z);
         const y = Number(cell.dataset.y !== undefined ? cell.dataset.y : (getCurrentLayer(charKey) - 1));
         const tool = VoxelDeltaStore.state.tool;
+        const isSelectTool = (tool === 'select' || e.shiftKey);
 
-        if (tool === 'select') {
+        if (isSelectTool) {
           isDraggingMarquee = true;
           marqueeStart = { x, z, y };
-          VoxelDeltaStore.selectVoxel(charKey, x, y, z, true);
-          if (typeof refreshSliceCallback === 'function') refreshSliceCallback();
+          lastMarqueePos = { x, z, y };
+          cell.classList.add('ve-cell-selected');
+          return;
         } else if (tool === 'paint') {
           VoxelDeltaStore.executeVoxelAction(charKey, x, y, z, 'paint');
           VoxelDeltaStore.syncThreeMeshFromOverrides(charKey, threeState, baseData);
@@ -9174,15 +9215,35 @@
         updateMirrorGhost(x, z, y);
         VoxelDeltaStore.setHoverVoxel(charKey, x, y, z);
 
-        if (isDraggingMarquee && marqueeStart && VoxelDeltaStore.state.tool === 'select') {
-          VoxelDeltaStore.selectRegion(charKey, marqueeStart.x, y, marqueeStart.z, x, y, z, true);
-          if (typeof refreshSliceCallback === 'function') refreshSliceCallback();
+        if (isDraggingMarquee && marqueeStart) {
+          lastMarqueePos = { x, z, y };
+          const minX = Math.min(marqueeStart.x, x), maxX = Math.max(marqueeStart.x, x);
+          const minZ = Math.min(marqueeStart.z, z), maxZ = Math.max(marqueeStart.z, z);
+          if (gridEl._cellMap) {
+            gridEl._cellMap.forEach((cEl) => {
+              const cx = Number(cEl.dataset.x);
+              const cz = Number(cEl.dataset.z);
+              const inBox = (cx >= minX && cx <= maxX && cz >= minZ && cz <= maxZ);
+              const coordKey = `${cx},${y},${cz}`;
+              const isAlready = (VoxelDeltaStore.state.selectedVoxels && VoxelDeltaStore.state.selectedVoxels.has(coordKey));
+              if (inBox || isAlready) {
+                cEl.classList.add('ve-cell-selected');
+              } else {
+                cEl.classList.remove('ve-cell-selected');
+              }
+            });
+          }
         }
       });
 
       const onPointerEnd = () => {
+        if (isDraggingMarquee && marqueeStart && lastMarqueePos) {
+          VoxelDeltaStore.selectRegion(charKey, marqueeStart.x, marqueeStart.y, marqueeStart.z, lastMarqueePos.x, lastMarqueePos.y, lastMarqueePos.z, true);
+          if (typeof refreshSliceCallback === 'function') refreshSliceCallback();
+        }
         isDraggingMarquee = false;
         marqueeStart = null;
+        lastMarqueePos = null;
       };
 
       gridEl.addEventListener('pointerup', onPointerEnd);
@@ -9632,19 +9693,35 @@
     }
   }
 
-  function setIvysaurLayer(layerIndex) {
+  let _ivysaurLayerRaf = null;
+  function setIvysaurLayer(layerIndex, immediate = false) {
     if (typeof IVYSAUR_VOXEL_DATA === 'undefined') return;
     const maxLayer = IVYSAUR_VOXEL_DATA.layers.length;
     const target = Math.max(1, Math.min(maxLayer, layerIndex));
     ivysaurState.curLayer = target;
     save3DState('ivysaur', target);
     if (DOM.ivysaurLayerSlider) DOM.ivysaurLayerSlider.value = target;
+    if (DOM.ivysaurLayerBadge) {
+      DOM.ivysaurLayerBadge.textContent = `第 ${target} / ${maxLayer} 層`;
+    }
     if (ivysaurState.three && typeof ivysaurState.three._syncVLC === 'function') {
       ivysaurState.three._syncVLC(target);
     }
-    renderIvysaurLayer(target);
-    updateIvysaur3DSliceFilter();
-    requestThreeRender('ivysaur');
+    const doRender = () => {
+      renderIvysaurLayer(target);
+      updateIvysaur3DSliceFilter();
+      requestThreeRender('ivysaur');
+    };
+    if (immediate) {
+      if (_ivysaurLayerRaf) { cancelAnimationFrame(_ivysaurLayerRaf); _ivysaurLayerRaf = null; }
+      doRender();
+    } else {
+      if (_ivysaurLayerRaf) cancelAnimationFrame(_ivysaurLayerRaf);
+      _ivysaurLayerRaf = requestAnimationFrame(() => {
+        _ivysaurLayerRaf = null;
+        doRender();
+      });
+    }
   }
 
   function renderIvysaurLayer(layerIndex) {
@@ -9732,6 +9809,8 @@
         renderDimTopSegments(DOM.ivysaurDimTop, xSegments, cellSize, gridTotalWidth);
         renderDimRightSegments(DOM.ivysaurDimRight, zSegments, cellSize, gridTotalHeight);
 
+        const cellMap = new Map();
+        DOM.ivysaurVoxelGrid._cellMap = cellMap;
         const frag = document.createDocumentFragment();
 
         // 渲染 2D 方塊點陣 (每個格子具有固定的正方形長寬，絕不發生中段塌陷撕裂黑縫)
@@ -9740,6 +9819,7 @@
             const key = `${rx},${rz}`;
             const bid = blockMap.get(key);
             const cell = document.createElement('div');
+            cellMap.set(key, cell);
             cell.className = 'bulba-cell';
             cell.style.width = `${cellSize}px`;
             cell.style.height = `${cellSize}px`;
@@ -10040,19 +10120,35 @@
     }
   }
 
-  function setVenusaurLayer(layerIndex) {
+  let _venusaurLayerRaf = null;
+  function setVenusaurLayer(layerIndex, immediate = false) {
     if (typeof VENUSAUR_VOXEL_DATA === 'undefined') return;
     const maxLayer = VENUSAUR_VOXEL_DATA.layers.length;
     const target = Math.max(1, Math.min(maxLayer, layerIndex));
     venusaurState.curLayer = target;
     save3DState('venusaur', target);
     if (DOM.venusaurLayerSlider) DOM.venusaurLayerSlider.value = target;
+    if (DOM.venusaurLayerBadge) {
+      DOM.venusaurLayerBadge.textContent = `第 ${target} / ${maxLayer} 層`;
+    }
     if (venusaurState.three && typeof venusaurState.three._syncVLC === 'function') {
       venusaurState.three._syncVLC(target);
     }
-    renderVenusaurLayer(target);
-    updateVenusaur3DSliceFilter();
-    requestThreeRender('venusaur');
+    const doRender = () => {
+      renderVenusaurLayer(target);
+      updateVenusaur3DSliceFilter();
+      requestThreeRender('venusaur');
+    };
+    if (immediate) {
+      if (_venusaurLayerRaf) { cancelAnimationFrame(_venusaurLayerRaf); _venusaurLayerRaf = null; }
+      doRender();
+    } else {
+      if (_venusaurLayerRaf) cancelAnimationFrame(_venusaurLayerRaf);
+      _venusaurLayerRaf = requestAnimationFrame(() => {
+        _venusaurLayerRaf = null;
+        doRender();
+      });
+    }
   }
 
   function renderVenusaurLayer(layerIndex) {
@@ -10135,11 +10231,14 @@
         renderDimTopSegments(DOM.venusaurDimTop, xSegments, cellSize, gridTotalWidth);
         renderDimRightSegments(DOM.venusaurDimRight, zSegments, cellSize, gridTotalHeight);
 
+        const cellMap = new Map();
+        DOM.venusaurVoxelGrid._cellMap = cellMap;
         const frag = document.createDocumentFragment();
         for (let z = minZ; z <= maxZ; z++) {
           for (let x = minX; x <= maxX; x++) {
             const bid = blockMap.get(`${x},${z}`);
             const cell = document.createElement('div');
+            cellMap.set(`${x},${z}`, cell);
             cell.className = 'bulba-cell';
             cell.style.width = `${cellSize}px`;
             cell.style.height = `${cellSize}px`;

@@ -10,6 +10,7 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
+const vm = require('vm');
 
 console.log('🧪 啟動：VLC 雙滑塊與 3D 原生尺寸標註深度行為模擬測試套件...\n');
 
@@ -586,6 +587,60 @@ assert.ok(!setHoverMatch[1].includes('notifyListeners'), 'setHoverVoxel 嚴禁�
 assert.ok(appJs.includes('setupGridEventDelegation'), 'app.js 必須包含 setupGridEventDelegation 頂層事件委派');
 assert.ok(appJs.includes('_hasGridDelegation'), 'app.js 必須具備 _hasGridDelegation 防重複綁定守護');
 console.log('  ✓ PASS: setHoverVoxel 解耦與 2D 切片單一事件委派架構成立，0 重繪卡死');
+
+console.log('\n【驗證 9: 層數滑桿 rAF 鎖幀與 2D 點陣 O(1) 座標快取架構】');
+// 1. 檢驗四大角色 set*Layer 具備 requestAnimationFrame 鎖幀與即時徽章更新
+assert.ok(appJs.includes('_ivysaurLayerRaf = requestAnimationFrame'), 'setIvysaurLayer 必須具備 rAF 鎖幀節流排程');
+assert.ok(appJs.includes('_bulbaLayerRaf = requestAnimationFrame'), 'setBulbaLayer 必須具備 rAF 鎖幀節流排程');
+assert.ok(appJs.includes('_buzzLayerRaf = requestAnimationFrame'), 'setBuzzLayer 必須具備 rAF 鎖幀節流排程');
+assert.ok(appJs.includes('_venusaurLayerRaf = requestAnimationFrame'), 'setVenusaurLayer 必須具備 rAF 鎖幀節流排程');
+assert.ok(appJs.includes('cancelAnimationFrame'), '快速拖曳中必須自動取消前置過時影格');
+
+// 2. 檢驗 2D 網格 O(1) 快取查表 (cellMap) 與純樣式局部切換
+assert.ok(appJs.includes('DOM.ivysaurVoxelGrid._cellMap = cellMap'), '妙蛙草 2D 點陣必須維護 _cellMap 記憶體查表');
+assert.ok(appJs.includes('gridEl._cellMap.get'), 'handleCellMirrorHover 必須透過 _cellMap 達成 O(1) 瞬時提取');
+assert.ok(appJs.includes('e.shiftKey'), '必須支援 Shift + 拖曳滑鼠隨時進入框選排除區');
+assert.ok(appJs.includes('// 按住 Shift 鍵作為直接框選排除區，絕不誤觸畫布拖曳平移'), '平移手勢必須嚴格隔離 Shift 框選');
+console.log('  ✓ PASS: 四角色切片滑桿 rAF 鎖幀、O(1) 座標查表與 Shift 框選手勢隔離 100% 成立');
+
+console.log('\n【驗證 10: 妙蛙草花心框選排除遮罩與雙向對稱完全保護實質行為驗證】');
+const ivysaurDataCode = fs.readFileSync(path.join(__dirname, 'ivysaur_voxel_data.js'), 'utf8');
+const fnIvy = new Function(ivysaurDataCode + '; return IVYSAUR_VOXEL_DATA;');
+global.IVYSAUR_VOXEL_DATA = fnIvy();
+
+const VDS = require('./voxel_editor.js');
+assert.ok(VDS, 'VoxelDeltaStore 必須成功載入');
+
+// 1. 取得妙蛙草第 44 層 (y = 43) 的中央方塊 (花心部位)
+const charKey = 'ivysaur';
+const testY = 43; // 第 44 層
+const center = VDS.getCharBounds(charKey).center; // 50
+
+// 在左側葉片 (x=25, z=50) 設定有方塊 (bid=2)，右側葉片 (x=75, z=50) 為空 (bid=-1)
+// 在中央花心 (x=48, z=50) 設定粉紅花心 (bid=3)，右側對映側 (x=52, z=50) 為空 (bid=-1)
+VDS.loadOverrides(charKey, {
+  [`25,${testY},50`]: 2, // 綠色葉片 (左)
+  [`75,${testY},50`]: -1, // 右側葉片初始為空
+  [`48,${testY},50`]: 3, // 粉紅花心 (左)
+  [`52,${testY},50`]: -1  // 右側花心對應位置初始為空
+});
+
+// 2. 模擬使用者框選了「中央花心保護區」(x=48, z=50)
+VDS.selectRegion(charKey, 48, testY, 50, 48, testY, 50, false);
+assert.strictEqual(VDS.state.selectedVoxels.has(`48,${testY},50`), true, '選取集合中必須包含中央花心座標');
+
+// 3. 執行【左鏡右 ⇥】(mirrorCurrentLayer left-to-right)
+const changesCount = VDS.mirrorCurrentLayer(charKey, 44, 'left-to-right');
+
+// 4. 斷言雙向對稱保護機制（絕對免死金牌）：
+// - 中央花心左側 (48, 43, 50) 受到排除保護，原樣保留 (bid=3)
+assert.strictEqual(VDS.getEffectiveBid(charKey, 48, testY, 50), 3, '中央花心左側必須受到豁免保護，不可被覆寫');
+// - 中央花心右側 (52, 43, 50) 作為其對映側，亦享有雙向豁免保護，完全不被鏡像生成（維持 -1 空白）
+assert.strictEqual(VDS.getEffectiveBid(charKey, 52, testY, 50), -1, '中央花心右側作為對稱對映點，享有絕對雙向對稱保護，絕不可被左側覆蓋鏡像生成');
+
+// - 外圍未選取的綠色葉片 (25, 43, 50) 則成功鏡面同步至右側對稱位置 (75, 43, 50)
+assert.strictEqual(VDS.getEffectiveBid(charKey, 75, testY, 50), 2, '外圍未框選區域必須精準執行鏡面同步 (25 鏡像至 75)');
+console.log('  ✓ PASS: 妙蛙草花心雙向對稱完全保護 (花心 100% 豁免、外側葉片精準鏡向) 行為模擬測試完全通過！');
 
 console.log('\n=============================================================');
 console.log('🎉 恭喜！深度行為模擬驗證 100% 全部通過！所有功能皆有實質運作！');

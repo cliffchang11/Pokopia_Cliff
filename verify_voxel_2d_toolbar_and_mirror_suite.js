@@ -311,16 +311,12 @@ test('3.11 3D Bloxelizer 按需渲染 (Render-on-Demand) 與 2D 雙向即時連�
   assert.strictEqual(appCode.includes("startThreeRendering('venusaur');"), true);
 });
 
-test('3.12 四大角色 2D 切片網格 cell 生成時直連 handleCellMirrorHover (100% 獨立解耦，不依賴 3D 引擎)', () => {
+test('3.12 四大角色 2D 切片網格 cell 直連 handleCellMirrorHover (具備頂層事件委派，100% 獨立解耦，不依賴 3D 引擎)', () => {
   const appCode = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf-8');
-  assert.strictEqual(appCode.includes("cell.addEventListener('mouseenter', () => handleCellMirrorHover(DOM.buzzVoxelGrid, 'buzz', cell, true));"), true);
-  assert.strictEqual(appCode.includes("cell.addEventListener('mouseleave', () => handleCellMirrorHover(DOM.buzzVoxelGrid, 'buzz', cell, false));"), true);
-  assert.strictEqual(appCode.includes("cell.addEventListener('mouseenter', () => handleCellMirrorHover(DOM.bulbaVoxelGrid, 'bulbasaur', cell, true));"), true);
-  assert.strictEqual(appCode.includes("cell.addEventListener('mouseleave', () => handleCellMirrorHover(DOM.bulbaVoxelGrid, 'bulbasaur', cell, false));"), true);
-  assert.strictEqual(appCode.includes("cell.addEventListener('mouseenter', () => handleCellMirrorHover(DOM.ivysaurVoxelGrid, 'ivysaur', cell, true));"), true);
-  assert.strictEqual(appCode.includes("cell.addEventListener('mouseleave', () => handleCellMirrorHover(DOM.ivysaurVoxelGrid, 'ivysaur', cell, false));"), true);
-  assert.strictEqual(appCode.includes("cell.addEventListener('mouseenter', () => handleCellMirrorHover(DOM.venusaurVoxelGrid, 'venusaur', cell, true));"), true);
-  assert.strictEqual(appCode.includes("cell.addEventListener('mouseleave', () => handleCellMirrorHover(DOM.venusaurVoxelGrid, 'venusaur', cell, false));"), true);
+  assert.strictEqual(appCode.includes("setupGridEventDelegation(DOM.buzzVoxelGrid, 'buzz'"), true);
+  assert.strictEqual(appCode.includes("setupGridEventDelegation(DOM.bulbaVoxelGrid, 'bulbasaur'"), true);
+  assert.strictEqual(appCode.includes("setupGridEventDelegation(DOM.ivysaurVoxelGrid, 'ivysaur'"), true);
+  assert.strictEqual(appCode.includes("setupGridEventDelegation(DOM.venusaurVoxelGrid, 'venusaur'"), true);
 });
 
 test('3.13 離線模擬 handleCellMirrorHover 鏡像外框觸發、中心軸避開、樣式色彩注入與無痕還原', () => {
