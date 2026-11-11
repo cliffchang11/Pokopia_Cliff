@@ -1017,9 +1017,10 @@
 
       raycaster.setFromCamera(mouse, threeState.camera);
 
-      // 同時檢驗原版 InstancedMesh 與動態新增網格
+      // 同時檢驗原版 InstancedMesh、透視半透明網格、與動態新增網格
       const targets = [];
       if (threeState.instancedMesh) targets.push(threeState.instancedMesh);
+      if (threeState.ghostInstancedMesh) targets.push(threeState.ghostInstancedMesh);
       if (threeState.dynamicAddedGroup && threeState.dynamicAddedGroup.children.length > 0) {
         targets.push(...threeState.dynamicAddedGroup.children);
       }
@@ -1106,6 +1107,7 @@
 
       const targets = [];
       if (threeState.instancedMesh) targets.push(threeState.instancedMesh);
+      if (threeState.ghostInstancedMesh) targets.push(threeState.ghostInstancedMesh);
       if (threeState.dynamicAddedGroup && threeState.dynamicAddedGroup.children.length > 0) {
         targets.push(...threeState.dynamicAddedGroup.children);
       }
@@ -1316,7 +1318,14 @@
             let hideDynamic = false;
             if (threeState._getCurMode && threeState._getCurMode() === 'slice') {
               const curLayer = (threeState._getCurLayer ? threeState._getCurLayer() : 9999);
-              if ((y + 1) > curLayer) hideDynamic = true;
+              const minLayer = (threeState.minLayer !== undefined ? threeState.minLayer : 1);
+              const maxLayer = (threeState.maxLayer !== undefined ? threeState.maxLayer : curLayer);
+              const isSingle = (threeState.layerFilterMode === 'single');
+              const cubeLayer = y + 1;
+              const inRange = (cubeLayer >= minLayer && cubeLayer <= maxLayer);
+              if (!(inRange && (isSingle ? cubeLayer === curLayer : cubeLayer <= curLayer))) {
+                hideDynamic = true;
+              }
             }
             cube.scale.set(hideDynamic ? 0 : 1, hideDynamic ? 0 : 1, hideDynamic ? 0 : 1);
             cube.visible = !hideDynamic;

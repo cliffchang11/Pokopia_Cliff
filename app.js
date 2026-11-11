@@ -9316,7 +9316,6 @@
           isDraggingMarquee = true;
           marqueeStart = { x, z, y };
           lastMarqueePos = { x, z, y };
-          cell.classList.add('ve-cell-selected');
           try { gridEl.setPointerCapture(e.pointerId); } catch (_) {}
           return;
         } else if (tool === 'paint') {
@@ -9389,7 +9388,23 @@
           try { gridEl.releasePointerCapture(e.pointerId); } catch (_) {}
         }
         if (isDraggingMarquee && marqueeStart && lastMarqueePos) {
-          VoxelDeltaStore.selectRegion(charKey, marqueeStart.x, marqueeStart.y, marqueeStart.z, lastMarqueePos.x, lastMarqueePos.y, lastMarqueePos.z, true);
+          const isSingleClick = (marqueeStart.x === lastMarqueePos.x && marqueeStart.z === lastMarqueePos.z && marqueeStart.y === lastMarqueePos.y);
+          if (isSingleClick) {
+            // 單點點擊：Toggle 切換選取（已選取則取消，未選取則加入）
+            VoxelDeltaStore.selectVoxel(charKey, marqueeStart.x, marqueeStart.y, marqueeStart.z, true);
+          } else {
+            // 範圍拖曳：矩形多選框選
+            VoxelDeltaStore.selectRegion(charKey, marqueeStart.x, marqueeStart.y, marqueeStart.z, lastMarqueePos.x, lastMarqueePos.y, lastMarqueePos.z, true);
+          }
+          if (gridEl._cellMap) {
+            const curY = getCurrentLayer(charKey) - 1;
+            gridEl._cellMap.forEach((cEl) => {
+              const cx = Number(cEl.dataset.x);
+              const cz = Number(cEl.dataset.z);
+              const isSel = (VoxelDeltaStore.state.selectedVoxels && VoxelDeltaStore.state.selectedVoxels.has(`${cx},${curY},${cz}`));
+              cEl.classList.toggle('ve-cell-selected', !!isSel);
+            });
+          }
           if (typeof refreshSliceCallback === 'function') refreshSliceCallback();
         }
         isDraggingMarquee = false;
@@ -9688,7 +9703,8 @@
       t.dynamicAddedGroup.children.forEach(cube => {
         if (!cube.userData || !cube.userData.isDynamic) return;
         const cubeLayer = cube.userData.voxelY + 1;
-        const hide = isSlice && (isSingle ? cubeLayer !== curLayer : cubeLayer > curLayer);
+        const inRange = (cubeLayer >= minL && cubeLayer <= maxL);
+        const hide = isSlice && !(inRange && (isSingle ? cubeLayer === curLayer : cubeLayer <= curLayer));
         cube.scale.set(hide ? 0 : 1, hide ? 0 : 1, hide ? 0 : 1);
         cube.visible = !hide;
         if (cube.material) {
@@ -9949,7 +9965,8 @@
       t.dynamicAddedGroup.children.forEach(cube => {
         if (!cube.userData || !cube.userData.isDynamic) return;
         const cubeLayer = cube.userData.voxelY + 1;
-        const hide = isSlice && (isSingle ? cubeLayer !== curLayer : cubeLayer > curLayer);
+        const inRange = (cubeLayer >= minL && cubeLayer <= maxL);
+        const hide = isSlice && !(inRange && (isSingle ? cubeLayer === curLayer : cubeLayer <= curLayer));
         cube.scale.set(hide ? 0 : 1, hide ? 0 : 1, hide ? 0 : 1);
         cube.visible = !hide;
         if (cube.material) {
@@ -10443,7 +10460,8 @@
       t.dynamicAddedGroup.children.forEach(cube => {
         if (!cube.userData || !cube.userData.isDynamic) return;
         const cubeLayer = cube.userData.voxelY + 1;
-        const hide = isSlice && (isSingle ? cubeLayer !== curLayer : cubeLayer > curLayer);
+        const inRange = (cubeLayer >= minL && cubeLayer <= maxL);
+        const hide = isSlice && !(inRange && (isSingle ? cubeLayer === curLayer : cubeLayer <= curLayer));
         cube.scale.set(hide ? 0 : 1, hide ? 0 : 1, hide ? 0 : 1);
         cube.visible = !hide;
         if (cube.material) {
@@ -10937,7 +10955,8 @@
       t.dynamicAddedGroup.children.forEach(cube => {
         if (!cube.userData || !cube.userData.isDynamic) return;
         const cubeLayer = cube.userData.voxelY + 1;
-        const hide = isSlice && (isSingle ? cubeLayer !== curLayer : cubeLayer > curLayer);
+        const inRange = (cubeLayer >= minL && cubeLayer <= maxL);
+        const hide = isSlice && !(inRange && (isSingle ? cubeLayer === curLayer : cubeLayer <= curLayer));
         cube.scale.set(hide ? 0 : 1, hide ? 0 : 1, hide ? 0 : 1);
         cube.visible = !hide;
         if (cube.material) {
