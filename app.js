@@ -1112,6 +1112,9 @@
             VoxelDeltaStore.hydrateFromCloud(merged.voxelOverrides);
             // 雲端水合成功後，自動刷新當前活躍角色的 2D 切片、3D 模型與材料統計
             const activeChar = (bulbaState && bulbaState.curChar) || getSaved3DChar() || 'buzz';
+            if (typeof VoxelDeltaStore !== 'undefined' && typeof VoxelDeltaStore.syncCurrentMesh === 'function') {
+              VoxelDeltaStore.syncCurrentMesh(activeChar === 'bulba' ? 'bulbasaur' : activeChar);
+            }
             if (activeChar === 'ivysaur') {
               renderIvysaurLayer(ivysaurState.curLayer);
               if (typeof updateIvysaur3DSliceFilter === 'function') updateIvysaur3DSliceFilter();
@@ -1234,6 +1237,9 @@
                 VoxelDeltaStore.hydrateFromCloud(updated.voxelOverrides);
                 // 雲端水合成功後，自動刷新當前活躍角色的 2D 切片、3D 模型與材料統計
                 const activeChar = (bulbaState && bulbaState.curChar) || getSaved3DChar() || 'buzz';
+                if (typeof VoxelDeltaStore !== 'undefined' && typeof VoxelDeltaStore.syncCurrentMesh === 'function') {
+                  VoxelDeltaStore.syncCurrentMesh(activeChar === 'bulba' ? 'bulbasaur' : activeChar);
+                }
                 if (activeChar === 'ivysaur') {
                   renderIvysaurLayer(ivysaurState.curLayer);
                   if (typeof updateIvysaur3DSliceFilter === 'function') updateIvysaur3DSliceFilter();
