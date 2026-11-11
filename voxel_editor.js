@@ -1019,11 +1019,12 @@
       downPos = { x: e.clientX, y: e.clientY };
       downTime = Date.now();
 
-      const isSelect = (_state.editorMode && _state.tool === 'select');
       const isCtrl = (e.ctrlKey || e.metaKey);
 
-      // 按住 Ctrl + 左鍵在【選取】工具下觸發 3D 框選，暫時鎖定 OrbitControls 旋轉
-      if (isSelect && isCtrl && e.button === 0) {
+      // 全時直接判定：按住 Ctrl + 左鍵立即啟動 3D 框選，事件捕獲阻斷 OrbitControls
+      if (isCtrl && e.button === 0) {
+        e.stopImmediatePropagation();
+        e.preventDefault();
         isMarquee3D = true;
         marquee3DStart = { x: e.clientX, y: e.clientY };
         if (threeState.controls) {
@@ -1036,7 +1037,7 @@
         box.style.width = '0px';
         box.style.height = '0px';
       }
-    });
+    }, { capture: true });
 
     window.addEventListener('pointermove', (e) => {
       if (isMarquee3D) {
@@ -1075,12 +1076,57 @@
 
       const dist = Math.hypot(e.clientX - marquee3DStart.x, e.clientY - marquee3DStart.y);
       if (dist <= 5) {
-        // 單點點擊：交由既有的 canvas pointerup 處理 (單擊 Toggle)
+        // 單點點擊：在 Ctrl 狀態下點擊單顆方塊切換選取狀態 (Toggle)
+        const rect = canvas.getBoundingClientRect();
+        if (mouse && raycaster && threeState.camera && typeof THREE !== 'undefined') {
+          mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+          mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+          raycaster.setFromCamera(mouse, threeState.camera);
+          const targets = [];
+          if (threeState.instancedMesh) targets.push(threeState.instancedMesh);
+          if (threeState.ghostInstancedMesh) targets.push(threeState.ghostInstancedMesh);
+          if (threeState.dynamicAddedGroup && threeState.dynamicAddedGroup.children.length > 0) {
+            targets.push(...threeState.dynamicAddedGroup.children);
+          }
+          if (targets.length > 0) {
+            const intersects = raycaster.intersectObjects(targets, false);
+            if (intersects && intersects.length > 0) {
+              const hit = intersects[0];
+              const cx = baseData.dimensions.width / 2;
+              const cy = baseData.dimensions.height / 2;
+              const cz = baseData.dimensions.length / 2;
+              let vx, vy, vz;
+              if (hit.object && hit.object.userData && hit.object.userData.isDynamic) {
+                vx = hit.object.userData.voxelX;
+                vy = hit.object.userData.voxelY;
+                vz = hit.object.userData.voxelZ;
+              } else if (hit.instanceId !== undefined && hit.instanceId !== null) {
+                const b = threeState.blockDataList ? threeState.blockDataList[hit.instanceId] : null;
+                if (b) {
+                  vx = Math.round(b.posX + cx);
+                  vy = Math.round(b.posY + cy);
+                  vz = Math.round(b.posZ + cz);
+                }
+              }
+              if (vx !== undefined && vy !== undefined && vz !== undefined) {
+                selectVoxel(charKey, vx, vy, vz, true);
+                notifyListeners(charKey);
+                updateToolbarUI(charKey);
+                syncThreeMeshFromOverrides(charKey, threeState, baseData);
+                if (typeof onSubmitCallback === 'function') onSubmitCallback();
+              }
+            }
+          }
+        }
         return;
       }
 
       // 拖曳距離 > 5px：執行 3D 矩形多選框選！
-      // 依共識規範：所有作法與 2D 一致，【嚴格只選取目前檢視層 (curLayer)】
+      // 依共識規範：
+      // - 若為「動態剖面 (slice)」：所有作法與 2D 一致，【嚴格只選取目前檢視層 (curLayer)】
+      // - 若為「原生 3D / 完整全貌」：所見即所選，將框選涵蓋之可見方塊全數納入選取
+      const curMode = (threeState._getCurMode ? threeState._getCurMode() : '3d');
+      const isSliceMode = (curMode === 'slice');
       const curLayer = (threeState._getCurLayer ? threeState._getCurLayer() : (threeState.maxLayer || 1));
       const targetY = curLayer - 1;
 
@@ -1100,11 +1146,11 @@
       const pVector = new THREE.Vector3();
       const toSelect = [];
 
-      // 1. 檢驗原版 InstancedMesh 落在目前層的方塊
+      // 1. 檢驗原版 InstancedMesh 方塊
       if (threeState.blockDataList && threeState.blockDataList.length > 0) {
         for (let i = 0; i < threeState.blockDataList.length; i++) {
           const item = threeState.blockDataList[i];
-          if (item.layerIndex !== curLayer) continue;
+          if (isSliceMode && item.layerIndex !== curLayer) continue;
 
           const vx = Math.round(item.posX + cx);
           const vy = Math.round(item.posY + cy);
@@ -1127,11 +1173,11 @@
         }
       }
 
-      // 2. 檢驗動態增補方塊落在目前層的方塊
+      // 2. 檢驗動態增補方塊
       if (threeState.dynamicAddedGroup && threeState.dynamicAddedGroup.children) {
         threeState.dynamicAddedGroup.children.forEach(cube => {
           if (!cube.userData || !cube.userData.isDynamic) return;
-          if (cube.userData.voxelY !== targetY) return;
+          if (isSliceMode && cube.userData.voxelY !== targetY) return;
 
           const vx = cube.userData.voxelX;
           const vy = cube.userData.voxelY;
@@ -1153,7 +1199,7 @@
         });
       }
 
-      // 3. 批次加入選取集合（支援鏡像對稱自動同步）
+      // 3. 累加選取集合（保留既有選取 ＋ 支援鏡像對稱自動同步）
       if (toSelect.length > 0) {
         if (!_state.selectedVoxels) _state.selectedVoxels = new Set();
         toSelect.forEach(({ vx, vy, vz }) => {
@@ -1184,6 +1230,7 @@
     });
 
     canvas.addEventListener('pointerup', (e) => {
+      if (e.ctrlKey || e.metaKey) return;
       if (!_state.editorMode || _state.tool === 'rotate') return;
 
       const dist = Math.hypot(e.clientX - downPos.x, e.clientY - downPos.y);
