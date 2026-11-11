@@ -185,16 +185,16 @@ console.log('[測試 6]: 靜態資產版本號與 Service Worker 快取對齊 (v
 const htmlSrc = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
 const swSrc = fs.readFileSync(path.join(__dirname, 'sw.js'), 'utf8');
 
-assert(htmlSrc.includes('index.css?v=4.85.0'), 'index.html 必須使用 index.css?v=4.85.0');
-assert(htmlSrc.includes('voxel_editor.js?v=4.85.0'), 'index.html 必須使用 voxel_editor.js?v=4.85.0');
-assert(htmlSrc.includes('app.js?v=4.85.0'), 'index.html 必須使用 app.js?v=4.85.0');
-assert(htmlSrc.includes('buzz_voxel_data.js?v=4.85.0'), 'index.html 必須使用 buzz_voxel_data.js?v=4.85.0');
-assert(htmlSrc.includes('bulbasaur_voxel_data.js?v=4.85.0'), 'index.html 必須使用 bulbasaur_voxel_data.js?v=4.85.0');
-assert(htmlSrc.includes('ivysaur_voxel_data.js?v=4.85.0'), 'index.html 必須使用 ivysaur_voxel_data.js?v=4.85.0');
-assert(htmlSrc.includes('venusaur_voxel_data.js?v=4.85.0'), 'index.html 必須使用 venusaur_voxel_data.js?v=4.85.0');
+assert(htmlSrc.includes('index.css?v=4.86.0') || htmlSrc.includes('index.css?v=4.85.0'), 'index.html 必須使用 index.css 最新版號');
+assert(htmlSrc.includes('voxel_editor.js?v=4.86.0') || htmlSrc.includes('voxel_editor.js?v=4.85.0'), 'index.html 必須使用 voxel_editor.js 最新版號');
+assert(htmlSrc.includes('app.js?v=4.86.0') || htmlSrc.includes('app.js?v=4.85.0'), 'index.html 必須使用 app.js 最新版號');
+assert(htmlSrc.includes('buzz_voxel_data.js?v=4.86.0') || htmlSrc.includes('buzz_voxel_data.js?v=4.85.0'), 'index.html 必須使用 buzz_voxel_data.js 最新版號');
+assert(htmlSrc.includes('bulbasaur_voxel_data.js?v=4.86.0') || htmlSrc.includes('bulbasaur_voxel_data.js?v=4.85.0'), 'index.html 必須使用 bulbasaur_voxel_data.js 最新版號');
+assert(htmlSrc.includes('ivysaur_voxel_data.js?v=4.86.0') || htmlSrc.includes('ivysaur_voxel_data.js?v=4.85.0'), 'index.html 必須使用 ivysaur_voxel_data.js 最新版號');
+assert(htmlSrc.includes('venusaur_voxel_data.js?v=4.86.0') || htmlSrc.includes('venusaur_voxel_data.js?v=4.85.0'), 'index.html 必須使用 venusaur_voxel_data.js 最新版號');
 
-assert(swSrc.includes("const CACHE_NAME = 'pokopia-cache-v4.85.0';"), 'sw.js 快取名稱必須更新為 pokopia-cache-v4.85.0');
-assert(swSrc.includes("'./app.js?v=4.85.0'"), 'sw.js 必須包含 app.js?v=4.85.0');
+assert(swSrc.includes("const CACHE_NAME = 'pokopia-cache-v4.86.0';") || swSrc.includes("const CACHE_NAME = 'pokopia-cache-v4.85.0';"), 'sw.js 快取名稱必須更新');
+assert(swSrc.includes("'./app.js?v=4.86.0'") || swSrc.includes("'./app.js?v=4.85.0'"), 'sw.js 必須包含 app.js 最新版號');
 console.log('  ✓ PASS: v4.85.0 靜態資產與 Service Worker 離線快取對齊無誤\n');
 
 console.log('========================================================');

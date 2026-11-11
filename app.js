@@ -9601,7 +9601,7 @@
       opacity: 0.60,
       roughness: 0.88,
       metalness: 0.0,
-      depthWrite: true
+      depthWrite: false
     });
     const ghostInstancedMesh = new THREE.InstancedMesh(geometry, ghostMaterial, totalCount);
     const dummy = new THREE.Object3D();
@@ -9771,7 +9771,7 @@
           if (isGhost && cubeLayer === maxL && !hide) {
             cube.material.transparent = true;
             cube.material.opacity = 0.60;
-            cube.material.depthWrite = true;
+            cube.material.depthWrite = false;
           } else {
             cube.material.transparent = false;
             cube.material.opacity = 1.0;
@@ -9862,7 +9862,7 @@
       opacity: 0.60,
       roughness: 0.88,
       metalness: 0.0,
-      depthWrite: true
+      depthWrite: false
     });
     const ghostInstancedMesh = new THREE.InstancedMesh(geometry, ghostMaterial, totalCount);
     const dummy = new THREE.Object3D();
@@ -10033,7 +10033,7 @@
           if (isGhost && cubeLayer === maxL && !hide) {
             cube.material.transparent = true;
             cube.material.opacity = 0.60;
-            cube.material.depthWrite = true;
+            cube.material.depthWrite = false;
           } else {
             cube.material.transparent = false;
             cube.material.opacity = 1.0;
@@ -10361,7 +10361,7 @@
       opacity: 0.60,
       roughness: 0.88,
       metalness: 0.0,
-      depthWrite: true
+      depthWrite: false
     });
     const ghostInstancedMesh = new THREE.InstancedMesh(geometry, ghostMaterial, totalCount);
     const dummy = new THREE.Object3D();
@@ -10531,7 +10531,7 @@
           if (isGhost && cubeLayer === maxL && !hide) {
             cube.material.transparent = true;
             cube.material.opacity = 0.60;
-            cube.material.depthWrite = true;
+            cube.material.depthWrite = false;
           } else {
             cube.material.transparent = false;
             cube.material.opacity = 1.0;
@@ -10859,7 +10859,7 @@
       opacity: 0.60,
       roughness: 0.88,
       metalness: 0.0,
-      depthWrite: true
+      depthWrite: false
     });
     const ghostInstancedMesh = new THREE.InstancedMesh(geometry, ghostMaterial, totalCount);
     const dummy = new THREE.Object3D();
@@ -11029,7 +11029,7 @@
           if (isGhost && cubeLayer === maxL && !hide) {
             cube.material.transparent = true;
             cube.material.opacity = 0.60;
-            cube.material.depthWrite = true;
+            cube.material.depthWrite = false;
           } else {
             cube.material.transparent = false;
             cube.material.opacity = 1.0;
