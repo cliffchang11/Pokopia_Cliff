@@ -8795,9 +8795,23 @@
       requestThreeRender(charKey);
     }
 
+    function isToolbarOpen() {
+      if (typeof VoxelDeltaStore !== 'undefined' && typeof VoxelDeltaStore.isToolbarExpanded === 'function') {
+        return VoxelDeltaStore.isToolbarExpanded(charKey);
+      }
+      if (typeof document !== 'undefined') {
+        const bar = document.querySelector(`[id="voxelToolbar_${charKey}"].is-open, [id="voxelToolbar2D_${charKey}"].is-open`);
+        if (bar) return true;
+        const panel = document.querySelector(`[id="vePanel_${charKey}"]:not(.ve-hidden), [id="vePanel2D_${charKey}"]:not(.ve-hidden)`);
+        if (panel) return true;
+      }
+      return false;
+    }
+
     function updateDimensions() {
       const activeLayer = threeState.maxLayer || curY;
       const layerMeta = layersMap.get(activeLayer);
+      const hideHoverDims = isToolbarOpen();
 
       // 4.1 更新 Three.js 3D 原生幾何卡尺與 3D Sprite 標籤
       if (threeState.dimensionGroup && typeof THREE !== 'undefined') {
@@ -8830,8 +8844,7 @@
           add3DCalipers(group, p1z, p2z, new THREE.Vector3(-1, 0, 0), 1.2, layerMeta.length, 0xf97316, '#f97316');
         }
 
-        const isEditorActive = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.state && VoxelDeltaStore.state.editorMode);
-        if (!isEditorActive && currentHoverVoxel) {
+        if (!hideHoverDims && currentHoverVoxel) {
           const { startX, endX, startZ, endZ, bX, bZ, runLenX, runLenZ, py, gapInfo } = currentHoverVoxel;
 
           if (runLenX > 1 || (runLenX === 1 && runLenZ === 1)) {
@@ -8907,7 +8920,7 @@
               `;
             }
 
-            if (!isEditorActive && currentHoverVoxel) {
+            if (!hideHoverDims && currentHoverVoxel) {
               const { startX, endX, startZ, endZ, bX, bZ, runLenX, runLenZ, py, gapInfo } = currentHoverVoxel;
               const hTickLen = 5;
 
@@ -8966,10 +8979,12 @@
     threeState._updateDimensions = updateDimensions;
     const updateDimensionOverlay = updateDimensions;
 
+    let _lastPointerEvent = null;
+
     // 4.3 120ms 靜止判定 (Debounce) + 分層檢測，杜絕任何 pointermove 卡頓
     const handleStationaryHover = (e) => {
-      const isEditorActive = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.state && VoxelDeltaStore.state.editorMode);
-      if (isEditorActive) {
+      const hideHoverDims = isToolbarOpen();
+      if (hideHoverDims) {
         if (currentHoverVoxel !== null) {
           currentHoverVoxel = null;
           updateDimensionOverlay();
@@ -8980,32 +8995,59 @@
       if (!threeState.isInit || !threeState.camera || !threeState.instancedMesh || !raycaster || !mouse) return;
       const rect = canvasEl.getBoundingClientRect();
       if (!rect || rect.width <= 0) return;
-      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      if (e && e.clientX !== undefined) {
+        mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      }
 
       raycaster.setFromCamera(mouse, threeState.camera);
-      const intersects = raycaster.intersectObject(threeState.instancedMesh);
 
-      if (intersects.length > 0) {
+      // 檢測目標：同時納入原版主網格、透視半透明網格、以及自訂動態增補方塊 (杜絕透視穿透)
+      const targets = [threeState.instancedMesh];
+      if (threeState.ghostInstancedMesh) targets.push(threeState.ghostInstancedMesh);
+      if (threeState.dynamicAddedGroup && threeState.dynamicAddedGroup.children && threeState.dynamicAddedGroup.children.length > 0) {
+        targets.push(...threeState.dynamicAddedGroup.children);
+      }
+
+      const intersects = raycaster.intersectObjects(targets, false);
+
+      if (intersects && intersects.length > 0) {
         const minL = threeState.minLayer || 1;
         const maxL = threeState.maxLayer || curY;
         const targetLayer = maxL; // 嚴格以當前檢視最高層為基準，徹底消滅下層穿透空格誤判
 
         let hitBlock = null;
         for (let k = 0; k < intersects.length; k++) {
-          const instId = intersects[k].instanceId;
-          if (instId !== undefined) {
-            const cand = threeState.blockDataList && threeState.blockDataList[instId];
-            if (cand && cand.layerIndex === targetLayer) {
-              hitBlock = cand;
+          const hit = intersects[k];
+          if (hit.object && hit.object.userData && hit.object.userData.isDynamic) {
+            const dy = hit.object.userData.voxelY;
+            if ((dy + 1) === targetLayer) {
+              hitBlock = {
+                posX: hit.object.position.x,
+                posY: hit.object.position.y,
+                posZ: hit.object.position.z,
+                layerIndex: targetLayer
+              };
               break;
+            }
+          } else {
+            const instId = hit.instanceId;
+            if (instId !== undefined) {
+              const cand = threeState.blockDataList && threeState.blockDataList[instId];
+              if (cand && cand.layerIndex === targetLayer) {
+                hitBlock = cand;
+                break;
+              }
             }
           }
         }
-        if (!hitBlock && intersects[0].instanceId !== undefined) {
-          const firstCand = threeState.blockDataList && threeState.blockDataList[intersects[0].instanceId];
-          if (firstCand && firstCand.layerIndex === targetLayer) {
-            hitBlock = firstCand;
+        if (!hitBlock) {
+          const firstHit = intersects[0];
+          if (firstHit && firstHit.instanceId !== undefined) {
+            const firstCand = threeState.blockDataList && threeState.blockDataList[firstHit.instanceId];
+            if (firstCand && firstCand.layerIndex === targetLayer) {
+              hitBlock = firstCand;
+            }
           }
         }
 
@@ -9128,7 +9170,14 @@
       requestThreeRender(charKey);
     };
 
+    threeState._triggerHover = () => {
+      if (_lastPointerEvent) {
+        handleStationaryHover(_lastPointerEvent);
+      }
+    };
+
     canvasEl.addEventListener('pointermove', (e) => {
+      _lastPointerEvent = { clientX: e.clientX, clientY: e.clientY };
       // 掠過移動時完全 0 運算，靜止 120ms 才進行單次射線查找
       if (hoverDebounceTimer) clearTimeout(hoverDebounceTimer);
       hoverDebounceTimer = setTimeout(() => {
@@ -9136,7 +9185,10 @@
       }, 120);
     }, { passive: true });
 
-    canvasEl.addEventListener('pointerleave', hideDimensions);
+    canvasEl.addEventListener('pointerleave', () => {
+      _lastPointerEvent = null;
+      hideDimensions();
+    });
 
     if (threeState.controls) {
       threeState.controls.addEventListener('change', () => {

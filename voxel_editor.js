@@ -1431,18 +1431,35 @@
     }
   }
 
+  function isToolbarExpanded(charKey) {
+    if (typeof document !== 'undefined') {
+      const openBar = document.querySelector(`[id="voxelToolbar_${charKey}"].is-open, [id="voxelToolbar2D_${charKey}"].is-open`);
+      if (openBar) return true;
+      const visiblePanel = document.querySelector(`[id="vePanel_${charKey}"]:not(.ve-hidden), [id="vePanel2D_${charKey}"]:not(.ve-hidden)`);
+      if (visiblePanel) return true;
+    }
+    if (_state.isToolbarExpanded && _state.isToolbarExpanded[charKey] !== undefined) {
+      return !!_state.isToolbarExpanded[charKey];
+    }
+    return false;
+  }
+
   function setToolbarExpanded(charKey, expanded) {
-    if (typeof document === 'undefined') return;
-    const bars = document.querySelectorAll(`[id="voxelToolbar_${charKey}"], [id="voxelToolbar2D_${charKey}"]`);
-    bars.forEach(bar => {
-      bar.classList.toggle('is-open', expanded);
-      const panel = bar.querySelector(`.voxel-editor-toolbar, [id^="vePanel_"], [id^="vePanel2D_"]`);
-      const toggleBtn = bar.querySelector(`.ve-toggle-capsule, [id^="veToggleBtn_"], [id^="veToggleBtn2D_"]`);
-      const paletteDock = bar.querySelector(`[id^="vePaletteDock_"], [id^="vePaletteDock2D_"]`);
-      if (panel) panel.classList.toggle('ve-hidden', !expanded);
-      if (paletteDock) paletteDock.classList.toggle('ve-hidden', !expanded);
-      if (toggleBtn) toggleBtn.classList.toggle('active', expanded);
-    });
+    if (!_state.isToolbarExpanded) _state.isToolbarExpanded = {};
+    _state.isToolbarExpanded[charKey] = !!expanded;
+
+    if (typeof document !== 'undefined') {
+      const bars = document.querySelectorAll(`[id="voxelToolbar_${charKey}"], [id="voxelToolbar2D_${charKey}"]`);
+      bars.forEach(bar => {
+        bar.classList.toggle('is-open', expanded);
+        const panel = bar.querySelector(`.voxel-editor-toolbar, [id^="vePanel_"], [id^="vePanel2D_"]`);
+        const toggleBtn = bar.querySelector(`.ve-toggle-capsule, [id^="veToggleBtn_"], [id^="veToggleBtn2D_"]`);
+        const paletteDock = bar.querySelector(`[id^="vePaletteDock_"], [id^="vePaletteDock2D_"]`);
+        if (panel) panel.classList.toggle('ve-hidden', !expanded);
+        if (paletteDock) paletteDock.classList.toggle('ve-hidden', !expanded);
+        if (toggleBtn) toggleBtn.classList.toggle('active', expanded);
+      });
+    }
 
     if (expanded) {
       _state.editorMode = true;
@@ -1455,6 +1472,9 @@
     if (_attachedThreeScenes[charKey] && _attachedThreeScenes[charKey].threeState) {
       const ts = _attachedThreeScenes[charKey].threeState;
       if (typeof ts._updateDimensions === 'function') ts._updateDimensions();
+      if (!expanded && typeof ts._triggerHover === 'function') {
+        ts._triggerHover();
+      }
     }
   }
 
@@ -1714,6 +1734,8 @@
     attachEditorTo2D,
     syncThreeMeshFromOverrides,
     updateToolbarUI,
+    isToolbarExpanded,
+    setToolbarExpanded,
     toggleGhostLayer
   };
 
