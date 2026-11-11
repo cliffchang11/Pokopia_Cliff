@@ -13670,13 +13670,15 @@ body.has-floating-back .scroll-top-btn {
   }
 }
 
-.ve-selection-marquee {
+.ve-selection-marquee,
+.ve-3d-marquee-box {
   position: absolute;
   border: 1.5px dashed #facc15;
   background: rgba(250, 204, 21, 0.16);
   pointer-events: none;
   z-index: 80;
-  border-radius: 2px;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.25);
 }
 
 /* 2D 點陣對稱中軸線 (Symmetry Axis Line) */

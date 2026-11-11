@@ -987,7 +987,7 @@
     return wrap;
   }
 
-  function bindThreeRaycaster(charKey, threeState, baseData, canvasWrap) {
+  function bindThreeRaycaster(charKey, threeState, baseData, canvasWrap, onSubmitCallback) {
     if (!threeState || !threeState.renderer || !canvasWrap) return;
 
     const canvas = threeState.renderer.domElement;
@@ -997,9 +997,190 @@
     let downPos = { x: 0, y: 0 };
     let downTime = 0;
 
+    // 3D 矩形拖曳框選狀態 (3D Marquee Selection)
+    let isMarquee3D = false;
+    let marquee3DStart = { x: 0, y: 0 };
+    let marqueeBoxEl = null;
+
+    function getOrCreateMarqueeBox() {
+      if (!marqueeBoxEl) {
+        marqueeBoxEl = document.createElement('div');
+        marqueeBoxEl.className = 've-3d-marquee-box';
+        marqueeBoxEl.style.position = 'absolute';
+        marqueeBoxEl.style.pointerEvents = 'none';
+        marqueeBoxEl.style.display = 'none';
+        marqueeBoxEl.style.zIndex = '30';
+        canvasWrap.appendChild(marqueeBoxEl);
+      }
+      return marqueeBoxEl;
+    }
+
     canvas.addEventListener('pointerdown', (e) => {
       downPos = { x: e.clientX, y: e.clientY };
       downTime = Date.now();
+
+      const isSelect = (_state.editorMode && _state.tool === 'select');
+      const isCtrl = (e.ctrlKey || e.metaKey);
+
+      // 按住 Ctrl + 左鍵在【選取】工具下觸發 3D 框選，暫時鎖定 OrbitControls 旋轉
+      if (isSelect && isCtrl && e.button === 0) {
+        isMarquee3D = true;
+        marquee3DStart = { x: e.clientX, y: e.clientY };
+        if (threeState.controls) {
+          threeState.controls.enabled = false;
+        }
+        const box = getOrCreateMarqueeBox();
+        box.style.display = 'none';
+        box.style.left = '0px';
+        box.style.top = '0px';
+        box.style.width = '0px';
+        box.style.height = '0px';
+      }
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      if (isMarquee3D) {
+        const wrapRect = canvasWrap.getBoundingClientRect();
+        const curX = Math.max(wrapRect.left, Math.min(wrapRect.right, e.clientX));
+        const curY = Math.max(wrapRect.top, Math.min(wrapRect.bottom, e.clientY));
+
+        const minClientX = Math.min(marquee3DStart.x, curX);
+        const maxClientX = Math.max(marquee3DStart.x, curX);
+        const minClientY = Math.min(marquee3DStart.y, curY);
+        const maxClientY = Math.max(marquee3DStart.y, curY);
+
+        const w = maxClientX - minClientX;
+        const h = maxClientY - minClientY;
+
+        if (w > 3 || h > 3) {
+          const box = getOrCreateMarqueeBox();
+          box.style.display = 'block';
+          box.style.left = `${minClientX - wrapRect.left}px`;
+          box.style.top = `${minClientY - wrapRect.top}px`;
+          box.style.width = `${w}px`;
+          box.style.height = `${h}px`;
+        }
+      }
+    });
+
+    const handleMarqueeEnd = (e) => {
+      if (!isMarquee3D) return;
+      isMarquee3D = false;
+      if (threeState.controls) {
+        threeState.controls.enabled = true;
+      }
+      if (marqueeBoxEl) {
+        marqueeBoxEl.style.display = 'none';
+      }
+
+      const dist = Math.hypot(e.clientX - marquee3DStart.x, e.clientY - marquee3DStart.y);
+      if (dist <= 5) {
+        // 單點點擊：交由既有的 canvas pointerup 處理 (單擊 Toggle)
+        return;
+      }
+
+      // 拖曳距離 > 5px：執行 3D 矩形多選框選！
+      // 依共識規範：所有作法與 2D 一致，【嚴格只選取目前檢視層 (curLayer)】
+      const curLayer = (threeState._getCurLayer ? threeState._getCurLayer() : (threeState.maxLayer || 1));
+      const targetY = curLayer - 1;
+
+      const minClientX = Math.min(marquee3DStart.x, e.clientX);
+      const maxClientX = Math.max(marquee3DStart.x, e.clientX);
+      const minClientY = Math.min(marquee3DStart.y, e.clientY);
+      const maxClientY = Math.max(marquee3DStart.y, e.clientY);
+
+      const canvasRect = canvas.getBoundingClientRect();
+      const camera = threeState.camera;
+      if (!camera || typeof THREE === 'undefined') return;
+
+      const cx = baseData.dimensions.width / 2;
+      const cy = baseData.dimensions.height / 2;
+      const cz = baseData.dimensions.length / 2;
+
+      const pVector = new THREE.Vector3();
+      const toSelect = [];
+
+      // 1. 檢驗原版 InstancedMesh 落在目前層的方塊
+      if (threeState.blockDataList && threeState.blockDataList.length > 0) {
+        for (let i = 0; i < threeState.blockDataList.length; i++) {
+          const item = threeState.blockDataList[i];
+          if (item.layerIndex !== curLayer) continue;
+
+          const vx = Math.round(item.posX + cx);
+          const vy = Math.round(item.posY + cy);
+          const vz = Math.round(item.posZ + cz);
+
+          if (getEffectiveBid(charKey, vx, vy, vz) === -1) continue;
+
+          pVector.set(item.posX, item.posY, item.posZ);
+          pVector.project(camera);
+
+          // 僅處理鏡頭前方可見物體 (z < 1.0 且 z > -1.0)
+          if (pVector.z < 1.0 && pVector.z > -1.0) {
+            const screenX = ((pVector.x + 1) / 2) * canvasRect.width + canvasRect.left;
+            const screenY = ((-pVector.y + 1) / 2) * canvasRect.height + canvasRect.top;
+
+            if (screenX >= minClientX && screenX <= maxClientX && screenY >= minClientY && screenY <= maxClientY) {
+              toSelect.push({ vx, vy, vz });
+            }
+          }
+        }
+      }
+
+      // 2. 檢驗動態增補方塊落在目前層的方塊
+      if (threeState.dynamicAddedGroup && threeState.dynamicAddedGroup.children) {
+        threeState.dynamicAddedGroup.children.forEach(cube => {
+          if (!cube.userData || !cube.userData.isDynamic) return;
+          if (cube.userData.voxelY !== targetY) return;
+
+          const vx = cube.userData.voxelX;
+          const vy = cube.userData.voxelY;
+          const vz = cube.userData.voxelZ;
+
+          if (getEffectiveBid(charKey, vx, vy, vz) === -1) return;
+
+          pVector.set(vx - cx, vy - cy, vz - cz);
+          pVector.project(camera);
+
+          if (pVector.z < 1.0 && pVector.z > -1.0) {
+            const screenX = ((pVector.x + 1) / 2) * canvasRect.width + canvasRect.left;
+            const screenY = ((-pVector.y + 1) / 2) * canvasRect.height + canvasRect.top;
+
+            if (screenX >= minClientX && screenX <= maxClientX && screenY >= minClientY && screenY <= maxClientY) {
+              toSelect.push({ vx, vy, vz });
+            }
+          }
+        });
+      }
+
+      // 3. 批次加入選取集合（支援鏡像對稱自動同步）
+      if (toSelect.length > 0) {
+        if (!_state.selectedVoxels) _state.selectedVoxels = new Set();
+        toSelect.forEach(({ vx, vy, vz }) => {
+          _state.selectedVoxels.add(`${vx},${vy},${vz}`);
+          if (_state.mirrorSymmetry) {
+            const symX = getSymmetryX(vx, charKey);
+            if (symX !== null && symX !== vx) {
+              _state.selectedVoxels.add(`${symX},${vy},${vz}`);
+            }
+          }
+        });
+        notifyListeners(charKey);
+        updateToolbarUI(charKey);
+        syncThreeMeshFromOverrides(charKey, threeState, baseData);
+        if (typeof onSubmitCallback === 'function') onSubmitCallback();
+      }
+    };
+
+    window.addEventListener('pointerup', handleMarqueeEnd);
+    window.addEventListener('pointercancel', handleMarqueeEnd);
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isMarquee3D) {
+        isMarquee3D = false;
+        if (threeState.controls) threeState.controls.enabled = true;
+        if (marqueeBoxEl) marqueeBoxEl.style.display = 'none';
+      }
     });
 
     canvas.addEventListener('pointerup', (e) => {
@@ -1660,7 +1841,7 @@
       }
 
       setupToolbarEvents(container, charKey, threeState, baseData, onSubmitCallback);
-      bindThreeRaycaster(charKey, threeState, baseData, canvasWrap);
+      bindThreeRaycaster(charKey, threeState, baseData, canvasWrap, onSubmitCallback);
     }
 
     // 延遲就緒保護：若雲端或本地已有存檔，確保 3D 網格初次掛載即時同步最新狀態
