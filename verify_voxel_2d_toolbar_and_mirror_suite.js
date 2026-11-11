@@ -251,10 +251,10 @@ test('3.5 2D 鏡像對稱格子具備實體色彩預覽、發光脈衝框與無�
   assert.strictEqual(cssCode.includes('outline: 3px solid #facc15'), true, '應具備亮金霓虹 3px 外框');
 });
 
-test('3.6 切片滾輪縮放範圍對齊 0.30~4.0，徹底解除 0.6 跳大卡死限制', () => {
+test('3.6 切片滾輪縮放範圍對齊 0.30~10.0，徹底解除卡死限制', () => {
   const appCode = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf-8');
-  assert.strictEqual(appCode.includes('Math.min(4.0, Math.max(0.30, Number((zoomObj.scale * factor).toFixed(3))))'), true, '滾輪縮放應支援 0.30~4.0');
-  assert.strictEqual(appCode.includes('Math.min(4.0, Math.max(0.30, Number(newScale.toFixed(2))))'), true, '按鈕縮放應對齊 0.30~4.0');
+  assert.strictEqual(appCode.includes('Math.min(10.0, Math.max(0.30, Number((zoomObj.scale * factor).toFixed(3))))'), true, '滾輪縮放應支援 0.30~10.0');
+  assert.strictEqual(appCode.includes('Math.min(10.0, Math.max(0.30, Number(newScale.toFixed(2))))'), true, '按鈕縮放應對齊 0.30~10.0');
   assert.strictEqual(appCode.includes('containerH = container.clientHeight || 580;'), true, '自適應高度 fallback 應為 580px');
 });
 

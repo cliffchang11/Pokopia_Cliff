@@ -1350,6 +1350,13 @@
         });
       }
     }
+
+    // 4. 若當前註冊有剖面切片/透視過濾器，自動回呼以保持透視半透明與分層過濾一致 (防實心方塊覆蓋)
+    if (typeof threeState._onAfterSync === 'function') {
+      threeState._onAfterSync();
+    } else if (typeof threeState._sliceFilter === 'function') {
+      threeState._sliceFilter();
+    }
   }
 
   function updateToolbarUI(charKey) {
@@ -1445,6 +1452,10 @@
       _state.tool = 'rotate';
     }
     updateToolbarUI(charKey);
+    if (_attachedThreeScenes[charKey] && _attachedThreeScenes[charKey].threeState) {
+      const ts = _attachedThreeScenes[charKey].threeState;
+      if (typeof ts._updateDimensions === 'function') ts._updateDimensions();
+    }
   }
 
   function toggleGhostLayer(charKey) {

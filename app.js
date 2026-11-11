@@ -7561,7 +7561,7 @@
       zoomObj.panY = 0;
     } else {
       const newScale = zoomObj.scale * factor;
-      zoomObj.scale = Math.min(4.0, Math.max(0.30, Number(newScale.toFixed(2))));
+      zoomObj.scale = Math.min(10.0, Math.max(0.30, Number(newScale.toFixed(2))));
     }
     applyWorkspaceZoomPan(workspace, zoomObj);
   }
@@ -7578,8 +7578,8 @@
     // 滾輪平滑縮放 (依滑鼠位置中心錨定 Zoom to Cursor)
     container.addEventListener('wheel', (e) => {
       e.preventDefault();
-      const factor = e.deltaY < 0 ? 1.11 : 0.90;
-      const newScale = Math.min(4.0, Math.max(0.30, Number((zoomObj.scale * factor).toFixed(3))));
+      const factor = e.deltaY < 0 ? 1.22 : 0.82;
+      const newScale = Math.min(10.0, Math.max(0.30, Number((zoomObj.scale * factor).toFixed(3))));
       if (newScale !== zoomObj.scale) {
         const rect = container.getBoundingClientRect();
         // 計算滑鼠相對於容器可視中心的距離
@@ -8830,7 +8830,8 @@
           add3DCalipers(group, p1z, p2z, new THREE.Vector3(-1, 0, 0), 1.2, layerMeta.length, 0xf97316, '#f97316');
         }
 
-        if (currentHoverVoxel) {
+        const isEditorActive = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.state && VoxelDeltaStore.state.editorMode);
+        if (!isEditorActive && currentHoverVoxel) {
           const { startX, endX, startZ, endZ, bX, bZ, runLenX, runLenZ, py, gapInfo } = currentHoverVoxel;
 
           if (runLenX > 1 || (runLenX === 1 && runLenZ === 1)) {
@@ -8906,7 +8907,7 @@
               `;
             }
 
-            if (currentHoverVoxel) {
+            if (!isEditorActive && currentHoverVoxel) {
               const { startX, endX, startZ, endZ, bX, bZ, runLenX, runLenZ, py, gapInfo } = currentHoverVoxel;
               const hTickLen = 5;
 
@@ -8967,6 +8968,15 @@
 
     // 4.3 120ms 靜止判定 (Debounce) + 分層檢測，杜絕任何 pointermove 卡頓
     const handleStationaryHover = (e) => {
+      const isEditorActive = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.state && VoxelDeltaStore.state.editorMode);
+      if (isEditorActive) {
+        if (currentHoverVoxel !== null) {
+          currentHoverVoxel = null;
+          updateDimensionOverlay();
+          requestThreeRender(charKey);
+        }
+        return;
+      }
       if (!threeState.isInit || !threeState.camera || !threeState.instancedMesh || !raycaster || !mouse) return;
       const rect = canvasEl.getBoundingClientRect();
       if (!rect || rect.width <= 0) return;

@@ -12830,6 +12830,9 @@ body.has-floating-back .scroll-top-btn {
 .bulba-grid-container.is-panning {
   cursor: grabbing;
 }
+.bulba-grid-container.is-panning .bulba-grid-workspace {
+  transition: none !important;
+}
 
 /* 巴斯光年 Sketchfab 原作者官方視窗容器 */
 .buzz-iframe-wrap {
