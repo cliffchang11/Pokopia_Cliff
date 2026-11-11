@@ -7695,9 +7695,6 @@
       renderBulbaLayer(bulbaState.curLayer);
       setTimeout(initBulbaThreeEngine, 60);
     }
-    if (typeof VoxelDeltaStore !== 'undefined' && typeof VoxelDeltaStore.updateSavedBlockCountUI === 'function') {
-      VoxelDeltaStore.updateSavedBlockCountUI(char);
-    }
   }
 
   function switchBuzz3DMode(mode) {
@@ -9510,9 +9507,6 @@
     const initialOverrides = VoxelDeltaStore.getOverrides ? VoxelDeltaStore.getOverrides(charKey) : null;
     if (initialOverrides && Object.keys(initialOverrides).length > 0) {
       VoxelDeltaStore.syncThreeMeshFromOverrides(charKey, threeState, baseData);
-      if (typeof VoxelDeltaStore.updateSavedBlockCountUI === 'function') {
-        VoxelDeltaStore.updateSavedBlockCountUI(charKey);
-      }
       if (typeof refreshSliceCallback === 'function') {
         refreshSliceCallback();
       }
@@ -9523,9 +9517,6 @@
       if (saved && Object.keys(saved).length > 0) {
         VoxelDeltaStore.loadOverrides(charKey, saved);
         VoxelDeltaStore.syncThreeMeshFromOverrides(charKey, threeState, baseData);
-        if (typeof VoxelDeltaStore.updateSavedBlockCountUI === 'function') {
-          VoxelDeltaStore.updateSavedBlockCountUI(charKey);
-        }
         if (typeof refreshSliceCallback === 'function') {
           refreshSliceCallback();
         }
@@ -9610,10 +9601,9 @@
       opacity: 0.60,
       roughness: 0.88,
       metalness: 0.0,
-      depthWrite: false
+      depthWrite: true
     });
     const ghostInstancedMesh = new THREE.InstancedMesh(geometry, ghostMaterial, totalCount);
-    ghostInstancedMesh.renderOrder = 1;
     const dummy = new THREE.Object3D();
     const color = new THREE.Color();
 
@@ -9781,13 +9771,11 @@
           if (isGhost && cubeLayer === maxL && !hide) {
             cube.material.transparent = true;
             cube.material.opacity = 0.60;
-            cube.material.depthWrite = false;
-            cube.renderOrder = 1;
+            cube.material.depthWrite = true;
           } else {
             cube.material.transparent = false;
             cube.material.opacity = 1.0;
             cube.material.depthWrite = true;
-            cube.renderOrder = 0;
           }
         }
       });
@@ -9874,10 +9862,9 @@
       opacity: 0.60,
       roughness: 0.88,
       metalness: 0.0,
-      depthWrite: false
+      depthWrite: true
     });
     const ghostInstancedMesh = new THREE.InstancedMesh(geometry, ghostMaterial, totalCount);
-    ghostInstancedMesh.renderOrder = 1;
     const dummy = new THREE.Object3D();
     const color = new THREE.Color();
 
@@ -10046,13 +10033,11 @@
           if (isGhost && cubeLayer === maxL && !hide) {
             cube.material.transparent = true;
             cube.material.opacity = 0.60;
-            cube.material.depthWrite = false;
-            cube.renderOrder = 1;
+            cube.material.depthWrite = true;
           } else {
             cube.material.transparent = false;
             cube.material.opacity = 1.0;
             cube.material.depthWrite = true;
-            cube.renderOrder = 0;
           }
         }
       });
@@ -10376,10 +10361,9 @@
       opacity: 0.60,
       roughness: 0.88,
       metalness: 0.0,
-      depthWrite: false
+      depthWrite: true
     });
     const ghostInstancedMesh = new THREE.InstancedMesh(geometry, ghostMaterial, totalCount);
-    ghostInstancedMesh.renderOrder = 1;
     const dummy = new THREE.Object3D();
     const color = new THREE.Color();
 
@@ -10547,13 +10531,11 @@
           if (isGhost && cubeLayer === maxL && !hide) {
             cube.material.transparent = true;
             cube.material.opacity = 0.60;
-            cube.material.depthWrite = false;
-            cube.renderOrder = 1;
+            cube.material.depthWrite = true;
           } else {
             cube.material.transparent = false;
             cube.material.opacity = 1.0;
             cube.material.depthWrite = true;
-            cube.renderOrder = 0;
           }
         }
       });
@@ -10877,10 +10859,9 @@
       opacity: 0.60,
       roughness: 0.88,
       metalness: 0.0,
-      depthWrite: false
+      depthWrite: true
     });
     const ghostInstancedMesh = new THREE.InstancedMesh(geometry, ghostMaterial, totalCount);
-    ghostInstancedMesh.renderOrder = 1;
     const dummy = new THREE.Object3D();
     const color = new THREE.Color();
 
@@ -11048,13 +11029,11 @@
           if (isGhost && cubeLayer === maxL && !hide) {
             cube.material.transparent = true;
             cube.material.opacity = 0.60;
-            cube.material.depthWrite = false;
-            cube.renderOrder = 1;
+            cube.material.depthWrite = true;
           } else {
             cube.material.transparent = false;
             cube.material.opacity = 1.0;
             cube.material.depthWrite = true;
-            cube.renderOrder = 0;
           }
         }
       });
