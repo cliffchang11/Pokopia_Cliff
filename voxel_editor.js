@@ -133,6 +133,7 @@
 
     char.isDirty = false;
     updateSaveButtonUI(charKey, 'saved');
+    updateSavedBlockCountUI(charKey);
 
     // 彈出成功提示
     if (typeof showToast === 'function') {
@@ -241,6 +242,47 @@
       return char.overrides[key];
     }
     return getOriginalBid(charKey, x, y, z);
+  }
+
+  // 計算已儲存修改的淨方塊增減量 (新增 +1, 刪除 -1, 改色 +0)
+  function calculateSavedBlockDelta(charKey) {
+    const char = _state.characters[charKey];
+    if (!char || !char.overrides) return 0;
+    let delta = 0;
+    Object.entries(char.overrides).forEach(([coordStr, bid]) => {
+      const [x, y, z] = coordStr.split(',').map(Number);
+      const origBid = getOriginalBid(charKey, x, y, z);
+      if (origBid !== -1 && bid === -1) {
+        delta -= 1; // 消除原版方塊
+      } else if (origBid === -1 && bid !== -1) {
+        delta += 1; // 新增自訂方塊
+      }
+    });
+    return delta;
+  }
+
+  // 更新卡片標題的總方塊數統計標籤 (依使用者確認儲存後之 overrides 更新)
+  function updateSavedBlockCountUI(charKey) {
+    if (typeof document === 'undefined') return;
+    const baseInfoMap = {
+      buzz: { elId: 'totalStat_buzz', base: 2693, desc: '(角色本體)' },
+      bulba: { elId: 'totalStat_bulba', base: 8415, desc: '' },
+      ivysaur: { elId: 'totalStat_ivysaur', base: 70384, desc: '(生動張嘴露齒款)' },
+      venusaur: { elId: 'totalStat_venusaur', base: 68180, desc: '(高精度本體與立體草皮)' }
+    };
+    const info = baseInfoMap[charKey];
+    if (!info) return;
+    const delta = calculateSavedBlockDelta(charKey);
+    const finalTotal = info.base + delta;
+    const statEl = document.getElementById(info.elId);
+    if (statEl) {
+      if (delta === 0) {
+        statEl.textContent = `${info.base.toLocaleString()} 顆方塊 ${info.desc}`.trim();
+      } else {
+        const sign = delta > 0 ? `+${delta.toLocaleString()}` : `${delta.toLocaleString()}`;
+        statEl.textContent = `${finalTotal.toLocaleString()} 顆方塊 ${info.desc ? info.desc + ' ' : ''}(${sign})`.trim();
+      }
+    }
   }
 
   // 套用單一或成對 (鏡像) 變更
@@ -849,6 +891,7 @@
           saveOverridesToStorage(k, remoteTime || Date.now());
           notifyListeners(k, true);
           updateSaveButtonUI(k, 'saved');
+          updateSavedBlockCountUI(k);
           anyHydrated = true;
         }
       }
@@ -1215,35 +1258,72 @@
       const vz = Math.round(item.posZ + cz);
 
       const bid = getEffectiveBid(charKey, vx, vy, vz);
+      const isGhost = (typeof _state !== 'undefined' && _state.ghostLayer);
+      const hasGhostMesh = !!threeState.ghostInstancedMesh;
+      const curMode = (threeState._getCurMode ? threeState._getCurMode() : null);
+      const isSlice = (curMode === 'slice');
+      const curLayer = (threeState._getCurLayer ? threeState._getCurLayer() : 9999);
+      const minL = (threeState.minLayer !== undefined ? threeState.minLayer : 1);
+      const maxL = (threeState.maxLayer !== undefined ? threeState.maxLayer : curLayer);
+      const isSingle = (threeState.layerFilterMode === 'single');
 
       if (bid === -1) {
         dummy.position.set(item.posX, item.posY, item.posZ);
         dummy.scale.set(0, 0, 0);
         dummy.updateMatrix();
         mesh.setMatrixAt(item.index, dummy.matrix);
+        if (hasGhostMesh) {
+          threeState.ghostInstancedMesh.setMatrixAt(item.index, dummy.matrix);
+        }
       } else {
         dummy.position.set(item.posX, item.posY, item.posZ);
-        let hideInSlice = false;
-        if (threeState._getCurMode && threeState._getCurMode() === 'slice') {
-          const curLayer = (threeState._getCurLayer ? threeState._getCurLayer() : 9999);
-          if (item.layerIndex > curLayer) hideInSlice = true;
-        }
-        if (hideInSlice) {
-          dummy.scale.set(0, 0, 0);
-        } else {
-          dummy.scale.set(1, 1, 1);
-        }
-        dummy.updateMatrix();
-        mesh.setMatrixAt(item.index, dummy.matrix);
+        const inRange = (item.layerIndex >= minL && item.layerIndex <= maxL);
+        const isVisible = (!isSlice || ((isSingle ? item.layerIndex === curLayer : item.layerIndex <= curLayer) && inRange));
 
-        const pItem = (baseData.palette && baseData.palette[bid]) ? baseData.palette[bid] : { color: '#00a8c8' };
-        color.set(pItem.color);
-        mesh.setColorAt(item.index, color);
+        if (!isVisible) {
+          dummy.scale.set(0, 0, 0);
+          dummy.updateMatrix();
+          mesh.setMatrixAt(item.index, dummy.matrix);
+          if (hasGhostMesh) {
+            threeState.ghostInstancedMesh.setMatrixAt(item.index, dummy.matrix);
+          }
+        } else if (isGhost && hasGhostMesh && item.layerIndex === maxL) {
+          // 頂層透視方塊：實體網格縮為 0，透視網格顯示為 1
+          dummy.scale.set(0, 0, 0);
+          dummy.updateMatrix();
+          mesh.setMatrixAt(item.index, dummy.matrix);
+
+          dummy.scale.set(1, 1, 1);
+          dummy.updateMatrix();
+          threeState.ghostInstancedMesh.setMatrixAt(item.index, dummy.matrix);
+
+          const pItem = (baseData.palette && baseData.palette[bid]) ? baseData.palette[bid] : { color: '#00a8c8' };
+          color.set(pItem.color);
+          threeState.ghostInstancedMesh.setColorAt(item.index, color);
+        } else {
+          // 一般實體方塊：實體顯示為 1，透視網格縮 0
+          dummy.scale.set(1, 1, 1);
+          dummy.updateMatrix();
+          mesh.setMatrixAt(item.index, dummy.matrix);
+          if (hasGhostMesh) {
+            dummy.scale.set(0, 0, 0);
+            dummy.updateMatrix();
+            threeState.ghostInstancedMesh.setMatrixAt(item.index, dummy.matrix);
+          }
+
+          const pItem = (baseData.palette && baseData.palette[bid]) ? baseData.palette[bid] : { color: '#00a8c8' };
+          color.set(pItem.color);
+          mesh.setColorAt(item.index, color);
+        }
       }
     });
 
     mesh.instanceMatrix.needsUpdate = true;
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+    if (threeState.ghostInstancedMesh) {
+      threeState.ghostInstancedMesh.instanceMatrix.needsUpdate = true;
+      if (threeState.ghostInstancedMesh.instanceColor) threeState.ghostInstancedMesh.instanceColor.needsUpdate = true;
+    }
 
     // 2. 同步「自訂動態增補網格 (Dynamic Added Mesh)」
     if (typeof THREE !== 'undefined') {
@@ -1329,6 +1409,18 @@
             }
             cube.scale.set(hideDynamic ? 0 : 1, hideDynamic ? 0 : 1, hideDynamic ? 0 : 1);
             cube.visible = !hideDynamic;
+            const isGhost = (typeof _state !== 'undefined' && _state.ghostLayer);
+            if (isGhost && cubeLayer === maxLayer && !hideDynamic) {
+              cube.material.transparent = true;
+              cube.material.opacity = 0.60;
+              cube.material.depthWrite = false;
+              cube.renderOrder = 1;
+            } else {
+              cube.material.transparent = false;
+              cube.material.opacity = 1.0;
+              cube.material.depthWrite = true;
+              cube.renderOrder = 0;
+            }
             cube.userData = { voxelX: x, voxelY: y, voxelZ: z, isDynamic: true };
             threeState.dynamicAddedGroup.add(cube);
           }
@@ -1633,6 +1725,7 @@
             _lastLocalActionTimes[charKey] = Date.now();
             saveOverridesToStorage(charKey);
             saveOverridesToCloud(charKey);
+            updateSavedBlockCountUI(charKey);
             syncThreeMeshFromOverrides(charKey, threeState, baseData);
             if (typeof onSubmitCallback === 'function') {
               onSubmitCallback(charKey, {});
@@ -1667,6 +1760,7 @@
     const curOv = getOverrides(charKey);
     if (curOv && Object.keys(curOv).length > 0) {
       syncThreeMeshFromOverrides(charKey, threeState, baseData);
+      updateSavedBlockCountUI(charKey);
     }
   }
 
@@ -1727,6 +1821,8 @@
     saveOverridesToStorage,
     loadOverridesFromStorage,
     saveOverridesToCloud,
+    calculateSavedBlockDelta,
+    updateSavedBlockCountUI,
     resetLocalActionTime: function (charKey) {
       if (charKey) {
         _lastLocalActionTimes[charKey] = 0;
