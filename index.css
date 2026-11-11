@@ -12554,6 +12554,24 @@ body.has-floating-back .scroll-top-btn {
   line-height: 1;
 }
 
+.vlc-step-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.vlc-step-group .vlc-step-btn {
+  flex: 1;
+  min-width: 0;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  font-size: 0.65rem;
+  border-radius: 5px;
+}
+
 .vlc-step-btn {
   display: flex;
   align-items: center;
@@ -12623,6 +12641,15 @@ body.has-floating-back .scroll-top-btn {
   transition: transform 0.1s ease;
 }
 
+.vlc-thumb-top {
+  border-color: #0d9488;
+  box-shadow: 0 1px 4px rgba(13, 148, 136, 0.3);
+}
+
+.vlc-thumb-bottom {
+  border-color: #0f172a;
+}
+
 /* 擴大觸控與滑鼠命中熱區至 28px，下層滑塊拖曳抓取更輕鬆敏銳 */
 .vlc-dual-thumb::after {
   content: '';
@@ -12636,9 +12663,24 @@ body.has-floating-back .scroll-top-btn {
 }
 
 .vlc-dual-thumb:hover,
-.vlc-dual-thumb.is-dragging {
+.vlc-dual-thumb.is-dragging,
+.vlc-dual-thumb.is-active-focus {
   transform: translate(-50%, -50%) scale(1.2);
+  z-index: 10;
+}
+
+.vlc-thumb-top:hover,
+.vlc-thumb-top.is-dragging,
+.vlc-thumb-top.is-active-focus {
   border-color: #0d9488;
+  background: #f0fdfa;
+}
+
+.vlc-thumb-bottom:hover,
+.vlc-thumb-bottom.is-dragging,
+.vlc-thumb-bottom.is-active-focus {
+  border-color: #0f172a;
+  background: #f8fafc;
 }
 
 .vlc-slider-vertical {

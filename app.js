@@ -7700,6 +7700,9 @@
   function switchBuzz3DMode(mode) {
     buzzState.curMode = mode;
     save3DState('buzz', null, mode);
+    if (buzzState.three && mode === 'full') {
+      buzzState.three.isVlcActive = false;
+    }
     if (DOM.btnBuzzModeFull) {
       DOM.btnBuzzModeFull.classList.toggle('active', mode === 'full');
     }
@@ -7720,7 +7723,7 @@
       if (DOM.buzz3dIframeWrap) DOM.buzz3dIframeWrap.classList.remove('active');
       if (DOM.buzzSliceCard) DOM.buzzSliceCard.style.display = 'block';
       updateBuzz3DSliceFilter();
-      setTimeout(initBuzzThreeEngine, 30);
+      requestThreeRender('buzz');
     }
   }
 
@@ -7756,6 +7759,9 @@
   function switchBulba3DMode(mode) {
     bulbaState.curMode = mode;
     save3DState('bulba', null, mode);
+    if (bulbaState.three && mode === 'full') {
+      bulbaState.three.isVlcActive = false;
+    }
     if (DOM.btnBulbaModeFull) {
       DOM.btnBulbaModeFull.classList.toggle('active', mode === 'full');
     }
@@ -8359,7 +8365,10 @@
         <div class="vlc-cur-layer" id="vlcCurLayer_${charKey}">Y <strong>${curY}</strong></div>
         <div class="vlc-layer-range" id="vlcLayerRange_${charKey}">1–${maxLayers}</div>
       </div>
-      <button type="button" class="vlc-step-btn vlc-up" id="vlcUp_${charKey}" title="下一層 (Y+1)">▲</button>
+      <div class="vlc-step-group vlc-step-group-top">
+        <button type="button" class="vlc-step-btn vlc-top-up" id="vlcTopUp_${charKey}" title="上限 +1 (最高至頂層)">▲</button>
+        <button type="button" class="vlc-step-btn vlc-top-down" id="vlcTopDown_${charKey}" title="上限 -1 (不低於下限)">▼</button>
+      </div>
       <div class="vlc-slider-track" id="vlcTrack_${charKey}">
         <div class="vlc-dual-rail" id="vlcRail_${charKey}">
           <div class="vlc-dual-fill" id="vlcFill_${charKey}"></div>
@@ -8368,7 +8377,10 @@
         </div>
         <input type="range" class="vlc-slider-vertical" id="vlcSlider_${charKey}" min="1" max="${maxLayers}" value="${curY}" orient="vertical" style="display:none;">
       </div>
-      <button type="button" class="vlc-step-btn vlc-down" id="vlcDown_${charKey}" title="上一層 (Y-1)">▼</button>
+      <div class="vlc-step-group vlc-step-group-bottom">
+        <button type="button" class="vlc-step-btn vlc-bottom-up" id="vlcBottomUp_${charKey}" title="下限 +1 (不高於上限)">▲</button>
+        <button type="button" class="vlc-step-btn vlc-bottom-down" id="vlcBottomDown_${charKey}" title="下限 -1 (最低至第1層)">▼</button>
+      </div>
     `;
     wrap.appendChild(vlc);
 
@@ -8414,8 +8426,10 @@
     const fillEl = vlc.querySelector(`#vlcFill_${charKey}`);
     const railEl = vlc.querySelector(`#vlcRail_${charKey}`);
     const sliderFallback = vlc.querySelector(`#vlcSlider_${charKey}`);
-    const btnUp = vlc.querySelector(`#vlcUp_${charKey}`);
-    const btnDown = vlc.querySelector(`#vlcDown_${charKey}`);
+    const btnTopUp = vlc.querySelector(`#vlcTopUp_${charKey}`);
+    const btnTopDown = vlc.querySelector(`#vlcTopDown_${charKey}`);
+    const btnBottomUp = vlc.querySelector(`#vlcBottomUp_${charKey}`);
+    const btnBottomDown = vlc.querySelector(`#vlcBottomDown_${charKey}`);
     const btnMode = vlc.querySelector(`#vlcModeBtn_${charKey}`);
     const popup = vlc.querySelector(`#vlcModePopup_${charKey}`);
 
@@ -8509,6 +8523,8 @@
         threeState._lastActiveThumb = 'top';
         isDragging = 'top';
         thumbTop.classList.add('is-dragging');
+        thumbTop.classList.add('is-active-focus');
+        if (thumbBottom) thumbBottom.classList.remove('is-active-focus');
         try { thumbTop.setPointerCapture(e.pointerId); } catch (_) {}
         window.addEventListener('pointermove', handleDragMove, { passive: true });
         window.addEventListener('pointerup', handleDragEnd);
@@ -8522,6 +8538,8 @@
         threeState._lastActiveThumb = 'bottom';
         isDragging = 'bottom';
         thumbBottom.classList.add('is-dragging');
+        thumbBottom.classList.add('is-active-focus');
+        if (thumbTop) thumbTop.classList.remove('is-active-focus');
         try { thumbBottom.setPointerCapture(e.pointerId); } catch (_) {}
         window.addEventListener('pointermove', handleDragMove, { passive: true });
         window.addEventListener('pointerup', handleDragEnd);
@@ -8564,27 +8582,69 @@
       });
     }
 
-    if (btnUp) {
-      btnUp.addEventListener('click', (e) => {
+    // 上限 (Max Layer) 上下調整按鈕組（具備下限硬邊界保護）
+    if (btnTopUp) {
+      btnTopUp.addEventListener('click', (e) => {
         e.stopPropagation();
         activateVlcSliceMode();
-        const adjustBottom = (e.shiftKey || threeState._lastActiveThumb === 'bottom') && threeState.layerFilterMode !== 'single';
-        if (adjustBottom) {
-          const cur = threeState.minLayer || 1;
-          if (cur < (threeState.maxLayer || maxLayers)) {
-            threeState.minLayer = cur + 1;
+        threeState._lastActiveThumb = 'top';
+        const curMax = threeState.maxLayer || getCharCurLayer();
+        if (curMax < maxLayers) {
+          const next = curMax + 1;
+          threeState.maxLayer = next;
+          if (threeState.layerFilterMode === 'single') threeState.minLayer = next;
+          setCharLayer(next);
+          updateDualSliderUI();
+          getCharSliceFilter()();
+          if (typeof threeState._updateDimensions === 'function') threeState._updateDimensions();
+          requestThreeRender(charKey);
+        }
+      });
+    }
+
+    if (btnTopDown) {
+      btnTopDown.addEventListener('click', (e) => {
+        e.stopPropagation();
+        activateVlcSliceMode();
+        threeState._lastActiveThumb = 'top';
+        const curMax = threeState.maxLayer || getCharCurLayer();
+        const minL = (threeState.layerFilterMode === 'single') ? 1 : (threeState.minLayer || 1);
+        if (curMax > minL) {
+          const prev = curMax - 1;
+          threeState.maxLayer = prev;
+          if (threeState.layerFilterMode === 'single') threeState.minLayer = prev;
+          setCharLayer(prev);
+          updateDualSliderUI();
+          getCharSliceFilter()();
+          if (typeof threeState._updateDimensions === 'function') threeState._updateDimensions();
+          requestThreeRender(charKey);
+        }
+      });
+    }
+
+    // 下限 (Min Layer) 上下調整按鈕組（具備上限硬邊界保護）
+    if (btnBottomUp) {
+      btnBottomUp.addEventListener('click', (e) => {
+        e.stopPropagation();
+        activateVlcSliceMode();
+        threeState._lastActiveThumb = 'bottom';
+        if (threeState.layerFilterMode === 'single') {
+          const cur = threeState.maxLayer || getCharCurLayer();
+          if (cur < maxLayers) {
+            const next = cur + 1;
+            threeState.maxLayer = next;
+            threeState.minLayer = next;
+            setCharLayer(next);
             updateDualSliderUI();
             getCharSliceFilter()();
             if (typeof threeState._updateDimensions === 'function') threeState._updateDimensions();
             requestThreeRender(charKey);
           }
         } else {
-          const cur = threeState.maxLayer || getCharCurLayer();
-          if (cur < maxLayers) {
-            const next = cur + 1;
-            threeState.maxLayer = next;
-            if (threeState.layerFilterMode === 'single') threeState.minLayer = next;
-            setCharLayer(next);
+          const curMin = threeState.minLayer || 1;
+          const maxL = threeState.maxLayer || maxLayers;
+          if (curMin < maxL) {
+            threeState.minLayer = curMin + 1;
             updateDualSliderUI();
             getCharSliceFilter()();
             if (typeof threeState._updateDimensions === 'function') threeState._updateDimensions();
@@ -8594,27 +8654,27 @@
       });
     }
 
-    if (btnDown) {
-      btnDown.addEventListener('click', (e) => {
+    if (btnBottomDown) {
+      btnBottomDown.addEventListener('click', (e) => {
         e.stopPropagation();
         activateVlcSliceMode();
-        const adjustBottom = (e.shiftKey || threeState._lastActiveThumb === 'bottom') && threeState.layerFilterMode !== 'single';
-        if (adjustBottom) {
-          const cur = threeState.minLayer || 1;
+        threeState._lastActiveThumb = 'bottom';
+        if (threeState.layerFilterMode === 'single') {
+          const cur = threeState.maxLayer || getCharCurLayer();
           if (cur > 1) {
-            threeState.minLayer = cur - 1;
+            const prev = cur - 1;
+            threeState.maxLayer = prev;
+            threeState.minLayer = prev;
+            setCharLayer(prev);
             updateDualSliderUI();
             getCharSliceFilter()();
             if (typeof threeState._updateDimensions === 'function') threeState._updateDimensions();
             requestThreeRender(charKey);
           }
         } else {
-          const cur = threeState.maxLayer || getCharCurLayer();
-          if (cur > 1) {
-            const prev = cur - 1;
-            threeState.maxLayer = prev;
-            if (threeState.layerFilterMode === 'single') threeState.minLayer = prev;
-            setCharLayer(prev);
+          const curMin = threeState.minLayer || 1;
+          if (curMin > 1) {
+            threeState.minLayer = curMin - 1;
             updateDualSliderUI();
             getCharSliceFilter()();
             if (typeof threeState._updateDimensions === 'function') threeState._updateDimensions();
@@ -9632,7 +9692,7 @@
     const t = buzzState.three;
     if (!t || !t.isInit || !t.instancedMesh || !t.blockDataList || !t.blockDataList.length) return;
 
-    const isSlice = (buzzState.curMode === 'slice' || !!t.isVlcActive);
+    const isSlice = (buzzState.curMode === 'slice');
     const curLayer = buzzState.curLayer;
     const isSingle = (t.layerFilterMode === 'single');
     const dummy = new THREE.Object3D();
@@ -9894,7 +9954,7 @@
     const t = bulbaState.three;
     if (!t || !t.isInit || !t.instancedMesh || !t.blockDataList || !t.blockDataList.length) return;
 
-    const isSlice = (bulbaState.curMode === 'slice' || !!t.isVlcActive);
+    const isSlice = (bulbaState.curMode === 'slice');
     const curLayer = bulbaState.curLayer;
     const isSingle = (t.layerFilterMode === 'single');
     const dummy = new THREE.Object3D();
@@ -9992,6 +10052,9 @@
   function switchIvysaur3DMode(mode) {
     ivysaurState.curMode = mode;
     save3DState('ivysaur', null, mode);
+    if (ivysaurState.three && mode === 'full') {
+      ivysaurState.three.isVlcActive = false;
+    }
     if (DOM.btnIvysaurModeFull) {
       DOM.btnIvysaurModeFull.classList.toggle('active', mode === 'full');
     }
@@ -10012,7 +10075,7 @@
       if (DOM.ivysaur3dIframeWrap) DOM.ivysaur3dIframeWrap.classList.remove('active');
       if (DOM.ivysaurSliceCard) DOM.ivysaurSliceCard.style.display = 'block';
       updateIvysaur3DSliceFilter();
-      setTimeout(initIvysaurThreeEngine, 30);
+      requestThreeRender('ivysaur');
     }
   }
 
@@ -10389,7 +10452,7 @@
     const t = ivysaurState.three;
     if (!t || !t.isInit || !t.instancedMesh || !t.blockDataList || !t.blockDataList.length) return;
 
-    const isSlice = (ivysaurState.curMode === 'slice' || !!t.isVlcActive);
+    const isSlice = (ivysaurState.curMode === 'slice');
     const curLayer = ivysaurState.curLayer;
     const isSingle = (t.layerFilterMode === 'single');
     const dummy = new THREE.Object3D();
@@ -10487,6 +10550,9 @@
   function switchVenusaur3DMode(mode) {
     venusaurState.curMode = mode;
     save3DState('venusaur', null, mode);
+    if (venusaurState.three && mode === 'full') {
+      venusaurState.three.isVlcActive = false;
+    }
     if (DOM.btnVenusaurModeFull) {
       DOM.btnVenusaurModeFull.classList.toggle('active', mode === 'full');
     }
@@ -10507,7 +10573,7 @@
       if (DOM.venusaur3dIframeWrap) DOM.venusaur3dIframeWrap.classList.remove('active');
       if (DOM.venusaurSliceCard) DOM.venusaurSliceCard.style.display = 'block';
       updateVenusaur3DSliceFilter();
-      setTimeout(initVenusaurThreeEngine, 30);
+      requestThreeRender('venusaur');
     }
   }
 
@@ -10884,7 +10950,7 @@
     const t = venusaurState.three;
     if (!t || !t.isInit || !t.instancedMesh || !t.blockDataList || !t.blockDataList.length) return;
 
-    const isSlice = (venusaurState.curMode === 'slice' || !!t.isVlcActive);
+    const isSlice = (venusaurState.curMode === 'slice');
     const curLayer = venusaurState.curLayer;
     const isSingle = (t.layerFilterMode === 'single');
     const dummy = new THREE.Object3D();
