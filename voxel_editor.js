@@ -136,7 +136,11 @@
 
     // 彈出成功提示
     if (typeof showToast === 'function') {
-      showToast('✔ 已成功儲存至 Google 雲端！');
+      if (res && res.cloud) {
+        showToast('✔ 已成功儲存至 Google 雲端！');
+      } else {
+        showToast('💾 已保存至本機！(登入 Google 帳號可跨裝置同步)');
+      }
     }
     return res;
   }

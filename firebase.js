@@ -87,9 +87,10 @@
         await setDoc(docRef, { ...progressData, lastUpdated: serverTimestamp() }, setOptions);
         return true;
       })();
-      await Promise.race([savePromise, timeoutPromise]);
+      return await Promise.race([savePromise, timeoutPromise]);
     } catch (e) {
       console.warn('[Firebase] saveCloudProgress failed or timed out:', e);
+      return false;
     }
   }
 
@@ -357,7 +358,7 @@
     }
   }
 
-  function saveVoxelOverrides(charKey, overrides, updatedAt) {
+  async function saveVoxelOverrides(charKey, overrides, updatedAt) {
     try {
       const now = updatedAt || Date.now();
       const storageKey = 'pokopia_voxel_overrides_' + charKey;
@@ -369,14 +370,21 @@
 
       if (_currentUser) {
         // 角色級原子整份替換：以 mergeFields 明確鎖定 voxelOverrides.${charKey}
-        // 讓 Firestore 將該角色資料作為單一原子完全覆蓋，徹底清除已消除方塊的舊 key，絕不觸發 recursive deep merge！
-        saveCloudProgress(_currentUser.uid, {
-          [`voxelOverrides.${charKey}`]: {
-            data: overrides || {},
-            updatedAt: now
+        // 關鍵修復：Firestore SDK 要求 mergeFields 指定 'voxelOverrides.charKey' 時，傳入資料必須為標準巢狀物件結構
+        const cloudSaved = await saveCloudProgress(_currentUser.uid, {
+          voxelOverrides: {
+            [charKey]: {
+              data: overrides || {},
+              updatedAt: now
+            }
           }
         }, [`voxelOverrides.${charKey}`]);
-        return { success: true, cloud: true, message: '已成功儲存至您的 Google 雲端帳號！' };
+
+        if (cloudSaved) {
+          return { success: true, cloud: true, message: '已成功儲存至您的 Google 雲端帳號！' };
+        } else {
+          return { success: true, cloud: false, message: '雲端同步延遲，已先儲存至本機！' };
+        }
       }
       return { success: true, cloud: false, message: '已保存至本地瀏覽器！登入 Google 帳號可跨裝置永久同步。' };
     } catch (e) {
