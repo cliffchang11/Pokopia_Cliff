@@ -231,18 +231,24 @@
           } else if (!lVal) {
             merged.voxelOverrides[charKey] = cVal;
           } else {
-            // 體素修改合併：雲端手動存檔具絕對權威，大於等於本地時間戳一律以雲端為準
+            // 體素修改合併：雲端具備有效手動存檔時間戳時，高於本地時間戳一律以雲端為最高權威
             const lTime = (lVal && lVal.updatedAt !== undefined) ? Number(lVal.updatedAt) : 0;
             const cTime = (cVal && cVal.updatedAt !== undefined) ? Number(cVal.updatedAt) : 0;
+            const lData = (lVal && lVal.data !== undefined) ? lVal.data : lVal;
+            const cData = (cVal && cVal.data !== undefined) ? cVal.data : cVal;
+            const lCount = (lData && typeof lData === 'object') ? Object.keys(lData).length : 0;
+            const cCount = (cData && typeof cData === 'object') ? Object.keys(cData).length : 0;
 
-            if (cTime >= lTime || cTime > lTime) {
+            if (cTime > lTime) {
               merged.voxelOverrides[charKey] = cVal;
             } else if (lTime > cTime) {
               merged.voxelOverrides[charKey] = lVal;
-            } else if (cVal) {
-              merged.voxelOverrides[charKey] = cVal;
+            } else if (cTime === 0 && lTime === 0) {
+              // 雙端皆無時間戳時，優先保留方塊數量較豐富之成果
+              merged.voxelOverrides[charKey] = (lCount >= cCount && lCount > 0) ? lVal : cVal;
             } else {
-              merged.voxelOverrides[charKey] = lVal;
+              // 時間戳完全一致時，以雲端為準
+              merged.voxelOverrides[charKey] = cVal;
             }
           }
         });

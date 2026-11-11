@@ -116,6 +116,44 @@
     });
   }
 
+  // 輕量操作回饋 Toast (無縫銜接全域 Toast 元件，並具備自包含容器建立與樣式呈現容錯)
+  function triggerToast(message, type = 'success') {
+    if (typeof window !== 'undefined') {
+      if (typeof window.showCsToast === 'function') {
+        window.showCsToast(message, type);
+        return;
+      }
+      if (typeof window.showToast === 'function' && window.showToast !== triggerToast) {
+        window.showToast(message, type);
+        return;
+      }
+    }
+    if (typeof document !== 'undefined' && typeof document.createElement === 'function' && document.body) {
+      let container = document.getElementById('csToastContainer');
+      if (!container) {
+        container = document.createElement('div');
+        container.id = 'csToastContainer';
+        container.className = 'cs-toast-container';
+        document.body.appendChild(container);
+      }
+      const toast = document.createElement('div');
+      toast.className = `cs-toast cs-toast-${type}`;
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.classList.add('cs-toast-show');
+      }, 10);
+      setTimeout(() => {
+        toast.classList.remove('cs-toast-show');
+        setTimeout(() => toast.remove(), 300);
+      }, 2500);
+    }
+  }
+
+  if (typeof window !== 'undefined' && !window.showToast) {
+    window.showToast = triggerToast;
+  }
+
   // 手動儲存按鈕動作：點擊時一次性完整寫入 Firebase 與 LocalStorage
   async function saveOverridesToCloud(charKey) {
     if (typeof window === 'undefined') return { success: false };
@@ -134,13 +172,13 @@
     char.isDirty = false;
     updateSaveButtonUI(charKey, 'saved');
 
-    // 彈出成功提示
-    if (typeof showToast === 'function') {
-      if (res && res.cloud) {
-        showToast('✔ 已成功儲存至 Google 雲端！');
-      } else {
-        showToast('💾 已保存至本機！(登入 Google 帳號可跨裝置同步)');
-      }
+    // 彈出實質操作提示
+    if (res && res.cloud) {
+      triggerToast('✔ 已成功儲存至 Google 雲端！', 'success');
+    } else if (res && res.success) {
+      triggerToast('💾 已保存至本機！(登入 Google 帳號可跨裝置同步)', 'info');
+    } else {
+      triggerToast('⚠️ 儲存失敗：' + (res && res.error ? (res.error.message || res.error) : '無法連接雲端'), 'error');
     }
     return res;
   }
@@ -858,8 +896,12 @@
       }
     });
 
-    if (anyHydrated && typeof showToast === 'function') {
-      showToast('☁️ 已同步 Google 雲端最新進度！');
+    if (anyHydrated) {
+      if (typeof showToast === 'function') {
+        showToast('☁️ 已同步 Google 雲端最新進度！');
+      } else {
+        triggerToast('☁️ 已同步 Google 雲端最新進度！', 'info');
+      }
     }
   }
 

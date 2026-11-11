@@ -4411,6 +4411,12 @@
     }, 2000);
   }
 
+  // 全域標準化掛載 Toast 介面，供體素編輯器與非同步同步系統直接調用
+  if (typeof window !== 'undefined') {
+    window.showCsToast = showCsToast;
+    window.showToast = showCsToast;
+  }
+
   // 設定當前接收物品的目標收納盒
   function setActiveTargetBox(boxId, shouldOpenDrawer = true) {
     activeDropTargetBoxId = boxId;
