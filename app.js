@@ -9191,8 +9191,18 @@
     });
 
     if (threeState.controls) {
+      let _ctrlRafId = null;
       threeState.controls.addEventListener('change', () => {
-        updateDimensionOverlay();
+        if (typeof requestAnimationFrame === 'function') {
+          if (!_ctrlRafId) {
+            _ctrlRafId = requestAnimationFrame(() => {
+              _ctrlRafId = null;
+              updateDimensionOverlay();
+            });
+          }
+        } else {
+          updateDimensionOverlay();
+        }
       });
     }
 
@@ -9493,9 +9503,10 @@
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
       controls.dampingFactor = 0.08;
+      controls.panSpeed = 2.2;
       controls.target.set(0, 0, 0);
       controls.maxDistance = 250;
-      controls.minDistance = 2;
+      controls.minDistance = 0.3;
     }
 
     const data = BUZZ_VOXEL_DATA;
@@ -9750,9 +9761,10 @@
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
       controls.dampingFactor = 0.08;
+      controls.panSpeed = 2.2;
       controls.target.set(0, 0, 0);
       controls.maxDistance = 250;
-      controls.minDistance = 2;
+      controls.minDistance = 0.3;
     }
 
 
@@ -10246,9 +10258,10 @@
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
       controls.dampingFactor = 0.08;
+      controls.panSpeed = 2.2;
       controls.target.set(0, 0, 0);
       controls.maxDistance = 500;
-      controls.minDistance = 2;
+      controls.minDistance = 0.3;
     }
 
     const data = IVYSAUR_VOXEL_DATA;
@@ -10739,9 +10752,10 @@
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
       controls.dampingFactor = 0.08;
+      controls.panSpeed = 2.2;
       controls.target.set(0, 0, 0);
       controls.maxDistance = 650;
-      controls.minDistance = 2;
+      controls.minDistance = 0.3;
     }
 
     const data = VENUSAUR_VOXEL_DATA;
