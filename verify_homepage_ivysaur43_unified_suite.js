@@ -190,23 +190,144 @@ assert.strictEqual(normalized.voxelOverrides.ivysaur43.data['5,5,5'], 2, '43層�
 console.log('  ✓ PASS: 5.1 Firebase 雲端字串包雙向打包與解包支援 ivysaur43 且保持向後相容');
 
 // ─────────────────────────────────────────────────────────────
-// 測試組 6: 全站快取清單與 Service Worker v4.94.0 版本一致性
+// 測試組 6: 全站快取清單與 Service Worker v4.95.0 版本一致性
 // ─────────────────────────────────────────────────────────────
-console.log('\n【測試組 6: 全站快取清單與 Service Worker v4.94.0 版本一致性】');
+console.log('\n【測試組 6: 全站快取清單與 Service Worker v4.95.0 版本一致性】');
 
 const swJs = fs.readFileSync('sw.js', 'utf8');
 
-assert.ok(swJs.includes("const CACHE_NAME = 'pokopia-cache-v4.94.0';"), 'sw.js CACHE_NAME 必須為 pokopia-cache-v4.94.0');
-assert.ok(swJs.includes("'./ivysaur43_voxel_data.js?v=4.94.0',"), 'sw.js 必須快取 ivysaur43_voxel_data.js');
+assert.ok(swJs.includes("const CACHE_NAME = 'pokopia-cache-v4.95.0';"), 'sw.js CACHE_NAME 必須為 pokopia-cache-v4.95.0');
+assert.ok(swJs.includes("'./ivysaur43_voxel_data.js?v=4.95.0',"), 'sw.js 必須快取 ivysaur43_voxel_data.js');
 assert.ok(!swJs.includes("ivysaur_43.html"), 'sw.js 不得快取已被移除的 ivysaur_43.html');
 
-assert.ok(indexHtml.includes("ivysaur43_voxel_data.js?v=4.94.0"), 'index.html 必須引入 ivysaur43_voxel_data.js');
-assert.ok(indexHtml.includes("app.js?v=4.94.0"), 'index.html 必須使用 app.js v4.94.0');
-assert.ok(indexHtml.includes("index.css?v=4.94.0"), 'index.html 必須使用 index.css v4.94.0');
-console.log('  ✓ PASS: 6.1 全站快取版本統一升級至 v4.94.0，無死連結或失效快取');
+assert.ok(indexHtml.includes("ivysaur43_voxel_data.js?v=4.95.0"), 'index.html 必須引入 ivysaur43_voxel_data.js');
+assert.ok(indexHtml.includes("app.js?v=4.95.0"), 'index.html 必須使用 app.js v4.95.0');
+assert.ok(indexHtml.includes("index.css?v=4.95.0"), 'index.html 必須使用 index.css v4.95.0');
+console.log('  ✓ PASS: 6.1 全站快取版本統一升級至 v4.95.0，無死連結或失效快取');
+
+// ─────────────────────────────────────────────────────────────
+// 測試組 7: 43 層 2D 切片網格、標註線與 3D 展台引擎架構修復驗收
+// ─────────────────────────────────────────────────────────────
+console.log('\n【測試組 7: 43 層 2D 切片網格、標註線與 3D 展台引擎架構修復驗收】');
+
+// 7.1 徹底杜絕未定義函式
+assert.ok(!appJs.includes('renderSliceDimensionRulers'), 'app.js 絕對不得包含未定義函式 renderSliceDimensionRulers');
+console.log('  ✓ PASS: 7.1 renderSliceDimensionRulers 未定義函式已徹底絕跡');
+
+// 7.2 2D 切片標註線與對稱展開 100% 比照 76 層成熟架構
+assert.ok(appJs.includes('renderDimTopSegments(DOM.ivysaur43DimTop, xSegments, cellSize, gridTotalWidth);'), '缺少 ivysaur43 頂部純數字分段標註');
+assert.ok(appJs.includes('renderDimRightSegments(DOM.ivysaur43DimRight, zSegments, cellSize, gridTotalHeight);'), '缺少 ivysaur43 側邊純數字分段標註');
+assert.ok(appJs.includes('DOM.ivysaur43VoxelGrid._cellMap = cellMap;'), '缺少 ivysaur43VoxelGrid._cellMap 映射緩存');
+console.log('  ✓ PASS: 7.2 43 層 2D 切片網格 100% 對齊 76 層雙軸分段純數字尺規');
+
+// 7.3 材料清單 (BOM) 比照 76 層成熟架構
+assert.ok(appJs.includes("mat-checkbox"), '材料清單具備核對勾選方塊');
+assert.ok(appJs.includes("DOM.ivysaur43MatList.appendChild(item);"), '材料清單正常注入 DOM.ivysaur43MatList');
+console.log('  ✓ PASS: 7.3 43 層材料清單 (BOM) 包含核對勾選與動態顆數，告別「0 種建材」');
+
+// 7.4 3D 展台引擎幾何體、幽靈層與中心標記完整就緒
+assert.ok(appJs.includes("createStudioGridAndCenterMark(scene, data.dimensions, cx, cy, cz);"), '3D 展台具備中心十字與基底網格');
+assert.ok(appJs.includes("scene.add(ghostInstancedMesh);"), '3D 展台具備半透明幽靈導引網格');
+console.log('  ✓ PASS: 7.4 43 層 3D 展台引擎具備完整雙網格 (實體+幽靈) 與中心標記');
+
+// 7.5 行為級執行模擬：調用 renderIvysaur43Layer(1) 驗收 0 錯誤、177 顆方塊與材料清單生成
+const elements = {};
+function mockElement(id) {
+  const el = {
+    id,
+    style: {},
+    classList: { add: () => {}, remove: () => {}, toggle: () => {}, contains: () => false },
+    dataset: {},
+    children: [],
+    appendChild: function(c) { this.children.push(c); return c; },
+    closest: function() { return null; },
+    innerHTML: "",
+    addEventListener: () => {}
+  };
+  elements[id] = el;
+  return el;
+}
+
+global.window = { innerWidth: 1200 };
+global.document = {
+  getElementById: (id) => elements[id] || mockElement(id),
+  createElement: (tag) => ({
+    tagName: tag,
+    style: {},
+    classList: { add: () => {}, remove: () => {}, toggle: () => {}, contains: () => false },
+    dataset: {},
+    children: [],
+    appendChild: function(c) { this.children.push(c); return c; },
+    closest: function() { return null; },
+    innerHTML: "",
+    addEventListener: () => {},
+    querySelector: () => ({ style: {} })
+  }),
+  createDocumentFragment: () => ({
+    children: [],
+    appendChild: function(c) { this.children.push(c); return c; }
+  })
+};
+
+global.IVYSAUR_43_VOXEL_DATA = require("./ivysaur43_voxel_data.js");
+global.VoxelDeltaStore = require("./voxel_editor.js");
+
+const DOM = {
+  ivysaur43LayerBadge: mockElement("ivysaur43LayerBadge"),
+  ivysaur43LayerBlockCount: mockElement("ivysaur43LayerBlockCount"),
+  ivysaur43VoxelGrid: mockElement("ivysaur43VoxelGrid"),
+  ivysaur43DimTop: mockElement("ivysaur43DimTop"),
+  ivysaur43DimRight: mockElement("ivysaur43DimRight"),
+  ivysaur43HoverTooltip: mockElement("ivysaur43HoverTooltip"),
+  ivysaur43TooltipColor: mockElement("ivysaur43TooltipColor"),
+  ivysaur43TooltipText: mockElement("ivysaur43TooltipText"),
+  ivysaur43MatList: mockElement("ivysaur43MatList"),
+  ivysaur43MatTypesCount: mockElement("ivysaur43MatTypesCount")
+};
+
+const ivysaur43State = {
+  zoom: { panX: 0, panY: 0, scale: 1 },
+  curLayer: 1
+};
+
+function evalFunc(funcName) {
+  const start = appJs.indexOf("function " + funcName);
+  assert.ok(start !== -1, "Cannot find " + funcName);
+  let depth = 0;
+  let bodyStart = appJs.indexOf("{", start);
+  let end = -1;
+  for (let i = bodyStart; i < appJs.length; i++) {
+    if (appJs[i] === "{") depth++;
+    else if (appJs[i] === "}") {
+      depth--;
+      if (depth === 0) {
+        end = i + 1;
+        break;
+      }
+    }
+  }
+  return appJs.slice(start, end);
+}
+
+eval(evalFunc("getVoxelAxisSegments"));
+eval(evalFunc("renderDimTopSegments"));
+eval(evalFunc("renderDimRightSegments"));
+eval(evalFunc("setupGridEventDelegation"));
+eval(evalFunc("appendSymmetryAxisLine"));
+eval(evalFunc("fitWorkspaceToContainer"));
+eval(evalFunc("applyWorkspaceZoomPan"));
+eval(evalFunc("renderIvysaur43Layer"));
+
+renderIvysaur43Layer(1);
+
+assert.strictEqual(DOM.ivysaur43LayerBlockCount.textContent, "本層 177 顆", "第 1 層方塊顆數應精準為 177 顆");
+assert.ok(DOM.ivysaur43VoxelGrid.children.length > 0, "網格必須包含生成的子節點");
+assert.strictEqual(DOM.ivysaur43MatList.children.length, 2, "第 1 層材料種類必須為 2 種");
+assert.strictEqual(DOM.ivysaur43MatTypesCount.textContent, "2 種建材", "材料種類標籤必須顯示 2 種建材");
+console.log('  ✓ PASS: 7.5 實質行為調用 renderIvysaur43Layer(1) 成功生成 177 顆方塊與 2 種建材清單');
 
 console.log('\n========================================================');
-console.log('🎉 妙蛙草 43 層精巧版全站首頁一體化整合驗收全數通過 (100% PASS)！');
+console.log('🎉 妙蛙草 43 層精巧版全站首頁一體化整合與渲染修復全數通過 (100% PASS)！');
 console.log('========================================================\n');
 
 process.exit(0);

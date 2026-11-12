@@ -10242,43 +10242,68 @@
         const xOccupied = new Set();
         const zOccupied = new Set();
 
-        layer.blocks.forEach((b) => {
-          const [x, z, bid] = b;
-          blockMap.set(`${x},${z}`, bid);
-          xOccupied.add(x);
-          zOccupied.add(z);
+        layer.blocks.forEach(([x, z, bid]) => {
           if (x < minX) minX = x;
           if (x > maxX) maxX = x;
           if (z < minZ) minZ = z;
           if (z > maxZ) maxZ = z;
+          blockMap.set(`${x},${z}`, bid);
+          xOccupied.add(x);
+          zOccupied.add(z);
         });
 
-        // 左右對稱展開
+        // 幾何對稱展開：確保任何方塊的對稱側點位皆有底格，對稱提示 100% 顯現
         if (typeof VoxelDeltaStore !== 'undefined') {
-          const bInfo = VoxelDeltaStore.getCharBounds('ivysaur43');
-          if (bInfo && bInfo.center) {
-            const spanLeft = Math.abs(bInfo.center - minX);
-            const spanRight = Math.abs(maxX - bInfo.center);
-            const maxSpan = Math.max(spanLeft, spanRight);
-            minX = Math.max(1, bInfo.center - maxSpan);
-            maxX = Math.min(data.dimensions.width, bInfo.center + maxSpan);
+          const symBounds = VoxelDeltaStore.getCharBounds('ivysaur43');
+          if (symBounds) {
+            const symMinX = symBounds.sum - maxX;
+            const symMaxX = symBounds.sum - minX;
+            minX = Math.min(minX, symMinX);
+            maxX = Math.max(maxX, symMaxX);
           }
         }
 
-        const width = maxX - minX + 1;
-        const length = maxZ - minZ + 1;
-        const parent = DOM.ivysaur43VoxelGrid.parentElement;
-        const containerW = parent ? parent.clientWidth - 48 : 500;
-        const cellSize = Math.max(8, Math.min(22, Math.floor(containerW / Math.max(width, 1))));
+        const spanX = maxX - minX + 1;
+        const spanZ = maxZ - minZ + 1;
 
-        DOM.ivysaur43VoxelGrid.style.gridTemplateColumns = `repeat(${width}, ${cellSize}px)`;
-        DOM.ivysaur43VoxelGrid.style.gridTemplateRows = `repeat(${length}, ${cellSize}px)`;
+        // 計算 X 軸與 Z 軸的實體與間隔段落 (如左腳、中空、右腳)
+        const xSegments = getVoxelAxisSegments(minX, maxX, xOccupied);
+        const zSegments = getVoxelAxisSegments(minZ, maxZ, zOccupied);
 
-        renderSliceDimensionRulers(DOM.ivysaur43DimTop, DOM.ivysaur43DimRight, minX, maxX, minZ, maxZ, cellSize, xOccupied, zOccupied, data.dimensions.length);
+        // 依容器動態計算最適正方形方塊像素 (cellSize)
+        const parent = DOM.ivysaur43VoxelGrid.closest('.bulba-grid-container') || DOM.ivysaur43VoxelGrid.parentElement;
+        const containerWidth = parent ? (parent.clientWidth || 800) : 800;
+        const containerHeight = parent ? (parent.clientHeight || 500) : 500;
+        const isMobile = window.innerWidth <= 768;
 
-        const frag = document.createDocumentFragment();
+        let cellSize;
+        if (isMobile) {
+          const rightDimReserved = 28;
+          const netWidth = containerWidth - 36 - rightDimReserved - (spanX - 1);
+          cellSize = Math.max(3, Math.floor(netWidth / spanX));
+          cellSize = Math.min(14, cellSize);
+        } else {
+          // 桌面版：寬高雙向約束，自適應最大化充滿可視畫面 (絕不黑死塌陷)
+          const cellByHeight = Math.floor((Math.max(460, containerHeight - 60) - 24 - (spanZ - 1)) / spanZ);
+          const cellByWidth = Math.floor((containerWidth - 60 - 28 - (spanX - 1)) / spanX);
+          cellSize = Math.min(cellByHeight, cellByWidth);
+          cellSize = Math.max(6, Math.min(24, cellSize));
+        }
+
+        DOM.ivysaur43VoxelGrid.style.gap = '1px';
+        DOM.ivysaur43VoxelGrid.style.gridTemplateColumns = `repeat(${spanX}, ${cellSize}px)`;
+
+        // 動態將頂部標註線寬度與側邊長度標註高度對齊網格本體邊緣並注入分段純數字
+        const gridTotalWidth = spanX * cellSize + (spanX - 1) + 16;
+        const gridTotalHeight = spanZ * cellSize + (spanZ - 1) + 16;
+        renderDimTopSegments(DOM.ivysaur43DimTop, xSegments, cellSize, gridTotalWidth);
+        renderDimRightSegments(DOM.ivysaur43DimRight, zSegments, cellSize, gridTotalHeight);
+
         const cellMap = new Map();
+        DOM.ivysaur43VoxelGrid._cellMap = cellMap;
+        const frag = document.createDocumentFragment();
 
+        // 渲染 2D 方塊點陣 (每個格子具有固定的正方形長寬，絕不發生中段塌陷撕裂黑縫)
         for (let rz = minZ; rz <= maxZ; rz++) {
           for (let rx = minX; rx <= maxX; rx++) {
             const key = `${rx},${rz}`;
@@ -10307,6 +10332,7 @@
               cell.dataset.bid = bid;
               cell.dataset.coord = `X: ${rx}, Z: ${rz}`;
             } else {
+              // 柔和清新草系工程藍圖底格線，告別死黑
               cell.style.backgroundColor = 'rgba(52, 211, 153, 0.04)';
               cell.style.border = '1px solid rgba(52, 211, 153, 0.1)';
             }
@@ -10326,7 +10352,7 @@
       }
     }
 
-    // 材料清單 (BOM)
+    // 材料清單 (BOM) 高對比醒目卡片 (比照原先妙蛙草方式辦理)
     if (DOM.ivysaur43MatList && DOM.ivysaur43MatTypesCount) {
       DOM.ivysaur43MatList.innerHTML = '';
       const matKeys = Object.keys(layer.materials);
@@ -10340,22 +10366,27 @@
         const item = document.createElement('div');
         item.className = 'bulba-mat-item';
         item.style.cursor = 'pointer';
-        item.title = `點擊切換為此材質筆刷: ${palItem.name}`;
         item.innerHTML = `
-          <div class="bulba-mat-color" style="background-color:${palItem.color}"></div>
-          <div class="bulba-mat-info">
-            <span class="bulba-mat-name">${palItem.name}</span>
-            <span class="bulba-mat-count">${count.toLocaleString()} 顆</span>
-          </div>
+          <input type="checkbox" class="mat-checkbox" style="margin-right: 0.5rem; cursor: pointer;">
+          <span class="bulba-mat-chip" style="background-color: ${palItem.color};"></span>
+          <span class="bulba-mat-name" title="${palItem.name}">${palItem.name}</span>
+          <span class="bulba-mat-count">×${count.toLocaleString()}</span>
         `;
-        item.addEventListener('click', () => {
-          if (typeof VoxelDeltaStore !== 'undefined') {
-            VoxelDeltaStore.setSelectedBid(Number(bid));
-            VoxelDeltaStore.setTool('paint');
-            VoxelDeltaStore.setEditorMode(true);
-            VoxelDeltaStore.updateToolbarUI('ivysaur43');
-          }
-        });
+        const checkbox = item.querySelector('.mat-checkbox');
+        const toggleCheck = (e) => {
+          if (e.target !== checkbox) checkbox.checked = !checkbox.checked;
+          const checked = checkbox.checked;
+          item.classList.toggle('is-checked', checked);
+          const nameEl = item.querySelector('.bulba-mat-name');
+          const countEl = item.querySelector('.bulba-mat-count');
+          if (nameEl) nameEl.style.textDecoration = checked ? 'line-through' : 'none';
+          if (nameEl) nameEl.style.opacity = checked ? '0.6' : '1';
+          if (countEl) countEl.style.opacity = checked ? '0.6' : '1';
+          try {
+            if (navigator.vibrate) navigator.vibrate(10);
+          } catch (_) {}
+        };
+        item.addEventListener('click', toggleCheck);
         DOM.ivysaur43MatList.appendChild(item);
       });
     }
@@ -10385,7 +10416,7 @@
     scene.background = new THREE.Color(0xe2e8f0);
 
     const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 2000);
-    camera.position.set(85, 60, 95);
+    camera.position.set(70, 50, 80);
 
     const renderer = new THREE.WebGLRenderer({
       canvas: DOM.ivysaur43_3dCanvas,
@@ -10440,26 +10471,35 @@
     const dummy = new THREE.Object3D();
     const color = new THREE.Color();
 
+    for (let gi = 0; gi < totalCount; gi++) {
+      dummy.scale.set(0, 0, 0);
+      dummy.updateMatrix();
+      ghostInstancedMesh.setMatrixAt(gi, dummy.matrix);
+    }
+    ghostInstancedMesh.instanceMatrix.needsUpdate = true;
+    scene.add(ghostInstancedMesh);
+
     const cx = data.dimensions.width / 2;
     const cy = data.dimensions.height / 2;
     const cz = data.dimensions.length / 2;
+
+    createStudioGridAndCenterMark(scene, data.dimensions, cx, cy, cz);
 
     let idx = 0;
     const blockDataList = [];
 
     data.layers.forEach((layer) => {
-      const y = layer.layerIndex;
+      const y = layer.layerIndex - 1;
       layer.blocks.forEach((b) => {
         const [x, z, bid] = b;
         dummy.position.set(x - cx, y - cy, z - cz);
+        dummy.scale.set(1, 1, 1);
         dummy.updateMatrix();
         instancedMesh.setMatrixAt(idx, dummy.matrix);
 
         const palItem = data.palette[bid] || { color: '#00a8c8' };
         color.set(palItem.color);
         instancedMesh.setColorAt(idx, color);
-
-        ghostInstancedMesh.setMatrixAt(idx, dummy.matrix);
         ghostInstancedMesh.setColorAt(idx, color);
 
         blockDataList.push({

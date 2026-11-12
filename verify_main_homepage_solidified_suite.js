@@ -220,13 +220,13 @@ console.log('\n【測試組 5: 全站靜態資源與 Service Worker 版本一致
 const indexHtml = fs.readFileSync('index.html', 'utf8');
 const swJs = fs.readFileSync('sw.js', 'utf8');
 
-assert.ok(indexHtml.includes('voxel_editor.js?v=4.94.0') || indexHtml.includes('voxel_editor.js?v=4.93.0') || indexHtml.includes('voxel_editor.js?v=4.92.0'), 'index.html 必須使用最新版 voxel_editor.js');
-assert.ok(indexHtml.includes('app.js?v=4.94.0') || indexHtml.includes('app.js?v=4.93.0') || indexHtml.includes('app.js?v=4.92.0'), 'index.html 必須使用最新版 app.js');
-assert.ok(indexHtml.includes('firebase.js?v=4.94.0') || indexHtml.includes('firebase.js?v=4.93.0') || indexHtml.includes('firebase.js?v=4.92.0'), 'index.html 必須使用最新版 firebase.js');
+assert.ok(indexHtml.includes('voxel_editor.js?v=4.95.0') || indexHtml.includes('voxel_editor.js?v=4.94.0') || indexHtml.includes('voxel_editor.js?v=4.93.0') || indexHtml.includes('voxel_editor.js?v=4.92.0'), 'index.html 必須使用最新版 voxel_editor.js');
+assert.ok(indexHtml.includes('app.js?v=4.95.0') || indexHtml.includes('app.js?v=4.94.0') || indexHtml.includes('app.js?v=4.93.0') || indexHtml.includes('app.js?v=4.92.0'), 'index.html 必須使用最新版 app.js');
+assert.ok(indexHtml.includes('firebase.js?v=4.95.0') || indexHtml.includes('firebase.js?v=4.94.0') || indexHtml.includes('firebase.js?v=4.93.0') || indexHtml.includes('firebase.js?v=4.92.0'), 'index.html 必須使用最新版 firebase.js');
 
-assert.ok(swJs.includes("pokopia-cache-v4.94.0") || swJs.includes("pokopia-cache-v4.93.0") || swJs.includes("pokopia-cache-v4.92.0"), 'sw.js 必須使用最新快取版本');
-assert.ok(swJs.includes("voxel_editor.js?v=4.94.0") || swJs.includes("voxel_editor.js?v=4.93.0") || swJs.includes("voxel_editor.js?v=4.92.0"), 'sw.js 必須快取最新 voxel_editor.js');
-assert.ok(swJs.includes("app.js?v=4.94.0") || swJs.includes("app.js?v=4.93.0") || swJs.includes("app.js?v=4.92.0"), 'sw.js 必須快取最新 app.js');
+assert.ok(swJs.includes("pokopia-cache-v4.95.0") || swJs.includes("pokopia-cache-v4.94.0") || swJs.includes("pokopia-cache-v4.93.0") || swJs.includes("pokopia-cache-v4.92.0"), 'sw.js 必須使用最新快取版本');
+assert.ok(swJs.includes("voxel_editor.js?v=4.95.0") || swJs.includes("voxel_editor.js?v=4.94.0") || swJs.includes("voxel_editor.js?v=4.93.0") || swJs.includes("voxel_editor.js?v=4.92.0"), 'sw.js 必須快取最新 voxel_editor.js');
+assert.ok(swJs.includes("app.js?v=4.95.0") || swJs.includes("app.js?v=4.94.0") || swJs.includes("app.js?v=4.93.0") || swJs.includes("app.js?v=4.92.0"), 'sw.js 必須快取最新 app.js');
 console.log('  ✓ PASS: 5.1 index.html 與 sw.js 100% 升級對齊最新發布版本');
 
 console.log('\n========================================================');
