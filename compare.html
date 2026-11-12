@@ -128,6 +128,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 1.25rem;
       padding: 1.25rem;
+      padding-bottom: 7.5rem; /* 保留底部控制器空間 */
       max-width: 1920px;
       width: 100%;
       margin: 0 auto;
@@ -136,6 +137,7 @@
     @media (max-width: 960px) {
       main {
         grid-template-columns: 1fr;
+        padding-bottom: 10.5rem;
       }
     }
 
@@ -225,6 +227,44 @@
       justify-content: space-between;
       font-size: 0.8rem;
       color: var(--text-muted);
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .card-footer-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .card-footer-right {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .visible-blocks-pill {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 0.3rem 0.65rem;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: #cbd5e1;
+    }
+
+    .visible-count-num {
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .count-1800 {
+      color: #fbbf24;
+    }
+
+    .count-latest {
+      color: #34d399;
     }
 
     .btn-reset-view {
@@ -237,6 +277,7 @@
       font-weight: 600;
       cursor: pointer;
       transition: all 0.15s ease;
+      white-space: nowrap;
     }
 
     .btn-reset-view:hover {
@@ -247,16 +288,238 @@
     /* 浮動特徵清單 */
     .features-list {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.4rem;
       flex-wrap: wrap;
     }
 
     .feature-item {
       font-size: 0.72rem;
-      padding: 0.15rem 0.5rem;
+      padding: 0.15rem 0.45rem;
       border-radius: 4px;
       background: rgba(255, 255, 255, 0.05);
       color: #cbd5e1;
+    }
+
+    /* 底部懸浮雙視窗同步逐層切片控制器 */
+    .slice-controller-dock {
+      position: fixed;
+      bottom: 1.25rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      box-shadow: 0 12px 35px -5px rgba(0, 0, 0, 0.7), 0 0 20px rgba(56, 189, 248, 0.2);
+      border-radius: 18px;
+      padding: 0.75rem 1.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+      max-width: 95vw;
+      width: 860px;
+      transition: all 0.2s ease;
+    }
+
+    /* 模式切換按鈕群組 */
+    .mode-btn-group {
+      display: flex;
+      background: rgba(30, 41, 59, 0.85);
+      border-radius: 10px;
+      padding: 0.25rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      gap: 0.25rem;
+      flex-shrink: 0;
+    }
+
+    .btn-mode {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      padding: 0.45rem 0.85rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      white-space: nowrap;
+    }
+
+    .btn-mode:hover {
+      color: #f8fafc;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .btn-mode.active {
+      background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
+      color: #ffffff;
+      font-weight: 700;
+      box-shadow: 0 2px 10px rgba(6, 182, 212, 0.35);
+    }
+
+    /* 中央拉桿與微調控制 */
+    .dock-center-group {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      min-width: 240px;
+    }
+
+    .btn-step {
+      background: rgba(56, 189, 248, 0.12);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      border-radius: 8px;
+      padding: 0.42rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .btn-step:hover {
+      background: rgba(56, 189, 248, 0.22);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .btn-step:active {
+      transform: translateY(0);
+    }
+
+    .slider-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      position: relative;
+    }
+
+    .slice-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 7px;
+      border-radius: 6px;
+      background: #334155;
+      outline: none;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .slice-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #38bdf8;
+      border: 2px solid #ffffff;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+      cursor: pointer;
+      transition: transform 0.15s, background 0.15s;
+    }
+
+    .slice-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+      background: #06b6d4;
+    }
+
+    .slice-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #38bdf8;
+      border: 2px solid #ffffff;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+      cursor: pointer;
+    }
+
+    .slider-ticks {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.68rem;
+      color: #64748b;
+      padding: 0 2px;
+      user-select: none;
+    }
+
+    /* 右側層數標記 */
+    .dock-right-group {
+      flex-shrink: 0;
+    }
+
+    .layer-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(2, 132, 199, 0.16);
+      border: 1px solid rgba(56, 189, 248, 0.32);
+      border-radius: 10px;
+      padding: 0.3rem 0.85rem;
+      min-width: 105px;
+    }
+
+    .badge-label {
+      font-size: 0.68rem;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    .badge-value {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    .badge-value strong {
+      color: #38bdf8;
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+
+    /* 手機版適配 */
+    @media (max-width: 768px) {
+      .slice-controller-dock {
+        width: calc(100vw - 1.5rem);
+        padding: 0.65rem 0.85rem;
+        flex-direction: column;
+        gap: 0.65rem;
+        bottom: 0.75rem;
+      }
+
+      .dock-center-group {
+        width: 100%;
+      }
+
+      .mode-btn-group {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .btn-mode {
+        flex: 1;
+        text-align: center;
+        padding: 0.4rem 0.4rem;
+        font-size: 0.75rem;
+      }
+
+      .dock-right-group {
+        width: 100%;
+      }
+
+      .layer-badge {
+        width: 100%;
+        flex-direction: row;
+        gap: 0.5rem;
+        padding: 0.25rem 0.5rem;
+      }
     }
   </style>
 </head>
@@ -275,7 +538,7 @@
 
   <!-- 提示條 -->
   <div class="info-banner">
-    💡 <strong>操作指南：</strong>左右兩側 3D 視窗各自支援<strong>獨立 360° 任意旋轉與滾輪縮放</strong>。您可隨意旋轉細看兩者差異，看完後請回到對話告訴我您要保留哪一個版本。
+    💡 <strong>操作指南：</strong>左右兩側 3D 視窗各自支援<strong>獨立 360° 任意旋轉與滾輪縮放</strong>。下方設有<strong>同步逐層切片控制器</strong>，可檢視 1~76 層內部與精雕細節。
   </div>
 
   <!-- 主體對照區域 -->
@@ -295,12 +558,19 @@
         <canvas id="canvas1800"></canvas>
       </div>
       <div class="card-footer">
-        <div class="features-list">
-          <span class="feature-item">👀 初始眼眶</span>
-          <span class="feature-item">🐾 早期腳底爪型</span>
-          <span class="feature-item">🎨 花紋 246 顆</span>
+        <div class="card-footer-left">
+          <div class="features-list">
+            <span class="feature-item">👀 初始眼眶</span>
+            <span class="feature-item">🐾 早期爪型</span>
+            <span class="feature-item">🎨 花紋 246 顆</span>
+          </div>
+          <div class="visible-blocks-pill">
+            顯示方塊：<strong id="visibleCount1800" class="visible-count-num count-1800">91,218</strong> 顆
+          </div>
         </div>
-        <button class="btn-reset-view" id="btnReset1800">🔄 重設視角</button>
+        <div class="card-footer-right">
+          <button class="btn-reset-view" id="btnReset1800">🔄 重設視角</button>
+        </div>
       </div>
     </div>
 
@@ -319,16 +589,55 @@
         <canvas id="canvasLatest"></canvas>
       </div>
       <div class="card-footer">
-        <div class="features-list">
-          <span class="feature-item">🎨 著色 1,240 顆</span>
-          <span class="feature-item">🪓 掏空 10,486 顆</span>
-          <span class="feature-item">✨ 完整眼眶眼神光</span>
-          <span class="feature-item">🌿 立體斑紋與尖牙</span>
+        <div class="card-footer-left">
+          <div class="features-list">
+            <span class="feature-item">🎨 著色 1,240 顆</span>
+            <span class="feature-item">🪓 掏空 10,486 顆</span>
+            <span class="feature-item">✨ 完整眼神光與尖牙</span>
+          </div>
+          <div class="visible-blocks-pill">
+            顯示方塊：<strong id="visibleCountLatest" class="visible-count-num count-latest">81,379</strong> 顆
+          </div>
         </div>
-        <button class="btn-reset-view" id="btnResetLatest">🔄 重設視角</button>
+        <div class="card-footer-right">
+          <button class="btn-reset-view" id="btnResetLatest">🔄 重設視角</button>
+        </div>
       </div>
     </div>
   </main>
+
+  <!-- 底部懸浮雙視窗同步逐層切片控制器 -->
+  <div class="slice-controller-dock" id="sliceDock">
+    <div class="dock-left-group">
+      <div class="mode-btn-group" role="group" aria-label="切片檢視模式">
+        <button type="button" class="btn-mode active" data-mode="full" id="btnModeFull">完整模型</button>
+        <button type="button" class="btn-mode" data-mode="slice" id="btnModeSlice">單層切片</button>
+        <button type="button" class="btn-mode" data-mode="cumulative" id="btnModeCumulative">累積切片</button>
+      </div>
+    </div>
+
+    <div class="dock-center-group">
+      <button type="button" class="btn-step" id="btnPrevLayer" title="上一層 (鍵盤 ← 或 ↓)">◀ 上一層</button>
+      <div class="slider-container">
+        <input type="range" id="layerSlider" min="1" max="76" value="38" class="slice-slider" aria-label="切片層數選擇" />
+        <div class="slider-ticks">
+          <span>L1 (底)</span>
+          <span>L20</span>
+          <span>L40</span>
+          <span>L60</span>
+          <span>L76 (頂)</span>
+        </div>
+      </div>
+      <button type="button" class="btn-step" id="btnNextLayer" title="下一層 (鍵盤 → 或 ↑)">下一層 ▶</button>
+    </div>
+
+    <div class="dock-right-group">
+      <div class="layer-badge">
+        <span class="badge-label">切片層數</span>
+        <span class="badge-value">第 <strong id="curLayerDisplay">38</strong> / 76 層</span>
+      </div>
+    </div>
+  </div>
 
   <!-- 外部依賴資源 -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
@@ -432,6 +741,9 @@
         const cz = data.dimensions.length / 2;
 
         const origBlockMap = new Map();
+        const instLayers = new Uint8Array(totalCount);
+        const instValid = new Uint8Array(totalCount); // 1 = 實體存在, 0 = 掏空/被刪除
+
         let idx = 0;
 
         // 遍歷基礎層與方塊
@@ -442,22 +754,26 @@
             const x = b[0];
             const z = b[1];
             const origBid = b[2];
-            origBlockMap.set(`${x},${y},${z}`, origBid);
+            const key = `${x},${y},${z}`;
+            origBlockMap.set(key, origBid);
 
             const posX = x - cx + 0.5;
             const posZ = z - cz + 0.5;
             dummy.position.set(posX, posY, posZ);
 
             // 檢查 overrides
-            const key = `${x},${y},${z}`;
             let effBid = origBid;
             if (overrides && overrides[key] !== undefined) {
               effBid = overrides[key];
             }
 
+            instLayers[idx] = layer.layerIndex;
+
             if (effBid === -1) {
+              instValid[idx] = 0;
               dummy.scale.set(0, 0, 0);
             } else {
+              instValid[idx] = 1;
               dummy.scale.set(1, 1, 1);
               const pItem = (data.palette && data.palette[effBid]) ? data.palette[effBid] : { color: '#00a8c8' };
               color.set(pItem.color);
@@ -474,12 +790,15 @@
         if (instancedMesh.instanceColor) instancedMesh.instanceColor.needsUpdate = true;
         scene.add(instancedMesh);
 
-        // 檢查自訂新增方塊 (origBlockMap 中沒有的)
+        // 自訂新增方塊 (不在 origBlockMap 中的自訂增補方塊)
         const dynamicGroup = new THREE.Group();
+        const dynamicCubes = [];
+
         if (overrides) {
           Object.entries(overrides).forEach(([k, bid]) => {
             if (bid !== -1 && !origBlockMap.has(k)) {
               const [x, y, z] = k.split(',').map(Number);
+              const layerIndex = y + 1;
               const pItem = (data.palette && data.palette[bid]) ? data.palette[bid] : { color: '#00a8c8' };
               const cubeMat = new THREE.MeshStandardMaterial({
                 map: outlineMap,
@@ -490,10 +809,58 @@
               const cube = new THREE.Mesh(geometry, cubeMat);
               cube.position.set(x - cx + 0.5, y - cy + 0.5, z - cz + 0.5);
               dynamicGroup.add(cube);
+              dynamicCubes.push({ mesh: cube, layerIndex: layerIndex });
             }
           });
         }
         scene.add(dynamicGroup);
+
+        // 切片控制核心演算法 (高效修改 instanceMatrix 縮放與 visible)
+        function setSlice(mode, curLayer) {
+          let visibleCount = 0;
+          const matArray = instancedMesh.instanceMatrix.array;
+
+          for (let i = 0; i < totalCount; i++) {
+            if (instValid[i] === 0) continue; // 已掏空的方塊永不顯示
+            const l = instLayers[i];
+            let isVis = false;
+            if (mode === 'full') {
+              isVis = true;
+            } else if (mode === 'slice') {
+              isVis = (l === curLayer);
+            } else if (mode === 'cumulative') {
+              isVis = (l <= curLayer);
+            }
+
+            const s = isVis ? 1 : 0;
+            if (isVis) visibleCount++;
+
+            // 修改 Column-major 對角縮放 (sx, sy, sz)
+            const offset = i * 16;
+            matArray[offset + 0] = s;
+            matArray[offset + 5] = s;
+            matArray[offset + 10] = s;
+          }
+          instancedMesh.instanceMatrix.needsUpdate = true;
+
+          // 處理動態自訂新增方塊
+          for (let i = 0; i < dynamicCubes.length; i++) {
+            const item = dynamicCubes[i];
+            let isVis = false;
+            if (mode === 'full') {
+              isVis = true;
+            } else if (mode === 'slice') {
+              isVis = (item.layerIndex === curLayer);
+            } else if (mode === 'cumulative') {
+              isVis = (item.layerIndex <= curLayer);
+            }
+
+            item.mesh.visible = isVis;
+            if (isVis) visibleCount++;
+          }
+
+          return visibleCount;
+        }
 
         // 動畫渲染循環
         let isRunning = true;
@@ -525,10 +892,14 @@
           }
         }
 
-        return { resetView, destroy: () => { isRunning = false; window.removeEventListener('resize', onResize); } };
+        return { 
+          resetView, 
+          setSlice,
+          destroy: () => { isRunning = false; window.removeEventListener('resize', onResize); } 
+        };
       }
 
-      // 初始化左右兩個對照視窗
+      // 初始化左右兩個對照視窗與切片控制器
       window.addEventListener('DOMContentLoaded', () => {
         const ov1800 = (typeof IVYSAUR_OVERRIDES_1800 !== 'undefined') ? IVYSAUR_OVERRIDES_1800 : {};
         const ovLatest = (typeof IVYSAUR_OVERRIDES_LATEST !== 'undefined') ? IVYSAUR_OVERRIDES_LATEST : {};
@@ -536,6 +907,7 @@
         const viewer1800 = createModelViewer('canvas1800', 'wrap1800', ov1800);
         const viewerLatest = createModelViewer('canvasLatest', 'wrapLatest', ovLatest);
 
+        // 視角重設按鈕綁定
         const btn1800 = document.getElementById('btnReset1800');
         if (btn1800 && viewer1800) {
           btn1800.addEventListener('click', () => viewer1800.resetView());
@@ -545,6 +917,109 @@
         if (btnLatest && viewerLatest) {
           btnLatest.addEventListener('click', () => viewerLatest.resetView());
         }
+
+        // 切片控制邏輯
+        let currentMode = 'full'; // 'full' | 'slice' | 'cumulative'
+        let currentLayer = 38;
+
+        const slider = document.getElementById('layerSlider');
+        const curLayerDisplay = document.getElementById('curLayerDisplay');
+        const visibleCount1800 = document.getElementById('visibleCount1800');
+        const visibleCountLatest = document.getElementById('visibleCountLatest');
+        const modeButtons = document.querySelectorAll('.btn-mode');
+        const btnPrev = document.getElementById('btnPrevLayer');
+        const btnNext = document.getElementById('btnNextLayer');
+
+        function updateSliceAll() {
+          if (curLayerDisplay) curLayerDisplay.textContent = currentLayer;
+          if (slider && parseInt(slider.value) !== currentLayer) slider.value = currentLayer;
+
+          // 更新模式按鈕 active
+          modeButtons.forEach(btn => {
+            if (btn.dataset.mode === currentMode) {
+              btn.classList.add('active');
+            } else {
+              btn.classList.remove('active');
+            }
+          });
+
+          // 同步切片更新雙視窗
+          if (viewer1800) {
+            const count1 = viewer1800.setSlice(currentMode, currentLayer);
+            if (visibleCount1800) visibleCount1800.textContent = count1.toLocaleString();
+          }
+
+          if (viewerLatest) {
+            const count2 = viewerLatest.setSlice(currentMode, currentLayer);
+            if (visibleCountLatest) visibleCountLatest.textContent = count2.toLocaleString();
+          }
+        }
+
+        // 模式切換按鈕事件
+        modeButtons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            currentMode = btn.dataset.mode;
+            updateSliceAll();
+          });
+        });
+
+        // 拉桿事件
+        if (slider) {
+          const handleSliderChange = () => {
+            currentLayer = parseInt(slider.value, 10);
+            // 若目前是完整模型，拉動拉桿時自動切換至「單層切片」模式
+            if (currentMode === 'full') {
+              currentMode = 'slice';
+            }
+            updateSliceAll();
+          };
+          slider.addEventListener('input', handleSliderChange);
+          slider.addEventListener('change', handleSliderChange);
+        }
+
+        // 上一層 / 下一層按鈕
+        if (btnPrev) {
+          btnPrev.addEventListener('click', () => {
+            if (currentLayer > 1) {
+              currentLayer--;
+              if (currentMode === 'full') currentMode = 'slice';
+              updateSliceAll();
+            }
+          });
+        }
+
+        if (btnNext) {
+          btnNext.addEventListener('click', () => {
+            if (currentLayer < 76) {
+              currentLayer++;
+              if (currentMode === 'full') currentMode = 'slice';
+              updateSliceAll();
+            }
+          });
+        }
+
+        // 鍵盤快捷鍵 (方向鍵左右/上下逐層切片)
+        window.addEventListener('keydown', (e) => {
+          if (e.target && (e.target.tagName === 'INPUT' && e.target.type !== 'range')) return;
+          if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (currentLayer > 1) {
+              currentLayer--;
+              if (currentMode === 'full') currentMode = 'slice';
+              updateSliceAll();
+            }
+          } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (currentLayer < 76) {
+              currentLayer++;
+              if (currentMode === 'full') currentMode = 'slice';
+              updateSliceAll();
+            }
+          }
+        });
+
+        // 首次初始化
+        updateSliceAll();
       });
     })();
   </script>
