@@ -8647,7 +8647,7 @@
       if (charKey === 'bulba28' || charKey === 'bulbasaur28') setBulba28Layer(targetY, immediate);
       else if (charKey === 'bulbasaur' || charKey === 'bulba') setBulbaLayer(targetY, immediate);
       else if (charKey === 'buzz') setBuzzLayer(targetY, immediate);
-      else if (charKey === 'ivysaur43') setIvysaur43Layer(targetY, immediate);
+      else if (charKey === 'ivysaur40' || charKey === 'ivysaur43') setIvysaur40Layer(targetY, immediate);
       else if (charKey === 'ivysaur') setIvysaurLayer(targetY, immediate);
       else if (charKey === 'venusaur') setVenusaurLayer(targetY, immediate);
     };
@@ -8657,7 +8657,7 @@
       if (charKey === 'bulba28' || charKey === 'bulbasaur28') switchBulba283DMode('slice');
       else if (charKey === 'bulbasaur' || charKey === 'bulba') switchBulba3DMode('slice');
       else if (charKey === 'buzz') switchBuzz3DMode('slice');
-      else if (charKey === 'ivysaur43') switchIvysaur433DMode('slice');
+      else if (charKey === 'ivysaur40' || charKey === 'ivysaur43') switchIvysaur403DMode('slice');
       else if (charKey === 'ivysaur') switchIvysaur3DMode('slice');
       else if (charKey === 'venusaur') switchVenusaur3DMode('slice');
     };
@@ -8666,7 +8666,7 @@
       if (charKey === 'bulba28' || charKey === 'bulbasaur28') return updateBulba283DSliceFilter;
       if (charKey === 'bulbasaur' || charKey === 'bulba') return updateBulba3DSliceFilter;
       if (charKey === 'buzz') return updateBuzz3DSliceFilter;
-      if (charKey === 'ivysaur43') return updateIvysaur433DSliceFilter;
+      if (charKey === 'ivysaur40' || charKey === 'ivysaur43') return updateIvysaur403DSliceFilter;
       if (charKey === 'ivysaur') return updateIvysaur3DSliceFilter;
       if (charKey === 'venusaur') return updateVenusaur3DSliceFilter;
       return () => {};
@@ -9541,7 +9541,7 @@
       if (charKey === 'bulba28' || charKey === 'bulbasaur28') return bulba28State.curMode;
       if (charKey === 'bulbasaur' || charKey === 'bulba') return bulbaState.curMode;
       if (charKey === 'buzz') return buzzState.curMode;
-      if (charKey === 'ivysaur43') return ivysaur43State.curMode;
+      if (charKey === 'ivysaur40' || charKey === 'ivysaur43') return ivysaur40State.curMode;
       if (charKey === 'ivysaur') return ivysaurState.curMode;
       if (charKey === 'venusaur') return venusaurState.curMode;
       return '3d';
@@ -9550,7 +9550,7 @@
       if (charKey === 'bulba28' || charKey === 'bulbasaur28') return bulba28State.curLayer;
       if (charKey === 'bulbasaur' || charKey === 'bulba') return bulbaState.curLayer;
       if (charKey === 'buzz') return buzzState.curLayer;
-      if (charKey === 'ivysaur43') return ivysaur43State.curLayer;
+      if (charKey === 'ivysaur40' || charKey === 'ivysaur43') return ivysaur40State.curLayer;
       if (charKey === 'ivysaur') return ivysaurState.curLayer;
       if (charKey === 'venusaur') return venusaurState.curLayer;
       return 1;
@@ -9559,7 +9559,7 @@
       if (charKey === 'bulba28' || charKey === 'bulbasaur28') updateBulba283DSliceFilter();
       if (charKey === 'bulbasaur' || charKey === 'bulba') updateBulba3DSliceFilter();
       if (charKey === 'buzz') updateBuzz3DSliceFilter();
-      if (charKey === 'ivysaur43') updateIvysaur433DSliceFilter();
+      if (charKey === 'ivysaur40' || charKey === 'ivysaur43') updateIvysaur403DSliceFilter();
       if (charKey === 'ivysaur') updateIvysaur3DSliceFilter();
       if (charKey === 'venusaur') updateVenusaur3DSliceFilter();
     };
@@ -9567,7 +9567,7 @@
       if (charKey === 'bulba28' || charKey === 'bulbasaur28') updateBulba283DSliceFilter();
       if (charKey === 'bulbasaur' || charKey === 'bulba') updateBulba3DSliceFilter();
       if (charKey === 'buzz') updateBuzz3DSliceFilter();
-      if (charKey === 'ivysaur43') updateIvysaur433DSliceFilter();
+      if (charKey === 'ivysaur40' || charKey === 'ivysaur43') updateIvysaur403DSliceFilter();
       if (charKey === 'ivysaur') updateIvysaur3DSliceFilter();
       if (charKey === 'venusaur') updateVenusaur3DSliceFilter();
     };
@@ -11236,7 +11236,7 @@
       const vx = Math.round(item.posX + cx);
       const vy = Math.round(item.posY + cy);
       const vz = Math.round(item.posZ + cz);
-      const isDeleted = (typeof VoxelDeltaStore !== 'undefined' && (VoxelDeltaStore.getEffectiveBid('ivysaur40', vx, vy, vz) === -1 || VoxelDeltaStore.getEffectiveBid('ivysaur43', vx, vy, vz) === -1));
+      const isDeleted = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.getEffectiveBid('ivysaur40', vx, vy, vz) === -1);
 
       const inRange = (item.layerIndex >= minL && item.layerIndex <= maxL);
       const show = !isDeleted && (!isSlice || (inRange && (isSingle ? item.layerIndex === curLayer : item.layerIndex <= curLayer)));

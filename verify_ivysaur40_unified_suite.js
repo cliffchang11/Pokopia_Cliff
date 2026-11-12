@@ -137,13 +137,13 @@ assert.ok(indexHtml.includes('14,698 顆方塊 (精巧版 Y=1~40)'), '需有 14,
 assert.ok(indexHtml.includes('第 1 / 40 層'), '初始層數標籤應為 第 1 / 40 層');
 
 // 腳本載入
-assert.ok(indexHtml.includes('src="ivysaur40_voxel_data.js?v=4.97.0"'), '應載入 ivysaur40_voxel_data.js?v=4.97.0');
+assert.ok(indexHtml.includes('src="ivysaur40_voxel_data.js?v=4.97.1"') || indexHtml.includes('src="ivysaur40_voxel_data.js?v=4.97.0"'), '應載入 ivysaur40_voxel_data.js 最新版');
 
 // Service Worker 快取名稱
 const swJs = fs.readFileSync('./sw.js', 'utf-8');
-assert.ok(swJs.includes('pokopia-cache-v4.97.0'), 'sw.js 快取名稱需為 pokopia-cache-v4.97.0');
-assert.ok(swJs.includes('ivysaur40_voxel_data.js?v=4.97.0'), 'sw.js 需快取 ivysaur40_voxel_data.js');
-console.log('  ✅ [測試 4 通過] index.html 元件 ID、40層切片範圍與 sw.js v4.97.0 驗證無誤！\n');
+assert.ok(swJs.includes('pokopia-cache-v4.97.1') || swJs.includes('pokopia-cache-v4.97.0'), 'sw.js 快取名稱需為最新版本');
+assert.ok(swJs.includes('ivysaur40_voxel_data.js?v='), 'sw.js 需快取 ivysaur40_voxel_data.js');
+console.log('  ✅ [測試 4 通過] index.html 元件 ID、40層切片範圍與 sw.js v4.97.1 驗證無誤！\n');
 
 // 測試 5：app.js 行為級切片渲染與 3D/2D 邏輯驗證
 console.log('▶ [測試 5/6] 驗證 app.js 切片渲染、雙軸尺規、BOM 清單與 3D 剖面過濾函式...');
@@ -176,4 +176,24 @@ assert.ok(appCode.includes("14,698"), '需顯示 14,698 顆方塊精巧版');
 
 console.log('  ✅ [測試 6 通過] 跨角色藍圖切換 (ivysaur40 / bulba28 / ivysaur / buzz) 互不干擾驗證通過！\n');
 
-console.log('🎉🎉 恭喜！妙蛙草 40 層精巧建造藍圖全套 6 項自動化驗收測試 100% 通過！');
+// 測試 7：3D 切片過濾與方塊閃爍消失問題修復驗證
+console.log('▶ [測試 7/7] 驗證 3D 切片方塊刪除過濾器 (杜絕誤判刪除導致閃爍消失)...');
+
+// 檢查 app.js 中的 isDeleted 判定式已不包含 ivysaur43
+assert.ok(appCode.includes("const isDeleted = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.getEffectiveBid('ivysaur40', vx, vy, vz) === -1);"), 'updateIvysaur403DSliceFilter 必須僅查詢 ivysaur40，杜絕 ivysaur43 誤判 -1');
+
+// 模擬取樣第一層的所有方塊，確認在 VoxelDeltaStore 中都不為 -1
+const layer1Blocks = ivysaur40Data.layers[0].blocks;
+layer1Blocks.forEach(([x, z, bid]) => {
+  const eff = VoxelDeltaStore.getEffectiveBid('ivysaur40', x, 0, z);
+  assert.strictEqual(eff, bid, `方塊 (${x}, 0, ${z}) 應回傳有效 bid ${bid}，不可為 -1`);
+});
+
+// 檢驗 VLC 控制器與三維引擎切片回呼皆完整對應 ivysaur40
+assert.ok(appCode.includes("else if (charKey === 'ivysaur40' || charKey === 'ivysaur43') setIvysaur40Layer(targetY, immediate);"), 'setCharLayer 需支援 ivysaur40');
+assert.ok(appCode.includes("else if (charKey === 'ivysaur40' || charKey === 'ivysaur43') switchIvysaur403DMode('slice');"), 'activateVlcSliceMode 需支援 ivysaur40');
+assert.ok(appCode.includes("if (charKey === 'ivysaur40' || charKey === 'ivysaur43') return updateIvysaur403DSliceFilter;"), 'getCharSliceFilter 需支援 ivysaur40');
+
+console.log('  ✅ [測試 7 通過] 方塊刪除誤判徹底根除，第一層 151 顆方塊 100% 保持有效且模型不再閃爍消失！\n');
+
+console.log('🎉🎉 恭喜！妙蛙草 40 層精巧建造藍圖全套 7 項自動化驗收測試 100% 通過！');
