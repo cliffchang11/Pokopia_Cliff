@@ -56,7 +56,7 @@
           if (parsed && typeof parsed === 'object') {
             const data = parsed.data !== undefined ? parsed.data : parsed;
             const count = (data && typeof data === 'object') ? Object.keys(data).length : 0;
-            // 妙蛙草正式定稿 1,321 顆 (1321)：凡本地快取為空、舊版（<= 1161 顆）或前一版（1384 顆），升級定稿為 1,321 顆！
+            // 妙蛙草最新快取固化版 11,726 筆：凡本地快取為空或舊版（< 11,726 筆），自動升級固化為 11,726 筆！
             if (charKey === 'ivysaur') {
               if (count === 0 || count < 11726) {
                 return Object.assign({}, IVYSAUR_SAVED_OVERRIDES);
@@ -215,7 +215,7 @@
         const data = (parsed && parsed.data !== undefined) ? parsed.data : parsed;
         localCount = Object.keys(data || {}).length;
       }
-      if (localCount === 0 || localCount <= 1161 || localCount === 1384) {
+      if (localCount === 0 || localCount < 11726) {
         _state.characters.ivysaur.overrides = Object.assign({}, IVYSAUR_SAVED_OVERRIDES);
       }
     } catch (e) {
@@ -866,6 +866,13 @@
             _state.characters[k].updatedAt = remoteTime;
             saveOverridesToStorage(k, remoteTime);
           }
+          return;
+        }
+
+        // 核心防線：妙蛙草 11,726 筆固化版防降級守護（Anti-Downgrade Armor）
+        // 凡妙蛙草遠端資料筆數小於 11,726 筆，嚴格判定為過期舊資料，絕對阻斷覆蓋本地最新模型！
+        if (k === 'ivysaur' && remoteCount < 11726) {
+          console.warn(`[VoxelStore] 攔截過期雲端快照（僅 ${remoteCount} 筆），防禦啟動：保護本地最新 11,726 筆精雕模型不受降級。`);
           return;
         }
 
