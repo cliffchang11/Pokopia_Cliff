@@ -26,7 +26,7 @@
   | :--- | :--- | :--- | :--- | :--- |
   | `bulbasaur28` | 🍃 妙蛙種子 (28層精巧版) | `pokopia_voxel_overrides_bulbasaur28` | `voxelOverridesPack.bulbasaur28` | 5,032 顆方塊精巧工作台，獨立 Undo/Redo |
   | `bulbasaur` | 🍃 妙蛙種子 (53層經典版) | `pokopia_voxel_overrides_bulbasaur` | `voxelOverridesPack.bulbasaur` | 基礎官方 53 層模型 |
-  | `ivysaur43` | 🌿 妙蛙草 (43層精巧版) | `pokopia_voxel_overrides_ivysaur43` | `voxelOverridesPack.ivysaur43` | 18,751 顆方塊精巧工作台，獨立 Undo/Redo |
+  | `ivysaur40` | 🌿 妙蛙草 (40層精巧版) | `pokopia_voxel_overrides_ivysaur40` | `voxelOverridesPack.ivysaur40` | 14,698 顆方塊精巧工作台，獨立 Undo/Redo |
   | `ivysaur` | 🌿 妙蛙草 (76層經典版) | `pokopia_voxel_overrides_ivysaur` | `voxelOverridesPack.ivysaur` | 具備 11,726 筆固化防護與 13,708 筆雲端資產 |
   | `buzz` | 🚀 巴斯光年 | `pokopia_voxel_overrides_buzz` | `voxelOverridesPack.buzz` | 42 層建造模型 |
   | `venusaur` | 🌺 妙蛙花 | `pokopia_voxel_overrides_venusaur` | `voxelOverridesPack.venusaur` | 103 層大型模型 |
