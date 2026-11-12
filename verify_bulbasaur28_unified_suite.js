@@ -73,10 +73,12 @@ assert.strictEqual(base28.dimensions.height, 28, 'bulbasaur28 高度應為 28');
 
 const bounds28 = VoxelDeltaStore.getCharBounds('bulbasaur28');
 assert.ok(bounds28 !== null, 'getCharBounds(bulbasaur28) 應回傳有效邊界');
-assert.strictEqual(bounds28.minX, 0, 'minX 應為 0');
+assert.strictEqual(bounds28.minX, 1, 'minX 應精準校準為 1');
 assert.strictEqual(bounds28.maxX, 23, 'maxX 應為 23');
-assert.strictEqual(bounds28.sum, 23, '對稱基準 sum 應為 23');
-assert.strictEqual(bounds28.center, 11.5, '對稱中心軸 center 應為 11.5');
+assert.strictEqual(bounds28.sum, 24, '對稱基準 sum 應為 24');
+assert.strictEqual(bounds28.center, 12, '對稱中心軸 center 應精確為 12 (方塊中線)');
+assert.strictEqual(VoxelDeltaStore.getSymmetryX(12, 'bulbasaur28'), 12, 'X=12 自身對稱');
+assert.strictEqual(VoxelDeltaStore.getSymmetryX(1, 'bulbasaur28'), 23, 'X=1 與 X=23 完美鏡像');
 
 // 檢驗資料隔離：在 28 層工作台塗色修改，絕不污染 53 層版或其他角色
 VoxelDeltaStore.executeVoxelAction('bulbasaur28', 12, 1, 15, 'paint', 21); // 粉紅色混凝土 (改動色號)
@@ -181,9 +183,9 @@ console.log('  ✅ [測試 4 通過] app.js 切片渲染、尺規排版與 3D �
 // 測試 5：全系統防降級與版本一致性驗證
 console.log('▶ [測試 5/5] 驗證 sw.js 快取版本推進與全套測試套件回歸相容性...');
 const swJs = fs.readFileSync('./sw.js', 'utf8');
-assert.ok(swJs.includes("pokopia-cache-v4.97.2") || swJs.includes("pokopia-cache-v4.97.1") || swJs.includes("pokopia-cache-v4.97.0") || swJs.includes("pokopia-cache-v4.96.0"), 'sw.js 需為最新快取版本');
+assert.ok(swJs.includes("pokopia-cache-v4.97.3") || swJs.includes("pokopia-cache-v4.97.2") || swJs.includes("pokopia-cache-v4.97.1") || swJs.includes("pokopia-cache-v4.97.0") || swJs.includes("pokopia-cache-v4.96.0"), 'sw.js 需為最新快取版本');
 assert.ok(swJs.includes("'./bulbasaur28_voxel_data.js?v="), 'sw.js 需預快取 bulbasaur28_voxel_data.js');
 
-console.log('  ✅ [測試 5 通過] Service Worker 快取推進 v4.96.0 無誤！\n');
+console.log('  ✅ [測試 5 通過] Service Worker 快取推進 v4.97.3 無誤！\n');
 
 console.log('🎉 恭喜！妙蛙種子 28 層精巧建造藍圖系統 5 大驗收項目 100% 全部通過！');

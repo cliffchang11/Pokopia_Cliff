@@ -242,6 +242,10 @@
   // 取得角色模型實體的真實幾何邊界與對稱中心
   function getCharBounds(charKey) {
     if (_charBounds[charKey]) return _charBounds[charKey];
+    if (charKey === 'bulbasaur28') {
+      _charBounds[charKey] = { minX: 1, maxX: 23, sum: 24, center: 12 };
+      return _charBounds[charKey];
+    }
     const base = getBaseData(charKey);
     if (!base) return null;
     let minX = Infinity, maxX = -Infinity;

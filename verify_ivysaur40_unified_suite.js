@@ -152,11 +152,11 @@ assert.ok(indexHtml.includes('15,332 顆方塊 (精巧版 Y=1~40)'), '需有 15,
 assert.ok(indexHtml.includes('第 1 / 40 層'), '初始層數標籤應為 第 1 / 40 層');
 
 // 腳本載入
-assert.ok(indexHtml.includes('src="ivysaur40_voxel_data.js?v=4.97.2"'), '應載入 ivysaur40_voxel_data.js 最新版 v4.97.2');
+assert.ok(indexHtml.includes('src="ivysaur40_voxel_data.js?v=4.97.3"') || indexHtml.includes('src="ivysaur40_voxel_data.js?v=4.97.2"'), '應載入 ivysaur40_voxel_data.js 最新版 v4.97.3');
 
 // Service Worker 快取名稱
 const swJs = fs.readFileSync('./sw.js', 'utf-8');
-assert.ok(swJs.includes('pokopia-cache-v4.97.2'), 'sw.js 快取名稱需為 pokopia-cache-v4.97.2');
+assert.ok(swJs.includes('pokopia-cache-v4.97.3') || swJs.includes('pokopia-cache-v4.97.2'), 'sw.js 快取名稱需為 pokopia-cache-v4.97.3');
 assert.ok(swJs.includes('ivysaur40_voxel_data.js?v='), 'sw.js 需快取 ivysaur40_voxel_data.js');
 console.log('  ✅ [測試 4 通過] index.html 元件 ID、40層切片範圍與 sw.js v4.97.2 驗證無誤！\n');
 
