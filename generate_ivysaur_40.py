@@ -1,8 +1,8 @@
 """
-妙蛙草 (Ivysaur #002) 40 層精巧建造藍圖資料庫生成腳本 (v4.97.0)
+妙蛙草 (Ivysaur #002) 40 層精巧建造藍圖資料庫生成腳本 (v4.97.2)
 - 來源: 任天堂官方原版模型 (Ivysaur.glb)
 - 高度鎖定: 嚴格連續 40 層 (Y=1 ~ 40)，四足爪尖貼地於 Y=1
-- 特徵繼承: 官方經典閉嘴微露尖牙、紅黑白大眼、暗海晶石斑點、青色混凝土純淨皮膚(無陰影)
+- 特徵繼承: 官方經典閉嘴微露尖牙、紅黑白大眼(12x12超採樣)、暗海晶石斑點、青色混凝土純淨皮膚、雙向法向加厚立體葉片
 - 輸出: ivysaur40_voxel_data.js
 """
 
@@ -122,49 +122,50 @@ for face in b_faces:
             norm_z = (p[2] - min_b[2]) / span[2]
             
             rgb = sample_texture(body_tex, uv)
-            r, g, b_col = rgb[0], rgb[1], rgb[2]
+            r, g, b = rgb
             
-            # 精確語意色彩解碼
-            # A. 爪尖白色
-            if norm_y < 0.16 and (r > 160 and g > 160 and b_col > 160):
-                pal = 10
-            # B. 嘴角立體白獠牙 (臉部前側下緣白點)
-            elif (norm_z > 0.68) and (0.35 <= norm_y <= 0.58) and (abs(norm_x - 0.5) > 0.08) and (r > 160 and g > 160 and b_col > 160):
-                pal = 10
-            # C. 標誌性暗海晶石斑點 (幾何深色區塊，排斥腹部陰影)
-            elif (r < 75 and g < 115 and b_col < 105) and (norm_y > 0.22):
-                pal = 3
-            # D. 身軀純淨青色混凝土 (排斥陰影髒黑)
+            # 爪子與兩側嘴角原生尖牙 (白色)
+            # 1. 足底爪尖: norm_y < 0.20
+            # 2. 兩側嘴角原生立體小虎牙: norm_y in [0.20, 0.28], norm_z >= 0.82, norm_x in [0.32, 0.38] or [0.60, 0.66]
+            is_claw = (norm_y < 0.20)
+            is_corner_tooth = (0.20 <= norm_y <= 0.28 and norm_z >= 0.82 and ((0.31 <= norm_x <= 0.38) or (0.60 <= norm_x <= 0.67)))
+            
+            if r > 190 and g > 190 and b > 190 and (is_claw or is_corner_tooth):
+                pal_id = 10 # white_concrete
             else:
-                pal = 1
+                # 排除背光接觸陰影區 (僅限後腿跨下內側與葉下陰影，保護後背正後方外表面 norm_z <= 0.36)
+                is_groin_shade = (norm_y < 0.30 and abs(norm_x - 0.5) < 0.13 and 0.42 <= norm_z < 0.66)
+                is_leaf_underside_shade = (norm_y >= 0.42 and 0.40 <= norm_z <= 0.66 and abs(norm_x - 0.5) < 0.19)
+                is_mouth_seam = (0.19 <= norm_y <= 0.33 and norm_z >= 0.80)
+                is_shade_or_seam = is_groin_shade or is_leaf_underside_shade or is_mouth_seam
                 
-            pt = (vx, vy, vz)
-            if pt not in raw_voxels or PRIORITY[pal] > PRIORITY[raw_voxels[pt]]:
-                raw_voxels[pt] = pal
+                # 真斑點判定 (暗海晶石斑點: 官方原生固有幾何特徵)
+                is_true_spot = (r <= 55 and g >= 68 and b >= 78)
+                
+                if is_true_spot and not is_shade_or_seam:
+                    pal_id = 3 # dark_prismarine (暗海晶石斑點)
+                else:
+                    pal_id = 1 # cyan_concrete (純淨青色混凝土皮膚)
+                
+            prio = PRIORITY[pal_id]
+            pos = (vx, vy, vz)
+            if pos not in raw_voxels or raw_voxels[pos][1] < prio:
+                raw_voxels[pos] = (pal_id, prio)
 
-print(f"身軀體素數量: {len(raw_voxels)}")
-
-# 2. 取樣眼睛 (Eyes)
-print("取樣眼睛...")
-eyes_geom = mesh_dict['eyes']
-eyes_tex = eyes_geom.visual.material.baseColorTexture.convert('RGBA')
-e_verts = eyes_geom.vertices
-e_faces = eyes_geom.faces
-e_uvs = eyes_geom.visual.uv
+# 2. 取樣雙眼 (Eyes - 12x12 超採樣還原黑框黑瞳、鮮紅虹膜與白高光，眼周無洞)
+print("取樣雙眼五官 (12x12 超採樣)...")
+eye_geom = mesh_dict['eyes']
+eye_tex = eye_geom.visual.material.baseColorTexture.convert('RGBA')
+e_verts = eye_geom.vertices
+e_faces = eye_geom.faces
+e_uvs = eye_geom.visual.uv
 
 for face in e_faces:
     v0, v1, v2 = e_verts[face]
     uv0, uv1, uv2 = e_uvs[face]
     
-    e1 = np.linalg.norm(v1 - v0) * scale
-    e2 = np.linalg.norm(v2 - v1) * scale
-    e3 = np.linalg.norm(v0 - v2) * scale
-    steps = max(2, int(np.ceil(max(e1, e2, e3) / 0.40)))
-    
-    for i in range(steps + 1):
-        for j in range(steps + 1 - i):
-            u = i / steps
-            v = j / steps
+    for u in np.linspace(0.02, 0.98, 12):
+        for v in np.linspace(0.02, 0.98 - u, 12):
             w = 1.0 - u - v
             p = u * v0 + v * v1 + w * v2
             uv = u * uv0 + v * uv1 + w * uv2
@@ -174,38 +175,47 @@ for face in e_faces:
             vy = int(np.round(p_scaled[1]))
             vz = int(np.round(p_scaled[2]))
             
-            rgb = sample_texture(eyes_tex, uv)
-            r, g, b_col = rgb[0], rgb[1], rgb[2]
+            rgb = sample_texture(eye_tex, uv)
+            r, g, b = rgb
             
-            if r > 180 and g > 180 and b_col > 180:
-                pal = 10 # 高光白
-            elif r > 120 and g < 70 and b_col < 70:
-                pal = 11 # 虹膜紅
-            elif max(r, g, b_col) < 65:
-                pal = 12 # 瞳孔黑
+            # 1. 潔白高光點
+            if r > 180 and g > 180 and b > 180:
+                pal_id = 10
+            # 2. 黑色深邃眼框線與長瞳孔
+            elif max(r, g, b) < 70:
+                pal_id = 12
+            # 3. 鮮紅虹膜
+            elif r > 105 and r > g + 25 and r > b + 25:
+                pal_id = 11
+            # 4. 眼周青色皮膚 (保護眼周不被黑化)
             else:
-                pal = 12
+                pal_id = 1
                 
-            pt = (vx, vy, vz)
-            raw_voxels[pt] = pal
+            prio = PRIORITY[pal_id]
+            pos = (vx, vy, vz)
+            if pos not in raw_voxels or raw_voxels[pos][1] < prio:
+                raw_voxels[pos] = (pal_id, prio)
 
-# 3. 取樣葉片 (Leaves)
-print("取樣背部綠葉...")
-leaves_geom = mesh_dict['leaves']
-leaves_tex = leaves_geom.visual.material.baseColorTexture.convert('RGBA')
-l_verts = leaves_geom.vertices
-l_faces = leaves_geom.faces
-l_uvs = leaves_geom.visual.uv
+# 3. 取樣葉片 (Leaves - 法向量雙向加厚立體 2 格)
+print("取樣背部葉片 (立體 2 格厚度)...")
+leaf_geom = mesh_dict['leaves']
+leaf_tex = leaf_geom.visual.material.baseColorTexture.convert('RGBA')
+l_verts = leaf_geom.vertices
+l_faces = leaf_geom.faces
+l_uvs = leaf_geom.visual.uv
+l_norms = leaf_geom.face_normals
 
-for face in l_faces:
+for f_idx, face in enumerate(l_faces):
     v0, v1, v2 = l_verts[face]
     uv0, uv1, uv2 = l_uvs[face]
+    norm = l_norms[f_idx]
     
     e1 = np.linalg.norm(v1 - v0) * scale
     e2 = np.linalg.norm(v2 - v1) * scale
     e3 = np.linalg.norm(v0 - v2) * scale
-    steps = max(2, int(np.ceil(max(e1, e2, e3) / 0.42)))
+    steps = max(2, int(np.ceil(max(e1, e2, e3) / 0.45)))
     
+    offsets = [-0.25, 0.0, 0.25]
     for i in range(steps + 1):
         for j in range(steps + 1 - i):
             u = i / steps
@@ -214,39 +224,38 @@ for face in l_faces:
             p = u * v0 + v * v1 + w * v2
             uv = u * uv0 + v * uv1 + w * uv2
             
-            p_scaled = (p - min_b) * scale
-            vx = int(np.round(p_scaled[0]))
-            vy = int(np.round(p_scaled[1]))
-            vz = int(np.round(p_scaled[2]))
+            rgb = sample_texture(leaf_tex, uv)
+            r, g, b = rgb
+            pal_id = 8 if g > 130 else 9
+            prio = PRIORITY[pal_id]
             
-            rgb = sample_texture(leaves_tex, uv)
-            r, g, b_col = rgb[0], rgb[1], rgb[2]
-            
-            if g > 110 and r < 140:
-                pal = 8 # 淺綠色
-            else:
-                pal = 9 # 深綠色
+            for off in offsets:
+                p_off = p + (off / scale) * norm
+                p_scaled = (p_off - min_b) * scale
+                vx = int(np.round(p_scaled[0]))
+                vy = int(np.round(p_scaled[1]))
+                vz = int(np.round(p_scaled[2]))
                 
-            pt = (vx, vy, vz)
-            if pt not in raw_voxels or PRIORITY[pal] >= PRIORITY[raw_voxels[pt]]:
-                raw_voxels[pt] = pal
+                pos = (vx, vy, vz)
+                if pos not in raw_voxels or raw_voxels[pos][1] < prio:
+                    raw_voxels[pos] = (pal_id, prio)
 
-# 4. 取樣花苞 (Flower)
-print("取樣粉紅花苞...")
+# 4. 取樣背頂大花苞 (Flower)
+print("取樣背頂大花苞...")
 flower_geom = mesh_dict['flower']
 flower_tex = flower_geom.visual.material.baseColorTexture.convert('RGBA')
-f_verts = flower_geom.vertices
-f_faces = flower_geom.faces
-f_uvs = flower_geom.visual.uv
+fl_verts = flower_geom.vertices
+fl_faces = flower_geom.faces
+fl_uvs = flower_geom.visual.uv
 
-for face in f_faces:
-    v0, v1, v2 = f_verts[face]
-    uv0, uv1, uv2 = f_uvs[face]
+for face in fl_faces:
+    v0, v1, v2 = fl_verts[face]
+    uv0, uv1, uv2 = fl_uvs[face]
     
     e1 = np.linalg.norm(v1 - v0) * scale
     e2 = np.linalg.norm(v2 - v1) * scale
     e3 = np.linalg.norm(v0 - v2) * scale
-    steps = max(2, int(np.ceil(max(e1, e2, e3) / 0.42)))
+    steps = max(2, int(np.ceil(max(e1, e2, e3) / 0.45)))
     
     for i in range(steps + 1):
         for j in range(steps + 1 - i):
@@ -262,48 +271,42 @@ for face in f_faces:
             vz = int(np.round(p_scaled[2]))
             
             rgb = sample_texture(flower_tex, uv)
-            r, g, b_col = rgb[0], rgb[1], rgb[2]
+            r, g, b = rgb
+            pal_id = 5 if r < 190 else 4
+            prio = PRIORITY[pal_id]
             
-            if r > 180 and b_col > 90 and g < 100:
-                pal = 4 # 粉紅混凝土
-            elif r > 140 and b_col > 60:
-                pal = 5 # 品紅混凝土
-            else:
-                pal = 4
-                
-            pt = (vx, vy, vz)
-            if pt not in raw_voxels or PRIORITY[pal] >= PRIORITY[raw_voxels[pt]]:
-                raw_voxels[pt] = pal
+            pos = (vx, vy, vz)
+            if pos not in raw_voxels or raw_voxels[pos][1] < prio:
+                raw_voxels[pos] = (pal_id, prio)
 
-print(f"全模型採樣方塊總數: {len(raw_voxels)}")
+print(f"總取樣表面方塊數: {len(raw_voxels)}")
 
-# 建立體積網格並執行內部實體填充 (Flood-fill Solidify)
-xs = [p[0] for p in raw_voxels.keys()]
-ys = [p[1] for p in raw_voxels.keys()]
-zs = [p[2] for p in raw_voxels.keys()]
-min_x, max_x = min(xs), max(xs)
-min_y, max_y = min(ys), max(ys)
-min_z, max_z = min(zs), max(zs)
+# 建立 3D 體積網格進行實心填充與平滑
+all_pts = list(raw_voxels.keys())
+min_x = min(p[0] for p in all_pts)
+max_x = max(p[0] for p in all_pts)
+min_y = min(p[1] for p in all_pts)
+max_y = max(p[1] for p in all_pts)
+min_z = min(p[2] for p in all_pts)
+max_z = max(p[2] for p in all_pts)
 
 dim_x = max_x - min_x + 3
 dim_y = max_y - min_y + 3
 dim_z = max_z - min_z + 3
+print(f"體積邊界尺寸: {dim_x} x {dim_y} x {dim_z}")
 
 grid_solid = np.zeros((dim_x, dim_y, dim_z), dtype=bool)
-grid_color = np.zeros((dim_x, dim_y, dim_z), dtype=np.int16)
+grid_color = np.zeros((dim_x, dim_y, dim_z), dtype=np.uint8)
 
-for (vx, vy, vz), pal in raw_voxels.items():
+for (vx, vy, vz), (pal_id, _) in raw_voxels.items():
     gx = vx - min_x + 1
     gy = vy - min_y + 1
     gz = vz - min_z + 1
     grid_solid[gx, gy, gz] = True
-    grid_color[gx, gy, gz] = pal
+    grid_color[gx, gy, gz] = pal_id
 
-# 內部掏空修補填充 (binary_fill_holes)
-print("執行三維內部空洞實心填充...")
+print("執行身軀實心填充 (3D Hole Filling)...")
 filled_solid = binary_fill_holes(grid_solid)
-fill_count = np.sum(filled_solid) - np.sum(grid_solid)
-print(f"實體化增補內部方塊: {fill_count} 顆")
 
 for gx in range(dim_x):
     for gy in range(dim_y):
@@ -408,6 +411,10 @@ for y in range(1, TARGET_HEIGHT + 1):
 mat_totals = defaultdict(int)
 for b in normalized_data.values():
     mat_totals[b] += 1
+
+print("材質統計:")
+for pid, count in sorted(mat_totals.items(), key=lambda x: -x[1]):
+    print(f"  {MC_PALETTE[pid]['name']} (ID {pid}): {count} 顆")
 
 palette_out = {}
 for pid, pdata in MC_PALETTE.items():

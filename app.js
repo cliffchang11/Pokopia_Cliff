@@ -7914,7 +7914,7 @@
     } else if (char === 'ivysaur40' || char === 'ivysaur43') {
       if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🌿';
       const iData = (typeof IVYSAUR_40_VOXEL_DATA !== 'undefined') ? IVYSAUR_40_VOXEL_DATA : (typeof IVYSAUR_43_VOXEL_DATA !== 'undefined' ? IVYSAUR_43_VOXEL_DATA : null);
-      const iTotal = (iData && iData.totalBlocks) ? iData.totalBlocks.toLocaleString() : '14,698';
+      const iTotal = (iData && iData.totalBlocks) ? iData.totalBlocks.toLocaleString() : '15,332';
       const iLayers = (iData && iData.layers) ? iData.layers.length : '40';
       if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = `<strong>${iTotal}</strong> 顆方塊 ‧ ${iLayers} 層切片 (40層精巧版)`;
       renderIvysaur40Layer(ivysaur40State.curLayer);

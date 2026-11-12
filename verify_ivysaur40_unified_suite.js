@@ -22,9 +22,9 @@ const ivysaur40Data = require('./ivysaur40_voxel_data.js');
 assert.ok(ivysaur40Data.name.includes('妙蛙草') && ivysaur40Data.name.includes('40'), '名稱應包含「妙蛙草」與「40」');
 assert.strictEqual(ivysaur40Data.layers.length, 40, '總層數應精確為 40 層');
 assert.strictEqual(ivysaur40Data.dimensions.height, 40, '高度尺寸應為 40');
-assert.strictEqual(ivysaur40Data.dimensions.width, 50, '寬度尺寸應為 50');
-assert.strictEqual(ivysaur40Data.dimensions.length, 50, '長度尺寸應為 50');
-assert.strictEqual(ivysaur40Data.totalBlocks, 14698, '總方塊數應為 14,698 顆');
+assert.strictEqual(ivysaur40Data.dimensions.width, 52, '寬度尺寸應為 52');
+assert.strictEqual(ivysaur40Data.dimensions.length, 52, '長度尺寸應為 52');
+assert.strictEqual(ivysaur40Data.totalBlocks, 15332, '總方塊數應為 15,332 顆');
 
 const paletteKeys = Object.keys(ivysaur40Data.palette);
 assert.strictEqual(paletteKeys.length, 9, '調色盤應涵蓋 9 種純淨 Minecraft 建材');
@@ -34,6 +34,21 @@ paletteKeys.forEach(k => {
   assert.ok(p.name && p.name.length > 0, `材質 ${k} 需有中文名稱`);
   assert.ok(p.color && p.color.startsWith('#'), `材質 ${k} 需有有效十六進位顏色`);
 });
+
+// 五官與材質比例嚴格檢驗（杜絕大黑墨鏡與材質失真）
+let blackCount = 0, redEyeCount = 0, whiteCount = 0, cyanCount = 0;
+ivysaur40Data.layers.forEach(layer => {
+  layer.blocks.forEach(([x, z, bid]) => {
+    if (bid === 12) blackCount++;
+    else if (bid === 11) redEyeCount++;
+    else if (bid === 10) whiteCount++;
+    else if (bid === 1) cyanCount++;
+  });
+});
+assert.ok(blackCount > 0 && blackCount <= 40, `黑瞳孔與細眼眶方塊數應適中 (現為 ${blackCount})，杜絕大面積黑化墨鏡`);
+assert.ok(redEyeCount >= 8 && redEyeCount <= 20, `紅虹膜方塊數應精緻 (現為 ${redEyeCount})`);
+assert.ok(whiteCount >= 100, `白色高光與足爪尖牙方塊數應充足 (現為 ${whiteCount})`);
+assert.ok(cyanCount >= 8500, `青色主體皮膚與眼周方塊數應充足 (現為 ${cyanCount})`);
 
 // 檢驗第 1 層四足接地與第 40 層花苞頂尖
 assert.strictEqual(ivysaur40Data.layers[0].layerIndex, 1, '第 1 層索引需為 1');
@@ -46,7 +61,7 @@ ivysaur40Data.layers.forEach((l, idx) => {
   assert.strictEqual(l.layerIndex, idx + 1, `層數索引應連續：第 ${idx+1} 層`);
   assert.ok(l.blocks.length > 0, `第 ${idx+1} 層不應為空`);
 });
-console.log('  ✅ [測試 1 通過] 40 層幾何、14,698 顆方塊與 9 種 Minecraft 方塊調色盤驗證無誤！\n');
+console.log('  ✅ [測試 1 通過] 40 層幾何、15,332 顆方塊、官方精雕五官紅黑白比例與 9 種方塊調色盤驗證無誤！\n');
 
 // 測試 2：VoxelDeltaStore 雙軌資料隔離與存檔防污染驗證
 console.log('▶ [測試 2/6] 驗證 VoxelDeltaStore 獨立資料隔離與雲端原子字串包...');
@@ -75,9 +90,9 @@ assert.strictEqual(base40.dimensions.height, 40, 'ivysaur40 高度應為 40');
 const bounds40 = VoxelDeltaStore.getCharBounds('ivysaur40');
 assert.ok(bounds40 !== null, 'getCharBounds(ivysaur40) 應回傳有效邊界');
 assert.strictEqual(bounds40.minX, 1, 'minX 應為 1');
-assert.strictEqual(bounds40.maxX, 50, 'maxX 應為 50');
-assert.strictEqual(bounds40.sum, 51, '對稱基準 sum 應為 51');
-assert.strictEqual(bounds40.center, 25.5, '對稱中心軸 center 應為 25.5');
+assert.strictEqual(bounds40.maxX, 52, 'maxX 應為 52');
+assert.strictEqual(bounds40.sum, 53, '對稱基準 sum 應為 53');
+assert.strictEqual(bounds40.center, 26.5, '對稱中心軸 center 應為 26.5');
 
 // 檢驗資料隔離：在 40 層工作台塗色修改，絕不污染 76 層版或其他角色
 VoxelDeltaStore.executeVoxelAction('ivysaur40', 25, 10, 25, 'paint', 4); // 改動色號
@@ -133,17 +148,17 @@ assert.ok(indexHtml.includes('🌿 妙蛙草 (40層)'), '按鈕名稱應為「�
 assert.ok(indexHtml.includes('id="paneIvysaur40"'), 'index.html 應包含 paneIvysaur40 工作台');
 assert.ok(indexHtml.includes('id="ivysaur40LayerSlider"'), '應包含 ivysaur40LayerSlider 滑桿');
 assert.ok(indexHtml.includes('min="1" max="40"'), '滑桿範圍需為 min="1" max="40"');
-assert.ok(indexHtml.includes('14,698 顆方塊 (精巧版 Y=1~40)'), '需有 14,698 顆方塊精巧版標籤');
+assert.ok(indexHtml.includes('15,332 顆方塊 (精巧版 Y=1~40)'), '需有 15,332 顆方塊精巧版標籤');
 assert.ok(indexHtml.includes('第 1 / 40 層'), '初始層數標籤應為 第 1 / 40 層');
 
 // 腳本載入
-assert.ok(indexHtml.includes('src="ivysaur40_voxel_data.js?v=4.97.1"') || indexHtml.includes('src="ivysaur40_voxel_data.js?v=4.97.0"'), '應載入 ivysaur40_voxel_data.js 最新版');
+assert.ok(indexHtml.includes('src="ivysaur40_voxel_data.js?v=4.97.2"'), '應載入 ivysaur40_voxel_data.js 最新版 v4.97.2');
 
 // Service Worker 快取名稱
 const swJs = fs.readFileSync('./sw.js', 'utf-8');
-assert.ok(swJs.includes('pokopia-cache-v4.97.1') || swJs.includes('pokopia-cache-v4.97.0'), 'sw.js 快取名稱需為最新版本');
+assert.ok(swJs.includes('pokopia-cache-v4.97.2'), 'sw.js 快取名稱需為 pokopia-cache-v4.97.2');
 assert.ok(swJs.includes('ivysaur40_voxel_data.js?v='), 'sw.js 需快取 ivysaur40_voxel_data.js');
-console.log('  ✅ [測試 4 通過] index.html 元件 ID、40層切片範圍與 sw.js v4.97.1 驗證無誤！\n');
+console.log('  ✅ [測試 4 通過] index.html 元件 ID、40層切片範圍與 sw.js v4.97.2 驗證無誤！\n');
 
 // 測試 5：app.js 行為級切片渲染與 3D/2D 邏輯驗證
 console.log('▶ [測試 5/6] 驗證 app.js 切片渲染、雙軸尺規、BOM 清單與 3D 剖面過濾函式...');
@@ -162,7 +177,7 @@ assert.ok(appCode.includes('const setIvysaur43Layer = setIvysaur40Layer;'), '需
 assert.ok(appCode.includes('const renderIvysaur43Layer = renderIvysaur40Layer;'), '需包含 renderIvysaur43Layer 別名');
 
 // 檢驗相機與視角參數
-assert.ok(appCode.includes('camera.position.set(65, 48, 75);'), '相機預設位置需調整為 (65, 48, 75) 適應 50x40x50');
+assert.ok(appCode.includes('camera.position.set(65, 48, 75);'), '相機預設位置需調整為 (65, 48, 75) 適應 52x40x52');
 
 console.log('  ✅ [測試 5 通過] app.js 40 層精巧版切片邏輯、雙軸標註線、BOM 清單與相機參數驗證無誤！\n');
 
@@ -172,7 +187,7 @@ console.log('▶ [測試 6/6] 驗證 switchCharacterBlueprint 跨角色切換語
 assert.ok(appCode.includes("char === 'ivysaur40' || char === 'ivysaur43'"), 'switchCharacterBlueprint 需完整識別 ivysaur40 與相容 ivysaur43');
 assert.ok(appCode.includes("DOM.btnSubIvysaur40"), '需支援 DOM.btnSubIvysaur40 active 切換');
 assert.ok(appCode.includes("DOM.paneIvysaur40"), '需支援 DOM.paneIvysaur40 顯示切換');
-assert.ok(appCode.includes("14,698"), '需顯示 14,698 顆方塊精巧版');
+assert.ok(appCode.includes("15,332"), '需顯示 15,332 顆方塊精巧版');
 
 console.log('  ✅ [測試 6 通過] 跨角色藍圖切換 (ivysaur40 / bulba28 / ivysaur / buzz) 互不干擾驗證通過！\n');
 
