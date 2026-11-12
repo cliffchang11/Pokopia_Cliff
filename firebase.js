@@ -38,7 +38,8 @@
 
     // 關鍵升級：優先解包高效原子字串包 (voxelOverridesPack)，單一欄位瞬發讀取
     if (data.voxelOverridesPack && typeof data.voxelOverridesPack === 'object') {
-      ['bulbasaur', 'ivysaur', 'venusaur', 'buzz'].forEach(k => {
+      const packKeys = Object.keys(data.voxelOverridesPack);
+      packKeys.forEach(k => {
         const pack = data.voxelOverridesPack[k];
         if (pack && pack.json) {
           try {
@@ -54,7 +55,7 @@
       });
     }
 
-    ['bulbasaur', 'ivysaur', 'venusaur', 'buzz'].forEach(k => {
+    ['bulbasaur', 'ivysaur', 'ivysaur43', 'venusaur', 'buzz'].forEach(k => {
       const dotKey = 'voxelOverrides.' + k;
       if (data[dotKey] && !data.voxelOverrides[k]) {
         data.voxelOverrides[k] = data[dotKey];
