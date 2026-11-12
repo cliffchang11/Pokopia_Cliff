@@ -446,3 +446,4 @@ with open('/home/cliff/Desktop/Pokopia/ivysaur43_voxel_data.js', 'w', encoding='
     f.write(js_content)
 
 print(f"成功輸出至 /home/cliff/Desktop/Pokopia/ivysaur43_voxel_data.js！")
+

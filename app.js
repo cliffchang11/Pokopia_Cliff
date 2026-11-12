@@ -30,7 +30,7 @@
   function getSaved3DChar() {
     try {
       const v = localStorage.getItem(STORAGE_KEY_3D_CUR_CHAR);
-      if (['buzz', 'bulba', 'ivysaur', 'venusaur'].includes(v)) return v;
+      if (['buzz', 'bulba', 'ivysaur', 'ivysaur43', 'venusaur'].includes(v)) return v;
     } catch (_) {}
     return 'buzz';
   }
@@ -73,6 +73,7 @@
               buzz: getSaved3DLayer('buzz', 1),
               bulba: getSaved3DLayer('bulba', 1),
               ivysaur: getSaved3DLayer('ivysaur', 1),
+              ivysaur43: getSaved3DLayer('ivysaur43', 1),
               venusaur: getSaved3DLayer('venusaur', 1)
             }
           };
@@ -327,6 +328,29 @@
     btnBulbaZoomIn: document.getElementById('btnBulbaZoomIn'),
     btnBulbaZoomOut: document.getElementById('btnBulbaZoomOut'),
     btnBulbaZoomReset: document.getElementById('btnBulbaZoomReset'),
+    btnSubIvysaur43: document.getElementById('btnSubIvysaur43'),
+    paneIvysaur43: document.getElementById('paneIvysaur43'),
+    btnIvysaur43ModeFull: document.getElementById('btnIvysaur43ModeFull'),
+    btnIvysaur43ModeSlice: document.getElementById('btnIvysaur43ModeSlice'),
+    ivysaur43_3dCanvasWrap: document.getElementById('ivysaur43_3dCanvasWrap'),
+    ivysaur43_3dCanvas: document.getElementById('ivysaur43_3dCanvas'),
+    ivysaur43SliceCard: document.getElementById('ivysaur43SliceCard'),
+    ivysaur43LayerBadge: document.getElementById('ivysaur43LayerBadge'),
+    ivysaur43LayerBlockCount: document.getElementById('ivysaur43LayerBlockCount'),
+    btnIvysaur43PrevLayer: document.getElementById('btnIvysaur43PrevLayer'),
+    btnIvysaur43NextLayer: document.getElementById('btnIvysaur43NextLayer'),
+    ivysaur43LayerSlider: document.getElementById('ivysaur43LayerSlider'),
+    ivysaur43VoxelGrid: document.getElementById('ivysaur43VoxelGrid'),
+    ivysaur43DimTop: document.getElementById('ivysaur43DimTop'),
+    ivysaur43DimRight: document.getElementById('ivysaur43DimRight'),
+    ivysaur43HoverTooltip: document.getElementById('ivysaur43HoverTooltip'),
+    ivysaur43TooltipColor: document.getElementById('ivysaur43TooltipColor'),
+    ivysaur43TooltipText: document.getElementById('ivysaur43TooltipText'),
+    ivysaur43MatTypesCount: document.getElementById('ivysaur43MatTypesCount'),
+    ivysaur43MatList: document.getElementById('ivysaur43MatList'),
+    btnIvysaur43ZoomIn: document.getElementById('btnIvysaur43ZoomIn'),
+    btnIvysaur43ZoomOut: document.getElementById('btnIvysaur43ZoomOut'),
+    btnIvysaur43ZoomReset: document.getElementById('btnIvysaur43ZoomReset'),
     btnSubIvysaur: document.getElementById('btnSubIvysaur'),
     paneIvysaur: document.getElementById('paneIvysaur'),
     btnIvysaurModeFull: document.getElementById('btnIvysaurModeFull'),
@@ -574,7 +598,7 @@
   function getInitialNavState() {
     const validTabs = ['storage', 'habitat', 'habitatCatalog', 'recipe', 'preferences', 'autofarm', 'customStorage', 'regionMap', 'video', 'buzz3d'];
     const validViews = ['card', 'table'];
-    const valid3DChars = ['buzz', 'bulba', 'ivysaur', 'venusaur'];
+    const valid3DChars = ['buzz', 'bulba', 'ivysaur', 'ivysaur43', 'venusaur'];
 
     let tab = null;
     let view = null;
@@ -1070,6 +1094,7 @@
                 buzz: getSaved3DLayer('buzz', 1),
                 bulba: getSaved3DLayer('bulba', 1),
                 ivysaur: getSaved3DLayer('ivysaur', 1),
+                ivysaur43: getSaved3DLayer('ivysaur43', 1),
                 venusaur: getSaved3DLayer('venusaur', 1)
               }
             }
@@ -1119,6 +1144,10 @@
               renderIvysaurLayer(ivysaurState.curLayer);
               if (typeof updateIvysaur3DSliceFilter === 'function') updateIvysaur3DSliceFilter();
               if (typeof requestThreeRender === 'function') requestThreeRender('ivysaur');
+            } else if (activeChar === 'ivysaur43') {
+              renderIvysaur43Layer(ivysaur43State.curLayer);
+              if (typeof updateIvysaur433DSliceFilter === 'function') updateIvysaur433DSliceFilter();
+              if (typeof requestThreeRender === 'function') requestThreeRender('ivysaur43');
             } else if (activeChar === 'bulbasaur' || activeChar === 'bulba') {
               renderBulbaLayer(bulbaState.curLayer);
               if (typeof updateBulba3DSliceFilter === 'function') updateBulba3DSliceFilter();
@@ -1187,6 +1216,7 @@
                   buzz: getSaved3DLayer('buzz', 1),
                   bulba: getSaved3DLayer('bulba', 1),
                   ivysaur: getSaved3DLayer('ivysaur', 1),
+                  ivysaur43: getSaved3DLayer('ivysaur43', 1),
                   venusaur: getSaved3DLayer('venusaur', 1)
                 }
               }
@@ -1244,6 +1274,10 @@
                   renderIvysaurLayer(ivysaurState.curLayer);
                   if (typeof updateIvysaur3DSliceFilter === 'function') updateIvysaur3DSliceFilter();
                   if (typeof requestThreeRender === 'function') requestThreeRender('ivysaur');
+                } else if (activeChar === 'ivysaur43') {
+                  renderIvysaur43Layer(ivysaur43State.curLayer);
+                  if (typeof updateIvysaur433DSliceFilter === 'function') updateIvysaur433DSliceFilter();
+                  if (typeof requestThreeRender === 'function') requestThreeRender('ivysaur43');
                 } else if (activeChar === 'bulbasaur' || activeChar === 'bulba') {
                   renderBulbaLayer(bulbaState.curLayer);
                   if (typeof updateBulba3DSliceFilter === 'function') updateBulba3DSliceFilter();
@@ -1621,6 +1655,9 @@
     if (DOM.btnSubBulba) {
       DOM.btnSubBulba.addEventListener('click', () => switchCharacterBlueprint('bulba'));
     }
+    if (DOM.btnSubIvysaur43) {
+      DOM.btnSubIvysaur43.addEventListener('click', () => switchCharacterBlueprint('ivysaur43'));
+    }
     if (DOM.btnSubIvysaur) {
       DOM.btnSubIvysaur.addEventListener('click', () => switchCharacterBlueprint('ivysaur'));
     }
@@ -1692,6 +1729,38 @@
     }
     if (DOM.btnBulbaZoomReset) {
       DOM.btnBulbaZoomReset.addEventListener('click', () => changeSliceZoom(bulbaWorkspace, bulbaState.zoom, 1.0, true, bulbaContainer));
+    }
+
+    // 妙蛙草 (43層精巧版) 事件
+    if (DOM.btnIvysaur43ModeFull) {
+      DOM.btnIvysaur43ModeFull.addEventListener('click', () => switchIvysaur433DMode('full'));
+    }
+    if (DOM.btnIvysaur43ModeSlice) {
+      DOM.btnIvysaur43ModeSlice.addEventListener('click', () => switchIvysaur433DMode('slice'));
+    }
+    if (DOM.btnIvysaur43PrevLayer) {
+      DOM.btnIvysaur43PrevLayer.addEventListener('click', () => setIvysaur43Layer(ivysaur43State.curLayer - 1));
+    }
+    if (DOM.btnIvysaur43NextLayer) {
+      DOM.btnIvysaur43NextLayer.addEventListener('click', () => setIvysaur43Layer(ivysaur43State.curLayer + 1));
+    }
+    if (DOM.ivysaur43LayerSlider) {
+      DOM.ivysaur43LayerSlider.addEventListener('input', (e) => setIvysaur43Layer(Number(e.target.value)));
+    }
+
+    const ivysaur43Container = DOM.ivysaur43VoxelGrid ? DOM.ivysaur43VoxelGrid.closest('.bulba-grid-container') : null;
+    const ivysaur43Workspace = DOM.ivysaur43VoxelGrid ? DOM.ivysaur43VoxelGrid.closest('.bulba-grid-workspace') : null;
+    if (ivysaur43Container && ivysaur43Workspace) {
+      setupSliceZoomPan(ivysaur43Container, ivysaur43Workspace, ivysaur43State.zoom);
+    }
+    if (DOM.btnIvysaur43ZoomIn) {
+      DOM.btnIvysaur43ZoomIn.addEventListener('click', () => changeSliceZoom(ivysaur43Workspace, ivysaur43State.zoom, 1.25));
+    }
+    if (DOM.btnIvysaur43ZoomOut) {
+      DOM.btnIvysaur43ZoomOut.addEventListener('click', () => changeSliceZoom(ivysaur43Workspace, ivysaur43State.zoom, 0.8));
+    }
+    if (DOM.btnIvysaur43ZoomReset) {
+      DOM.btnIvysaur43ZoomReset.addEventListener('click', () => changeSliceZoom(ivysaur43Workspace, ivysaur43State.zoom, 1.0, true, ivysaur43Container));
     }
 
     // 妙蛙草事件
@@ -1767,6 +1836,7 @@
     // 同步初始化四大角色滑桿數值為保存之層數
     if (DOM.buzzLayerSlider) DOM.buzzLayerSlider.value = buzzState.curLayer;
     if (DOM.bulbaLayerSlider) DOM.bulbaLayerSlider.value = bulbaState.curLayer;
+    if (DOM.ivysaur43LayerSlider) DOM.ivysaur43LayerSlider.value = ivysaur43State.curLayer;
     if (DOM.ivysaurLayerSlider) DOM.ivysaurLayerSlider.value = ivysaurState.curLayer;
     if (DOM.venusaurLayerSlider) DOM.venusaurLayerSlider.value = venusaurState.curLayer;
 
@@ -7340,6 +7410,22 @@
     }
   };
 
+  const ivysaur43State = {
+    curMode: getSaved3DMode('ivysaur43', 'full'),
+    curLayer: getSaved3DLayer('ivysaur43', 1),
+    zoom: { scale: 1.0, panX: 0, panY: 0 },
+    three: {
+      isInit: false,
+      scene: null,
+      camera: null,
+      renderer: null,
+      controls: null,
+      instancedMesh: null,
+      blockDataList: [],
+      animFrameId: null
+    }
+  };
+
   const ivysaurState = {
     curMode: getSaved3DMode('ivysaur', 'full'),
     curLayer: getSaved3DLayer('ivysaur', 1),
@@ -7378,6 +7464,7 @@
   function getThreeStateByChar(charKey) {
     if (charKey === 'buzz') return buzzState.three;
     if (charKey === 'bulba' || charKey === 'bulbasaur') return bulbaState.three;
+    if (charKey === 'ivysaur43') return ivysaur43State.three;
     if (charKey === 'ivysaur') return ivysaurState.three;
     if (charKey === 'venusaur') return venusaurState.three;
     return null;
@@ -7416,7 +7503,7 @@
 
   // 啟動指定角色的 3D 渲染 (Bloxelizer 按需渲染架構：靜止時 0% GPU 佔用，互動與連動時即時單幀/順暢刷新)
   function startThreeRendering(charKey) {
-    ['buzz', 'bulbasaur', 'ivysaur', 'venusaur'].forEach(k => {
+    ['buzz', 'bulbasaur', 'ivysaur', 'ivysaur43', 'venusaur'].forEach(k => {
       if (k !== charKey && (charKey !== 'bulba' || k !== 'bulbasaur')) {
         stopThreeRendering(k);
       }
@@ -7659,19 +7746,22 @@
     }
     if (DOM.btnSubBuzz) DOM.btnSubBuzz.classList.toggle('active', char === 'buzz');
     if (DOM.btnSubBulba) DOM.btnSubBulba.classList.toggle('active', char === 'bulba');
+    if (DOM.btnSubIvysaur43) DOM.btnSubIvysaur43.classList.toggle('active', char === 'ivysaur43');
     if (DOM.btnSubIvysaur) DOM.btnSubIvysaur.classList.toggle('active', char === 'ivysaur');
     if (DOM.btnSubVenusaur) DOM.btnSubVenusaur.classList.toggle('active', char === 'venusaur');
 
     if (DOM.paneBuzz) DOM.paneBuzz.classList.toggle('hidden', char !== 'buzz');
     if (DOM.paneBulba) DOM.paneBulba.classList.toggle('hidden', char !== 'bulba');
+    if (DOM.paneIvysaur43) DOM.paneIvysaur43.classList.toggle('hidden', char !== 'ivysaur43');
     if (DOM.paneIvysaur) DOM.paneIvysaur.classList.toggle('hidden', char !== 'ivysaur');
     if (DOM.paneVenusaur) DOM.paneVenusaur.classList.toggle('hidden', char !== 'venusaur');
 
     // 守護 Bloxelizer 控制器與尺寸標註層常駐掛載
     const normKey = (char === 'bulba') ? 'bulbasaur' : char;
     const curT = getThreeStateByChar(normKey);
-    const curCanvas = (char === 'buzz') ? DOM.buzz3dCanvas : (char === 'ivysaur') ? DOM.ivysaur3dCanvas : (char === 'venusaur') ? DOM.venusaur3dCanvas : DOM.bulba3dCanvas;
+    const curCanvas = (char === 'buzz') ? DOM.buzz3dCanvas : (char === 'ivysaur43') ? DOM.ivysaur43_3dCanvas : (char === 'ivysaur') ? DOM.ivysaur3dCanvas : (char === 'venusaur') ? DOM.venusaur3dCanvas : DOM.bulba3dCanvas;
     const curData = (char === 'buzz') ? (typeof BUZZ_VOXEL_DATA !== 'undefined' ? BUZZ_VOXEL_DATA : null) :
+                    (char === 'ivysaur43') ? (typeof IVYSAUR_43_VOXEL_DATA !== 'undefined' ? IVYSAUR_43_VOXEL_DATA : null) :
                     (char === 'ivysaur') ? (typeof IVYSAUR_VOXEL_DATA !== 'undefined' ? IVYSAUR_VOXEL_DATA : null) :
                     (char === 'venusaur') ? (typeof VENUSAUR_VOXEL_DATA !== 'undefined' ? VENUSAUR_VOXEL_DATA : null) :
                     (typeof BULBASAUR_VOXEL_DATA !== 'undefined' ? BULBASAUR_VOXEL_DATA : null);
@@ -7687,6 +7777,13 @@
       if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = `<strong>${bTotal}</strong> 顆方塊 ‧ ${bLayers} 層切片`;
       renderBuzzLayer(buzzState.curLayer);
       setTimeout(initBuzzThreeEngine, 60);
+    } else if (char === 'ivysaur43') {
+      if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🌿';
+      const iTotal = (typeof IVYSAUR_43_VOXEL_DATA !== 'undefined' && IVYSAUR_43_VOXEL_DATA.totalBlocks) ? IVYSAUR_43_VOXEL_DATA.totalBlocks.toLocaleString() : '18,751';
+      const iLayers = (typeof IVYSAUR_43_VOXEL_DATA !== 'undefined' && IVYSAUR_43_VOXEL_DATA.layers) ? IVYSAUR_43_VOXEL_DATA.layers.length : '43';
+      if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = `<strong>${iTotal}</strong> 顆方塊 ‧ ${iLayers} 層切片 (精巧版)`;
+      renderIvysaur43Layer(ivysaur43State.curLayer);
+      setTimeout(initIvysaur43ThreeEngine, 60);
     } else if (char === 'ivysaur') {
       if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🌿';
       const iTotal = (typeof IVYSAUR_VOXEL_DATA !== 'undefined' && IVYSAUR_VOXEL_DATA.totalBlocks) ? IVYSAUR_VOXEL_DATA.totalBlocks.toLocaleString() : '70,384';
@@ -8218,6 +8315,7 @@
   function getCurrentLayer(charKey) {
     if (charKey === 'bulbasaur') return bulbaState.curLayer;
     if (charKey === 'buzz') return buzzState.curLayer;
+    if (charKey === 'ivysaur43') return ivysaur43State.curLayer;
     if (charKey === 'ivysaur') return ivysaurState.curLayer;
     if (charKey === 'venusaur') return venusaurState.curLayer;
     return 1;
@@ -8226,6 +8324,7 @@
   function getCharGridEl(charKey) {
     if (charKey === 'bulbasaur') return DOM.bulbaVoxelGrid;
     if (charKey === 'buzz') return DOM.buzzVoxelGrid;
+    if (charKey === 'ivysaur43') return DOM.ivysaur43VoxelGrid;
     if (charKey === 'ivysaur') return DOM.ivysaurVoxelGrid;
     if (charKey === 'venusaur') return DOM.venusaurVoxelGrid;
     return null;
@@ -9298,6 +9397,7 @@
     threeState._getCurMode = () => {
       if (charKey === 'bulbasaur') return bulbaState.curMode;
       if (charKey === 'buzz') return buzzState.curMode;
+      if (charKey === 'ivysaur43') return ivysaur43State.curMode;
       if (charKey === 'ivysaur') return ivysaurState.curMode;
       if (charKey === 'venusaur') return venusaurState.curMode;
       return '3d';
@@ -9305,6 +9405,7 @@
     threeState._getCurLayer = () => {
       if (charKey === 'bulbasaur') return bulbaState.curLayer;
       if (charKey === 'buzz') return buzzState.curLayer;
+      if (charKey === 'ivysaur43') return ivysaur43State.curLayer;
       if (charKey === 'ivysaur') return ivysaurState.curLayer;
       if (charKey === 'venusaur') return venusaurState.curLayer;
       return 1;
@@ -9312,12 +9413,14 @@
     threeState._onAfterSync = () => {
       if (charKey === 'bulbasaur') updateBulba3DSliceFilter();
       if (charKey === 'buzz') updateBuzz3DSliceFilter();
+      if (charKey === 'ivysaur43') updateIvysaur433DSliceFilter();
       if (charKey === 'ivysaur') updateIvysaur3DSliceFilter();
       if (charKey === 'venusaur') updateVenusaur3DSliceFilter();
     };
     threeState._sliceFilter = () => {
       if (charKey === 'bulbasaur') updateBulba3DSliceFilter();
       if (charKey === 'buzz') updateBuzz3DSliceFilter();
+      if (charKey === 'ivysaur43') updateIvysaur433DSliceFilter();
       if (charKey === 'ivysaur') updateIvysaur3DSliceFilter();
       if (charKey === 'venusaur') updateVenusaur3DSliceFilter();
     };
@@ -10056,6 +10159,454 @@
     }
 
     requestThreeRender('bulbasaur');
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // 🌿 妙蛙草 (Ivysaur #002) 43 層精巧版建造切片指南與 3D 引擎實作
+  // ═══════════════════════════════════════════════════════════════════
+  function switchIvysaur433DMode(mode) {
+    ivysaur43State.curMode = mode;
+    save3DState('ivysaur43', null, mode);
+    if (ivysaur43State.three && mode === 'full') {
+      ivysaur43State.three.isVlcActive = false;
+    }
+    if (DOM.btnIvysaur43ModeFull) {
+      DOM.btnIvysaur43ModeFull.classList.toggle('active', mode === 'full');
+    }
+    if (DOM.btnIvysaur43ModeSlice) {
+      DOM.btnIvysaur43ModeSlice.classList.toggle('active', mode === 'slice');
+    }
+
+    if (DOM.ivysaur43_3dCanvasWrap) DOM.ivysaur43_3dCanvasWrap.style.display = 'block';
+    if (DOM.ivysaur43SliceCard) DOM.ivysaur43SliceCard.style.display = 'block';
+    updateIvysaur433DSliceFilter();
+    requestThreeRender('ivysaur43');
+  }
+
+  let _ivysaur43LayerRaf = null;
+  function setIvysaur43Layer(layerIndex, immediate = false) {
+    if (typeof IVYSAUR_43_VOXEL_DATA === 'undefined') return;
+    const maxLayer = IVYSAUR_43_VOXEL_DATA.layers.length;
+    const target = Math.max(1, Math.min(maxLayer, layerIndex));
+    ivysaur43State.curLayer = target;
+    save3DState('ivysaur43', target);
+    if (DOM.ivysaur43LayerSlider) DOM.ivysaur43LayerSlider.value = target;
+    if (DOM.ivysaur43LayerBadge) {
+      DOM.ivysaur43LayerBadge.textContent = `第 ${target} / ${maxLayer} 層`;
+    }
+    if (ivysaur43State.three && typeof ivysaur43State.three._syncVLC === 'function') {
+      ivysaur43State.three._syncVLC(target);
+    }
+    const doRender = () => {
+      renderIvysaur43Layer(target);
+      updateIvysaur433DSliceFilter();
+      requestThreeRender('ivysaur43');
+    };
+    if (immediate) {
+      if (_ivysaur43LayerRaf) { cancelAnimationFrame(_ivysaur43LayerRaf); _ivysaur43LayerRaf = null; }
+      doRender();
+    } else {
+      if (_ivysaur43LayerRaf) cancelAnimationFrame(_ivysaur43LayerRaf);
+      _ivysaur43LayerRaf = requestAnimationFrame(() => {
+        _ivysaur43LayerRaf = null;
+        doRender();
+      });
+    }
+  }
+
+  function renderIvysaur43Layer(layerIndex) {
+    if (typeof IVYSAUR_43_VOXEL_DATA === 'undefined') return;
+    const data = (typeof VoxelDeltaStore !== 'undefined') ? VoxelDeltaStore.getEffectiveVoxelData('ivysaur43') : IVYSAUR_43_VOXEL_DATA;
+    const layer = data.layers[layerIndex - 1];
+    if (!layer) return;
+    const curLayer = layerIndex;
+
+    if (DOM.ivysaur43LayerBadge) {
+      DOM.ivysaur43LayerBadge.textContent = `第 ${layerIndex} / ${data.layers.length} 層`;
+    }
+    const blockCount = layer.blocks.length;
+    if (DOM.ivysaur43LayerBlockCount) {
+      DOM.ivysaur43LayerBlockCount.textContent = `本層 ${blockCount.toLocaleString()} 顆`;
+    }
+
+    if (DOM.ivysaur43VoxelGrid) {
+      DOM.ivysaur43VoxelGrid.innerHTML = '';
+      if (blockCount === 0) {
+        DOM.ivysaur43VoxelGrid.innerHTML = '<div class="bulba-empty-hint" style="color:#94a3b8;font-size:0.875rem;padding:2rem;">本層無方塊（可跳至下一層）</div>';
+        if (DOM.ivysaur43DimTop) DOM.ivysaur43DimTop.style.display = 'none';
+        if (DOM.ivysaur43DimRight) DOM.ivysaur43DimRight.style.display = 'none';
+      } else {
+        let minX = Infinity, maxX = -Infinity;
+        let minZ = Infinity, maxZ = -Infinity;
+        const blockMap = new Map();
+        const xOccupied = new Set();
+        const zOccupied = new Set();
+
+        layer.blocks.forEach((b) => {
+          const [x, z, bid] = b;
+          blockMap.set(`${x},${z}`, bid);
+          xOccupied.add(x);
+          zOccupied.add(z);
+          if (x < minX) minX = x;
+          if (x > maxX) maxX = x;
+          if (z < minZ) minZ = z;
+          if (z > maxZ) maxZ = z;
+        });
+
+        // 左右對稱展開
+        if (typeof VoxelDeltaStore !== 'undefined') {
+          const bInfo = VoxelDeltaStore.getCharBounds('ivysaur43');
+          if (bInfo && bInfo.center) {
+            const spanLeft = Math.abs(bInfo.center - minX);
+            const spanRight = Math.abs(maxX - bInfo.center);
+            const maxSpan = Math.max(spanLeft, spanRight);
+            minX = Math.max(1, bInfo.center - maxSpan);
+            maxX = Math.min(data.dimensions.width, bInfo.center + maxSpan);
+          }
+        }
+
+        const width = maxX - minX + 1;
+        const length = maxZ - minZ + 1;
+        const parent = DOM.ivysaur43VoxelGrid.parentElement;
+        const containerW = parent ? parent.clientWidth - 48 : 500;
+        const cellSize = Math.max(8, Math.min(22, Math.floor(containerW / Math.max(width, 1))));
+
+        DOM.ivysaur43VoxelGrid.style.gridTemplateColumns = `repeat(${width}, ${cellSize}px)`;
+        DOM.ivysaur43VoxelGrid.style.gridTemplateRows = `repeat(${length}, ${cellSize}px)`;
+
+        renderSliceDimensionRulers(DOM.ivysaur43DimTop, DOM.ivysaur43DimRight, minX, maxX, minZ, maxZ, cellSize, xOccupied, zOccupied, data.dimensions.length);
+
+        const frag = document.createDocumentFragment();
+        const cellMap = new Map();
+
+        for (let rz = minZ; rz <= maxZ; rz++) {
+          for (let rx = minX; rx <= maxX; rx++) {
+            const key = `${rx},${rz}`;
+            const bid = blockMap.get(key);
+            const cell = document.createElement('div');
+            cellMap.set(key, cell);
+            cell.className = 'bulba-cell';
+            cell.style.width = `${cellSize}px`;
+            cell.style.height = `${cellSize}px`;
+            cell.dataset.x = rx;
+            cell.dataset.z = rz;
+            cell.dataset.y = curLayer - 1;
+
+            const coordKey = `${rx},${curLayer - 1},${rz}`;
+            if (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.state.selectedVoxels && VoxelDeltaStore.state.selectedVoxels.has(coordKey)) {
+              cell.classList.add('ve-cell-selected');
+            }
+
+            if (bid !== undefined) {
+              const palItem = data.palette[bid] || { name: '方塊', color: '#00a8c8' };
+              cell.style.backgroundColor = palItem.color;
+              cell.style.border = '1px solid rgba(255, 255, 255, 0.85)';
+              cell.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.35)';
+              cell.dataset.name = palItem.name;
+              cell.dataset.color = palItem.color;
+              cell.dataset.bid = bid;
+              cell.dataset.coord = `X: ${rx}, Z: ${rz}`;
+            } else {
+              cell.style.backgroundColor = 'rgba(52, 211, 153, 0.04)';
+              cell.style.border = '1px solid rgba(52, 211, 153, 0.1)';
+            }
+            frag.appendChild(cell);
+          }
+        }
+        DOM.ivysaur43VoxelGrid.appendChild(frag);
+        setupGridEventDelegation(DOM.ivysaur43VoxelGrid, 'ivysaur43', DOM.ivysaur43HoverTooltip, DOM.ivysaur43TooltipColor, DOM.ivysaur43TooltipText);
+        appendSymmetryAxisLine(DOM.ivysaur43VoxelGrid, 'ivysaur43', minX, maxX, cellSize);
+
+        const workspace = DOM.ivysaur43VoxelGrid.closest('.bulba-grid-workspace');
+        if (workspace && parent && ivysaur43State.zoom.panX === 0 && ivysaur43State.zoom.panY === 0) {
+          fitWorkspaceToContainer(workspace, parent, ivysaur43State.zoom);
+        } else if (workspace) {
+          applyWorkspaceZoomPan(workspace, ivysaur43State.zoom);
+        }
+      }
+    }
+
+    // 材料清單 (BOM)
+    if (DOM.ivysaur43MatList && DOM.ivysaur43MatTypesCount) {
+      DOM.ivysaur43MatList.innerHTML = '';
+      const matKeys = Object.keys(layer.materials);
+      DOM.ivysaur43MatTypesCount.textContent = `${matKeys.length} 種建材`;
+
+      matKeys.sort((a, b) => (layer.materials[b] || 0) - (layer.materials[a] || 0));
+
+      matKeys.forEach((bid) => {
+        const count = layer.materials[bid] || 0;
+        const palItem = data.palette[bid] || { name: '方塊', color: '#00a8c8' };
+        const item = document.createElement('div');
+        item.className = 'bulba-mat-item';
+        item.style.cursor = 'pointer';
+        item.title = `點擊切換為此材質筆刷: ${palItem.name}`;
+        item.innerHTML = `
+          <div class="bulba-mat-color" style="background-color:${palItem.color}"></div>
+          <div class="bulba-mat-info">
+            <span class="bulba-mat-name">${palItem.name}</span>
+            <span class="bulba-mat-count">${count.toLocaleString()} 顆</span>
+          </div>
+        `;
+        item.addEventListener('click', () => {
+          if (typeof VoxelDeltaStore !== 'undefined') {
+            VoxelDeltaStore.setSelectedBid(Number(bid));
+            VoxelDeltaStore.setTool('paint');
+            VoxelDeltaStore.setEditorMode(true);
+            VoxelDeltaStore.updateToolbarUI('ivysaur43');
+          }
+        });
+        DOM.ivysaur43MatList.appendChild(item);
+      });
+    }
+  }
+
+  function initIvysaur43ThreeEngine() {
+    if (typeof THREE === 'undefined' || typeof IVYSAUR_43_VOXEL_DATA === 'undefined') return;
+    if (!DOM.ivysaur43_3dCanvas) return;
+
+    const wrap = DOM.ivysaur43_3dCanvas.parentElement;
+    if (!wrap) return;
+    const width = wrap.clientWidth || 800;
+    const height = wrap.clientHeight || 560;
+
+    const t = ivysaur43State.three;
+    if (t.isInit) {
+      t.renderer.setSize(width, height);
+      t.camera.aspect = width / height;
+      t.camera.updateProjectionMatrix();
+      setupBloxelizerStudioControls('ivysaur43', t, IVYSAUR_43_VOXEL_DATA, DOM.ivysaur43_3dCanvas);
+      if (typeof t._updateDimensions === 'function') t._updateDimensions();
+      requestThreeRender('ivysaur43');
+      return;
+    }
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xe2e8f0);
+
+    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 2000);
+    camera.position.set(85, 60, 95);
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas: DOM.ivysaur43_3dCanvas,
+      antialias: true,
+      alpha: true
+    });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+    scene.add(ambientLight);
+
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.60);
+    dirLight1.position.set(80, 120, 80);
+    scene.add(dirLight1);
+
+    const dirLight2 = new THREE.DirectionalLight(0xcbd5e1, 0.35);
+    dirLight2.position.set(-80, 50, -80);
+    scene.add(dirLight2);
+
+    let controls = null;
+    if (typeof THREE.OrbitControls !== 'undefined') {
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.08;
+      controls.panSpeed = 2.2;
+      controls.target.set(0, 0, 0);
+      controls.maxDistance = 500;
+      controls.minDistance = 0.3;
+    }
+
+    const data = IVYSAUR_43_VOXEL_DATA;
+    const totalCount = data.totalBlocks;
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const outlineTexture = createVoxelOutlineTexture();
+    const material = new THREE.MeshStandardMaterial({
+      map: outlineTexture || null,
+      roughness: 0.88,
+      metalness: 0.0
+    });
+
+    const instancedMesh = new THREE.InstancedMesh(geometry, material, totalCount);
+    const ghostMaterial = new THREE.MeshStandardMaterial({
+      map: outlineTexture || null,
+      transparent: true,
+      opacity: 0.60,
+      roughness: 0.88,
+      metalness: 0.0,
+      depthWrite: false
+    });
+    const ghostInstancedMesh = new THREE.InstancedMesh(geometry, ghostMaterial, totalCount);
+    const dummy = new THREE.Object3D();
+    const color = new THREE.Color();
+
+    const cx = data.dimensions.width / 2;
+    const cy = data.dimensions.height / 2;
+    const cz = data.dimensions.length / 2;
+
+    let idx = 0;
+    const blockDataList = [];
+
+    data.layers.forEach((layer) => {
+      const y = layer.layerIndex;
+      layer.blocks.forEach((b) => {
+        const [x, z, bid] = b;
+        dummy.position.set(x - cx, y - cy, z - cz);
+        dummy.updateMatrix();
+        instancedMesh.setMatrixAt(idx, dummy.matrix);
+
+        const palItem = data.palette[bid] || { color: '#00a8c8' };
+        color.set(palItem.color);
+        instancedMesh.setColorAt(idx, color);
+
+        ghostInstancedMesh.setMatrixAt(idx, dummy.matrix);
+        ghostInstancedMesh.setColorAt(idx, color);
+
+        blockDataList.push({
+          index: idx,
+          layerIndex: layer.layerIndex,
+          defaultMatrix: dummy.matrix.clone(),
+          posX: x - cx,
+          posY: y - cy,
+          posZ: z - cz,
+          bid: bid
+        });
+        idx++;
+      });
+    });
+
+    instancedMesh.instanceMatrix.needsUpdate = true;
+    if (instancedMesh.instanceColor) instancedMesh.instanceColor.needsUpdate = true;
+    scene.add(instancedMesh);
+
+    ghostInstancedMesh.instanceMatrix.needsUpdate = true;
+    if (ghostInstancedMesh.instanceColor) ghostInstancedMesh.instanceColor.needsUpdate = true;
+
+    t.isInit = true;
+    t.scene = scene;
+    t.camera = camera;
+    t.renderer = renderer;
+    t.controls = controls;
+    t.instancedMesh = instancedMesh;
+    t.ghostInstancedMesh = ghostInstancedMesh;
+    t.blockDataList = blockDataList;
+
+    if (controls) {
+      controls.addEventListener('change', () => requestThreeRender('ivysaur43'));
+    }
+    startThreeRendering('ivysaur43');
+
+    setupVoxelEditorIntegration('ivysaur43', t, IVYSAUR_43_VOXEL_DATA, DOM.ivysaur43_3dCanvas, () => renderIvysaur43Layer(ivysaur43State.curLayer));
+    setupBloxelizerStudioControls('ivysaur43', t, IVYSAUR_43_VOXEL_DATA, DOM.ivysaur43_3dCanvas);
+    if (typeof t._updateDimensions === 'function') t._updateDimensions();
+
+    window.addEventListener('resize', () => {
+      if (!t.isInit || !DOM.ivysaur43_3dCanvas) return;
+      const curWrap = DOM.ivysaur43_3dCanvas.parentElement;
+      if (!curWrap) return;
+      const nw = curWrap.clientWidth || 500;
+      const nh = curWrap.clientHeight || 560;
+      camera.aspect = nw / nh;
+      camera.updateProjectionMatrix();
+      renderer.setSize(nw, nh);
+      requestThreeRender('ivysaur43');
+    });
+  }
+
+  function updateIvysaur433DSliceFilter() {
+    const t = ivysaur43State.three;
+    if (!t || !t.isInit || !t.instancedMesh || !t.blockDataList || !t.blockDataList.length) return;
+
+    const isSlice = (ivysaur43State.curMode === 'slice');
+    const curLayer = ivysaur43State.curLayer;
+    const isSingle = (t.layerFilterMode === 'single');
+    const dummy = new THREE.Object3D();
+    const cx = IVYSAUR_43_VOXEL_DATA.dimensions.width / 2;
+    const cy = IVYSAUR_43_VOXEL_DATA.dimensions.height / 2;
+    const cz = IVYSAUR_43_VOXEL_DATA.dimensions.length / 2;
+
+    const minL = (t.minLayer !== undefined) ? t.minLayer : (isSingle ? curLayer : 1);
+    const maxL = (t.maxLayer !== undefined) ? t.maxLayer : curLayer;
+    const isGhost = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.state && VoxelDeltaStore.state.ghostLayer);
+    const hasGhostMesh = !!t.ghostInstancedMesh;
+    const color = (typeof THREE !== 'undefined') ? new THREE.Color() : null;
+
+    for (let i = 0; i < t.blockDataList.length; i++) {
+      const item = t.blockDataList[i];
+      const vx = Math.round(item.posX + cx);
+      const vy = Math.round(item.posY + cy);
+      const vz = Math.round(item.posZ + cz);
+      const isDeleted = (typeof VoxelDeltaStore !== 'undefined' && VoxelDeltaStore.getEffectiveBid('ivysaur43', vx, vy, vz) === -1);
+
+      const inRange = (item.layerIndex >= minL && item.layerIndex <= maxL);
+      const show = !isDeleted && (!isSlice || (inRange && (isSingle ? item.layerIndex === curLayer : item.layerIndex <= curLayer)));
+
+      if (show) {
+        dummy.position.set(item.posX, item.posY, item.posZ);
+        if (isGhost && hasGhostMesh && item.layerIndex === maxL) {
+          dummy.scale.set(0, 0, 0);
+          dummy.updateMatrix();
+          t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
+
+          dummy.scale.set(1, 1, 1);
+          dummy.updateMatrix();
+          t.ghostInstancedMesh.setMatrixAt(item.index, dummy.matrix);
+          const effBid = (typeof VoxelDeltaStore !== 'undefined') ? VoxelDeltaStore.getEffectiveBid('ivysaur43', vx, vy, vz) : item.bid;
+          const finalBid = (effBid !== -1 && effBid !== undefined) ? effBid : item.bid;
+          const pItem = (IVYSAUR_43_VOXEL_DATA.palette && IVYSAUR_43_VOXEL_DATA.palette[finalBid]) ? IVYSAUR_43_VOXEL_DATA.palette[finalBid] : (IVYSAUR_43_VOXEL_DATA.palette[item.bid] || { color: '#00a8c8' });
+          if (color) {
+            color.set(pItem.color);
+            t.ghostInstancedMesh.setColorAt(item.index, color);
+          }
+        } else {
+          dummy.scale.set(1, 1, 1);
+          dummy.updateMatrix();
+          t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
+          if (hasGhostMesh) {
+            dummy.scale.set(0, 0, 0);
+            dummy.updateMatrix();
+            t.ghostInstancedMesh.setMatrixAt(item.index, dummy.matrix);
+          }
+        }
+      } else {
+        dummy.position.set(item.posX, item.posY, item.posZ);
+        dummy.scale.set(0, 0, 0);
+        dummy.updateMatrix();
+        t.instancedMesh.setMatrixAt(item.index, dummy.matrix);
+        if (hasGhostMesh) {
+          t.ghostInstancedMesh.setMatrixAt(item.index, dummy.matrix);
+        }
+      }
+    }
+    t.instancedMesh.instanceMatrix.needsUpdate = true;
+    if (hasGhostMesh) {
+      t.ghostInstancedMesh.instanceMatrix.needsUpdate = true;
+      if (t.ghostInstancedMesh.instanceColor) t.ghostInstancedMesh.instanceColor.needsUpdate = true;
+    }
+
+    if (t.dynamicAddedGroup && t.dynamicAddedGroup.children) {
+      t.dynamicAddedGroup.children.forEach(cube => {
+        if (!cube.userData || !cube.userData.isDynamic) return;
+        const cubeLayer = cube.userData.voxelY + 1;
+        const inRange = (cubeLayer >= minL && cubeLayer <= maxL);
+        const hide = isSlice && !(inRange && (isSingle ? cubeLayer === curLayer : cubeLayer <= curLayer));
+        cube.scale.set(hide ? 0 : 1, hide ? 0 : 1, hide ? 0 : 1);
+        cube.visible = !hide;
+        if (cube.material) {
+          if (isGhost && cubeLayer === maxL && !hide) {
+            cube.material.transparent = true;
+            cube.material.opacity = 0.60;
+            cube.material.depthWrite = false;
+          } else {
+            cube.material.transparent = false;
+            cube.material.opacity = 1.0;
+            cube.material.depthWrite = true;
+          }
+        }
+      });
+    }
+
+    requestThreeRender('ivysaur43');
   }
 
   // ═══════════════════════════════════════════════════════════════════
