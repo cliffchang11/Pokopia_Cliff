@@ -8676,8 +8676,11 @@
     threeState._layersMap = layersMap;
 
     const getCharCurLayer = () => {
-      if (charKey === 'bulbasaur') return bulbaState.curLayer;
+      if (charKey === 'bulbasaur28_v2' || charKey === 'bulba28_v2') return bulba28V2State.curLayer;
+      if (charKey === 'bulbasaur28' || charKey === 'bulba28') return bulba28State.curLayer;
+      if (charKey === 'bulbasaur' || charKey === 'bulba') return bulbaState.curLayer;
       if (charKey === 'buzz') return buzzState.curLayer;
+      if (charKey === 'ivysaur40' || charKey === 'ivysaur43') return ivysaur40State.curLayer;
       if (charKey === 'ivysaur') return ivysaurState.curLayer;
       if (charKey === 'venusaur') return venusaurState.curLayer;
       return 1;
@@ -11110,13 +11113,22 @@
     // 材料清單 (BOM) 高對比醒目卡片
     if (DOM.bulba28V2MatList && DOM.bulba28V2MatTypesCount) {
       DOM.bulba28V2MatList.innerHTML = '';
-      const matKeys = Object.keys(layer.materials);
+      let mats = layer.materials;
+      if (!mats && Array.isArray(layer.blocks)) {
+        mats = {};
+        layer.blocks.forEach((b) => {
+          const bid = b[2];
+          mats[bid] = (mats[bid] || 0) + 1;
+        });
+      }
+      mats = mats || {};
+      const matKeys = Object.keys(mats);
       DOM.bulba28V2MatTypesCount.textContent = `${matKeys.length} 種建材`;
 
-      matKeys.sort((a, b) => (layer.materials[b] || 0) - (layer.materials[a] || 0));
+      matKeys.sort((a, b) => (mats[b] || 0) - (mats[a] || 0));
 
       matKeys.forEach((bid) => {
-        const count = layer.materials[bid] || 0;
+        const count = mats[bid] || 0;
         const palItem = data.palette[bid] || { name: '方塊', color: '#52a38c' };
         const item = document.createElement('div');
         item.className = 'bulba-mat-item';

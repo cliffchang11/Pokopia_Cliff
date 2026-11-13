@@ -94,3 +94,5 @@ const appJs = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf8');
 });
 console.log('✅ [5/5] app.js 2D/3D 雙引擎與工作台整合點驗證通過');
 console.log('🎉 妙蛙種子 28 層・超採樣版 (v4.98.0) 全數測試 100% 通過！');
+process.exit(0);
+
