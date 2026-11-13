@@ -66,3 +66,4 @@ console.log('✅ [5/5] sw.js 快取推進 (v4.99.0) 與靜態資產驗證通過'
 
 console.log('🎉 FancyCharmander 專屬 5x5 Shorts 圖鑑整合功能全數驗收 100% 通過！');
 process.exit(0);
+

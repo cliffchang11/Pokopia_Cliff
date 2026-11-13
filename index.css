@@ -1502,43 +1502,67 @@ body {
 .col-td-habitat-5x5 {
   text-align: center;
   vertical-align: middle;
-  padding: 0.5000rem 0.3750rem;
-  width: 4.8000rem;
-  min-width: 4.8000rem;
+  padding: 0.20rem 0.05rem !important;
+  box-sizing: border-box;
 }
 
 .pkm-btn-habitat-5x5 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.1250rem;
-  height: 1.5000rem;
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  width: 1.65rem;
+  height: 1.25rem;
+  background-color: #dc2626;
   color: #ffffff;
   border-radius: 9999px;
-  box-shadow: 0 1px 4px rgba(220, 38, 38, 0.35);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
   cursor: pointer;
   text-decoration: none;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: none;
   padding: 0;
+  box-shadow: 0 1px 3px rgba(220, 38, 38, 0.35);
 }
 
 .pkm-btn-habitat-5x5:hover {
-  transform: scale(1.10);
-  background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
-  box-shadow: 0 3px 10px rgba(220, 38, 38, 0.55);
+  background-color: #ef4444;
+  transform: scale(1.08);
 }
 
 .pkm-btn-habitat-5x5:active {
+  background-color: #b91c1c;
   transform: scale(0.95);
 }
 
 .pkm-btn-habitat-5x5 svg {
-  width: 0.7500rem;
-  height: 0.7500rem;
-  fill: currentColor;
-  margin-left: 0.0800rem;
+  width: 0.65rem;
+  height: 0.65rem;
+  fill: #ffffff;
+  margin-left: 0.05rem;
+}
+
+/* 個人百科 Modal 專屬 5x5 推薦造景膠囊鈕 (手機端最佳解) */
+.pkm-modal-habitat-5x5-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background-color: #dc2626;
+  color: #ffffff !important;
+  font-size: 0.80rem;
+  font-weight: 700;
+  padding: 0.28rem 0.75rem;
+  border-radius: 9999px;
+  text-decoration: none !important;
+  margin-top: 0.40rem;
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.35);
+}
+
+.pkm-modal-habitat-5x5-btn:hover {
+  background-color: #ef4444;
+}
+
+.pkm-modal-habitat-5x5-btn svg {
+  width: 0.85rem;
+  height: 0.85rem;
+  fill: #ffffff;
 }
 
 .pkm-habitat-5x5-empty {
@@ -6099,7 +6123,7 @@ body.has-floating-back .scroll-top-btn {
     border-bottom: 0.0625rem solid var(--glass-border) !important;
   }
 
-  /* 4. 關鍵突破：手機端表格隱藏第 7 欄喜好，前 6 欄完美填滿 100% 螢幕，徹底告別左右滑動！ */
+  /* 4. 關鍵突破：手機端表格隱藏第 7 欄喜好與第 9 欄專屬 5x5，前 6 欄完美填滿 100% 螢幕，徹底告別左右滑動！ */
   .pokemon-table th:nth-child(7),
   .pokemon-table td:nth-child(7) {
     display: none !important;
@@ -6111,6 +6135,13 @@ body.has-floating-back .scroll-top-btn {
   .pokemon-table td.col-favorites,
   .pokemon-table th:nth-child(8),
   .pokemon-table td:nth-child(8) {
+    display: none !important;
+  }
+
+  .pokemon-table th.col-th-habitat-5x5,
+  .pokemon-table td.col-td-habitat-5x5,
+  .pokemon-table th:nth-child(9),
+  .pokemon-table td:nth-child(9) {
     display: none !important;
   }
 
@@ -9525,16 +9556,22 @@ body.has-floating-back .scroll-top-btn {
 
 .pokemon-table th.col-th-habitat,
 .pokemon-table td.pkm-col-hab {
-  width: 36.0% !important;
+  width: 35.0% !important;
   min-width: 0 !important;
 }
 
 .pokemon-table th.col-favorites,
-.pokemon-table td.col-favorites,
-.pokemon-table th:last-child,
-.pokemon-table td:last-child {
-  width: 18.0% !important;
+.pokemon-table td.col-favorites {
+  width: 16.2% !important;
   min-width: 0 !important;
+}
+
+.pokemon-table th.col-th-habitat-5x5,
+.pokemon-table td.col-td-habitat-5x5 {
+  width: 2.8% !important;
+  min-width: 2.2rem !important;
+  max-width: 2.6rem !important;
+  padding: 0.20rem 0.05rem !important;
 }
 
 /* 寬螢幕下，第 2 欄「寶可夢」內部的位置選單隱藏，避免重複 */
@@ -9633,14 +9670,20 @@ body.has-floating-back .scroll-top-btn {
 
   .pokemon-table th.col-th-habitat,
   .pokemon-table td.pkm-col-hab {
-    width: 37.5% !important;
+    width: 36.5% !important;
   }
 
   .pokemon-table th.col-favorites,
-  .pokemon-table td.col-favorites,
-  .pokemon-table th:last-child,
-  .pokemon-table td:last-child {
-    width: 17.0% !important;
+  .pokemon-table td.col-favorites {
+    width: 15.0% !important;
+  }
+
+  .pokemon-table th.col-th-habitat-5x5,
+  .pokemon-table td.col-td-habitat-5x5 {
+    width: 3.0% !important;
+    min-width: 2.2rem !important;
+    max-width: 2.6rem !important;
+    padding: 0.20rem 0.05rem !important;
   }
 }
 

@@ -1453,7 +1453,10 @@
         navigator.serviceWorker.addEventListener('controllerchange', () => {
           if (!refreshing) {
             refreshing = true;
-            window.location.reload();
+            // 延遲 250ms 待 Service Worker 底層快取穩定，杜絕 Linux Chrome mmap SIGBUS 7
+            setTimeout(() => {
+              window.location.reload();
+            }, 250);
           }
         });
       });
@@ -5178,6 +5181,25 @@
       </div>
     `;
 
+    // 4.6 專屬 5x5 造景 Shorts 推薦 (手機版 PWA 最佳觀看入口)
+    const habitat5x5 = (typeof window !== 'undefined' && window.POKOPIA_HABITAT_5X5_DATA && typeof window.POKOPIA_HABITAT_5X5_DATA.getHabitat5x5 === 'function')
+      ? window.POKOPIA_HABITAT_5X5_DATA.getHabitat5x5(pkm)
+      : null;
+
+    const habitat5x5HTML = habitat5x5 ? `
+      <div class="pkm-detail-section" style="border-top:1px dashed var(--glass-border); padding-top:0.75rem;">
+        <h3 class="pkm-detail-sec-title">
+          <span class="pkm-detail-sec-title-icon">🔴</span> 專屬 5x5 棲息地造景教學 (Shorts)
+        </h3>
+        <div style="margin-top:0.35rem;">
+          <a href="${escapeHTML(habitat5x5.url)}" target="_blank" rel="noopener noreferrer" class="pkm-modal-habitat-5x5-btn" title="${escapeHTML(habitat5x5.title)}">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            <span>觀看 ${escapeHTML(pkm.name)} 專屬 5x5 造景教學</span>
+          </a>
+        </div>
+      </div>
+    ` : '';
+
     // 5. 組合注入 Detail Body
     DOM.pkmDetailBody.innerHTML = `
       <!-- 基礎屬性與專長 -->
@@ -5199,6 +5221,9 @@
         </h3>
         ${habsHTML}
       </div>
+
+      <!-- FancyCharmander 專屬 5x5 棲息地造景 -->
+      ${habitat5x5HTML}
 
       <!-- 核心喜好百科 -->
       <div class="pkm-detail-section">

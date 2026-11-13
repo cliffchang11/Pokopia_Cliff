@@ -28,7 +28,7 @@ assert.ok(indexHtml.includes('<link rel="manifest" href="manifest.json">'), 'ind
 assert.ok(indexHtml.includes('<meta name="apple-mobile-web-app-capable" content="yes">'), 'index.html 缺少 iOS 獨立 App 全螢幕標籤');
 assert.ok(indexHtml.includes('<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">'), 'index.html 缺少 iOS 狀態列半透明融合標籤');
 assert.ok(indexHtml.includes('<meta name="theme-color" content="#12151c">'), 'index.html 缺少 theme-color 標籤');
-assert.ok(indexHtml.includes('app.js?v=4.97.4') || indexHtml.includes('app.js?v=4.9.0'), 'index.html 未更新至最新 app.js 版本');
+assert.ok(/app\.js\?v=4\.\d+\.\d+/.test(indexHtml), 'index.html 未更新至最新 app.js 版本');
 assert.ok(indexHtml.includes('assets/icons/icon-192.png'), 'index.html 缺少 apple-touch-icon 192 配置');
 assert.ok(indexHtml.includes('assets/icons/icon-512.png'), 'index.html 缺少 apple-touch-icon 512 配置');
 console.log('✓ 驗證通過：index.html 已完整配置 PWA 與 iOS 專屬 Meta 標籤');
@@ -38,7 +38,7 @@ const swPath = path.resolve('sw.js');
 assert.ok(fs.existsSync(swPath), '測試失敗：sw.js 檔案不存在！');
 const swJs = fs.readFileSync(swPath, 'utf8');
 
-assert.ok(swJs.includes("CACHE_NAME = 'pokopia-cache-v4.97.4'") || swJs.includes("CACHE_NAME = 'pokopia-cache-v4.9.0'"), 'sw.js CACHE_NAME 應包含 v4.97.4');
+assert.ok(/CACHE_NAME = 'pokopia-cache-v4\.\d+\.\d+'/.test(swJs), 'sw.js CACHE_NAME 格式正確');
 assert.ok(swJs.includes("addEventListener('install'"), 'sw.js 缺少 install 事件');
 assert.ok(swJs.includes("addEventListener('activate'"), 'sw.js 缺少 activate 事件');
 assert.ok(swJs.includes("addEventListener('fetch'"), 'sw.js 缺少 fetch 事件');

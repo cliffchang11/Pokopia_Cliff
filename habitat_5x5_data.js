@@ -1,5 +1,5 @@
 /**
- * Pokopia - FancyCharmander 5x5 專屬棲息地 Shorts 資料庫
+ * Pokopia - FancyCharmander 5x5 專屬棲息地 Shorts 資料庫 (極速 O(1) 字典快取版)
  * 來源: https://www.youtube.com/@FancyCharmander/shorts
  * 說明: 將 FancyCharmander 頻道 5x5 棲息地 Shorts 對應至進化鏈家族寶可夢
  */
@@ -57,60 +57,43 @@
     { vid: "uGMl1sLlUcI", title: "螺釘地鼠 / 龍頭地鼠", family: ["Drilbur", "Excadrill", "螺釘地鼠", "龍頭地鼠"] }
   ];
 
-  // 建立快速查詢索引 (快取映射)
-  const _cacheByName = new Map();
-  const _cacheById = new Map();
+  // 靜態常數索引字典 (O(1) 直接命中，耗時 0ms)
+  const _EXACT_MAP = Object.create(null);
 
-  function buildIndex() {
-    if (_cacheByName.size > 0) return;
+  // 初始化立即建好完全映射表
+  (function initFastMap() {
     SHORTS_CATALOG.forEach(item => {
-      const dataObj = {
+      const dataObj = Object.freeze({
         vid: item.vid,
         url: `https://www.youtube.com/shorts/${item.vid}`,
         title: `FancyCharmander 5x5 棲息地: ${item.title}`
-      };
+      });
 
       item.family.forEach(keyword => {
-        const k = keyword.toLowerCase().trim();
-        _cacheByName.set(k, dataObj);
+        if (!keyword) return;
+        const clean = String(keyword).toLowerCase().trim();
+        _EXACT_MAP[clean] = dataObj;
       });
     });
-  }
+  })();
 
-  // 查詢特定寶可夢是否有對應的 FancyCharmander 5x5 Short
+  // 查詢特定寶可夢是否有對應的 FancyCharmander 5x5 Short (超輕量 O(1))
   function getHabitat5x5(pkm) {
     if (!pkm) return null;
-    buildIndex();
 
-    // 1. 優先依 pkm.id 快取檢查
-    if (pkm.id && _cacheById.has(pkm.id)) {
-      return _cacheById.get(pkm.id);
+    // 1. 純中文名稱匹配
+    if (pkm.name) {
+      const rawName = String(pkm.name).replace(/（.*?）|\(.*?\)/g, '').trim().toLowerCase();
+      if (_EXACT_MAP[rawName]) return _EXACT_MAP[rawName];
     }
 
-    // 2. 依名稱比對
-    const rawName = (pkm.name || '').replace(/（.*?）|\(.*?\)/g, '').trim().toLowerCase();
-    const enName = (pkm.name_en || '').trim().toLowerCase();
-
-    let matched = _cacheByName.get(rawName) || _cacheByName.get(enName);
-
-    if (!matched) {
-      // 模糊關鍵字比對
-      for (const [kw, dataObj] of _cacheByName.entries()) {
-        if (rawName && (rawName.includes(kw) || kw.includes(rawName))) {
-          matched = dataObj;
-          break;
-        }
-        if (enName && (enName.includes(kw) || kw.includes(enName))) {
-          matched = dataObj;
-          break;
-        }
-      }
+    // 2. 英文名稱匹配
+    if (pkm.name_en) {
+      const enName = String(pkm.name_en).trim().toLowerCase();
+      if (_EXACT_MAP[enName]) return _EXACT_MAP[enName];
     }
 
-    if (pkm.id) {
-      _cacheById.set(pkm.id, matched || null);
-    }
-    return matched || null;
+    return null;
   }
 
   const exportObj = {

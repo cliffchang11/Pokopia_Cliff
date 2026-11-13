@@ -65,7 +65,7 @@ const indexHtml = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
 });
 
 const swJs = fs.readFileSync(path.join(__dirname, 'sw.js'), 'utf8');
-assert(swJs.includes("pokopia-cache-v4.99.0") || swJs.includes("pokopia-cache-v4.98.2"), 'sw.js 快取版本必須為最新版本');
+assert(swJs.includes("pokopia-cache-v4.99.1") || swJs.includes("pokopia-cache-v4.99.0") || swJs.includes("pokopia-cache-v4.98.2"), 'sw.js 快取版本必須為最新版本');
 assert(swJs.includes("./bulbasaur28_v2_voxel_data.js?v="), 'sw.js 必須快取 bulbasaur28_v2_voxel_data.js');
 console.log('✅ [2/5] index.html DOM 結構與 sw.js 快取一致性驗證通過');
 
