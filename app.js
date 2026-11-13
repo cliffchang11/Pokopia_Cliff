@@ -8017,7 +8017,7 @@
       setTimeout(initBulba28ThreeEngine, 60);
     } else if (char === 'bulba28_v2') {
       if (DOM.catalogBadgeIcon) DOM.catalogBadgeIcon.textContent = '🍃';
-      const bTotal = (typeof BULBASAUR_28_V2_VOXEL_DATA !== 'undefined' && BULBASAUR_28_V2_VOXEL_DATA.totalBlocks) ? BULBASAUR_28_V2_VOXEL_DATA.totalBlocks.toLocaleString() : '4,260';
+      const bTotal = (typeof BULBASAUR_28_V2_VOXEL_DATA !== 'undefined' && BULBASAUR_28_V2_VOXEL_DATA.totalBlocks) ? BULBASAUR_28_V2_VOXEL_DATA.totalBlocks.toLocaleString() : '4,256';
       const bLayers = (typeof BULBASAUR_28_V2_VOXEL_DATA !== 'undefined' && BULBASAUR_28_V2_VOXEL_DATA.layers) ? BULBASAUR_28_V2_VOXEL_DATA.layers.length : '28';
       if (DOM.catalogBadgeText) DOM.catalogBadgeText.innerHTML = `<strong>${bTotal}</strong> 顆方塊 ‧ ${bLayers} 層切片 (28層・超採樣)`;
       renderBulba28V2Layer(bulba28V2State.curLayer);

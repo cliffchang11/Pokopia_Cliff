@@ -2,44 +2,73 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 
-console.log('=== 開始執行 🍃 妙蛙種子 28 層・超採樣版 (v4.98.0) 整合測試 ===');
+console.log('=== 開始執行 🍃 妙蛙種子 28 層・超採樣版 雙眼重塑 (v4.98.2) 整合測試 ===');
 
-// 1. 載入體素資料庫並驗證幾何與格式
+// 1. 載入體素資料庫並驗證幾何、格式與五官色彩比例
 const dataCode = fs.readFileSync(path.join(__dirname, 'bulbasaur28_v2_voxel_data.js'), 'utf8');
 const BULBASAUR_28_V2_VOXEL_DATA = eval(dataCode + '; BULBASAUR_28_V2_VOXEL_DATA');
 
 assert.strictEqual(BULBASAUR_28_V2_VOXEL_DATA.layers.length, 28, '必須嚴格為 28 層');
-assert.strictEqual(BULBASAUR_28_V2_VOXEL_DATA.totalBlocks, 4260, '總方塊數應為 4,260');
+assert.strictEqual(BULBASAUR_28_V2_VOXEL_DATA.totalBlocks, 4256, '總方塊數應為 4,256');
 assert.strictEqual(BULBASAUR_28_V2_VOXEL_DATA.dimensions.width, 23, '寬度應為奇數 23');
 assert.strictEqual(BULBASAUR_28_V2_VOXEL_DATA.bounds.centerX, 12, 'X 對稱中心應為 12');
 
 let blockSum = 0;
+const totalMatCounts = {};
 BULBASAUR_28_V2_VOXEL_DATA.layers.forEach((layer, idx) => {
   assert.strictEqual(layer.layerIndex, idx + 1, `第 ${idx + 1} 層應具備標準 layerIndex`);
   assert(Array.isArray(layer.blocks), `第 ${idx + 1} 層應具備標準 blocks 陣列`);
+  assert(layer.materials && typeof layer.materials === 'object', `第 ${idx + 1} 層必須具備 materials 字典`);
   assert(layer.blocks.length > 0, `第 ${idx + 1} 層不得為空`);
   blockSum += layer.blocks.length;
-});
-assert.strictEqual(blockSum, 4260, '各層方塊加總必須等於 4,260');
-console.log('✅ [1/5] 體素資料庫幾何、層數與標準格式驗證通過 (28層, 4,260顆)');
 
-// 2. 驗證 index.html 與 sw.js 版本與 DOM 結構
+  layer.blocks.forEach(([x, z, bid]) => {
+    totalMatCounts[bid] = (totalMatCounts[bid] || 0) + 1;
+  });
+});
+assert.strictEqual(blockSum, 4256, '各層方塊加總必須等於 4,256');
+
+// 驗證眼睛黑眼圈消除 (ID 12 曜石黑受到嚴格抑制，紅虹膜與白高光比例正常)
+const blackCount = totalMatCounts[12] || 0;
+const whiteEyeCount = totalMatCounts[10] || 0;
+const redEyeCount = totalMatCounts[11] || 0;
+
+assert(blackCount > 0 && blackCount <= 40, `黑色方塊 (ID 12) 應受到抑制（當前 ${blackCount} 顆，預期 <= 40），絕不可有巨型黑墨鏡`);
+assert(whiteEyeCount >= 20, `白高光點 (ID 10) 應充足（當前 ${whiteEyeCount} 顆）`);
+assert(redEyeCount >= 8, `緋紅虹膜 (ID 11) 應充足（當前 ${redEyeCount} 顆）`);
+
+// 驗證雙眼關於 X=12 軸完美對稱
+BULBASAUR_28_V2_VOXEL_DATA.layers.forEach(l => {
+  const eyeBlocks = l.blocks.filter(b => [10, 11, 12].includes(b[2]));
+  const map = new Map();
+  eyeBlocks.forEach(([x, z, bid]) => map.set(`${x},${z}`, bid));
+
+  eyeBlocks.forEach(([x, z, bid]) => {
+    const mirrorX = 24 - x; // 12 - (x - 12) = 24 - x
+    const mirrorBid = map.get(`${mirrorX},${z}`);
+    assert.strictEqual(mirrorBid, bid, `第 ${l.layerIndex} 層五官在 X=${x} 與對稱點 X=${mirrorX} 顏色必須完全對稱一致`);
+  });
+});
+
+console.log(`✅ [1/5] 體素幾何與雙眼五官比例驗證通過 (總方塊 4,256 顆，黑瞳 ${blackCount} 顆，白光 ${whiteEyeCount} 顆，紅瞳 ${redEyeCount} 顆，X=12 完美對稱)`);
+
+// 2. 驗證 index.html 與 sw.js 版本推進至 v4.98.2
 const indexHtml = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
 [
   'id="btnSubBulba28V2"',
   'id="paneBulba28V2"',
   'id="bulba28V2_3dCanvas"',
   'id="bulba28V2VoxelGrid"',
-  'bulbasaur28_v2_voxel_data.js?v=4.98.0',
-  'app.js?v=4.98.0'
+  'bulbasaur28_v2_voxel_data.js?v=4.98.2',
+  'app.js?v=4.98.2'
 ].forEach(token => {
   assert(indexHtml.includes(token), `index.html 缺少必要元素: ${token}`);
 });
 
 const swJs = fs.readFileSync(path.join(__dirname, 'sw.js'), 'utf8');
-assert(swJs.includes("pokopia-cache-v4.98.0"), 'sw.js 快取版本必須為 v4.98.0');
-assert(swJs.includes("./bulbasaur28_v2_voxel_data.js?v=4.98.0"), 'sw.js 必須快取 bulbasaur28_v2_voxel_data.js?v=4.98.0');
-console.log('✅ [2/5] index.html DOM 結構與 sw.js (v4.98.0) 快取驗證通過');
+assert(swJs.includes("pokopia-cache-v4.98.2"), 'sw.js 快取版本必須為 v4.98.2');
+assert(swJs.includes("./bulbasaur28_v2_voxel_data.js?v=4.98.2"), 'sw.js 必須快取 bulbasaur28_v2_voxel_data.js?v=4.98.2');
+console.log('✅ [2/5] index.html DOM 結構與 sw.js (v4.98.2) 快取一致性驗證通過');
 
 // 3. 模擬瀏覽器環境測試 VoxelDeltaStore 隔離性與雲端水合
 const mockStorage = {};
@@ -93,6 +122,5 @@ const appJs = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf8');
   assert(appJs.includes(fn), `app.js 缺少關鍵整合點: ${fn}`);
 });
 console.log('✅ [5/5] app.js 2D/3D 雙引擎與工作台整合點驗證通過');
-console.log('🎉 妙蛙種子 28 層・超採樣版 (v4.98.0) 全數測試 100% 通過！');
+console.log('🎉 妙蛙種子 28 層・超採樣版 雙眼重塑 (v4.98.2) 全數測試 100% 通過！');
 process.exit(0);
-

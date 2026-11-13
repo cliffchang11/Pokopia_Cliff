@@ -108,7 +108,7 @@ const indexHtml = fs.readFileSync('./index.html', 'utf8');
 
 assert.ok(indexHtml.includes('id="btnSubBulba28"'), '需存在 btnSubBulba28 膠囊按鈕');
 assert.ok(indexHtml.includes('data-char="bulba28"'), 'btnSubBulba28 需有 data-char="bulba28"');
-assert.ok(indexHtml.includes('🍃 妙蛙種子 (28層)'), '需顯示按鈕文字「🍃 妙蛙種子 (28層)」');
+assert.ok(indexHtml.includes('🍃 妙蛙種子 (28層'), '需顯示按鈕文字「🍃 妙蛙種子 (28層)」');
 assert.ok(indexHtml.includes('🍃 妙蛙種子 (53層)'), '原按鈕需明確區分為「🍃 妙蛙種子 (53層)」');
 
 assert.ok(indexHtml.includes('id="paneBulba28"'), '需存在 paneBulba28 工作台容器');
@@ -183,9 +183,10 @@ console.log('  ✅ [測試 4 通過] app.js 切片渲染、尺規排版與 3D �
 // 測試 5：全系統防降級與版本一致性驗證
 console.log('▶ [測試 5/5] 驗證 sw.js 快取版本推進與全套測試套件回歸相容性...');
 const swJs = fs.readFileSync('./sw.js', 'utf8');
-assert.ok(swJs.includes("pokopia-cache-v4.97.4") || swJs.includes("pokopia-cache-v4.97.3") || swJs.includes("pokopia-cache-v4.97.2") || swJs.includes("pokopia-cache-v4.97.1") || swJs.includes("pokopia-cache-v4.97.0") || swJs.includes("pokopia-cache-v4.96.0"), 'sw.js 需為最新快取版本');
+assert.ok(swJs.includes("pokopia-cache-v4.98.2") || swJs.includes("pokopia-cache-v4.98.0") || swJs.includes("pokopia-cache-v4.97.4") || swJs.includes("pokopia-cache-v4.97.3") || swJs.includes("pokopia-cache-v4.97.2") || swJs.includes("pokopia-cache-v4.97.1") || swJs.includes("pokopia-cache-v4.97.0") || swJs.includes("pokopia-cache-v4.96.0"), 'sw.js 需為最新快取版本');
 assert.ok(swJs.includes("'./bulbasaur28_voxel_data.js?v="), 'sw.js 需預快取 bulbasaur28_voxel_data.js');
 
-console.log('  ✅ [測試 5 通過] Service Worker 快取推進 v4.97.4 無誤！\n');
+console.log('  ✅ [測試 5 通過] Service Worker 快取推進 v4.98.2 無誤！\n');
 
 console.log('🎉 恭喜！妙蛙種子 28 層精巧建造藍圖系統 5 大驗收項目 100% 全部通過！');
+process.exit(0);

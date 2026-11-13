@@ -84,11 +84,11 @@ PALETTE = {
     13: {'id': 13, 'key': 'mouth_pink', 'name': '粉紅 (嘴角微露)', 'color': '#d26278', 'rgb': np.array([210, 98, 120])},
 }
 
-# 優先級定義
+# 優先級定義 (眼白最高，黑瞳與紅虹膜次之，眼周過渡為皮膚守護)
 PRIORITY = {
     10: 10, # 眼白
-    12: 10, # 黑瞳
-    11: 9,  # 紅虹膜
+    12: 9,  # 黑瞳
+    11: 8,  # 紅虹膜
     13: 8,  # 粉紅嘴角
     9: 7,   # 爪尖
     5: 6,   # 深斑點
@@ -98,19 +98,21 @@ PRIORITY = {
     7: 4,   # 球莖主體
     3: 3,   # 深皮膚
     1: 2,   # 亮皮膚
-    2: 2,   # 主皮膚
+    2: 2,   # 主皮膚 (皮膚守護)
 }
 
 def rgb_to_palette(rgb, part_type):
     r, g, b = rgb[:3]
     if part_type == 'eye':
-        # 眼睛判定
-        if r > 210 and g > 210 and b > 210:
-            return 10 # eye_white
-        elif r > 110 and g < 95 and b < 105:
-            return 11 # eye_red
+        # 依決策節點 2: 嚴格門檻 + 皮膚守護
+        if r > 180 and g > 180 and b > 180:
+            return 10 # eye_white (潔白高光點)
+        elif max(r, g, b) < 70:
+            return 12 # eye_black (黑色深邃瞳孔與長瞳孔線)
+        elif r > 105 and r > g + 25 and r > b + 25:
+            return 11 # eye_red (緋紅虹膜)
         else:
-            return 12 # eye_black
+            return 2  # skin_main (眼周青色皮膚保護，徹底消除黑眼圈)
     elif part_type == 'bulb':
         # 球莖判定
         dist_6 = np.linalg.norm(rgb - PALETTE[6]['rgb'])
@@ -154,22 +156,44 @@ def sample_mesh_surface(mesh, img, part_type, num_samples=250000):
 # 採樣各部位
 imgA = bodyA.visual.material.baseColorTexture
 imgB = bulb_mesh.visual.material.baseColorTexture
-imgEye = eye.visual.material.baseColorTexture
+imgEye = eye.visual.material.baseColorTexture.convert('RGBA')
 
-ptsA, colA = sample_mesh_surface(bodyA, imgA, 'body', num_samples=280000)
-ptsB, colB = sample_mesh_surface(bulb_mesh, imgB, 'bulb', num_samples=180000)
-ptsEye, colEye = sample_mesh_surface(eye, imgEye, 'eye', num_samples=80000)
+ptsA, colA = sample_mesh_surface(bodyA, imgA, 'body', num_samples=320000)
+ptsB, colB = sample_mesh_surface(bulb_mesh, imgB, 'bulb', num_samples=200000)
 
 all_pts = []
 all_pal = []
 all_part = []
 
-for pts, cols, ptype in [(ptsA, colA, 'body'), (ptsB, colB, 'bulb'), (ptsEye, colEye, 'eye')]:
+for pts, cols, ptype in [(ptsA, colA, 'body'), (ptsB, colB, 'bulb')]:
     for p, c in zip(pts, cols):
         pal_id = rgb_to_palette(c, ptype)
         all_pts.append(p)
         all_pal.append(pal_id)
         all_part.append(ptype)
+
+# 依決策節點 1: 移植 12x12 面片超採樣，精雕還原雙眼五官
+print("-> 正在進行雙眼五官 12x12 面片超採樣與 Skin Guard 保護...")
+e_verts = eye.vertices
+e_faces = eye.faces
+e_uvs = eye.visual.uv
+W_eye, H_eye = imgEye.size
+
+for face in e_faces:
+    v0, v1, v2 = e_verts[face]
+    uv0, uv1, uv2 = e_uvs[face]
+    for u in np.linspace(0.02, 0.98, 12):
+        for v in np.linspace(0.02, 0.98 - u, 12):
+            w = 1.0 - u - v
+            p = u * v0 + v * v1 + w * v2
+            uv = u * uv0 + v * uv1 + w * uv2
+            px = np.clip(int((uv[0] % 1.0) * (W_eye - 1)), 0, W_eye - 1)
+            py = np.clip(int(((1.0 - uv[1]) % 1.0) * (H_eye - 1)), 0, H_eye - 1)
+            c = imgEye.getpixel((px, py))[:3]
+            pal_id = rgb_to_palette(c, 'eye')
+            all_pts.append(p)
+            all_pal.append(pal_id)
+            all_part.append('eye')
 
 all_pts = np.array(all_pts)
 all_pal = np.array(all_pal)
@@ -276,19 +300,22 @@ for (x, y, z), pal in hollow_voxels.items():
     layer_dict[int(y)][f"{int(x)},{int(z)}"] = int(pal)
 
 
-# 對齊 Pokopia 系統標準層格式: { layerIndex, blocks: [[x, z, bid], ...] }
+# 對齊 Pokopia 系統標準層格式: { layerIndex, blocks: [[x, z, bid], ...], materials }
 # (VoxelDeltaStore 鏡像 / 水合 / 取色與 app.js 2D/3D 渲染管線皆依賴此格式)
 layers_list = []
 for y in range(1, TARGET_HEIGHT + 1):
     voxels = layer_dict.get(y, {})
     blocks = []
+    materials = {}
     for key, pal in voxels.items():
         bx, bz = (int(v) for v in key.split(","))
         blocks.append([bx, bz, int(pal)])
+        materials[str(pal)] = materials.get(str(pal), 0) + 1
     blocks.sort(key=lambda b: (b[0], b[1]))
     layers_list.append({
         "layerIndex": int(y),
-        "blocks": blocks
+        "blocks": blocks,
+        "materials": materials
     })
 
 clean_palette = {}
@@ -331,6 +358,10 @@ def json_serial(obj):
     raise TypeError(f"Type {type(obj)} not serializable")
 
 # 序列化為 JS
+import re
+json_text = json.dumps(js_data, ensure_ascii=False, indent=2, default=json_serial)
+json_text = re.sub(r'\[\s+(\d+),\s+(\d+),\s+(\d+)\s+\]', r'[\1,\2,\3]', json_text)
+
 with open(OUTPUT_JS, 'w', encoding='utf-8') as f:
     f.write("/**\n")
     f.write(" * 妙蛙種子 (Bulbasaur #001) 28 層精雕超採樣高傳真建造藍圖\n")
@@ -338,7 +369,7 @@ with open(OUTPUT_JS, 'w', encoding='utf-8') as f:
     f.write(" * 特色: 3D 原模 Diffuse 紋理採樣、無藤鞭清爽外型、奇數 X=12 軸對稱、適度掏空\n")
     f.write(" */\n")
     f.write("const BULBASAUR_28_V2_VOXEL_DATA = ")
-    json.dump(js_data, f, ensure_ascii=False, indent=2, default=json_serial)
+    f.write(json_text)
     f.write(";\n\n")
     f.write("if (typeof module !== 'undefined' && module.exports) {\n")
     f.write("  module.exports = BULBASAUR_28_V2_VOXEL_DATA;\n")
