@@ -183,7 +183,7 @@ console.log('  ✅ [測試 4 通過] app.js 切片渲染、尺規排版與 3D �
 // 測試 5：全系統防降級與版本一致性驗證
 console.log('▶ [測試 5/5] 驗證 sw.js 快取版本推進與全套測試套件回歸相容性...');
 const swJs = fs.readFileSync('./sw.js', 'utf8');
-assert.ok(swJs.includes("pokopia-cache-v4.98.2") || swJs.includes("pokopia-cache-v4.98.0") || swJs.includes("pokopia-cache-v4.97.4") || swJs.includes("pokopia-cache-v4.97.3") || swJs.includes("pokopia-cache-v4.97.2") || swJs.includes("pokopia-cache-v4.97.1") || swJs.includes("pokopia-cache-v4.97.0") || swJs.includes("pokopia-cache-v4.96.0"), 'sw.js 需為最新快取版本');
+assert.ok(swJs.includes("pokopia-cache-v4.99.0") || swJs.includes("pokopia-cache-v4.98.2") || swJs.includes("pokopia-cache-v4.98.0") || swJs.includes("pokopia-cache-v4.97.4") || swJs.includes("pokopia-cache-v4.97.3") || swJs.includes("pokopia-cache-v4.97.2") || swJs.includes("pokopia-cache-v4.97.1") || swJs.includes("pokopia-cache-v4.97.0") || swJs.includes("pokopia-cache-v4.96.0"), 'sw.js 需為最新快取版本');
 assert.ok(swJs.includes("'./bulbasaur28_voxel_data.js?v="), 'sw.js 需預快取 bulbasaur28_voxel_data.js');
 
 console.log('  ✅ [測試 5 通過] Service Worker 快取推進 v4.98.2 無誤！\n');

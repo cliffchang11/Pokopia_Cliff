@@ -3233,6 +3233,21 @@
               ${pkm.favorites.map(f => renderPrefPill(f)).join('')}
             </div>
           </td>
+          <td class="col-td-habitat-5x5">
+            ${(() => {
+              if (typeof window !== 'undefined' && window.POKOPIA_HABITAT_5X5_DATA && typeof window.POKOPIA_HABITAT_5X5_DATA.getHabitat5x5 === 'function') {
+                const shortInfo = window.POKOPIA_HABITAT_5X5_DATA.getHabitat5x5(pkm);
+                if (shortInfo && shortInfo.url) {
+                  return `
+                    <a href="${escapeHTML(shortInfo.url)}" target="_blank" rel="noopener noreferrer" class="pkm-btn-habitat-5x5" title="${escapeHTML(shortInfo.title)}" aria-label="觀看 ${escapeHTML(pkm.name)} 專屬 5x5 棲息地造景教學 Shorts" onclick="event.stopPropagation()">
+                      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </a>
+                  `;
+                }
+              }
+              return '<span class="pkm-habitat-5x5-empty">-</span>';
+            })()}
+          </td>
         </tr>
       `;
     }).join('');

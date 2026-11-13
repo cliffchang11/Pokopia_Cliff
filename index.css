@@ -1495,6 +1495,58 @@ body {
   width: 100%;
 }
 
+/* ==========================================================================
+   Pokemon 5x5 Habitat Shorts Styling (FancyCharmander 專屬 5x5 YouTube 播放按鈕)
+   ========================================================================== */
+.col-th-habitat-5x5,
+.col-td-habitat-5x5 {
+  text-align: center;
+  vertical-align: middle;
+  padding: 0.5000rem 0.3750rem;
+  width: 4.8000rem;
+  min-width: 4.8000rem;
+}
+
+.pkm-btn-habitat-5x5 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1250rem;
+  height: 1.5000rem;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: #ffffff;
+  border-radius: 9999px;
+  box-shadow: 0 1px 4px rgba(220, 38, 38, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  cursor: pointer;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 0;
+}
+
+.pkm-btn-habitat-5x5:hover {
+  transform: scale(1.10);
+  background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+  box-shadow: 0 3px 10px rgba(220, 38, 38, 0.55);
+}
+
+.pkm-btn-habitat-5x5:active {
+  transform: scale(0.95);
+}
+
+.pkm-btn-habitat-5x5 svg {
+  width: 0.7500rem;
+  height: 0.7500rem;
+  fill: currentColor;
+  margin-left: 0.0800rem;
+}
+
+.pkm-habitat-5x5-empty {
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
 /* 工作專長如同喜好垂直堆疊排列容器（多專長向下換行，欄寬 5.3125rem） */
 .spec-column-group {
   display: flex;

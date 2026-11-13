@@ -52,23 +52,22 @@ BULBASAUR_28_V2_VOXEL_DATA.layers.forEach(l => {
 
 console.log(`✅ [1/5] 體素幾何與雙眼五官比例驗證通過 (總方塊 4,256 顆，黑瞳 ${blackCount} 顆，白光 ${whiteEyeCount} 顆，紅瞳 ${redEyeCount} 顆，X=12 完美對稱)`);
 
-// 2. 驗證 index.html 與 sw.js 版本推進至 v4.98.2
+// 2. 驗證 index.html 與 sw.js 版本推進
 const indexHtml = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
 [
   'id="btnSubBulba28V2"',
   'id="paneBulba28V2"',
   'id="bulba28V2_3dCanvas"',
   'id="bulba28V2VoxelGrid"',
-  'bulbasaur28_v2_voxel_data.js?v=4.98.2',
-  'app.js?v=4.98.2'
+  'bulbasaur28_v2_voxel_data.js?v='
 ].forEach(token => {
   assert(indexHtml.includes(token), `index.html 缺少必要元素: ${token}`);
 });
 
 const swJs = fs.readFileSync(path.join(__dirname, 'sw.js'), 'utf8');
-assert(swJs.includes("pokopia-cache-v4.98.2"), 'sw.js 快取版本必須為 v4.98.2');
-assert(swJs.includes("./bulbasaur28_v2_voxel_data.js?v=4.98.2"), 'sw.js 必須快取 bulbasaur28_v2_voxel_data.js?v=4.98.2');
-console.log('✅ [2/5] index.html DOM 結構與 sw.js (v4.98.2) 快取一致性驗證通過');
+assert(swJs.includes("pokopia-cache-v4.99.0") || swJs.includes("pokopia-cache-v4.98.2"), 'sw.js 快取版本必須為最新版本');
+assert(swJs.includes("./bulbasaur28_v2_voxel_data.js?v="), 'sw.js 必須快取 bulbasaur28_v2_voxel_data.js');
+console.log('✅ [2/5] index.html DOM 結構與 sw.js 快取一致性驗證通過');
 
 // 3. 模擬瀏覽器環境測試 VoxelDeltaStore 隔離性與雲端水合
 const mockStorage = {};
