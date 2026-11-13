@@ -6123,35 +6123,80 @@ body.has-floating-back .scroll-top-btn {
     border-bottom: 0.0625rem solid var(--glass-border) !important;
   }
 
-  /* 4. 關鍵突破：手機端表格隱藏第 7 欄喜好與第 9 欄專屬 5x5，前 6 欄完美填滿 100% 螢幕，徹底告別左右滑動！ */
-  .pokemon-table th:nth-child(7),
-  .pokemon-table td:nth-child(7) {
-    display: none !important;
+  /* 4. 手機端表格 7 欄流體系統 (總和 100%)，保留 5x5 獨立欄位，徹底告別左右滑動！ */
+  .pokemon-table th:first-child,
+  .pokemon-table td:first-child {
+    width: 6.0% !important;
+    min-width: 0 !important;
+    padding: 0.25rem 0.05rem !important;
   }
 
+  .pokemon-table th:nth-child(2),
+  .pokemon-table td:nth-child(2) {
+    width: 20.0% !important;
+    min-width: 0 !important;
+    padding: 0.25rem 0.10rem !important;
+  }
+
+  .pokemon-table th:nth-child(3),
+  .pokemon-table td:nth-child(3) {
+    width: 14.0% !important;
+    min-width: 0 !important;
+    padding: 0.25rem 0.05rem !important;
+  }
+
+  .pokemon-table th:nth-child(4),
+  .pokemon-table td:nth-child(4) {
+    width: 13.0% !important;
+    min-width: 0 !important;
+    padding: 0.25rem 0.05rem !important;
+  }
+
+  .pokemon-table th:nth-child(5),
+  .pokemon-table td:nth-child(5) {
+    width: 13.0% !important;
+    min-width: 0 !important;
+    padding: 0.25rem 0.05rem !important;
+  }
+
+  .pokemon-table th.col-th-habitat,
+  .pokemon-table td.pkm-col-hab {
+    display: table-cell !important;
+    width: 26.5% !important;
+    min-width: 0 !important;
+    padding: 0.25rem 0.08rem !important;
+  }
+
+  .pokemon-table th.col-th-habitat-5x5,
+  .pokemon-table td.col-td-habitat-5x5 {
+    display: table-cell !important;
+    width: 7.5% !important;
+    min-width: 0 !important;
+    padding: 0.20rem 0.04rem !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+  }
+
+  .pokemon-table td.col-td-habitat-5x5 .pkm-btn-habitat-5x5 {
+    width: 1.55rem !important;
+    height: 1.15rem !important;
+  }
+
+  .pokemon-table td.col-td-habitat-5x5 .pkm-btn-habitat-5x5 svg {
+    width: 0.55rem !important;
+    height: 0.55rem !important;
+  }
+
+  /* 隱藏目前位置與喜好欄，騰出空間給 5x5 */
   .pokemon-table th.col-th-location,
   .pokemon-table td.pkm-col-location,
   .pokemon-table th.col-th-favorites,
   .pokemon-table td.col-favorites,
   .pokemon-table th:nth-child(8),
-  .pokemon-table td:nth-child(8) {
-    display: none !important;
-  }
-
-  .pokemon-table th.col-th-habitat-5x5,
-  .pokemon-table td.col-td-habitat-5x5,
-  .pokemon-table th:nth-child(9),
-  .pokemon-table td:nth-child(9) {
-    display: none !important;
-  }
-
+  .pokemon-table td:nth-child(8),
   .pokemon-table th.col-th-region,
   .pokemon-table td.col-td-region {
     display: none !important;
-  }
-  .pokemon-table th.col-th-habitat,
-  .pokemon-table td.pkm-col-hab {
-    display: table-cell !important;
   }
 
   /* 手機端簡化表頭文字：環境屬性 -> 環境，工作專長 -> 專長 */

@@ -63,9 +63,19 @@ assert(Math.abs(midTotal - 100.0) < 0.001, `中窄螢幕百分比總和非 100%:
 assert(!midBlock.includes('th:last-child'), '中窄螢幕不應包含 th:last-child');
 console.log('✅ [2/5] 寬螢幕與中螢幕 9 欄流體百分比系統精準 100% 總和驗證通過');
 
-// ─── [3/5] 手機版 (<= 768px) PWA 完美約束驗證 ──────────────────────────────────
-assert(cssContent.includes('.pokemon-table th.col-th-habitat-5x5,\n  .pokemon-table td.col-td-habitat-5x5,\n  .pokemon-table th:nth-child(9),\n  .pokemon-table td:nth-child(9) {\n    display: none !important;\n  }'), '手機端媒體查詢必須隱藏專屬 5x5 第 9 欄');
-console.log('✅ [3/5] 手機端 (<= 768px) PWA 嚴格隱藏第 9 欄，恢復 100% 螢幕無橫向滑動驗證通過');
+// ─── [3/5] 手機版 (<= 768px) 7 欄流體百分比系統精準 100% 總和與 5x5 可見性驗證 ────────
+assert(cssContent.includes('.pokemon-table th.col-th-habitat-5x5,\n  .pokemon-table td.col-td-habitat-5x5 {\n    display: table-cell !important;\n    width: 7.5% !important;'), '手機端必須保留專屬 5x5 欄位 (7.5%) 且 display: table-cell');
+assert(cssContent.includes('.pokemon-table th:first-child,\n  .pokemon-table td:first-child {\n    width: 6.0% !important;'), '手機端解鎖欄需為 6.0%');
+assert(cssContent.includes('.pokemon-table th:nth-child(2),\n  .pokemon-table td:nth-child(2) {\n    width: 20.0% !important;'), '手機端寶可夢欄需為 20.0%');
+assert(cssContent.includes('.pokemon-table th:nth-child(3),\n  .pokemon-table td:nth-child(3) {\n    width: 14.0% !important;'), '手機端外觀欄需為 14.0%');
+assert(cssContent.includes('.pokemon-table th:nth-child(4),\n  .pokemon-table td:nth-child(4) {\n    width: 13.0% !important;'), '手機端環境欄需為 13.0%');
+assert(cssContent.includes('.pokemon-table th:nth-child(5),\n  .pokemon-table td:nth-child(5) {\n    width: 13.0% !important;'), '手機端專長欄需為 13.0%');
+assert(cssContent.includes('.pokemon-table th.col-th-habitat,\n  .pokemon-table td.pkm-col-hab {\n    display: table-cell !important;\n    width: 26.5% !important;'), '手機端棲息地欄需為 26.5%');
+
+// 手機端 7 欄總和驗證: 6.0 + 20.0 + 14.0 + 13.0 + 13.0 + 26.5 + 7.5 = 100.0%
+const mobileTotal = 6.0 + 20.0 + 14.0 + 13.0 + 13.0 + 26.5 + 7.5;
+assert(Math.abs(mobileTotal - 100.0) < 0.001, `手機端 7 欄總和非 100%: ${mobileTotal}`);
+console.log('✅ [3/5] 手機端 (<= 768px) 7 欄流體系統精準 100% 且 5x5 獨立單元格正常顯示驗證通過');
 
 // ─── [4/5] 寶可夢個人百科 Modal 專屬 5x5 按鈕注入行為驗證 ─────────────────────────
 const appJsContent = fs.readFileSync('./app.js', 'utf-8');
@@ -74,15 +84,15 @@ assert(appJsContent.includes('專屬 5x5 棲息地造景教學 (Shorts)'), 'Moda
 assert(cssContent.includes('.pkm-modal-habitat-5x5-btn'), 'index.css 需定義 .pkm-modal-habitat-5x5-btn 樣式');
 console.log('✅ [4/5] 寶可夢個人百科 Modal 專屬 5x5 紅色播放按鈕注入與行為驗證通過');
 
-// ─── [5/5] PWA Service Worker 防撕裂延遲與版本推進 (v4.99.1) 驗證 ────────────────
+// ─── [5/5] PWA Service Worker 防撕裂延遲與版本推進 (v4.99.2) 驗證 ────────────────
 const swContent = fs.readFileSync('./sw.js', 'utf-8');
 const indexHtmlContent = fs.readFileSync('./index.html', 'utf-8');
-assert(swContent.includes("CACHE_NAME = 'pokopia-cache-v4.99.1'"), 'sw.js 需推進至 v4.99.1');
-assert(swContent.includes("'./habitat_5x5_data.js?v=4.99.1'"), 'sw.js 需快取 habitat_5x5_data.js?v=4.99.1');
-assert(indexHtmlContent.includes('index.css?v=4.99.1'), 'index.html 需引用 index.css?v=4.99.1');
-assert(indexHtmlContent.includes('app.js?v=4.99.1'), 'index.html 需引用 app.js?v=4.99.1');
+assert(swContent.includes("CACHE_NAME = 'pokopia-cache-v4.99.2'"), 'sw.js 需推進至 v4.99.2');
+assert(swContent.includes("'./habitat_5x5_data.js?v=4.99.2'"), 'sw.js 需快取 habitat_5x5_data.js?v=4.99.2');
+assert(indexHtmlContent.includes('index.css?v=4.99.2'), 'index.html 需引用 index.css?v=4.99.2');
+assert(indexHtmlContent.includes('app.js?v=4.99.2'), 'index.html 需引用 app.js?v=4.99.2');
 assert(appJsContent.includes('setTimeout(() => {\n              window.location.reload();\n            }, 250);'), 'app.js 需包含 controllerchange 防競爭緩衝延遲');
-console.log('✅ [5/5] PWA Service Worker 平滑防撕裂與版本推進 (v4.99.1) 驗證通過');
+console.log('✅ [5/5] PWA Service Worker 平滑防撕裂與版本推進 (v4.99.2) 驗證通過');
 
 console.log('\n🎉 FancyCharmander 專屬 5x5 佈局修復與 PWA 體驗優化全數驗收 100% 通過！');
 process.exit(0);
