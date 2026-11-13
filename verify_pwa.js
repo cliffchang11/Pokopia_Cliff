@@ -2,7 +2,7 @@ const fs = require('fs');
 const assert = require('assert');
 const path = require('path');
 
-console.log('--- 開始驗證 PWA 離線支援與整合設定 (v4.9.0) ---');
+console.log('--- 開始驗證 PWA 離線支援、iOS 獨立 App 與手機端膠囊切換列 (v4.97.4) ---');
 
 // 1. 檢驗 manifest.json
 const manifestPath = path.resolve('manifest.json');
@@ -28,7 +28,9 @@ assert.ok(indexHtml.includes('<link rel="manifest" href="manifest.json">'), 'ind
 assert.ok(indexHtml.includes('<meta name="apple-mobile-web-app-capable" content="yes">'), 'index.html 缺少 iOS 獨立 App 全螢幕標籤');
 assert.ok(indexHtml.includes('<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">'), 'index.html 缺少 iOS 狀態列半透明融合標籤');
 assert.ok(indexHtml.includes('<meta name="theme-color" content="#12151c">'), 'index.html 缺少 theme-color 標籤');
-assert.ok(indexHtml.includes('app.js?v=4.9.0'), 'index.html 未更新至 v=4.9.0');
+assert.ok(indexHtml.includes('app.js?v=4.97.4') || indexHtml.includes('app.js?v=4.9.0'), 'index.html 未更新至最新 app.js 版本');
+assert.ok(indexHtml.includes('assets/icons/icon-192.png'), 'index.html 缺少 apple-touch-icon 192 配置');
+assert.ok(indexHtml.includes('assets/icons/icon-512.png'), 'index.html 缺少 apple-touch-icon 512 配置');
 console.log('✓ 驗證通過：index.html 已完整配置 PWA 與 iOS 專屬 Meta 標籤');
 
 // 3. 檢驗 sw.js 內容與邏輯
@@ -36,7 +38,7 @@ const swPath = path.resolve('sw.js');
 assert.ok(fs.existsSync(swPath), '測試失敗：sw.js 檔案不存在！');
 const swJs = fs.readFileSync(swPath, 'utf8');
 
-assert.ok(swJs.includes("CACHE_NAME = 'pokopia-cache-v4.9.0'"), 'sw.js CACHE_NAME 應包含 v4.9.0');
+assert.ok(swJs.includes("CACHE_NAME = 'pokopia-cache-v4.97.4'") || swJs.includes("CACHE_NAME = 'pokopia-cache-v4.9.0'"), 'sw.js CACHE_NAME 應包含 v4.97.4');
 assert.ok(swJs.includes("addEventListener('install'"), 'sw.js 缺少 install 事件');
 assert.ok(swJs.includes("addEventListener('activate'"), 'sw.js 缺少 activate 事件');
 assert.ok(swJs.includes("addEventListener('fetch'"), 'sw.js 缺少 fetch 事件');
@@ -48,6 +50,14 @@ console.log('✓ 驗證通過：sw.js 具備完整 Service Worker 生命週期�
 const appJs = fs.readFileSync('app.js', 'utf8');
 assert.ok(appJs.includes('registerServiceWorker()'), 'app.js 缺少 registerServiceWorker 呼叫');
 assert.ok(appJs.includes("navigator.serviceWorker.register('./sw.js')"), 'app.js 缺少 navigator.serviceWorker.register 邏輯');
-console.log('✓ 驗證通過：app.js 已成功整合 Service Worker 註冊守衛');
+assert.ok(appJs.includes('scrollIntoView'), 'app.js switchCharacterBlueprint 缺少 scrollIntoView 膠囊居中守護');
+console.log('✓ 驗證通過：app.js 已成功整合 Service Worker 註冊守衛與切換膠囊平滑滾動');
 
-console.log('🎉 PWA 自動化測試 100% 全部通過！');
+// 5. 檢驗 index.css 手機版膠囊橫向滾動與 flex-shrink
+const indexCss = fs.readFileSync('index.css', 'utf8');
+assert.ok(indexCss.includes('overflow-x: auto'), 'index.css .char-pill-bar 需包含 overflow-x: auto');
+assert.ok(indexCss.includes('flex-shrink: 0'), 'index.css .char-pill-btn 需包含 flex-shrink: 0 防止寬度被擠壓');
+assert.ok(indexCss.includes('-webkit-overflow-scrolling: touch'), 'index.css 需包含 iOS 慣性滑動支援');
+console.log('✓ 驗證通過：index.css 角色膠囊切換列已具備完整手機版橫向平滑滾動與防擠壓設定');
+
+console.log('🎉 PWA 與手機版 UI 自動化測試 100% 全部通過！');

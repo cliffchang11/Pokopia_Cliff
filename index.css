@@ -12115,18 +12115,27 @@ body.has-floating-back .scroll-top-btn {
   box-sizing: border-box;
 }
 
-/* 3. 次級角色切換膠囊列 (iOS Segmented Control 現代分段切換器風格) */
+/* 3. 次級角色切換膠囊列 (iOS Segmented Control 現代分段切換器風格，手機版支援滑動不截斷) */
 .char-pill-bar {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   background: #f1f5f9;
   padding: 4px;
   border-radius: 9999px;
   border: 1px solid #e2e8f0;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
   margin: 0 auto 1.25rem;
+  width: fit-content;
   max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  box-sizing: border-box;
+}
+.char-pill-bar::-webkit-scrollbar {
+  display: none;
 }
 .char-pill-btn {
   display: inline-flex;
@@ -12143,6 +12152,7 @@ body.has-floating-back .scroll-top-btn {
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 .char-pill-btn:hover {
   color: #0f172a;
@@ -12151,6 +12161,19 @@ body.has-floating-back .scroll-top-btn {
   background: #0d9488 !important;
   color: #ffffff !important;
   box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3), 0 1px 2px rgba(13, 148, 136, 0.15) !important;
+}
+
+@media (max-width: 768px) {
+  .char-pill-bar {
+    border-radius: 1.25rem;
+    padding: 3px;
+    gap: 2px;
+    margin-bottom: 0.85rem;
+  }
+  .char-pill-btn {
+    padding: 0.4rem 0.9rem;
+    font-size: 0.875rem;
+  }
 }
 
 /* 4. 角色窗格切換控制 */

@@ -7870,6 +7870,17 @@
     if (DOM.btnSubIvysaur) DOM.btnSubIvysaur.classList.toggle('active', char === 'ivysaur');
     if (DOM.btnSubVenusaur) DOM.btnSubVenusaur.classList.toggle('active', char === 'venusaur');
 
+    // 確保手機版橫向膠囊切換列將當前選中角色按鈕平滑置中顯示，防止兩側裁切
+    const activePill = (char === 'buzz') ? DOM.btnSubBuzz :
+                      (char === 'bulba28') ? DOM.btnSubBulba28 :
+                      (char === 'bulba') ? DOM.btnSubBulba :
+                      (char === 'ivysaur40' || char === 'ivysaur43') ? DOM.btnSubIvysaur40 :
+                      (char === 'ivysaur') ? DOM.btnSubIvysaur :
+                      (char === 'venusaur') ? DOM.btnSubVenusaur : null;
+    if (activePill && typeof activePill.scrollIntoView === 'function') {
+      activePill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+
     if (DOM.paneBuzz) DOM.paneBuzz.classList.toggle('hidden', char !== 'buzz');
     if (DOM.paneBulba28) DOM.paneBulba28.classList.toggle('hidden', char !== 'bulba28');
     if (DOM.paneBulba) DOM.paneBulba.classList.toggle('hidden', char !== 'bulba');
