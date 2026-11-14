@@ -13,7 +13,7 @@ console.log('╚═════════════════════�
 
 const BASE_DIR = __dirname;
 const DIST_DIR = path.join(BASE_DIR, 'dist_offline');
-const ZIP_PATH = path.join('/home/cliff/Desktop/pokopia_offline_ipad.zip');
+const ZIP_PATH = path.join(BASE_DIR, 'pokopia_offline_ipad.zip');
 
 // ─── [測試 1/5] 驗證 libs/ 本機化相依庫 ─────────────────────────────
 console.log('▶ [測試 1/5] 驗證 Three.js 與相依函式庫本機化...');
@@ -73,12 +73,12 @@ shortsMatches.forEach(vid => {
 });
 console.log(`  ✓ PASS: 47 部 5x5 Shorts 全數驗證通過 (總體積: ${(totalShortsBytes / (1024 * 1024)).toFixed(1)} MB)\n`);
 
-// ─── [測試 5/5] 驗證桌面 ZIP 壓縮包存在性與完整性 ───────────────────
-console.log('▶ [測試 5/5] 驗證桌面隨身包 pokopia_offline_ipad.zip...');
-assert(fs.existsSync(ZIP_PATH), '❌ 桌面找不到 pokopia_offline_ipad.zip！');
+// ─── [測試 5/5] 驗證專案隨身包 ZIP 壓縮包存在性與完整性 ───────────────────
+console.log('▶ [測試 5/5] 驗證專案隨身包 pokopia_offline_ipad.zip...');
+assert(fs.existsSync(ZIP_PATH), '❌ 專案根目錄找不到 pokopia_offline_ipad.zip！');
 const zipSize = fs.statSync(ZIP_PATH).size;
 assert(zipSize > 50 * 1024 * 1024, '❌ 壓縮包體積異常小！');
-console.log(`  ✓ PASS: 桌面 ZIP 產出成功，體積 ${(zipSize / (1024 * 1024)).toFixed(2)} MB\n`);
+console.log(`  ✓ PASS: 專案根目錄 ZIP 產出成功，體積 ${(zipSize / (1024 * 1024)).toFixed(2)} MB\n`);
 
 console.log('╔═══════════════════════════════════════════════════════════════════╗');
 console.log('║  🎉 所有 5 大離線驗收測試項目 100% 全部通過！ (0 錯誤，0 失敗)   ║');

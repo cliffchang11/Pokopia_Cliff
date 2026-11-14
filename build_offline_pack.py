@@ -2,7 +2,7 @@
 """
 build_offline_pack.py
 將 Pokopia 專案封裝為完全獨立自包含的離線隨身包 (dist_offline/)，
-並壓製為 pokopia_offline_ipad.zip 置於桌面。
+並壓製為 pokopia_offline_ipad.zip 置於專案根目錄。
 """
 
 import os
@@ -13,7 +13,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 DIST_DIR = BASE_DIR / "dist_offline"
-ZIP_OUTPUT = Path("/home/cliff/Desktop/pokopia_offline_ipad.zip")
+ZIP_OUTPUT = BASE_DIR / "pokopia_offline_ipad.zip"
 
 CORE_FILES = [
     "app.js",
