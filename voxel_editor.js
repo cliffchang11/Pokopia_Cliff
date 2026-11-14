@@ -194,6 +194,7 @@
       ivysaur40: { overrides: loadOverridesFromStorage('ivysaur40'), updatedAt: loadTimeFromStorage('ivysaur40'), history: [], redoStack: [] },
       ivysaur43: { overrides: loadOverridesFromStorage('ivysaur43'), updatedAt: loadTimeFromStorage('ivysaur43'), history: [], redoStack: [] },
       venusaur80: { overrides: loadOverridesFromStorage('venusaur80'), updatedAt: loadTimeFromStorage('venusaur80'), history: [], redoStack: [] },
+      venusaur80_v2: { overrides: loadOverridesFromStorage('venusaur80_v2'), updatedAt: loadTimeFromStorage('venusaur80_v2'), history: [], redoStack: [] },
       venusaur: { overrides: loadOverridesFromStorage('venusaur'), updatedAt: loadTimeFromStorage('venusaur'), history: [], redoStack: [] },
       buzz: { overrides: loadOverridesFromStorage('buzz'), updatedAt: loadTimeFromStorage('buzz'), history: [], redoStack: [] }
     },
@@ -236,6 +237,7 @@
     if (charKey === 'ivysaur40' && typeof IVYSAUR_40_VOXEL_DATA !== 'undefined') return IVYSAUR_40_VOXEL_DATA;
     if (charKey === 'ivysaur43' && typeof IVYSAUR_43_VOXEL_DATA !== 'undefined') return IVYSAUR_43_VOXEL_DATA;
     if ((charKey === 'venusaur80' || charKey === 'venusaur_80') && typeof VENUSAUR_80_VOXEL_DATA !== 'undefined') return VENUSAUR_80_VOXEL_DATA;
+    if ((charKey === 'venusaur80_v2' || charKey === 'venusaur80v2') && typeof VENUSAUR_80_V2_VOXEL_DATA !== 'undefined') return VENUSAUR_80_V2_VOXEL_DATA;
     if (charKey === 'venusaur' && typeof VENUSAUR_VOXEL_DATA !== 'undefined') return VENUSAUR_VOXEL_DATA;
     if (charKey === 'buzz' && typeof BUZZ_VOXEL_DATA !== 'undefined') return BUZZ_VOXEL_DATA;
     return null;
@@ -830,7 +832,7 @@
   // 取得全部角色的修改覆蓋物件 (打包給雲端同步)
   function getAllOverrides() {
     const all = {};
-    ['bulbasaur', 'bulbasaur28', 'bulbasaur28_v2', 'ivysaur', 'ivysaur40', 'ivysaur43', 'venusaur80', 'venusaur', 'buzz'].forEach(k => {
+    ['bulbasaur', 'bulbasaur28', 'bulbasaur28_v2', 'ivysaur', 'ivysaur40', 'ivysaur43', 'venusaur80', 'venusaur80_v2', 'venusaur', 'buzz'].forEach(k => {
       const o = getOverrides(k);
       const time = (_state.characters[k] && _state.characters[k].updatedAt) || loadTimeFromStorage(k);
       if (o && Object.keys(o).length > 0) {
@@ -861,7 +863,7 @@
   function hydrateFromCloud(cloudOverrides) {
     if (!cloudOverrides || typeof cloudOverrides !== 'object') return;
     let anyHydrated = false;
-    ['bulbasaur', 'bulbasaur28', 'bulbasaur28_v2', 'ivysaur', 'ivysaur40', 'ivysaur43', 'venusaur80', 'venusaur', 'buzz'].forEach(k => {
+    ['bulbasaur', 'bulbasaur28', 'bulbasaur28_v2', 'ivysaur', 'ivysaur40', 'ivysaur43', 'venusaur80', 'venusaur80_v2', 'venusaur', 'buzz'].forEach(k => {
       const remote = cloudOverrides[k];
       if (remote && typeof remote === 'object') {
         const remoteData = (remote.data !== undefined) ? remote.data : remote;
@@ -909,7 +911,7 @@
           // 本地正在手動編輯中且尚未點擊儲存：
           // 若遠端確實有更新的存檔，彈出確認詢問使用者
           if (remoteTime !== null && remoteTime > localTime) {
-            const charName = k === 'ivysaur' ? '妙蛙草 (76層)' : k === 'ivysaur40' ? '妙蛙草 (40層)' : k === 'ivysaur43' ? '妙蛙草 (43層)' : k === 'bulbasaur28' ? '妙蛙種子 (28層)' : k === 'bulbasaur28_v2' ? '妙蛙種子 (28層・超採樣)' : k === 'bulbasaur' ? '妙蛙種子 (53層)' : k === 'venusaur80' ? '妙蛙花 (80層)' : k === 'venusaur' ? '妙蛙花 (103層)' : '巴斯光年';
+            const charName = k === 'ivysaur' ? '妙蛙草 (76層)' : k === 'ivysaur40' ? '妙蛙草 (40層)' : k === 'ivysaur43' ? '妙蛙草 (43層)' : k === 'bulbasaur28' ? '妙蛙種子 (28層)' : k === 'bulbasaur28_v2' ? '妙蛙種子 (28層・超採樣)' : k === 'bulbasaur' ? '妙蛙種子 (53層)' : k === 'venusaur80' ? '妙蛙花 (80層)' : k === 'venusaur80_v2' ? '妙蛙花 (80層動態版)' : k === 'venusaur' ? '妙蛙花 (103層)' : '巴斯光年';
             const userChoice = (typeof confirm === 'function')
               ? confirm(`☁️ 提示：偵測到 Google 雲端有【${charName}】較新的手動存檔！\n\n您目前在本地有尚未儲存的編輯，是否要放棄當前未存草稿並載入雲端最新版本？\n（點擊「確定」載入雲端版本，點擊「取消」保留目前編輯）`)
               : false;

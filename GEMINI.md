@@ -31,6 +31,7 @@
   | `ivysaur` | 🌿 妙蛙草 (76層經典版) | `pokopia_voxel_overrides_ivysaur` | `voxelOverridesPack.ivysaur` | 具備 11,726 筆固化防護與 13,708 筆雲端資產 |
   | `buzz` | 🚀 巴斯光年 | `pokopia_voxel_overrides_buzz` | `voxelOverridesPack.buzz` | 42 層建造模型 |
   | `venusaur80` | 🌺 妙蛙花 (80層精巧版) | `pokopia_voxel_overrides_venusaur80` | `voxelOverridesPack.venusaur80` | 43,663 顆方塊等比例精巧工作台，獨立 Undo/Redo |
+  | `venusaur80_v2` | 🌺 妙蛙花 (80層動態版) | `pokopia_voxel_overrides_venusaur80_v2` | `voxelOverridesPack.venusaur80_v2` | 59,191 顆方塊張嘴咆哮生動體態，純本體四足獨立踏地，獨立 Undo/Redo |
   | `venusaur` | 🌺 妙蛙花 (103層巨型版) | `pokopia_voxel_overrides_venusaur` | `voxelOverridesPack.venusaur` | 68,180 顆方塊大型展演模型 |
 - **禁止交叉污染**：在任何角色工作台進行的體素塗色、刪除、鏡像或復原，僅得寫入所屬之 `charKey`，嚴禁影響其他角色的資料。
 

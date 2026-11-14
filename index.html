@@ -572,6 +572,7 @@
           <button id="btnSubIvysaur40" class="char-pill-btn" data-char="ivysaur40">🌿 妙蛙草 (40層)</button>
           <button id="btnSubIvysaur" class="char-pill-btn" data-char="ivysaur">🌿 妙蛙草 (76層)</button>
           <button id="btnSubVenusaur80" class="char-pill-btn" data-char="venusaur80">🌺 妙蛙花 (80層)</button>
+          <button id="btnSubVenusaur80V2" class="char-pill-btn" data-char="venusaur80_v2">🌺 妙蛙花 (80層動態版)</button>
           <button id="btnSubVenusaur" class="char-pill-btn" data-char="venusaur">🌺 妙蛙花 (103層)</button>
           <button id="btnSubBuzz" class="char-pill-btn active" data-char="buzz">🚀 巴斯光年</button>
         </div>
@@ -1208,6 +1209,109 @@
           </div>
         </div>
 
+        <!-- 角色：妙蛙花 (80層動態版) 3D 方塊建造工作台 -->
+        <div id="paneVenusaur80V2" class="char-pane hidden">
+          <div class="bulba-builder-layout buzz-builder-layout">
+            <!-- 上欄：3D 立體模型展示與剖面連動 -->
+            <div class="bulba-3d-card buzz-3d-card">
+              <div class="bulba-card-header">
+                <div class="bulba-card-title">
+                  <span class="bulba-card-icon">🌺</span>
+                  <div class="bulba-card-text">
+                    <span class="bulba-card-name">妙蛙花 3D 方塊模型 (80層動態版)</span>
+                    <span class="bulba-card-sub">Venusaur #003 · 咆哮邁步姿態 · 精準 80 層</span>
+                  </div>
+                </div>
+                <div class="bulba-mode-switch buzz-mode-switch">
+                  <button id="btnVenusaur80V2ModeFull" class="bulba-mode-btn active" title="查看原生 Three.js 3D 方塊展台">原生 3D</button>
+                  <button id="btnVenusaur80V2ModeSlice" class="bulba-mode-btn" title="隨下方切片進度動態過濾顯示">動態剖面</button>
+                  <button id="btnVenusaur80V2ModeSketchfab" class="bulba-mode-btn" title="查看 Sketchfab 官方 3D 原作視窗">Sketchfab 原作</button>
+                </div>
+              </div>
+              <div id="venusaur80_v2_3dCanvasWrap" class="bulba-canvas-wrap buzz-canvas-wrap">
+                <canvas id="venusaur80_v2_3dCanvas" class="bulba-3d-canvas"></canvas>
+                <div class="bulba-canvas-hint">上下左右 360° 拖曳旋轉 / 滾輪縮放視角</div>
+              </div>
+              <!-- Sketchfab 官方沉浸展示視窗 -->
+              <div id="venusaur80_v2_3dIframeWrap" class="buzz-iframe-wrap">
+                <iframe
+                  id="venusaur80_v2_3dIframe"
+                  class="buzz-iframe"
+                  title="Venusaur 3D Model by Sketchfab"
+                  src="https://sketchfab.com/models/67086e2e198a4d1992c51db2e971c46b/embed?autostart=1&autospin=0.2&ui_theme=dark&ui_infos=0&ui_watermark=0"
+                  frameborder="0"
+                  allow="autoplay; fullscreen; xr-spatial-tracking"
+                  xr-spatial-tracking="true"
+                  execution-while-out-of-viewport="true"
+                  execution-while-not-rendered="true"
+                  web-share="true"
+                  allowfullscreen>
+                </iframe>
+              </div>
+            </div>
+
+            <!-- 下欄：80 層逐層切片控制器與材料清單 -->
+            <div id="venusaur80_v2SliceCard" class="bulba-slice-card buzz-slice-card">
+              <div class="bulba-card-header">
+                <div class="bulba-card-title">
+                  <span>📐 80 層建造切片指南</span>
+                  <span id="venusaur80_v2LayerBadge" class="bulba-layer-badge buzz-layer-badge">第 1 / 80 層</span>
+                </div>
+                <span id="venusaur80_v2LayerBlockCount" class="bulba-count-stat">本層 0 顆</span>
+              </div>
+
+              <!-- 樓層滑桿與控制按鈕 -->
+              <div class="bulba-slice-ctrl">
+                <div class="bulba-slider-row">
+                  <button id="btnVenusaur80V2PrevLayer" class="bulba-step-btn" title="上一層">◀</button>
+                  <input type="range" id="venusaur80_v2LayerSlider" class="bulba-slider buzz-slider" min="1" max="80" value="1" step="1">
+                  <button id="btnVenusaur80V2NextLayer" class="bulba-step-btn" title="下一層">▶</button>
+                </div>
+                <!-- 2D 切片縮放與平移工具列 -->
+                <div class="bulba-zoom-toolbar buzz-zoom-toolbar">
+                  <div class="bulba-zoom-btn-group">
+                    <button id="btnVenusaur80V2ZoomOut" class="bulba-zoom-btn" title="縮小 (或滾輪向下)">🔍−</button>
+                    <button id="btnVenusaur80V2ZoomReset" class="bulba-zoom-btn bulba-zoom-reset" title="重設為 100% 居中">100%</button>
+                    <button id="btnVenusaur80V2ZoomIn" class="bulba-zoom-btn" title="放大 (或滾輪向上)">🔍+</button>
+                  </div>
+                  <span class="bulba-zoom-tip">可按住拖曳平移 ‧ 滾輪縮放</span>
+                </div>
+              </div>
+
+              <!-- 2D 點陣切片網格容器 (含工程雙軸長寬標註線) -->
+              <div class="bulba-grid-container buzz-grid-container">
+                <div class="bulba-grid-workspace">
+                  <!-- 頂部寬度分段標註線 (動態注入實體段與間隔純數字) -->
+                  <div id="venusaur80_v2DimTop" class="bulba-dim-top"></div>
+                  <!-- 主體網格與右側長度分段標註線行 -->
+                  <div class="bulba-grid-row">
+                    <div id="venusaur80_v2VoxelGrid" class="bulba-voxel-grid">
+                      <!-- 動態注入該層方塊元素 -->
+                    </div>
+                    <!-- 右側長度分段標註線 (動態注入實體段與間隔純數字) -->
+                    <div id="venusaur80_v2DimRight" class="bulba-dim-right"></div>
+                  </div>
+                </div>
+                <div id="venusaur80_v2HoverTooltip" class="bulba-hover-tooltip hidden">
+                  <span id="venusaur80_v2TooltipColor" class="bulba-tooltip-color"></span>
+                  <span id="venusaur80_v2TooltipText">青色混凝土 (X: 0, Z: 0)</span>
+                </div>
+              </div>
+
+              <!-- 本層所需材料清單 -->
+              <div class="bulba-materials-section">
+                <div class="bulba-mat-header">
+                  <span class="bulba-mat-title">📦 本層所需材料</span>
+                  <span id="venusaur80_v2MatTypesCount" class="bulba-mat-count-badge">0 種建材</span>
+                </div>
+                <div id="venusaur80_v2MatList" class="bulba-mat-list">
+                  <!-- 動態注入本層方塊材料項目 -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- 角色 3：妙蛙花 3D 方塊建造工作台 -->
         <div id="paneVenusaur" class="char-pane hidden">
           <div class="bulba-builder-layout buzz-builder-layout">
@@ -1490,20 +1594,21 @@
   <script src="autofarm_data.js?v=4.15.0"></script>
   <script src="region_data.js?v=4.15.0"></script>
   <script src="video_data.js?v=4.15.0"></script>
-  <script src="habitat_5x5_data.js?v=4.100.0"></script>
-  <script src="firebase.js?v=4.100.0"></script>
+  <script src="habitat_5x5_data.js?v=4.101.0"></script>
+  <script src="firebase.js?v=4.101.0"></script>
   <!-- 3D Voxel Engine & Character Blueprint Data -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-  <script src="buzz_voxel_data.js?v=4.100.0"></script>
-  <script src="bulbasaur_voxel_data.js?v=4.100.0"></script>
-  <script src="bulbasaur28_v2_voxel_data.js?v=4.100.0"></script>
-  <script src="bulbasaur28_voxel_data.js?v=4.100.0"></script>
-  <script src="ivysaur_voxel_data.js?v=4.100.0"></script>
-  <script src="ivysaur40_voxel_data.js?v=4.100.0"></script>
-  <script src="venusaur80_voxel_data.js?v=4.100.0"></script>
-  <script src="venusaur_voxel_data.js?v=4.100.0"></script>
-  <script src="voxel_editor.js?v=4.100.0"></script>
-  <script src="app.js?v=4.100.0"></script>
+  <script src="buzz_voxel_data.js?v=4.101.0"></script>
+  <script src="bulbasaur_voxel_data.js?v=4.101.0"></script>
+  <script src="bulbasaur28_v2_voxel_data.js?v=4.101.0"></script>
+  <script src="bulbasaur28_voxel_data.js?v=4.101.0"></script>
+  <script src="ivysaur_voxel_data.js?v=4.101.0"></script>
+  <script src="ivysaur40_voxel_data.js?v=4.101.0"></script>
+  <script src="venusaur80_voxel_data.js?v=4.101.0"></script>
+  <script src="venusaur80_v2_voxel_data.js?v=4.101.0"></script>
+  <script src="venusaur_voxel_data.js?v=4.101.0"></script>
+  <script src="voxel_editor.js?v=4.101.0"></script>
+  <script src="app.js?v=4.101.0"></script>
 </body>
 </html>
