@@ -466,6 +466,7 @@
         <div class="video-player-frame-wrap">
           <div class="video-player-aspect">
             <iframe id="videoPlayerIframe" src="" title="Pokopia 參考影片播放器" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            <video id="videoPlayerNative" class="video-native-player hidden" controls playsinline></video>
           </div>
         </div>
         <div class="video-theater-info">
@@ -1587,6 +1588,14 @@
   </button>
 
   <!-- Scripts -->
+  <!-- 離線 Shorts 浮動彈窗播放器 (適用 iPad / 離線模式) -->
+  <div id="shortsModal" class="shorts-modal hidden" role="dialog" aria-modal="true">
+    <div class="shorts-modal-content">
+      <button id="btnShortsClose" class="shorts-modal-close" title="關閉">✕</button>
+      <video id="shortsPlayerNative" class="shorts-modal-video" controls playsinline loop></video>
+    </div>
+  </div>
+
   <script src="data.js?v=4.15.0"></script>
   <script src="preferences_db.js?v=4.15.0"></script>
   <script src="recipe_db.js?v=4.15.0"></script>

@@ -1,4 +1,8 @@
 # 巨大二進制檔與日誌
+assets/videos/
+dist_offline/
+*.zip
+libs/
 ngrok
 *.log
 *.pid

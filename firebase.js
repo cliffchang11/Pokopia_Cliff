@@ -6,6 +6,25 @@
 (function () {
   'use strict';
 
+  // ─── 飛航離線模式平滑降級 ──────────────────────────────────────────
+  if (typeof window !== 'undefined' && window.POKOPIA_OFFLINE) {
+    window.PokopiaFirebase = {
+      isConfigured: () => false,
+      isAuthed: () => false,
+      getUser: () => null,
+      onAuthStateChanged: (cb) => { try { cb(null); } catch (e) {} },
+      signInWithGoogle: () => {
+        alert('✈️ 目前處於飛航離線模式：所有進度與方塊編輯皆已 100% 即時儲存於 iPad 本機，下機連線後可再同步！');
+      },
+      signOut: () => {},
+      saveProgress: () => Promise.resolve(true),
+      saveSpecificVoxelCharacter: () => Promise.resolve(true),
+      loadProgress: () => Promise.resolve(null),
+      syncNow: () => Promise.resolve(true)
+    };
+    return;
+  }
+
   // ─── Firebase Config ────────────────────────────────────────────
   const firebaseConfig = {
     apiKey: "AIzaSyDWXQQBtOuZDspUpGSNBzSmaTtrRyEQp8Y",

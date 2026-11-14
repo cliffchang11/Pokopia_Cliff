@@ -267,7 +267,9 @@ def main():
         layer_mat_count = Counter()
         for (x, vy, z), bid in voxel_grid.items():
             if vy == y:
-                blocks_in_layer.append([int(x), int(z), int(bid)])
+                lx = int(x - min_x)
+                lz = int(z - min_z)
+                blocks_in_layer.append([lx, lz, int(bid)])
                 layer_mat_count[bid] += 1
         blocks_in_layer.sort(key=lambda b: (b[1], b[0]))
         layers_output.append({

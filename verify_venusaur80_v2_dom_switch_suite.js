@@ -50,3 +50,4 @@ assert(voxelData.totalBlocks > 50000, '❌ 總方塊數必須大於 50000 顆！
 console.log(`✅ 體素模型驗證通過：共 ${voxelData.totalBlocks.toLocaleString()} 顆方塊，80 層完備！`);
 
 console.log('\n🎉 所有驗收檢查 100% 通過！');
+

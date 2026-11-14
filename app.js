@@ -506,6 +506,10 @@
     btnVenusaurZoomOut: document.getElementById('btnVenusaurZoomOut'),
     btnVenusaurZoomReset: document.getElementById('btnVenusaurZoomReset'),
     videoPlayerIframe: document.getElementById('videoPlayerIframe'),
+    videoPlayerNative: document.getElementById('videoPlayerNative'),
+    shortsModal: document.getElementById('shortsModal'),
+    btnShortsClose: document.getElementById('btnShortsClose'),
+    shortsPlayerNative: document.getElementById('shortsPlayerNative'),
     videoResumeBanner: document.getElementById('videoResumeBanner'),
     videoResumeText: document.getElementById('videoResumeText'),
     btnVideoRestart: document.getElementById('btnVideoRestart'),
@@ -6884,6 +6888,14 @@
       delete state.videoProgress[video.videoId];
       saveVideoProgressAndSync();
     }
+    const isOfflineMode = (typeof window !== 'undefined' && window.POKOPIA_OFFLINE);
+    if (isOfflineMode && DOM.videoPlayerNative) {
+      try {
+        DOM.videoPlayerNative.currentTime = 0;
+        DOM.videoPlayerNative.play().catch(() => {});
+        return;
+      } catch (e) {}
+    }
     if (_ytPlayer && typeof _ytPlayer.seekTo === 'function') {
       try {
         _ytPlayer.seekTo(0, true);
@@ -6904,6 +6916,11 @@
       stopProgressSampling();
       hideResumeBanner();
       if (DOM.videoPlayerIframe) DOM.videoPlayerIframe.src = '';
+      if (DOM.videoPlayerNative) {
+        DOM.videoPlayerNative.pause();
+        DOM.videoPlayerNative.src = '';
+        DOM.videoPlayerNative.classList.add('hidden');
+      }
       if (DOM.videoCurrentTitle) DOM.videoCurrentTitle.textContent = '尚無參考影片';
       if (DOM.videoCurrentNote) DOM.videoCurrentNote.textContent = '請點擊下方「新增影片」按鈕添加您的第一部影片。';
       if (DOM.videoCurrentAuthor) DOM.videoCurrentAuthor.textContent = '-';
@@ -6915,39 +6932,65 @@
       return;
     }
 
-    // 檢查是否已在播放同一部影片，若是，絕對不更動 iframe 與播放狀態，避免中斷播放
-    const isSameVideo = (_currentLoadedVideoId === video.videoId) && DOM.videoPlayerIframe && DOM.videoPlayerIframe.src;
+    const isOfflineMode = (typeof window !== 'undefined' && window.POKOPIA_OFFLINE);
+    // 檢查是否已在播放同一部影片，若是，絕對不更動 iframe/video 與播放狀態，避免中斷播放
+    const isSameVideo = (_currentLoadedVideoId === video.videoId) && (
+      (isOfflineMode && DOM.videoPlayerNative && DOM.videoPlayerNative.src) ||
+      (!isOfflineMode && DOM.videoPlayerIframe && DOM.videoPlayerIframe.src)
+    );
     if (!isSameVideo) {
       _currentLoadedVideoId = video.videoId;
       stopProgressSampling();
       hideResumeBanner();
-
-      // 啟動 YouTube Iframe API 載入 (如未載入)
-      initYouTubeIframeApi();
 
       // 取得該影片上次儲存之播放進度 (秒數)
       const savedTime = (state.videoProgress && typeof state.videoProgress[video.videoId] === 'number')
         ? state.videoProgress[video.videoId]
         : 0;
 
-      // 播放器 iframe (支援從上次秒數續播 start 參數)
-      if (DOM.videoPlayerIframe) {
-        DOM.videoPlayerIframe.referrerPolicy = 'strict-origin-when-cross-origin';
-        const origin = (typeof window !== 'undefined' && window.location && window.location.origin) ? encodeURIComponent(window.location.origin) : '';
-        const startParam = (savedTime >= 5) ? `&start=${Math.floor(savedTime)}` : '';
-        const embedUrl = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(video.videoId)}?rel=0&enablejsapi=1${startParam}${origin ? '&origin=' + origin : ''}`;
-        if (DOM.videoPlayerIframe.src !== embedUrl) {
-          DOM.videoPlayerIframe.src = embedUrl;
+      if (isOfflineMode && DOM.videoPlayerNative) {
+        // 離線模式：啟用本地原生 HTML5 播放器
+        if (DOM.videoPlayerIframe) DOM.videoPlayerIframe.classList.add('hidden');
+        DOM.videoPlayerNative.classList.remove('hidden');
+        const localSrc = `assets/videos/reference/${encodeURIComponent(video.videoId)}.mp4`;
+        if (DOM.videoPlayerNative.src !== localSrc && !DOM.videoPlayerNative.src.endsWith(localSrc)) {
+          DOM.videoPlayerNative.src = localSrc;
+          if (savedTime >= 5) {
+            DOM.videoPlayerNative.currentTime = savedTime;
+          }
         }
+        DOM.videoPlayerNative.ontimeupdate = () => {
+          recordCurrentVideoProgress(video.videoId, DOM.videoPlayerNative.currentTime, DOM.videoPlayerNative.duration || 0);
+        };
+        DOM.videoPlayerNative.onpause = () => {
+          recordCurrentVideoProgress(video.videoId, DOM.videoPlayerNative.currentTime, DOM.videoPlayerNative.duration || 0);
+        };
+      } else {
+        // 線上模式：啟用 YouTube Iframe 播放器
+        if (DOM.videoPlayerNative) {
+          DOM.videoPlayerNative.pause();
+          DOM.videoPlayerNative.classList.add('hidden');
+        }
+        if (DOM.videoPlayerIframe) {
+          DOM.videoPlayerIframe.classList.remove('hidden');
+          DOM.videoPlayerIframe.referrerPolicy = 'strict-origin-when-cross-origin';
+          const origin = (typeof window !== 'undefined' && window.location && window.location.origin) ? encodeURIComponent(window.location.origin) : '';
+          const startParam = (savedTime >= 5) ? `&start=${Math.floor(savedTime)}` : '';
+          const embedUrl = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(video.videoId)}?rel=0&enablejsapi=1${startParam}${origin ? '&origin=' + origin : ''}`;
+          if (DOM.videoPlayerIframe.src !== embedUrl) {
+            DOM.videoPlayerIframe.src = embedUrl;
+          }
+        }
+        // 啟動 YouTube Iframe API 載入 (如未載入)
+        initYouTubeIframeApi();
+        // 若 API 已就緒，嘗試掛載實例
+        setupYouTubePlayerInstance();
       }
 
       // 若有上次紀錄（>= 5 秒），跳出續播提示膠囊
       if (savedTime >= 5) {
         showResumeBanner(video, savedTime);
       }
-
-      // 若 API 已就緒，嘗試掛載實例
-      setupYouTubePlayerInstance();
     }
 
     if (DOM.videoCurrentTitle) DOM.videoCurrentTitle.textContent = video.title || '未命名影片';
@@ -7713,6 +7756,52 @@
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && DOM.videoModal && !DOM.videoModal.classList.contains('hidden')) {
         closeVideoModal();
+      }
+      if (e.key === 'Escape' && DOM.shortsModal && !DOM.shortsModal.classList.contains('hidden')) {
+        DOM.shortsModal.classList.add('hidden');
+        if (DOM.shortsPlayerNative) {
+          DOM.shortsPlayerNative.pause();
+          DOM.shortsPlayerNative.src = '';
+        }
+      }
+    });
+
+    // 離線 5x5 Shorts 彈窗播放器控制 (適用 iPad 飛航無網路環境)
+    if (DOM.btnShortsClose) {
+      DOM.btnShortsClose.addEventListener('click', () => {
+        if (DOM.shortsModal) DOM.shortsModal.classList.add('hidden');
+        if (DOM.shortsPlayerNative) {
+          DOM.shortsPlayerNative.pause();
+          DOM.shortsPlayerNative.src = '';
+        }
+      });
+    }
+    if (DOM.shortsModal) {
+      DOM.shortsModal.addEventListener('click', (e) => {
+        if (e.target === DOM.shortsModal) {
+          DOM.shortsModal.classList.add('hidden');
+          if (DOM.shortsPlayerNative) {
+            DOM.shortsPlayerNative.pause();
+            DOM.shortsPlayerNative.src = '';
+          }
+        }
+      });
+    }
+
+    document.addEventListener('click', (e) => {
+      const isOfflineMode = (typeof window !== 'undefined' && window.POKOPIA_OFFLINE);
+      if (!isOfflineMode) return;
+      const btn = e.target.closest('.pkm-btn-habitat-5x5, .pkm-modal-habitat-5x5-btn');
+      if (!btn) return;
+      const href = btn.getAttribute('href') || '';
+      const match = href.match(/shorts\/([a-zA-Z0-9_-]+)/);
+      if (match && match[1] && DOM.shortsModal && DOM.shortsPlayerNative) {
+        e.preventDefault();
+        e.stopPropagation();
+        const vid = match[1];
+        DOM.shortsPlayerNative.src = `assets/videos/5x5/${encodeURIComponent(vid)}.mp4`;
+        DOM.shortsModal.classList.remove('hidden');
+        DOM.shortsPlayerNative.play().catch(() => {});
       }
     });
   }
