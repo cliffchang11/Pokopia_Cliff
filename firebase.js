@@ -28,17 +28,32 @@
             }
           });
         }
-        if (CLIFF_CLOUD_SNAPSHOT.customVideos && !localStorage.getItem('pokopia_custom_videos')) {
-          localStorage.setItem('pokopia_custom_videos', JSON.stringify(CLIFF_CLOUD_SNAPSHOT.customVideos));
+        if (CLIFF_CLOUD_SNAPSHOT.customVideos) {
+          if (!localStorage.getItem('pokopia_custom_videos_v1')) {
+            localStorage.setItem('pokopia_custom_videos_v1', JSON.stringify(CLIFF_CLOUD_SNAPSHOT.customVideos));
+          }
+          if (!localStorage.getItem('pokopia_custom_videos')) {
+            localStorage.setItem('pokopia_custom_videos', JSON.stringify(CLIFF_CLOUD_SNAPSHOT.customVideos));
+          }
         }
-        if (CLIFF_CLOUD_SNAPSHOT.customVideoTags && !localStorage.getItem('pokopia_custom_video_tags')) {
-          localStorage.setItem('pokopia_custom_video_tags', JSON.stringify(CLIFF_CLOUD_SNAPSHOT.customVideoTags));
+        if (CLIFF_CLOUD_SNAPSHOT.customVideoTags) {
+          if (!localStorage.getItem('pokopia_custom_video_tags_v1')) {
+            localStorage.setItem('pokopia_custom_video_tags_v1', JSON.stringify(CLIFF_CLOUD_SNAPSHOT.customVideoTags));
+          }
+          if (!localStorage.getItem('pokopia_custom_video_tags')) {
+            localStorage.setItem('pokopia_custom_video_tags', JSON.stringify(CLIFF_CLOUD_SNAPSHOT.customVideoTags));
+          }
         }
         if (CLIFF_CLOUD_SNAPSHOT.regionAssignments && !localStorage.getItem('pokopia_region_assignments')) {
           localStorage.setItem('pokopia_region_assignments', JSON.stringify(CLIFF_CLOUD_SNAPSHOT.regionAssignments));
         }
-        if (CLIFF_CLOUD_SNAPSHOT.customBoxes && !localStorage.getItem('pokopia_custom_boxes')) {
-          localStorage.setItem('pokopia_custom_boxes', JSON.stringify(CLIFF_CLOUD_SNAPSHOT.customBoxes));
+        if (CLIFF_CLOUD_SNAPSHOT.customBoxes) {
+          if (!localStorage.getItem('pokopia_custom_boxes_v1')) {
+            localStorage.setItem('pokopia_custom_boxes_v1', JSON.stringify(CLIFF_CLOUD_SNAPSHOT.customBoxes));
+          }
+          if (!localStorage.getItem('pokopia_custom_boxes')) {
+            localStorage.setItem('pokopia_custom_boxes', JSON.stringify(CLIFF_CLOUD_SNAPSHOT.customBoxes));
+          }
         }
       } catch (e) {
         console.warn('[Offline] Preload localStorage warning:', e);
@@ -67,6 +82,12 @@
       saveProgress: () => Promise.resolve(true),
       saveCloudProgress: () => Promise.resolve(true),
       saveSpecificVoxelCharacter: () => Promise.resolve(true),
+      init: () => {},
+      debouncedSave: () => {},
+      subscribeCloudProgress: () => (() => {}),
+      unsubscribeCloudProgress: () => {},
+      loadVoxelOverrides: () => Promise.resolve(CLIFF_CLOUD_SNAPSHOT.voxelOverrides || {}),
+      saveVoxelOverrides: () => Promise.resolve(true),
       loadProgress: () => Promise.resolve(JSON.parse(JSON.stringify(CLIFF_CLOUD_SNAPSHOT))),
       loadCloudProgress: () => Promise.resolve(JSON.parse(JSON.stringify(CLIFF_CLOUD_SNAPSHOT))),
       mergeProgressUnion: (local, cloud) => (cloud ? Object.assign({}, local, cloud) : local),

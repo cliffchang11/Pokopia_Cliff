@@ -884,7 +884,9 @@
           deletedVideoTags:  state.deletedVideoTags  || [],
           regionAssignments: state.regionAssignments || {}
         };
-        fb.debouncedSave(user.uid, snapshot);
+        if (typeof fb.debouncedSave === 'function') {
+          fb.debouncedSave(user.uid, snapshot);
+        }
       }
     }
   }
@@ -1335,7 +1337,8 @@
           if (state.currentTab === 'video') renderVideoSection();
 
           // ─── 多裝置實時雙向監聽 (Real-time Sync) ─────────────────
-          fb.subscribeCloudProgress(user.uid, function (remoteData, hasPendingWrites) {
+          if (typeof fb.subscribeCloudProgress === 'function') {
+            fb.subscribeCloudProgress(user.uid, function (remoteData, hasPendingWrites) {
             if (hasPendingWrites || !remoteData) return;
             const currentSnap = {
               catChecked:        state.catChecked        || {},
@@ -1489,6 +1492,7 @@
               }
             }
           });
+          }
 
         } else {
           if (elSignIn)   elSignIn.classList.remove('hidden');
@@ -1498,7 +1502,9 @@
         }
       });
 
-      fb.init();
+      if (typeof fb.init === 'function') {
+        fb.init();
+      }
     }
 
     // ─── PWA Service Worker 註冊與自動即時更新 ────────────────────────
@@ -6192,7 +6198,9 @@
           customBoxes:       state.customBoxes       || [],
           regionAssignments: state.regionAssignments || {}
         };
-        fb.debouncedSave(user.uid, snapshot);
+        if (typeof fb.debouncedSave === 'function') {
+          fb.debouncedSave(user.uid, snapshot);
+        }
       }
     }
   }
@@ -6988,7 +6996,8 @@
           if (DOM.videoPlayerIframe) DOM.videoPlayerIframe.classList.add('hidden');
           DOM.videoPlayerNative.classList.remove('hidden');
           const localSrc = `assets/videos/reference/${encodeURIComponent(video.videoId)}.mp4`;
-          if (DOM.videoPlayerNative.src !== localSrc && !DOM.videoPlayerNative.src.endsWith(localSrc)) {
+          const curSrc = DOM.videoPlayerNative.src || '';
+          if (curSrc !== localSrc && !curSrc.endsWith(localSrc)) {
             DOM.videoPlayerNative.src = localSrc;
             if (savedTime >= 5) {
               DOM.videoPlayerNative.currentTime = savedTime;
@@ -7002,7 +7011,9 @@
           };
         } else {
           // 離線自訂影片（未下載 28 部）：暫停本機播放器，不強制載入 iframe 避免報錯
-          DOM.videoPlayerNative.pause();
+          if (typeof DOM.videoPlayerNative.pause === 'function') {
+            DOM.videoPlayerNative.pause();
+          }
           DOM.videoPlayerNative.classList.add('hidden');
           if (DOM.videoPlayerIframe) DOM.videoPlayerIframe.classList.add('hidden');
         }
