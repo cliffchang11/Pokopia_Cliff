@@ -24,12 +24,14 @@
 - 系統支援的五大角色藍圖各自擁有獨立的 LocalStorage 鍵值與雲端字串包欄位：
   | 角色代碼 | 角色名稱 | LocalStorage 鍵值 | 雲端字串包欄位 | 說明 |
   | :--- | :--- | :--- | :--- | :--- |
+  | `bulbasaur28_v2` | 🍃 妙蛙種子 (28層超採樣版) | `pokopia_voxel_overrides_bulbasaur28_v2` | `voxelOverridesPack.bulbasaur28_v2` | 4,204 顆方塊高傳真五官雙眼超採樣，獨立 Undo/Redo |
   | `bulbasaur28` | 🍃 妙蛙種子 (28層精巧版) | `pokopia_voxel_overrides_bulbasaur28` | `voxelOverridesPack.bulbasaur28` | 5,032 顆方塊精巧工作台，獨立 Undo/Redo |
   | `bulbasaur` | 🍃 妙蛙種子 (53層經典版) | `pokopia_voxel_overrides_bulbasaur` | `voxelOverridesPack.bulbasaur` | 基礎官方 53 層模型 |
   | `ivysaur40` | 🌿 妙蛙草 (40層精巧版) | `pokopia_voxel_overrides_ivysaur40` | `voxelOverridesPack.ivysaur40` | 14,698 顆方塊精巧工作台，獨立 Undo/Redo |
   | `ivysaur` | 🌿 妙蛙草 (76層經典版) | `pokopia_voxel_overrides_ivysaur` | `voxelOverridesPack.ivysaur` | 具備 11,726 筆固化防護與 13,708 筆雲端資產 |
   | `buzz` | 🚀 巴斯光年 | `pokopia_voxel_overrides_buzz` | `voxelOverridesPack.buzz` | 42 層建造模型 |
-  | `venusaur` | 🌺 妙蛙花 | `pokopia_voxel_overrides_venusaur` | `voxelOverridesPack.venusaur` | 103 層大型模型 |
+  | `venusaur80` | 🌺 妙蛙花 (80層精巧版) | `pokopia_voxel_overrides_venusaur80` | `voxelOverridesPack.venusaur80` | 43,663 顆方塊等比例精巧工作台，獨立 Undo/Redo |
+  | `venusaur` | 🌺 妙蛙花 (103層巨型版) | `pokopia_voxel_overrides_venusaur` | `voxelOverridesPack.venusaur` | 68,180 顆方塊大型展演模型 |
 - **禁止交叉污染**：在任何角色工作台進行的體素塗色、刪除、鏡像或復原，僅得寫入所屬之 `charKey`，嚴禁影響其他角色的資料。
 
 ### 3. 防降級守護機制 (Anti-Downgrade Armor)

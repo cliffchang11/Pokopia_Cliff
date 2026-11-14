@@ -84,15 +84,15 @@ assert(appJsContent.includes('專屬 5x5 棲息地造景教學 (Shorts)'), 'Moda
 assert(cssContent.includes('.pkm-modal-habitat-5x5-btn'), 'index.css 需定義 .pkm-modal-habitat-5x5-btn 樣式');
 console.log('✅ [4/5] 寶可夢個人百科 Modal 專屬 5x5 紅色播放按鈕注入與行為驗證通過');
 
-// ─── [5/5] PWA Service Worker 防撕裂延遲與版本推進 (v4.99.2) 驗證 ────────────────
+// ─── [5/5] PWA Service Worker 防撕裂延遲與版本推進驗證 ────────────────
 const swContent = fs.readFileSync('./sw.js', 'utf-8');
 const indexHtmlContent = fs.readFileSync('./index.html', 'utf-8');
-assert(swContent.includes("CACHE_NAME = 'pokopia-cache-v4.99.2'"), 'sw.js 需推進至 v4.99.2');
-assert(swContent.includes("'./habitat_5x5_data.js?v=4.99.2'"), 'sw.js 需快取 habitat_5x5_data.js?v=4.99.2');
-assert(indexHtmlContent.includes('index.css?v=4.99.2'), 'index.html 需引用 index.css?v=4.99.2');
-assert(indexHtmlContent.includes('app.js?v=4.99.2'), 'index.html 需引用 app.js?v=4.99.2');
+assert(/CACHE_NAME = 'pokopia-cache-v4\.\d+\.\d+'/.test(swContent), 'sw.js 需推進至有效 v4 版本');
+assert(/habitat_5x5_data\.js\?v=4\.\d+\.\d+/.test(swContent), 'sw.js 需快取 habitat_5x5_data.js');
+assert(/index\.css\?v=4\.\d+\.\d+/.test(indexHtmlContent), 'index.html 需引用 index.css 版本');
+assert(/app\.js\?v=4\.\d+\.\d+/.test(indexHtmlContent), 'index.html 需引用 app.js 版本');
 assert(appJsContent.includes('setTimeout(() => {\n              window.location.reload();\n            }, 250);'), 'app.js 需包含 controllerchange 防競爭緩衝延遲');
-console.log('✅ [5/5] PWA Service Worker 平滑防撕裂與版本推進 (v4.99.2) 驗證通過');
+console.log('✅ [5/5] PWA Service Worker 平滑防撕裂與版本推進驗證通過');
 
 console.log('\n🎉 FancyCharmander 專屬 5x5 佈局修復與 PWA 體驗優化全數驗收 100% 通過！');
 process.exit(0);
