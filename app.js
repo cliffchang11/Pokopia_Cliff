@@ -1181,7 +1181,13 @@
             elAvatar.setAttribute('aria-label', displayName + '（點擊登出）');
           }
           if (elName)     elName.textContent = displayName;
-          if (elSync)     elSync.classList.remove('hidden');
+          if (elSync) {
+            elSync.classList.remove('hidden');
+            if (typeof window !== 'undefined' && window.POKOPIA_OFFLINE) {
+              elSync.textContent = '✈️ 飛航離線模式 (本機即時保存)';
+              elSync.style.color = '#10b981';
+            }
+          }
 
           const cloudData = await fb.loadCloudProgress(user.uid);
           const localSnapshot = {
@@ -3822,6 +3828,12 @@
   // 終局自動化農場規劃 (End-Game Auto Farm Controller & Renderer)
   // ==========================================================================
   function isAutoFarmAuthorized(user) {
+    // 飛航離線模式：永久最高權限解鎖，確保 3.7GB 攻略影片、農場、收納與 3D 建造台 100% 暢通
+    if (typeof window !== 'undefined' && window.POKOPIA_OFFLINE) {
+      try { localStorage.setItem(STORAGE_KEY_AUTOFARM_AUTHED, '1'); } catch (e) {}
+      return true;
+    }
+
     if (!user) {
       const fb = window.PokopiaFirebase;
       if (fb && typeof fb.getCurrentUser === 'function') {
@@ -3849,6 +3861,10 @@
   }
 
   function updateAutoFarmAuthUI(user) {
+    if (typeof window !== 'undefined' && window.POKOPIA_OFFLINE) {
+      user = { email: AUTOFARM_ALLOWED_EMAIL, displayName: 'Cliff (離線飛航模式)' };
+    }
+
     let isAuth = false;
     if (user && user.email) {
       isAuth = user.email.trim().toLowerCase() === AUTOFARM_ALLOWED_EMAIL.toLowerCase();
@@ -7804,6 +7820,131 @@
         DOM.shortsPlayerNative.play().catch(() => {});
       }
     });
+
+    // 進度快照管理 (離線/線上雙向資料備份與注入)
+    function setupSnapshotManager() {
+      const btnOpen = document.getElementById('btnSnapshotModal');
+      const modal = document.getElementById('snapshotModal');
+      const btnClose = document.getElementById('btnCloseSnapshotModal');
+      const btnExport = document.getElementById('btnExportSnapshot');
+      const btnImport = document.getElementById('btnImportSnapshot');
+      const textarea = document.getElementById('snapshotTextarea');
+      const msg = document.getElementById('snapshotStatusMsg');
+
+      if (!btnOpen || !modal) return;
+
+      btnOpen.addEventListener('click', () => {
+        modal.classList.remove('hidden');
+        if (msg) msg.textContent = '';
+      });
+      if (btnClose) {
+        btnClose.addEventListener('click', () => {
+          modal.classList.add('hidden');
+        });
+      }
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.classList.add('hidden');
+      });
+
+      if (btnExport) {
+        btnExport.addEventListener('click', () => {
+          try {
+            const keys = [
+              'pokopia_cat_checked',
+              'pokopia_pkm_checked',
+              'pokopia_hab_checked',
+              'pokopia_custom_storage',
+              'pokopia_autofarm_checked',
+              'pokopia_bench_overrides',
+              'pokopia_region_assignments',
+              'pokopia_custom_videos',
+              'pokopia_custom_video_tags',
+              'pokopia_deleted_video_tags',
+              'pokopia_autofarm_authed_v1',
+              'pokopia_voxel_overrides_buzz',
+              'pokopia_voxel_overrides_bulbasaur',
+              'pokopia_voxel_overrides_bulbasaur28',
+              'pokopia_voxel_overrides_bulbasaur28_v2',
+              'pokopia_voxel_overrides_ivysaur',
+              'pokopia_voxel_overrides_ivysaur40',
+              'pokopia_voxel_overrides_venusaur80',
+              'pokopia_voxel_overrides_venusaur80_v2',
+              'pokopia_voxel_overrides_venusaur'
+            ];
+            const dump = {
+              version: 'PokopiaSnapshot_v1',
+              timestamp: Date.now(),
+              data: {}
+            };
+            keys.forEach(k => {
+              const val = localStorage.getItem(k);
+              if (val !== null) dump.data[k] = val;
+            });
+            const jsonStr = JSON.stringify(dump, null, 2);
+            if (textarea) textarea.value = jsonStr;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(jsonStr).then(() => {
+                if (msg) {
+                  msg.style.color = '#10b981';
+                  msg.textContent = '✓ 已成功產生快照並複製到剪貼簿！';
+                }
+              }).catch(() => {
+                if (msg) {
+                  msg.style.color = '#10b981';
+                  msg.textContent = '✓ 快照已生成於文字框，請全選複製。';
+                }
+              });
+            } else {
+              if (msg) {
+                msg.style.color = '#10b981';
+                msg.textContent = '✓ 快照已生成於文字框，請全選複製。';
+              }
+            }
+          } catch (e) {
+            if (msg) {
+              msg.style.color = '#ef4444';
+              msg.textContent = '❌ 快照產生失敗：' + e.message;
+            }
+          }
+        });
+      }
+
+      if (btnImport) {
+        btnImport.addEventListener('click', () => {
+          if (!textarea || !textarea.value.trim()) {
+            if (msg) {
+              msg.style.color = '#ef4444';
+              msg.textContent = '⚠️ 請先在文字框中貼上快照 JSON！';
+            }
+            return;
+          }
+          try {
+            const parsed = JSON.parse(textarea.value.trim());
+            if (!parsed || !parsed.data) {
+              throw new Error('無效的快照格式');
+            }
+            let count = 0;
+            Object.keys(parsed.data).forEach(k => {
+              localStorage.setItem(k, parsed.data[k]);
+              count++;
+            });
+            if (msg) {
+              msg.style.color = '#10b981';
+              msg.textContent = `🎉 成功匯入 ${count} 筆進度！2 秒後自動重整套用...`;
+            }
+            setTimeout(() => {
+              location.reload();
+            }, 1500);
+          } catch (e) {
+            if (msg) {
+              msg.style.color = '#ef4444';
+              msg.textContent = '❌ 匯入失敗：' + e.message;
+            }
+          }
+        });
+      }
+    }
+    setupSnapshotManager();
   }
 
   // 暴露參考影片管理器 API

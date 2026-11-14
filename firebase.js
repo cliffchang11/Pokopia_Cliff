@@ -6,20 +6,40 @@
 (function () {
   'use strict';
 
-  // ─── 飛航離線模式平滑降級 ──────────────────────────────────────────
+  // ─── 飛航離線模式平滑降級 (Cliff 專屬身分常駐與全功能解鎖) ──────────
   if (typeof window !== 'undefined' && window.POKOPIA_OFFLINE) {
+    const offlineCliffUser = {
+      uid: 'offline_cliff',
+      email: 'cliff210689cliff@gmail.com',
+      displayName: 'Cliff (離線飛航模式)',
+      photoURL: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="%2310b981"><circle cx="12" cy="12" r="10" fill="%2310b981"/><text x="12" y="16" font-size="12" text-anchor="middle" fill="%23ffffff">✈️</text></svg>'
+    };
+
     window.PokopiaFirebase = {
-      isConfigured: () => false,
-      isAuthed: () => false,
-      getUser: () => null,
-      onAuthStateChanged: (cb) => { try { cb(null); } catch (e) {} },
-      signInWithGoogle: () => {
-        alert('✈️ 目前處於飛航離線模式：所有進度與方塊編輯皆已 100% 即時儲存於 iPad 本機，下機連線後可再同步！');
+      isConfigured: () => true,
+      isAuthed: () => true,
+      getUser: () => offlineCliffUser,
+      getCurrentUser: () => offlineCliffUser,
+      onAuthStateChanged: (cb) => {
+        try { cb(offlineCliffUser); } catch (e) {}
+        return () => {};
       },
-      signOut: () => {},
+      onAuthChange: (cb) => {
+        try { cb(offlineCliffUser); } catch (e) {}
+        return () => {};
+      },
+      signInWithGoogle: () => {
+        alert('✈️ 目前處於飛航離線模式：已自動以 Cliff 身分完全解鎖全功能，所有進度與方塊編輯皆 100% 儲存於本機！');
+      },
+      signOut: () => {
+        alert('✈️ 離線飛航模式下已鎖定 Cliff 離線專屬權限，無需登出。');
+      },
       saveProgress: () => Promise.resolve(true),
+      saveCloudProgress: () => Promise.resolve(true),
       saveSpecificVoxelCharacter: () => Promise.resolve(true),
       loadProgress: () => Promise.resolve(null),
+      loadCloudProgress: () => Promise.resolve(null),
+      mergeProgressUnion: (local, cloud) => (cloud ? Object.assign({}, local, cloud) : local),
       syncNow: () => Promise.resolve(true)
     };
     return;
