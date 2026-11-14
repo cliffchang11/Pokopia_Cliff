@@ -3400,10 +3400,11 @@
                 const shortInfo = window.POKOPIA_HABITAT_5X5_DATA.getHabitat5x5(pkm);
                 if (shortInfo && shortInfo.url) {
                   const isOffline = (typeof window !== 'undefined' && window.POKOPIA_OFFLINE);
-                  const btnHref = isOffline ? `assets/videos/5x5/${encodeURIComponent(shortInfo.videoId || '')}.mp4` : escapeHTML(shortInfo.url);
+                  const vid = shortInfo.vid || shortInfo.videoId || '';
+                  const btnHref = isOffline ? (vid ? `assets/videos/5x5/${encodeURIComponent(vid)}.mp4` : '#') : escapeHTML(shortInfo.url);
                   const targetAttr = isOffline ? '' : 'target="_blank" rel="noopener noreferrer"';
                   return `
-                    <a href="${btnHref}" ${targetAttr} class="pkm-btn-habitat-5x5" data-vid="${escapeHTML(shortInfo.videoId || '')}" title="${escapeHTML(shortInfo.title)}" aria-label="觀看 ${escapeHTML(pkm.name)} 專屬 5x5 棲息地造景教學 Shorts">
+                    <a href="${btnHref}" ${targetAttr} class="pkm-btn-habitat-5x5" data-vid="${escapeHTML(vid)}" title="${escapeHTML(shortInfo.title)}" aria-label="觀看 ${escapeHTML(pkm.name)} 專屬 5x5 棲息地造景教學 Shorts">
                       <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                     </a>
                   `;
@@ -5359,7 +5360,8 @@
 
     const habitat5x5HTML = habitat5x5 ? (() => {
       const isOffline = (typeof window !== 'undefined' && window.POKOPIA_OFFLINE);
-      const modalHref = isOffline ? `assets/videos/5x5/${encodeURIComponent(habitat5x5.videoId || '')}.mp4` : escapeHTML(habitat5x5.url);
+      const vid = habitat5x5.vid || habitat5x5.videoId || '';
+      const modalHref = isOffline ? (vid ? `assets/videos/5x5/${encodeURIComponent(vid)}.mp4` : '#') : escapeHTML(habitat5x5.url);
       const modalTarget = isOffline ? '' : 'target="_blank" rel="noopener noreferrer"';
       return `
         <div class="pkm-detail-section" style="border-top:1px dashed var(--glass-border); padding-top:0.75rem;">
@@ -5367,7 +5369,7 @@
             <span class="pkm-detail-sec-title-icon">🔴</span> 專屬 5x5 棲息地造景教學 (Shorts)
           </h3>
           <div style="margin-top:0.35rem;">
-            <a href="${modalHref}" ${modalTarget} class="pkm-modal-habitat-5x5-btn" data-vid="${escapeHTML(habitat5x5.videoId || '')}" title="${escapeHTML(habitat5x5.title)}">
+            <a href="${modalHref}" ${modalTarget} class="pkm-modal-habitat-5x5-btn" data-vid="${escapeHTML(vid)}" title="${escapeHTML(habitat5x5.title)}">
               <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
               <span>觀看 ${escapeHTML(pkm.name)} 專屬 5x5 造景教學</span>
             </a>
@@ -7840,10 +7842,21 @@
         if (match && match[1]) vid = match[1];
       }
 
-      if (vid && DOM.shortsModal && DOM.shortsPlayerNative) {
-        DOM.shortsPlayerNative.src = `assets/videos/5x5/${encodeURIComponent(vid)}.mp4`;
-        DOM.shortsModal.classList.remove('hidden');
-        DOM.shortsPlayerNative.play().catch(() => {});
+      const modalEl = DOM.shortsModal || document.getElementById('shortsModal');
+      const playerEl = DOM.shortsPlayerNative || document.getElementById('shortsPlayerNative');
+
+      if (vid && modalEl && playerEl) {
+        playerEl.src = `assets/videos/5x5/${encodeURIComponent(vid)}.mp4`;
+        modalEl.classList.remove('hidden');
+        playerEl.play().catch(() => {});
+      } else if (!vid) {
+        if (typeof showCsToast === 'function') {
+          showCsToast('⚠️ 找不到此棲息地的 5x5 本機影片代碼', 'error');
+        }
+      } else if (!modalEl || !playerEl) {
+        if (typeof showCsToast === 'function') {
+          showCsToast('⚠️ 原生播放器元件未就緒，請重新整理頁面', 'error');
+        }
       }
     }, true);
 
