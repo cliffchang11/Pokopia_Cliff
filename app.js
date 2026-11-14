@@ -3399,8 +3399,11 @@
               if (typeof window !== 'undefined' && window.POKOPIA_HABITAT_5X5_DATA && typeof window.POKOPIA_HABITAT_5X5_DATA.getHabitat5x5 === 'function') {
                 const shortInfo = window.POKOPIA_HABITAT_5X5_DATA.getHabitat5x5(pkm);
                 if (shortInfo && shortInfo.url) {
+                  const isOffline = (typeof window !== 'undefined' && window.POKOPIA_OFFLINE);
+                  const btnHref = isOffline ? `assets/videos/5x5/${encodeURIComponent(shortInfo.videoId || '')}.mp4` : escapeHTML(shortInfo.url);
+                  const targetAttr = isOffline ? '' : 'target="_blank" rel="noopener noreferrer"';
                   return `
-                    <a href="${escapeHTML(shortInfo.url)}" target="_blank" rel="noopener noreferrer" class="pkm-btn-habitat-5x5" title="${escapeHTML(shortInfo.title)}" aria-label="觀看 ${escapeHTML(pkm.name)} 專屬 5x5 棲息地造景教學 Shorts" onclick="event.stopPropagation()">
+                    <a href="${btnHref}" ${targetAttr} class="pkm-btn-habitat-5x5" data-vid="${escapeHTML(shortInfo.videoId || '')}" title="${escapeHTML(shortInfo.title)}" aria-label="觀看 ${escapeHTML(pkm.name)} 專屬 5x5 棲息地造景教學 Shorts">
                       <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                     </a>
                   `;
@@ -5354,19 +5357,24 @@
       ? window.POKOPIA_HABITAT_5X5_DATA.getHabitat5x5(pkm)
       : null;
 
-    const habitat5x5HTML = habitat5x5 ? `
-      <div class="pkm-detail-section" style="border-top:1px dashed var(--glass-border); padding-top:0.75rem;">
-        <h3 class="pkm-detail-sec-title">
-          <span class="pkm-detail-sec-title-icon">🔴</span> 專屬 5x5 棲息地造景教學 (Shorts)
-        </h3>
-        <div style="margin-top:0.35rem;">
-          <a href="${escapeHTML(habitat5x5.url)}" target="_blank" rel="noopener noreferrer" class="pkm-modal-habitat-5x5-btn" title="${escapeHTML(habitat5x5.title)}">
-            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            <span>觀看 ${escapeHTML(pkm.name)} 專屬 5x5 造景教學</span>
-          </a>
+    const habitat5x5HTML = habitat5x5 ? (() => {
+      const isOffline = (typeof window !== 'undefined' && window.POKOPIA_OFFLINE);
+      const modalHref = isOffline ? `assets/videos/5x5/${encodeURIComponent(habitat5x5.videoId || '')}.mp4` : escapeHTML(habitat5x5.url);
+      const modalTarget = isOffline ? '' : 'target="_blank" rel="noopener noreferrer"';
+      return `
+        <div class="pkm-detail-section" style="border-top:1px dashed var(--glass-border); padding-top:0.75rem;">
+          <h3 class="pkm-detail-sec-title">
+            <span class="pkm-detail-sec-title-icon">🔴</span> 專屬 5x5 棲息地造景教學 (Shorts)
+          </h3>
+          <div style="margin-top:0.35rem;">
+            <a href="${modalHref}" ${modalTarget} class="pkm-modal-habitat-5x5-btn" data-vid="${escapeHTML(habitat5x5.videoId || '')}" title="${escapeHTML(habitat5x5.title)}">
+              <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              <span>觀看 ${escapeHTML(pkm.name)} 專屬 5x5 造景教學</span>
+            </a>
+          </div>
         </div>
-      </div>
-    ` : '';
+      `;
+    })() : '';
 
     // 5. 組合注入 Detail Body
     DOM.pkmDetailBody.innerHTML = `
@@ -7018,8 +7026,19 @@
 
     // 外部連結
     if (DOM.videoExternalLink) {
-      DOM.videoExternalLink.style.display = 'inline-flex';
-      DOM.videoExternalLink.href = video.url || `https://www.youtube.com/watch?v=${video.videoId}`;
+      if (isOfflineMode) {
+        DOM.videoExternalLink.style.display = 'inline-flex';
+        DOM.videoExternalLink.removeAttribute('href');
+        DOM.videoExternalLink.innerHTML = '✈️ 飛航離線模式 (本機 720p 播放中)';
+        DOM.videoExternalLink.style.pointerEvents = 'none';
+        DOM.videoExternalLink.style.opacity = '0.85';
+      } else {
+        DOM.videoExternalLink.style.display = 'inline-flex';
+        DOM.videoExternalLink.style.pointerEvents = 'auto';
+        DOM.videoExternalLink.style.opacity = '1';
+        DOM.videoExternalLink.href = video.url || `https://www.youtube.com/watch?v=${video.videoId}`;
+        DOM.videoExternalLink.innerHTML = '🔗 在 YouTube 上觀看';
+      }
     }
 
     // 編輯按鈕：全清單影片皆可自由編輯
@@ -7804,22 +7823,29 @@
       });
     }
 
+    // 離線 5x5 Shorts 點擊攔截：使用 capture: true 捕獲階段，絕對優先阻斷任何外部跳轉
     document.addEventListener('click', (e) => {
       const isOfflineMode = (typeof window !== 'undefined' && window.POKOPIA_OFFLINE);
       if (!isOfflineMode) return;
       const btn = e.target.closest('.pkm-btn-habitat-5x5, .pkm-modal-habitat-5x5-btn');
       if (!btn) return;
-      const href = btn.getAttribute('href') || '';
-      const match = href.match(/shorts\/([a-zA-Z0-9_-]+)/);
-      if (match && match[1] && DOM.shortsModal && DOM.shortsPlayerNative) {
-        e.preventDefault();
-        e.stopPropagation();
-        const vid = match[1];
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      let vid = btn.getAttribute('data-vid') || '';
+      if (!vid) {
+        const href = btn.getAttribute('href') || '';
+        const match = href.match(/(?:shorts\/|5x5\/)([a-zA-Z0-9_-]+)/);
+        if (match && match[1]) vid = match[1];
+      }
+
+      if (vid && DOM.shortsModal && DOM.shortsPlayerNative) {
         DOM.shortsPlayerNative.src = `assets/videos/5x5/${encodeURIComponent(vid)}.mp4`;
         DOM.shortsModal.classList.remove('hidden');
         DOM.shortsPlayerNative.play().catch(() => {});
       }
-    });
+    }, true);
 
     // 進度快照管理 (離線/線上雙向資料備份與注入)
     function setupSnapshotManager() {
