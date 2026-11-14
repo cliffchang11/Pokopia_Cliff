@@ -6708,6 +6708,12 @@
   }
 
   // ─── 影片播放進度記憶與續播控制器 (Video Playback Progress & Resume) ──────
+  const DOWNLOADED_REFERENCE_VIDS = new Set([
+    '1jB0sZejsFE', '49j3IpNC-JI', '5dCjsO8uskA', 'BC6Yxf8n1Hw',
+    'BgrIUQTrobU', 'C17uSb_bQH4', 'GLa6X_0vE3M', 'GzePoZSfQ78',
+    '-hy9ydtbcEE', 'JRbeKGep7W4', 'nnhJ-qWEKCg', 'tjD_ovAAyAQ',
+    'WpMqS6RxBvU', 'XPAJ1YXgBYE', 'Yvvz5AEptWg', 'Zpxz9IZc8Ew'
+  ]);
   let _currentLoadedVideoId = null;
   let _ytPlayer = null;
   let _ytProgressInterval = null;
@@ -6756,6 +6762,7 @@
 
   function initYouTubeIframeApi() {
     if (typeof window === 'undefined') return;
+    if (window.POKOPIA_OFFLINE) return; // 飛航離線模式嚴格禁止載入外部 YouTube API
     if (window.YT && window.YT.Player) return;
     if (_ytApiLoading) return;
     _ytApiLoading = true;
@@ -6974,23 +6981,31 @@
         ? state.videoProgress[video.videoId]
         : 0;
 
+      const isDownloaded = DOWNLOADED_REFERENCE_VIDS.has(video.videoId);
       if (isOfflineMode && DOM.videoPlayerNative) {
-        // 離線模式：啟用本地原生 HTML5 播放器
-        if (DOM.videoPlayerIframe) DOM.videoPlayerIframe.classList.add('hidden');
-        DOM.videoPlayerNative.classList.remove('hidden');
-        const localSrc = `assets/videos/reference/${encodeURIComponent(video.videoId)}.mp4`;
-        if (DOM.videoPlayerNative.src !== localSrc && !DOM.videoPlayerNative.src.endsWith(localSrc)) {
-          DOM.videoPlayerNative.src = localSrc;
-          if (savedTime >= 5) {
-            DOM.videoPlayerNative.currentTime = savedTime;
+        if (isDownloaded) {
+          // 離線模式：啟用本地原生 HTML5 720p 播放器
+          if (DOM.videoPlayerIframe) DOM.videoPlayerIframe.classList.add('hidden');
+          DOM.videoPlayerNative.classList.remove('hidden');
+          const localSrc = `assets/videos/reference/${encodeURIComponent(video.videoId)}.mp4`;
+          if (DOM.videoPlayerNative.src !== localSrc && !DOM.videoPlayerNative.src.endsWith(localSrc)) {
+            DOM.videoPlayerNative.src = localSrc;
+            if (savedTime >= 5) {
+              DOM.videoPlayerNative.currentTime = savedTime;
+            }
           }
+          DOM.videoPlayerNative.ontimeupdate = () => {
+            recordCurrentVideoProgress(video.videoId, DOM.videoPlayerNative.currentTime, DOM.videoPlayerNative.duration || 0);
+          };
+          DOM.videoPlayerNative.onpause = () => {
+            recordCurrentVideoProgress(video.videoId, DOM.videoPlayerNative.currentTime, DOM.videoPlayerNative.duration || 0);
+          };
+        } else {
+          // 離線自訂影片（未下載 28 部）：暫停本機播放器，不強制載入 iframe 避免報錯
+          DOM.videoPlayerNative.pause();
+          DOM.videoPlayerNative.classList.add('hidden');
+          if (DOM.videoPlayerIframe) DOM.videoPlayerIframe.classList.add('hidden');
         }
-        DOM.videoPlayerNative.ontimeupdate = () => {
-          recordCurrentVideoProgress(video.videoId, DOM.videoPlayerNative.currentTime, DOM.videoPlayerNative.duration || 0);
-        };
-        DOM.videoPlayerNative.onpause = () => {
-          recordCurrentVideoProgress(video.videoId, DOM.videoPlayerNative.currentTime, DOM.videoPlayerNative.duration || 0);
-        };
       } else {
         // 線上模式：啟用 YouTube Iframe 播放器
         if (DOM.videoPlayerNative) {
@@ -7029,11 +7044,22 @@
     // 外部連結
     if (DOM.videoExternalLink) {
       if (isOfflineMode) {
+        const isDownloaded = DOWNLOADED_REFERENCE_VIDS.has(video.videoId);
         DOM.videoExternalLink.style.display = 'inline-flex';
-        DOM.videoExternalLink.removeAttribute('href');
-        DOM.videoExternalLink.innerHTML = '✈️ 飛航離線模式 (本機 720p 播放中)';
-        DOM.videoExternalLink.style.pointerEvents = 'none';
-        DOM.videoExternalLink.style.opacity = '0.85';
+        if (isDownloaded) {
+          DOM.videoExternalLink.removeAttribute('href');
+          DOM.videoExternalLink.innerHTML = '✈️ 飛航離線模式 (本機 720p 播放中)';
+          DOM.videoExternalLink.style.pointerEvents = 'none';
+          DOM.videoExternalLink.style.opacity = '0.85';
+        } else {
+          // 依使用者需求：那 28 部允許點擊前往 YouTube 觀看
+          DOM.videoExternalLink.style.pointerEvents = 'auto';
+          DOM.videoExternalLink.style.opacity = '1';
+          DOM.videoExternalLink.href = video.url || `https://www.youtube.com/watch?v=${video.videoId}`;
+          DOM.videoExternalLink.target = '_blank';
+          DOM.videoExternalLink.rel = 'noopener noreferrer';
+          DOM.videoExternalLink.innerHTML = '🔗 前往 YouTube 觀看此攻略 (線上)';
+        }
       } else {
         DOM.videoExternalLink.style.display = 'inline-flex';
         DOM.videoExternalLink.style.pointerEvents = 'auto';
@@ -7134,16 +7160,28 @@
 
     DOM.videoCardsGrid.innerHTML = filtered.map(v => {
       const isPlaying = (state.currentVideoId === v.id);
-      const thumbUrl = `https://img.youtube.com/vi/${encodeURIComponent(v.videoId)}/hqdefault.jpg`;
+      const isOfflineMode = (typeof window !== 'undefined' && window.POKOPIA_OFFLINE);
+      const isDownloaded = DOWNLOADED_REFERENCE_VIDS.has(v.videoId);
+
+      let thumbUrl = '';
+      if (isOfflineMode) {
+        const badgeText = isDownloaded ? '720p 離線' : '線上攻略';
+        const badgeColor = isDownloaded ? '%2310b981' : '%236366f1';
+        const safeTitle = escapeHTML((v.title || '').replace(/["'<>&]/g, ''));
+        thumbUrl = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180" viewBox="0 0 320 180" fill="%231e293b"><rect width="320" height="180"/><rect x="12" y="12" width="76" height="24" rx="4" fill="${badgeColor}"/><text x="50" y="28" fill="%23ffffff" font-size="11" font-weight="bold" text-anchor="middle">${badgeText}</text><circle cx="160" cy="90" r="28" fill="%230f172a" fill-opacity="0.8"/><polygon points="152,78 174,90 152,102" fill="%23ffffff"/><text x="160" y="145" fill="%2394a3b8" font-size="11" text-anchor="middle">${safeTitle.slice(0, 15)}</text></svg>`;
+      } else {
+        thumbUrl = `https://img.youtube.com/vi/${encodeURIComponent(v.videoId)}/hqdefault.jpg`;
+      }
       const tags = Array.isArray(v.tags) ? v.tags : [];
       return `
         <div class="video-card ${isPlaying ? 'playing' : ''}" data-video-id="${escapeHTML(v.id)}">
           <div class="video-card-thumb-wrap">
-            <img decoding="async" class="video-card-thumb-img" src="${thumbUrl}" alt="${escapeHTML(v.title)}" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'320\\' height=\\'180\\' viewBox=\\'0 0 320 180\\' fill=\\'%23222\\'><rect width=\\'320\\' height=\\'180\\'/><text x=\\'160\\' y=\\'95\\' fill=\\'%23666\\' font-size=\\'14\\' text-anchor=\\'middle\\'>🎬 暫無縮圖</text></svg>'">
+            <img decoding="async" class="video-card-thumb-img" src="${thumbUrl}" alt="${escapeHTML(v.title)}" loading="lazy">
             <div class="video-card-play-overlay">
               <span class="video-card-play-icon">▶</span>
             </div>
             ${isPlaying ? '<div class="video-card-playing-badge"><span>▶ 播放中</span></div>' : ''}
+            ${isOfflineMode ? (isDownloaded ? '<div class="video-card-offline-tag" style="position:absolute;top:0.4rem;left:0.4rem;background:#10b981;color:#fff;font-size:0.65rem;padding:0.15rem 0.4rem;border-radius:4px;font-weight:bold;">✈️ 720p</div>' : '<div class="video-card-offline-tag" style="position:absolute;top:0.4rem;left:0.4rem;background:#6366f1;color:#fff;font-size:0.65rem;padding:0.15rem 0.4rem;border-radius:4px;font-weight:bold;">🌐 YouTube</div>') : ''}
           </div>
           <div class="video-card-body">
             <div class="video-card-top-row">
@@ -7171,6 +7209,11 @@
           saveProgress(STORAGE_KEY_ACTIVE_VIDEO, state.currentVideoId);
           renderTheaterPlayer(targetVid);
           renderVideoCards();
+          // 若為未下載之自訂影片，友善提示使用者
+          const isOffline = (typeof window !== 'undefined' && window.POKOPIA_OFFLINE);
+          if (isOffline && !DOWNLOADED_REFERENCE_VIDS.has(targetVid.videoId)) {
+            showCsToast('🌐 此為線上自訂攻略，可點擊上方「前往 YouTube 觀看」播放');
+          }
           // 平滑滾動至影廳主播放器
           if (DOM.videoSection) {
             DOM.videoSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
