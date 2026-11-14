@@ -82,10 +82,10 @@ assert(indexHtml.includes('id="venusaur80_v2SliceCard"'), 'DOM 必須包含 venu
 assert(indexHtml.includes('id="venusaur80_v2LayerSlider"'), 'DOM 必須包含 venusaur80_v2LayerSlider 滑桿');
 assert(indexHtml.includes('id="venusaur80_v2VoxelGrid"'), 'DOM 必須包含 venusaur80_v2VoxelGrid 點陣網格');
 assert(indexHtml.includes('id="venusaur80_v2MatList"'), 'DOM 必須包含 venusaur80_v2MatList 材料清單容器');
-assert(indexHtml.includes('venusaur80_v2_voxel_data.js?v=4.101.0'), 'index.html 必須引用 venusaur80_v2_voxel_data.js?v=4.101.0');
+assert(indexHtml.includes('venusaur80_v2_voxel_data.js?v=4.101.1'), 'index.html 必須引用 venusaur80_v2_voxel_data.js?v=4.101.1');
 
-assert(swJs.includes("pokopia-cache-v4.101.0"), 'sw.js 版本必須升級為 v4.101.0');
-assert(swJs.includes('venusaur80_v2_voxel_data.js?v=4.101.0'), 'sw.js 必須快取 venusaur80_v2_voxel_data.js');
+assert(swJs.includes("pokopia-cache-v4.101.1"), 'sw.js 版本必須升級為 v4.101.1');
+assert(swJs.includes('venusaur80_v2_voxel_data.js?v=4.101.1'), 'sw.js 必須快取 venusaur80_v2_voxel_data.js');
 
 assert(geminiMd.includes('`venusaur80_v2`'), 'GEMINI.md 規範表必須登錄 venusaur80_v2');
 assert(geminiMd.includes('pokopia_voxel_overrides_venusaur80_v2'), 'GEMINI.md 必須登錄 LocalStorage 專屬鍵值');
